@@ -336,15 +336,8 @@
 		    <scope>runtime</scope>
 		    <version>2.1.214</version>
 		</dependency>
-				
-		<dependency>
-		    <groupId>org.qifu</groupId>
-		    <artifactId>core-lib</artifactId>
-		    <scope>system</scope>
-		    <version>0.0.1-SNAPSHOT</version>
-		    <systemPath>${workspaceDir}/core-lib/target/core-lib-0.0.1-SNAPSHOT.jar</systemPath>
-		</dependency>	
-				
+		-->
+						
 		<dependency>
 		    <groupId>org.qifu</groupId>
 		    <artifactId>core-base</artifactId>
@@ -352,31 +345,7 @@
 		    <version>0.0.1-SNAPSHOT</version>
 		    <systemPath>${workspaceDir}/core-base/target/core-base-0.0.1-SNAPSHOT.jar</systemPath>
 		</dependency>	
-
-		<dependency>
-		    <groupId>org.qifu</groupId>
-		    <artifactId>core-standard</artifactId>
-		    <scope>system</scope>
-		    <version>0.0.1-SNAPSHOT</version>
-		    <systemPath>${workspaceDir}/core-standard/target/core-standard-0.0.1-SNAPSHOT.jar</systemPath>
-		</dependency>	
 		
-		<dependency>
-		    <groupId>org.qifu</groupId>
-		    <artifactId>extends-redis</artifactId>
-		    <scope>system</scope>
-		    <version>0.0.1-SNAPSHOT</version>
-		    <systemPath>${workspaceDir}/extends-redis/target/extends-redis-0.0.1-SNAPSHOT.jar</systemPath>
-		</dependency>	
-
-		<dependency>
-		    <groupId>org.qifu</groupId>
-		    <artifactId>extends-ws</artifactId>
-		    <scope>system</scope>
-		    <version>0.0.1-SNAPSHOT</version>
-		    <systemPath>${workspaceDir}/extends-ws/target/extends-ws-0.0.1-SNAPSHOT.jar</systemPath>
-		</dependency>	
-		-->
 								        
   </dependencies>
   
