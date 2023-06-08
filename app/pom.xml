@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>org.qifu</groupId>
-  <artifactId>core-std</artifactId>
+  <artifactId>core-app</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>core-std</name>
+  <name>core-app</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -320,7 +320,7 @@
 		    <version>8.0.21</version>
 		</dependency>  
 		-->
-		
+		 
 		<dependency>
 		    <groupId>org.mariadb.jdbc</groupId>
 		    <artifactId>mariadb-java-client</artifactId>
@@ -335,14 +335,20 @@
 		    <version>2.1.214</version>
 		</dependency>
 		-->
-						
+				
 		<dependency>
 		    <groupId>org.qifu</groupId>
 		    <artifactId>core-base</artifactId>
 		    <version>0.0.1-SNAPSHOT</version>
 		</dependency>	
 		
-								        
+		<dependency>
+		    <groupId>org.qifu</groupId>
+		    <artifactId>core-std</artifactId>
+		    <version>0.0.1-SNAPSHOT</version>
+		</dependency>			
+		
+										        
   </dependencies>
   
   	<build>
