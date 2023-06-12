@@ -71,7 +71,7 @@ public class TokenBuilderUtils {
 		return (jwt != null && jwt.getClaims() != null) ? jwt.getClaims() : null;
 	}	
 	
-	public static String createToken(String programId, String userId, String subject, String clientId /*, TokenStoreBuilder store*/) {
+	public static String createToken(String userId, String subject, String clientId /*, TokenStoreBuilder store*/) {
 		Date iatDate = new Date();
 		
 	    // expire time
@@ -93,7 +93,6 @@ public class TokenBuilderUtils {
 	    		.withSubject(subject)
 	    		.withIssuedAt(iatDate)
 	    		.withExpiresAt(expiresDate)
-	    		.withClaim(Constants.TOKEN_PROG_ID_NAME, programId)
 	    		.withClaim(Constants.TOKEN_USER_PARAM_NAME, StringUtils.defaultString(userId))
 	    		.sign(Algorithm.HMAC256(Constants.TOKEN_SECRET));
 	    /*

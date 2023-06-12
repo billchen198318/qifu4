@@ -53,14 +53,12 @@ public class ClientApiController extends CoreApiSupport {
 	/**
 	 * SELECT * FROM tb_sys_code WHERE CODE = '9TYM7TRuILqFk9XoR0v6Yx672'
 	 * 
-	 * @param programId		PROG001
 	 * @param userId		tester
 	 * @param clientId		9TYM7TRuILqFk9XoR0v6Yx672
 	 * @return
 	 */
 	@ApiOperation(value="Client", notes="Info")
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "programId", value = "program no/id", required = true, dataType = "string"),
 		@ApiImplicitParam(name = "userId", value = "user no/id", required = true, dataType = "string"),
 		@ApiImplicitParam(name = "clientId", value = "client no/id", required = true, dataType = "string")
 	})
@@ -76,7 +74,7 @@ public class ClientApiController extends CoreApiSupport {
 		sysCode.setCode(clientId);
 		try {
 			sysCode = sysCodeService.selectByUniqueKey(sysCode).getValueEmptyThrowMessage();
-			String token = TokenBuilderUtils.createToken(programId, userId, StringUtils.defaultString(sysCode.getName()), clientId);
+			String token = TokenBuilderUtils.createToken(userId, StringUtils.defaultString(sysCode.getName()), clientId);
 			if (!StringUtils.isBlank(token)) {
 				result.setSuccess( YesNo.YES );
 				result.setValue(token);

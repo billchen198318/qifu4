@@ -66,11 +66,11 @@ public class Constants {
 	
 	public static final String SERVICE_ID_TYPE_DISTINGUISH_SYMBOL = ":"; // logic service 用來組 service id 與 ServiceMethodType 成字串, 查有沒有權限
 	
-	public static final String SESS_ACCOUNT="SESSION_QIFU3_ACCOUNT"; // 登入 account id 放到 session 變數名
-	public static final String SESS_LANG = "SESSION_QIFU3_LANG";
-	public static final String SESS_SYSCURRENT_ID = "SESSION_QIFU3_SYSCURRENT_ID";
+	public static final String SESS_ACCOUNT="SESSION_QIFU4_ACCOUNT"; // 登入 account id 放到 session 變數名
+	public static final String SESS_LANG = "SESSION_QIFU4_LANG";
+	public static final String SESS_SYSCURRENT_ID = "SESSION_QIFU4_SYSCURRENT_ID";
 	
-	public static final String APP_SITE_CURRENTID_COOKIE_NAME = "QIFU3_SYSCURRENT_ID"; // 跨站 cookie 要用的名稱
+	public static final String APP_SITE_CURRENTID_COOKIE_NAME = "QIFU4_SYSCURRENT_ID"; // 跨站 cookie 要用的名稱
 	
 	public static final String QIFU_PAGE_IN_TAB_IFRAME = "qifuIframePage";
 	public static final String QIFU_PAGE_PROG_PARAM = "qifuProgId";
@@ -95,7 +95,7 @@ public class Constants {
 	
 	public static final String DEFAULT_SPLIT_DELIMITER = ";|,";
 	
-	public static final String TMP_SUB_DIR_NAME = "qifu3";
+	public static final String TMP_SUB_DIR_NAME = "QIFU4";
 	
 	public static final String HTML_BR = "<br>";
 	
@@ -123,8 +123,8 @@ public class Constants {
 	public static final int TOKEN_EXPIRED_INTERVAL = 30; // 30 minute
 	public static final String TOKEN_PROG_ID_NAME = "PROG_ID";
 	public static final String TOKEN_USER_PARAM_NAME = "USER_ID";
-	public static final String TOKEN_ISSUER = "QiFu3Application";
-	public static final String TOKEN_SECRET = "QiFu3@" + UUID.randomUUID().toString();
+	public static final String TOKEN_ISSUER = "QIFU4Application";
+	public static final String TOKEN_SECRET = "QIFU4@" + UUID.randomUUID().toString();
 	public static final String TOKEN_CHECK_URL_PATH = "/api/";
 	public static final String TOKEN_Authorization = "Authorization";
 	public static final String TOKEN_PREFIX = "Bearer";
