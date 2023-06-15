@@ -24,34 +24,36 @@ package org.qifu.core.config;
 import javax.sql.DataSource;
 
 import org.qifu.base.CoreAppConstants;
-import org.qifu.base.model.YesNo;
 import org.qifu.base.properties.BaseInfoConfigProperties;
 import org.qifu.base.service.impl.BaseUserDetailsService;
 import org.qifu.core.support.BaseAuthenticationSuccessHandler;
-import org.qifu.core.support.BaseLoginUrlAuthenticationEntryPoint;
+import org.qifu.core.support.JwtAuthEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
-@EnableWebMvc
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
+	
     @Autowired
     BaseUserDetailsService baseUserDetailsService;
     
     @Autowired
     BaseAuthenticationSuccessHandler baseAuthenticationSuccessHandler;
+    
+    @Autowired
+    JwtAuthEntryPoint unauthorizedHandler;    
     
     @Autowired
     DataSource dataSource;
@@ -64,89 +66,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
     
+    @Bean
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-    	//http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }    
+    
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        
+        authProvider.setUserDetailsService(this.baseUserDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        
+        return authProvider;
+    }    
+    
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {    	
     	http.headers().frameOptions().sameOrigin();
     	http.cors().and().csrf().disable()
-                .formLogin()
-                .loginPage( CoreAppConstants.SYS_PAGE_LOGIN )
-                .loginProcessingUrl("/login")             
-                .permitAll()
-                //.defaultSuccessUrl("/index", true)
-                .successHandler(baseAuthenticationSuccessHandler)
-                .and()
-                .authorizeRequests()
-                .antMatchers( CoreAppConstants.getWebConfiginterceptorExcludePathPatterns() )                
-                .permitAll()
-                .anyRequest()
-                .authenticated();
-    	
-        // ------------------------------------------------------------
-        // for rember-me use , 2023-01-07 add
-        if (YesNo.YES.equals(this.baseInfoConfigProperties.getEnableAlwaysRememberMe())) {
-        	http
-            .rememberMe() 
-            .key(this.getRememberMeKeyName()) 
-            .alwaysRemember(true)
-            .tokenRepository(persistentTokenRepository()) 
-            .tokenValiditySeconds( getTokenValiditySeconds() ) 
-            //.rememberMeCookieName( Constants.APP_SITE_CURRENTID_COOKIE_NAME )
-            .userDetailsService(baseUserDetailsService)
-            .authenticationSuccessHandler(baseAuthenticationSuccessHandler);
-        }
-        // ------------------------------------------------------------
-            	
-    	http.exceptionHandling().authenticationEntryPoint(new BaseLoginUrlAuthenticationEntryPoint( CoreAppConstants.SYS_PAGE_LOGIN ));
-    	//http.sessionManagement().invalidSessionUrl( CoreAppConstants.SYS_PAGE_TAB_LOGIN_AGAIN );
+    		.exceptionHandling().authenticationEntryPoint(this.unauthorizedHandler).and()
+    		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+            .antMatchers( CoreAppConstants.getWebConfiginterceptorExcludePathPatterns() ).permitAll()
+            .anyRequest().authenticated();
+    	http.authenticationProvider(authenticationProvider());
     }
-    
-    // for rember-me use , 2023-01-07 add
-    @Bean
-    PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
-        PersistentTokenBasedRememberMeServices p =
-                new PersistentTokenBasedRememberMeServices(
-                        this.getRememberMeKeyName(),
-                        baseUserDetailsService,
-                        persistentTokenRepository()
-                );
-        //p.setCookieName( Constants.APP_SITE_CURRENTID_COOKIE_NAME );
-        p.setTokenValiditySeconds( getTokenValiditySeconds() );
-        return p;
-    }    
-    
-    // for rember-me use , 2023-01-07 add
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository() {
-        JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
-        persistentTokenRepository.setDataSource(dataSource);
-        return persistentTokenRepository;
-    }    
-    
-    // for rember-me use , 2023-01-07 add
-    private int getTokenValiditySeconds() {
-    	return 86400 * 7;
-    }
-    
-    private String getRememberMeKeyName() {
-    	return "uniqueAndSecret";
-    }
-    
-    /*
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-//        configuration.setAllowedOrigins(Arrays.asList("*"));
-//        configuration.setAllowedMethods(Arrays.asList("*"));
-//        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-    */
     
 }

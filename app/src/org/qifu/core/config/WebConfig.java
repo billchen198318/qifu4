@@ -21,8 +21,6 @@
  */
 package org.qifu.core.config;
 
-import javax.annotation.PostConstruct;
-
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.interceptor.MDCInterceptor;
 //import org.qifu.core.directive.CoreUiDirectiveSimpleHash;
@@ -34,7 +32,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -42,7 +39,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 //import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 @Configuration
-@EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 	
 	/*
@@ -100,7 +96,7 @@ public class WebConfig implements WebMvcConfigurer {
         
         registry.addInterceptor(UserBuilderInterceptor())
         	.addPathPatterns("/api/*", "/api/**")
-        	.excludePathPatterns( new String[]{ "/api/client" } );
+        	.excludePathPatterns( new String[]{ "/api/client", "/api/auth" } );
     }
     
     @Override

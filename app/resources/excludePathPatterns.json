@@ -4,7 +4,6 @@
 		"/services**",
 		"/services/**",		
 		"/api**",
-		"/api/**",
-		"/user/gradeList"
+		"/api/**"
 	]
 }
