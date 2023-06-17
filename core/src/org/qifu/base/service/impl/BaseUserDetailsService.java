@@ -84,6 +84,7 @@ public class BaseUserDetailsService implements UserDetailsService {
     }
     
     private UserDetails loadFromLDAP(String username) throws UsernameNotFoundException {
+    	// FIXME : change can work get password value of /auth/signin
     	String password = request.getParameter("password");
     	if (StringUtils.isBlank(password)) {
     		throw new UsernameNotFoundException( "password " + BaseSystemMessage.parameterBlank() );
