@@ -96,16 +96,16 @@ public class WebConfig implements WebMvcConfigurer {
         
         registry.addInterceptor(UserBuilderInterceptor())
         	.addPathPatterns("/api/*", "/api/**")
-        	.excludePathPatterns( new String[]{ "/api/client", "/api/auth" } );
+        	.excludePathPatterns( new String[]{ "/api/client", "/api/auth", "/api/auth/signin" } );
     }
     
     @Override
     public void addCorsMappings(CorsRegistry registry) {
     	registry.addMapping("/**")
-    		//.allowedOrigins("*")
+    		.allowedOrigins("*")
     		.allowedOriginPatterns("*")
-    		.allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
-    		.allowCredentials(true)
+    		.allowedMethods("*")
+    		.allowCredentials(false) // header set Access-Control-Allow-Origin : '*' , need set allowCredentials to false
     		.maxAge(3600)
     		.allowedHeaders("*");
     }
