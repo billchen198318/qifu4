@@ -1,24 +1,19 @@
 package org.qifu.core.api;
 
-import javax.sql.DataSource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.qifu.base.properties.BaseInfoConfigProperties;
-import org.qifu.base.service.impl.BaseUserDetailsService;
+import org.qifu.base.Constants;
 import org.qifu.base.util.TokenBuilderUtils;
 import org.qifu.core.model.User;
-import org.qifu.core.support.BaseAuthenticationSuccessHandler;
 import org.qifu.core.vo.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,13 +29,11 @@ public class AuthController {
 	AuthenticationManager authenticationManager;
 	
 	//@Autowired
-	//JwtUtils jwtUtils;	
-	
-    //@Autowired
-    //BaseUserDetailsService baseUserDetailsService;	
+	//JwtUtils jwtUtils;		
 	
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+		request.setAttribute(Constants.HTTP_REQUEST_PASSWORD_AuthLogin, loginRequest.getPassword());
 	    Authentication authentication = authenticationManager.authenticate(
 	    		new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 	    SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -129,4 +129,6 @@ public class Constants {
 	public static final String TOKEN_Authorization = "Authorization";
 	public static final String TOKEN_PREFIX = "Bearer";
 	
+	public static final String HTTP_REQUEST_PASSWORD_AuthLogin = "_userLoginPassword";
+	
 }

@@ -21,8 +21,6 @@
  */
 package org.qifu.base.service.impl;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -49,10 +47,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @Service
@@ -90,21 +84,8 @@ public class BaseUserDetailsService implements UserDetailsService {
     }
     
     private UserDetails loadFromLDAP(String username) throws UsernameNotFoundException {
-    	ObjectMapper mapper = new ObjectMapper();
-    	User param = null;
-		try {
-			param = mapper.readValue(request.getInputStream(), User.class);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if (param == null) {
-			throw new UsernameNotFoundException( "login username / password " + BaseSystemMessage.parameterBlank() );
-		}
-    	if (StringUtils.isBlank(param.getPassword())) {
+    	String userPassword = (String) this.request.getAttribute(Constants.HTTP_REQUEST_PASSWORD_AuthLogin);
+    	if (StringUtils.isBlank(userPassword)) {
     		throw new UsernameNotFoundException( "password " + BaseSystemMessage.parameterBlank() );
     	}
     	Boolean auth = false;
@@ -112,15 +93,15 @@ public class BaseUserDetailsService implements UserDetailsService {
 		filter.and(new EqualsFilter(ldapLoginConfigProperties.getSearchFilter(), username));
 		String ouArr[] = StringUtils.defaultString(ldapLoginConfigProperties.getAuthSearchBase()).split(Constants.DEFAULT_SPLIT_DELIMITER);
 		if (null == ouArr || ouArr.length < 1) {
-			auth = ldapTemplate.authenticate("", filter.encode(), param.getPassword());
+			auth = ldapTemplate.authenticate("", filter.encode(), userPassword);
 		}
 		for (int i = 0; !auth && ouArr != null && i < ouArr.length; i++) {
-			auth = ldapTemplate.authenticate(StringUtils.deleteWhitespace(ouArr[i]), filter.encode(), param.getPassword());
+			auth = ldapTemplate.authenticate(StringUtils.deleteWhitespace(ouArr[i]), filter.encode(), userPassword);
 		}
 		if (!auth) {
 			throw new UsernameNotFoundException("LDAP auth fail!");
 		}
-		User user = new User(ZeroKeyProvide.OID_KEY, username, passwordEncoder.encode(param.getPassword()), YesNo.YES);
+		User user = new User(ZeroKeyProvide.OID_KEY, username, passwordEncoder.encode(userPassword), YesNo.YES);
 		user.setByLdap(YesNo.YES);
     	return user;
     }
