@@ -1,8 +1,8 @@
--- MySQL dump 10.19  Distrib 10.3.30-MariaDB, for Win64 (AMD64)
+-- MariaDB dump 10.19  Distrib 10.6.5-MariaDB, for Win64 (AMD64)
 --
--- Host: localhost    Database: qifu3
+-- Host: localhost    Database: qifu4
 -- ------------------------------------------------------
--- Server version	10.3.30-MariaDB
+-- Server version	10.6.5-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -33,7 +33,7 @@ CREATE TABLE `tb_account` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ACCOUNT`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +63,7 @@ CREATE TABLE `tb_role` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ROLE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `tb_role_permission` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ROLE`,`PERMISSION`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +128,7 @@ CREATE TABLE `tb_sys` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`SYS_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +161,7 @@ CREATE TABLE `tb_sys_bean_help` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`BEAN_ID`,`METHOD`,`SYSTEM`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +193,7 @@ CREATE TABLE `tb_sys_bean_help_expr` (
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`EXPR_ID`,`HELP_OID`,`RUN_TYPE`),
   KEY `IDX_1` (`HELP_OID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -226,7 +226,7 @@ CREATE TABLE `tb_sys_bean_help_expr_map` (
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`VAR_NAME`,`HELP_EXPR_OID`),
   KEY `IDX_1` (`HELP_EXPR_OID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,7 +261,7 @@ CREATE TABLE `tb_sys_code` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -294,7 +294,7 @@ CREATE TABLE `tb_sys_event_log` (
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`USER`),
   KEY `IDX_2` (`CDATE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -335,7 +335,7 @@ CREATE TABLE `tb_sys_expr_job` (
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ID`),
   KEY `IDX_1` (`SYSTEM`,`ACTIVE`,`EXPR_ID`,`NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -368,7 +368,7 @@ CREATE TABLE `tb_sys_expr_job_log` (
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`ID`,`LOG_STATUS`,`BEGIN_DATETIME`),
   KEY `IDX_2` (`CDATE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -400,7 +400,7 @@ CREATE TABLE `tb_sys_expression` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`EXPR_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -429,7 +429,7 @@ CREATE TABLE `tb_sys_icon` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ICON_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -462,7 +462,7 @@ CREATE TABLE `tb_sys_jreport` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`REPORT_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -492,7 +492,7 @@ CREATE TABLE `tb_sys_jreport_param` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`REPORT_ID`,`RPT_PARAM`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -521,7 +521,7 @@ CREATE TABLE `tb_sys_login_log` (
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`USER`),
   KEY `IDX_2` (`CDATE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -560,7 +560,7 @@ CREATE TABLE `tb_sys_mail_helper` (
   UNIQUE KEY `UK_1` (`MAIL_ID`),
   KEY `IDX_1` (`MAIL_ID`),
   KEY `IDX_2` (`SUCCESS_FLAG`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -590,7 +590,7 @@ CREATE TABLE `tb_sys_menu` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`PROG_ID`,`PARENT_OID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -620,7 +620,7 @@ CREATE TABLE `tb_sys_menu_role` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`PROG_ID`,`ROLE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -659,7 +659,7 @@ CREATE TABLE `tb_sys_prog` (
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`PROG_ID`),
   KEY `IDX_1` (`PROG_SYSTEM`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -694,7 +694,7 @@ CREATE TABLE `tb_sys_qfield_log` (
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`SYSTEM`,`PROG_ID`),
   KEY `IDX_2` (`QUERY_USER_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -725,7 +725,7 @@ CREATE TABLE `tb_sys_template` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`TEMPLATE_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -756,7 +756,7 @@ CREATE TABLE `tb_sys_template_param` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`TEMPLATE_ID`,`TEMPLATE_VAR`,`IS_TITLE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -766,6 +766,33 @@ CREATE TABLE `tb_sys_template_param` (
 LOCK TABLES `tb_sys_template_param` WRITE;
 /*!40000 ALTER TABLE `tb_sys_template_param` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tb_sys_template_param` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_sys_token`
+--
+
+DROP TABLE IF EXISTS `tb_sys_token`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tb_sys_token` (
+  `OID` char(36) NOT NULL,
+  `USER_ID` varchar(24) NOT NULL,
+  `TOKEN` varchar(2048) NOT NULL,
+  `EXPIRES_DATE` datetime NOT NULL,
+  `CDATE` datetime NOT NULL,
+  PRIMARY KEY (`OID`),
+  KEY `IDX_1` (`USER_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_sys_token`
+--
+
+LOCK TABLES `tb_sys_token` WRITE;
+/*!40000 ALTER TABLE `tb_sys_token` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tb_sys_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -790,7 +817,7 @@ CREATE TABLE `tb_sys_upload` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`SYSTEM`,`TYPE`,`SUB_DIR`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -821,7 +848,7 @@ CREATE TABLE `tb_sys_usess` (
   PRIMARY KEY (`OID`,`SESSION_ID`),
   UNIQUE KEY `UK_1` (`ACCOUNT`,`SESSION_ID`),
   KEY `IDX_1` (`CURRENT_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -851,7 +878,7 @@ CREATE TABLE `tb_user_role` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ROLE`,`ACCOUNT`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -863,19 +890,6 @@ LOCK TABLES `tb_user_role` WRITE;
 INSERT INTO `tb_user_role` VALUES ('1c62cf70-ca6b-4243-8aa9-49b555024c45','COMMON01','steven','','admin','2017-05-10 14:19:58',NULL,NULL),('9243c7de-43b1-46ef-ac4b-2620697f319e','admin','admin','Administrator','admin','2014-09-23 00:00:00',NULL,NULL),('bd7bf78c-d84b-4524-8273-273f883d30b5','COMMON01','tester','','admin','2017-05-10 11:01:50',NULL,NULL),('da0c0462-4bf7-417b-99da-fc2e378a5ccc','COMMON01','tiffany','','admin','2017-05-10 11:01:43',NULL,NULL);
 /*!40000 ALTER TABLE `tb_user_role` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-
-CREATE TABLE `persistent_logins`(
-    `username` char(64) NOT NULL,
-    `series` char(64) NOT NULL,
-    `token` char(64) NOT NULL,
-    `last_used` TIMESTAMP NOT NULL,
-    PRIMARY KEY (`series`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;     
-
-
-
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -886,4 +900,4 @@ CREATE TABLE `persistent_logins`(
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-30 17:40:39
+-- Dump completed on 2023-06-21 21:26:41
