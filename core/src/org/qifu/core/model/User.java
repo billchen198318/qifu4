@@ -80,7 +80,11 @@ public class User extends BaseUserInfo implements UserDetails {
     public String getPassword() {
         return this.password;
     }
-
+    
+    public void blankPassword() {
+    	this.password = "";
+    }
+    
     @Override
     public String getUsername() {
         return this.username;

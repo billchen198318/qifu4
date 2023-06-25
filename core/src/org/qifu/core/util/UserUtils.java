@@ -76,7 +76,7 @@ public class UserUtils {
 	public static BaseUserInfo setUserInfoForUserLocalUtils(String accountId, String roleIds) {
 		BaseUserInfo userInfo = new BaseUserInfo();
 		userInfo.setUserId(accountId);
-		userInfo.setRoleIds(roleIds);
+		//userInfo.setRoleIds(roleIds);
 		UserLocalUtils.setUserInfo(userInfo);
 		return userInfo;
 	}		
@@ -113,9 +113,12 @@ public class UserUtils {
 		if ( UserLocalUtils.getUserInfo() != null ) {
 			if ( UserLocalUtils.getUserInfo() instanceof BaseUserInfo ) {
 				BaseUserInfo userInfo = (BaseUserInfo) UserLocalUtils.getUserInfo();
-				String roles[] = StringUtils.defaultString( userInfo.getRoleIds() ).split(Constants.DEFAULT_SPLIT_DELIMITER);
+				
+				//String roles[] = StringUtils.defaultString( userInfo.getRoleIds() ).split(Constants.DEFAULT_SPLIT_DELIMITER);
 				List<TbUserRole> currentRoleList = new ArrayList<TbUserRole>();
 				String isAdmin = YesNo.NO;
+				
+				/*
 				for (int i = 0; roles != null && i < roles.length; i++) {
 					if (Constants.SUPER_ROLE_ADMIN.equals(roles[i]) || Constants.SUPER_ROLE_ALL.equals(roles[i])) {
 						isAdmin = YesNo.YES;
@@ -127,6 +130,7 @@ public class UserUtils {
 					ur.setDescription("");
 					currentRoleList.add(ur);
 				}
+				*/
 				return new User(ZeroKeyProvide.OID_KEY, userInfo.getUserId(), "", isAdmin, currentRoleList);				
 			}
 		}

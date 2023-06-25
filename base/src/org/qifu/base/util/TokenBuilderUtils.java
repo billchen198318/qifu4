@@ -28,6 +28,10 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
+import org.qifu.base.model.TokenBuilderVariable;
+import org.qifu.base.support.TokenStore;
+import org.qifu.base.support.TokenStoreValidate;
+import org.qifu.util.SimpleUtils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -38,29 +42,26 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class TokenBuilderUtils {
 	
-	/*
-	public static void main(String args[]) {
-		String token = "";
-		Map<String, Claim> claims = null;
-		System.out.println( token = createToken("hello", "bill", "N", "", "00-11-22-33") );
-		System.out.println( claims = verifyToken(token) );
-		System.out.println( existsInfo(claims) );
-	}
-	*/
-	
 	public static boolean existsInfo(Map<String, Claim> claims) {
 		if (null == claims) {
 			return false;
 		}
-		return (claims.get(Constants.TOKEN_PROG_ID_NAME) != null && claims.get(Constants.TOKEN_USER_PARAM_NAME) != null);
+		return claims.get(Constants.TOKEN_USER_PARAM_NAME) != null;
 	}
 	
-	public static Map<String, Claim> verifyToken(String token /*, TokenValidateFlagCheck flagCheck */ ) {
+	public static boolean verifyRefresh(String refreshToken, TokenStoreValidate storeValidate ) {
+		return storeValidate.refreshValidate(refreshToken);
+	}
+	
+	public static Map<String, Claim> verifyToken(String token, TokenStoreValidate storeValidate ) {
 		if (StringUtils.isBlank(token)) {
 			return null;
 		}
 		DecodedJWT jwt = null;
 		try {
+			if (!storeValidate.accessValidate(token)) {
+				throw new Exception("access token no validate of store!");
+			}
 			JWTVerifier verifier = JWT.require(Algorithm.HMAC256(Constants.TOKEN_SECRET)).withIssuer(Constants.TOKEN_ISSUER).build();
 			jwt = verifier.verify(token);
 		} catch (SignatureVerificationException sve) {
@@ -71,12 +72,12 @@ public class TokenBuilderUtils {
 		return (jwt != null && jwt.getClaims() != null) ? jwt.getClaims() : null;
 	}	
 	
-	public static String createToken(String userId, String subject, String clientId /*, TokenStoreBuilder store*/) {
+	public static TokenBuilderVariable createAccessToken(String userId, String subject, String clientId, TokenStore store) {
 		Date iatDate = new Date();
 		
 	    // expire time
 	    Calendar setTime = Calendar.getInstance();
-	    setTime.add(Calendar.MINUTE, Constants.TOKEN_EXPIRED_INTERVAL);
+	    setTime.add(Calendar.MINUTE, Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
 	    Date expiresDate = setTime.getTime();
 	    
 	    // Header Message
@@ -84,8 +85,8 @@ public class TokenBuilderUtils {
 	    headerMap.put("alg", "HS256");
 	    headerMap.put("typ", "JWT");
 	    
-	    //String audience = "QiFu3-app";
-	    //String subject = "QiFu3";
+	    TokenBuilderVariable tbv = new TokenBuilderVariable();
+	    
 	    String token = JWT.create()
 	    		.withHeader(headerMap)
 	    		.withIssuer(Constants.TOKEN_ISSUER)
@@ -95,12 +96,12 @@ public class TokenBuilderUtils {
 	    		.withExpiresAt(expiresDate)
 	    		.withClaim(Constants.TOKEN_USER_PARAM_NAME, StringUtils.defaultString(userId))
 	    		.sign(Algorithm.HMAC256(Constants.TOKEN_SECRET));
-	    /*
+	    tbv.setAccess(token);
+	    tbv.setRefresh(SimpleUtils.getUUIDStr());
 	    if (null != store) {
-	    	store.save(programId, userId, token, isAdmin, subject, audience, iatDate, expiresDate);
+	    	store.save(tbv.getRefresh(), tbv.getAccess(), userId, expiresDate);
 	    }
-	    */
-	    return token;
+	    return tbv;
 	}
 	
 }

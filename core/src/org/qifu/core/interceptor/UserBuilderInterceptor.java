@@ -25,12 +25,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.support.TokenStoreValidateBuilder;
 import org.qifu.base.util.TokenBuilderUtils;
 import org.qifu.core.entity.TbSysCode;
 import org.qifu.core.service.ISysCodeService;
@@ -49,6 +51,9 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 	@Autowired
 	ISysCodeService<TbSysCode, String> sysCodeService;	
 	
+	@Autowired
+	private DataSource dataSource;	
+	
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		if (request.getRequestURL().indexOf(Constants.TOKEN_CHECK_URL_PATH) == -1) {
@@ -63,7 +68,10 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 			response.getWriter().close();
 			return false;
 		}
-		Map<String, Claim> claimToken = TokenBuilderUtils.verifyToken(authorization.replaceFirst(Constants.TOKEN_PREFIX, "").replaceAll(" ", ""));
+		
+		TokenStoreValidateBuilder tsv = TokenStoreValidateBuilder.build(this.dataSource);
+		
+		Map<String, Claim> claimToken = TokenBuilderUtils.verifyToken(authorization.replaceFirst(Constants.TOKEN_PREFIX, "").replaceAll(" ", ""), tsv);
 		if (TokenBuilderUtils.existsInfo(claimToken)) {
 			String clientId = StringUtils.defaultString( claimToken.get(PublicClaims.AUDIENCE).asString() );
 			String roleIds = "";
