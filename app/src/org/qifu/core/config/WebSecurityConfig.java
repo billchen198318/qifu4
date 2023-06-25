@@ -92,6 +92,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers( CoreAppConstants.getWebConfiginterceptorExcludePathPatterns() ).permitAll()
             .anyRequest().authenticated();
     	http.authenticationProvider(authenticationProvider());
+    	//http.formLogin().successHandler(this.baseAuthenticationSuccessHandler);
     }
     
 }

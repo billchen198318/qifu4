@@ -95,6 +95,7 @@ public class TokenBuilderUtils {
 	    		.withIssuedAt(iatDate)
 	    		.withExpiresAt(expiresDate)
 	    		.withClaim(Constants.TOKEN_USER_PARAM_NAME, StringUtils.defaultString(userId))
+	    		.withClaim("currentTimeMillis", String.valueOf(System.currentTimeMillis()))
 	    		.sign(Algorithm.HMAC256(Constants.TOKEN_SECRET));
 	    tbv.setAccess(token);
 	    tbv.setRefresh(SimpleUtils.getUUIDStr());

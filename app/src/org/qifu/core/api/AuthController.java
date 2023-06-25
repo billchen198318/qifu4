@@ -54,14 +54,16 @@ public class AuthController {
 	    sysCode.setCode(String.valueOf(System.currentTimeMillis()));
 	    try {
 			sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
-			clientToken = sysCode.getCode();
+			if (null != sysCode) {
+				clientToken = sysCode.getCode();
+			}
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	    
-	    TokenBuilderVariable tbv = TokenBuilderUtils.createAccessToken(user.getUserId(), "auth", clientToken, TokenStoreBuilder.build(this.dataSource));
+	    TokenBuilderVariable tbv = TokenBuilderUtils.createAccessToken(user.getUserId(), Constants.TOKEN_Authorization, clientToken, TokenStoreBuilder.build(this.dataSource));
 		user.setAccessToken(tbv.getAccess());
 		user.setRefreshToken(tbv.getRefresh());
 		user.blankPassword();
