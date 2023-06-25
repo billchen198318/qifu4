@@ -782,7 +782,8 @@ CREATE TABLE `tb_sys_token` (
   `EXPIRES_DATE` datetime NOT NULL,
   `CDATE` datetime NOT NULL,
   PRIMARY KEY (`OID`),
-  KEY `IDX_1` (`USER_ID`)
+  KEY `IDX_1` (`USER_ID`),
+  KEY `IDX_2` (`TOKEN`(1024))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -900,4 +901,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-21 21:26:41
+-- Dump completed on 2023-06-25 20:44:17
