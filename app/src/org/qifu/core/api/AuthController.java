@@ -41,7 +41,7 @@ public class AuthController {
 	ISysCodeService<TbSysCode, String> sysCodeService;
 	
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+	public ResponseEntity<User> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
 		request.setAttribute(Constants.HTTP_REQUEST_PASSWORD_AuthLogin, loginRequest.getPassword());
 	    Authentication authentication = authenticationManager.authenticate(
 	    		new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -52,22 +52,24 @@ public class AuthController {
 	    TbSysCode sysCode = new TbSysCode();
 	    sysCode.setType("TOKEN");
 	    sysCode.setCode(String.valueOf(System.currentTimeMillis()));
+	    TokenBuilderVariable tbv = null;
 	    try {
 			sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
 			if (null != sysCode) {
 				clientToken = sysCode.getCode();
+			    tbv = TokenBuilderUtils.createAccessToken(user.getUserId(), Constants.TOKEN_Authorization, clientToken, TokenStoreBuilder.build(this.dataSource));
+				user.setAccessToken(tbv.getAccess());
+				user.setRefreshToken(tbv.getRefresh());
+				user.blankPassword();				
 			}
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	    
-	    TokenBuilderVariable tbv = TokenBuilderUtils.createAccessToken(user.getUserId(), Constants.TOKEN_Authorization, clientToken, TokenStoreBuilder.build(this.dataSource));
-		user.setAccessToken(tbv.getAccess());
-		user.setRefreshToken(tbv.getRefresh());
-		user.blankPassword();
-		
+		}		
+	    if (null == tbv) {
+	    	tbv = new TokenBuilderVariable();
+	    }
 	    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, tbv.getAccess())
 	            .body(user);
 	}
