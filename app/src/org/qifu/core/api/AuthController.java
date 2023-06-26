@@ -69,6 +69,8 @@ public class AuthController {
 		}		
 	    if (null == tbv) {
 	    	tbv = new TokenBuilderVariable();
+	    	user.blankPassword();
+	    	user.setUserId("");
 	    }
 	    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, tbv.getAccess())
 	            .body(user);
