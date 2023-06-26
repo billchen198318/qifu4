@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.TokenBuilderVariable;
+import org.qifu.base.model.YesNo;
 import org.qifu.base.support.TokenStoreBuilder;
 import org.qifu.base.util.TokenBuilderUtils;
 import org.qifu.core.entity.TbSysCode;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,32 +43,45 @@ public class AuthController {
 	@Autowired
 	ISysCodeService<TbSysCode, String> sysCodeService;
 	
+	private void handlerUserRole(User u) throws ServiceException, Exception {
+		
+	}
+	
 	@PostMapping("/signin")
 	public ResponseEntity<User> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-		request.setAttribute(Constants.HTTP_REQUEST_PASSWORD_AuthLogin, loginRequest.getPassword());
-	    Authentication authentication = authenticationManager.authenticate(
-	    		new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-	    SecurityContextHolder.getContext().setAuthentication(authentication);
-	    User user = (User) authentication.getPrincipal();
-	    
-	    String clientToken = "";
-	    TbSysCode sysCode = new TbSysCode();
-	    sysCode.setCode("TOKEN");
-	    TokenBuilderVariable tbv = null;
+		TokenBuilderVariable tbv = null;
+		User user = null;
 	    try {
+			request.setAttribute(Constants.HTTP_REQUEST_PASSWORD_AuthLogin, loginRequest.getPassword());
+		    Authentication authentication = authenticationManager.authenticate(
+		    		new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		    SecurityContextHolder.getContext().setAuthentication(authentication);
+		    user = (User) authentication.getPrincipal();
+		    
+		    String clientToken = "";
+		    TbSysCode sysCode = new TbSysCode();
+		    sysCode.setCode("TOKEN");		    
+		    
 			sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
 			if (null != sysCode && "AUTH".equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {				
 				clientToken = sysCode.getParam1();
 			    tbv = TokenBuilderUtils.createToken(user.getUserId(), Constants.TOKEN_Authorization, clientToken, TokenStoreBuilder.build(this.dataSource));
 				user.setAccessToken(tbv.getAccess());
 				user.setRefreshToken(tbv.getRefresh());
-				user.blankPassword();				
+				user.blankPassword();
+				this.handlerUserRole(user);
 			}
+	    } catch (AuthenticationException e) {
+	    	e.printStackTrace();
+	    	throw e;
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
+	    if (null == user) {
+	    	user = new User("", "", "", YesNo.NO);
+	    }
 	    if (null == tbv) {
 	    	tbv = new TokenBuilderVariable();
 	    	user.blankPassword();
