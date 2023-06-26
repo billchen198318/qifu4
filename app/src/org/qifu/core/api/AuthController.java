@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.TokenBuilderVariable;
@@ -50,13 +51,12 @@ public class AuthController {
 	    
 	    String clientToken = "";
 	    TbSysCode sysCode = new TbSysCode();
-	    sysCode.setType("TOKEN");
-	    sysCode.setCode(String.valueOf(System.currentTimeMillis()));
+	    sysCode.setCode("TOKEN");
 	    TokenBuilderVariable tbv = null;
 	    try {
 			sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
-			if (null != sysCode) {
-				clientToken = sysCode.getCode();
+			if (null != sysCode && "AUTH".equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {				
+				clientToken = sysCode.getParam1();
 			    tbv = TokenBuilderUtils.createToken(user.getUserId(), Constants.TOKEN_Authorization, clientToken, TokenStoreBuilder.build(this.dataSource));
 				user.setAccessToken(tbv.getAccess());
 				user.setRefreshToken(tbv.getRefresh());
