@@ -1,6 +1,7 @@
 package org.qifu.core.api;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.validation.Valid;
 
@@ -14,6 +15,7 @@ import org.qifu.base.util.TokenBuilderUtils;
 import org.qifu.core.entity.TbSysCode;
 import org.qifu.core.model.User;
 import org.qifu.core.service.ISysCodeService;
+import org.qifu.core.support.BaseAuthenticationSuccessHandler;
 import org.qifu.core.vo.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -43,12 +45,11 @@ public class AuthController {
 	@Autowired
 	ISysCodeService<TbSysCode, String> sysCodeService;
 	
-	private void handlerUserRole(User u) throws ServiceException, Exception {
-		
-	}
+    @Autowired
+    BaseAuthenticationSuccessHandler baseAuthenticationSuccessHandler;		
 	
 	@PostMapping("/signin")
-	public ResponseEntity<User> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+	public ResponseEntity<User> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
 		TokenBuilderVariable tbv = null;
 		User user = null;
 	    try {
@@ -69,7 +70,7 @@ public class AuthController {
 				user.setAccessToken(tbv.getAccess());
 				user.setRefreshToken(tbv.getRefresh());
 				user.blankPassword();
-				this.handlerUserRole(user);
+				this.baseAuthenticationSuccessHandler.onAuthenticationSuccess(request, response, authentication);
 			}
 	    } catch (AuthenticationException e) {
 	    	e.printStackTrace();

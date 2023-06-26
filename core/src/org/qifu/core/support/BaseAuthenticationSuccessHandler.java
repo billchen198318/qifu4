@@ -88,7 +88,7 @@ public class BaseAuthenticationSuccessHandler implements AuthenticationSuccessHa
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		response.sendRedirect("/index");
+		//response.sendRedirect("/index"); // rem, use of AuthController
 	}
 	
     private List<TbUserRole> findUserRoleList(String username) {
