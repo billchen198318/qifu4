@@ -72,13 +72,16 @@ public class TokenBuilderUtils {
 		return (jwt != null && jwt.getClaims() != null) ? jwt.getClaims() : null;
 	}	
 	
-	public static TokenBuilderVariable createAccessToken(String userId, String subject, String clientId, TokenStore store) {
+	public static TokenBuilderVariable createToken(String userId, String subject, String clientId, TokenStore store) {
 		Date iatDate = new Date();
 		
 	    // expire time
-	    Calendar setTime = Calendar.getInstance();
-	    setTime.add(Calendar.MINUTE, Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
-	    Date expiresDate = setTime.getTime();
+	    Calendar setTime1 = Calendar.getInstance();
+	    Calendar setTime2 = Calendar.getInstance();
+	    setTime1.add(Calendar.MINUTE, Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
+	    setTime2.add(Calendar.MINUTE, Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
+	    Date expiresDate1 = setTime1.getTime();
+	    Date expiresDate2 = setTime2.getTime();	    
 	    
 	    // Header Message
 	    Map<String, Object> headerMap = new HashMap<String, Object>();
@@ -93,14 +96,14 @@ public class TokenBuilderUtils {
 	    		.withAudience(clientId)
 	    		.withSubject(subject)
 	    		.withIssuedAt(iatDate)
-	    		.withExpiresAt(expiresDate)
+	    		.withExpiresAt(expiresDate1)
 	    		.withClaim(Constants.TOKEN_USER_PARAM_NAME, StringUtils.defaultString(userId))
 	    		.withClaim("currentTimeMillis", String.valueOf(System.currentTimeMillis()))
 	    		.sign(Algorithm.HMAC256(Constants.TOKEN_SECRET));
 	    tbv.setAccess(token);
 	    tbv.setRefresh(SimpleUtils.getUUIDStr());
 	    if (null != store) {
-	    	store.save(tbv.getRefresh(), tbv.getAccess(), userId, expiresDate);
+	    	store.save(tbv.getRefresh(), tbv.getAccess(), userId, expiresDate1, expiresDate2);
 	    }
 	    return tbv;
 	}

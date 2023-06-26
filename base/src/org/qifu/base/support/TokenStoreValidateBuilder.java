@@ -12,7 +12,7 @@ public class TokenStoreValidateBuilder implements TokenStoreValidate {
 	
 	private DataSource dataSource;
 	
-	private static String _refreshValidateSql = "select count(*) from " + TokenStoreConfig.getTableName() + " where OID = :refreshTokenOrOID and EXPIRES_DATE > :currDate ";
+	private static String _refreshValidateSql = "select count(*) from " + TokenStoreConfig.getTableName() + " where OID = :refreshTokenOrOID and RF_EXPIRES_DATE > :currDate ";
 	
 	private static String _accessValidateSql = "select count(*) from " + TokenStoreConfig.getTableName() + " where TOKEN = :accessToken and EXPIRES_DATE > :currDate ";
 	

@@ -57,7 +57,7 @@ public class AuthController {
 			sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
 			if (null != sysCode) {
 				clientToken = sysCode.getCode();
-			    tbv = TokenBuilderUtils.createAccessToken(user.getUserId(), Constants.TOKEN_Authorization, clientToken, TokenStoreBuilder.build(this.dataSource));
+			    tbv = TokenBuilderUtils.createToken(user.getUserId(), Constants.TOKEN_Authorization, clientToken, TokenStoreBuilder.build(this.dataSource));
 				user.setAccessToken(tbv.getAccess());
 				user.setRefreshToken(tbv.getRefresh());
 				user.blankPassword();				
