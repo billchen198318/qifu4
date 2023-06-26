@@ -15,7 +15,7 @@ import org.qifu.base.util.TokenBuilderUtils;
 import org.qifu.core.entity.TbSysCode;
 import org.qifu.core.model.User;
 import org.qifu.core.service.ISysCodeService;
-import org.qifu.core.support.BaseAuthenticationSuccessHandler;
+import org.qifu.core.support.JwtAuthLoginedUserRoleService;
 import org.qifu.core.vo.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -45,8 +45,8 @@ public class AuthController {
 	@Autowired
 	ISysCodeService<TbSysCode, String> sysCodeService;
 	
-    @Autowired
-    BaseAuthenticationSuccessHandler baseAuthenticationSuccessHandler;		
+	@Autowired
+	JwtAuthLoginedUserRoleService jwtAuthLoginedUserRoleService;
 	
 	@PostMapping("/signin")
 	public ResponseEntity<User> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
@@ -70,7 +70,7 @@ public class AuthController {
 				user.setAccessToken(tbv.getAccess());
 				user.setRefreshToken(tbv.getRefresh());
 				user.blankPassword();
-				this.baseAuthenticationSuccessHandler.onAuthenticationSuccess(request, response, authentication);
+				this.jwtAuthLoginedUserRoleService.onAuthenticationSuccess(authentication);
 			}
 	    } catch (AuthenticationException e) {
 	    	e.printStackTrace();

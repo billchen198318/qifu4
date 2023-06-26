@@ -26,7 +26,6 @@ import javax.sql.DataSource;
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.properties.BaseInfoConfigProperties;
 import org.qifu.base.service.impl.BaseUserDetailsService;
-import org.qifu.core.support.BaseAuthenticationSuccessHandler;
 import org.qifu.core.support.JwtAuthEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -48,9 +47,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
     @Autowired
     BaseUserDetailsService baseUserDetailsService;
-    
-    @Autowired
-    BaseAuthenticationSuccessHandler baseAuthenticationSuccessHandler;
     
     @Autowired
     JwtAuthEntryPoint unauthorizedHandler;    
@@ -92,7 +88,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers( CoreAppConstants.getWebConfiginterceptorExcludePathPatterns() ).permitAll()
             .anyRequest().authenticated();
     	http.authenticationProvider(authenticationProvider());
-    	//http.formLogin().successHandler(this.baseAuthenticationSuccessHandler);
     }
     
 }
