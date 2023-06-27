@@ -1,0 +1,10 @@
+pnpm i
+
+#pnpm update
+#pnpm i sveltestrap
+#pnpm i jquery
+#pnpm i bootstrap
+#pnpm i bootstrap-icons
+#npm run build
+
+npm run dev

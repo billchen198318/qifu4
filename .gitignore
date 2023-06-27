@@ -1,5 +1,8 @@
 /.metadata/
 /.idea/
+/frontend/dist/assets/
+/frontend/node_modules/
+
 
 # Compiled class file
 *.class
