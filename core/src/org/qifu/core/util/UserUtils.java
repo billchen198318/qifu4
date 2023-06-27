@@ -23,36 +23,30 @@ package org.qifu.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 import org.qifu.base.model.BaseUserInfo;
+import org.qifu.base.model.UserRoleAndPermission;
 import org.qifu.base.model.YesNo;
 import org.qifu.base.model.ZeroKeyProvide;
 import org.qifu.base.util.UserLocalUtils;
-import org.qifu.core.entity.TbRolePermission;
-import org.qifu.core.entity.TbUserRole;
 import org.qifu.core.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserUtils {
 	
-	private static List<TbUserRole> backgroundRoleList = new ArrayList<TbUserRole>(); 
+	private static List<UserRoleAndPermission> backgroundRoleList = new ArrayList<UserRoleAndPermission>(); 
 	
 	private static User backgroundUser = null;
 	
 	static {
-		TbUserRole backgroundUserRole1 = new TbUserRole();
-		backgroundUserRole1.setOid(ZeroKeyProvide.OID_KEY);
-		backgroundUserRole1.setAccount(Constants.SYSTEM_BACKGROUND_USER);
+		UserRoleAndPermission backgroundUserRole1 = new UserRoleAndPermission();
 		backgroundUserRole1.setRole(Constants.SUPER_ROLE_ADMIN);
-		backgroundUserRole1.setDescription("");
-		TbUserRole backgroundUserRole2 = new TbUserRole();
-		backgroundUserRole2.setOid("1");
-		backgroundUserRole2.setAccount(Constants.SYSTEM_BACKGROUND_USER);
+		UserRoleAndPermission backgroundUserRole2 = new UserRoleAndPermission();
 		backgroundUserRole2.setRole(Constants.SUPER_ROLE_ALL);
-		backgroundUserRole2.setDescription("");		
 		backgroundRoleList.add(backgroundUserRole1);
 		backgroundRoleList.add(backgroundUserRole2);
 		backgroundUser = new User(ZeroKeyProvide.OID_KEY, Constants.SYSTEM_BACKGROUND_USER, "", YesNo.YES, backgroundRoleList);
@@ -115,7 +109,7 @@ public class UserUtils {
 				BaseUserInfo userInfo = (BaseUserInfo) UserLocalUtils.getUserInfo();
 				
 				//String roles[] = StringUtils.defaultString( userInfo.getRoleIds() ).split(Constants.DEFAULT_SPLIT_DELIMITER);
-				List<TbUserRole> currentRoleList = new ArrayList<TbUserRole>();
+				List<UserRoleAndPermission> currentRoleList = new ArrayList<UserRoleAndPermission>();
 				String isAdmin = YesNo.NO;
 				
 				/*
@@ -181,11 +175,12 @@ public class UserUtils {
 		boolean isPrem = false;
 		if (user != null && user.getRoles() != null) {
 			for (int i = 0; i < user.getRoles().size() && !isPrem; i++) {
-				TbUserRole userRole = user.getRoles().get(i);
-				for (int j = 0; userRole.getRolePermission() != null && j < userRole.getRolePermission().size(); j++) {
-					TbRolePermission rolePerm = userRole.getRolePermission().get(j);
-					if (perm.equals(rolePerm.getPermission())) {
-						isPrem = true;
+				UserRoleAndPermission userRole = user.getRoles().get(i);
+				if (userRole.getRolePermission() != null) {
+					for (String rp : userRole.getRolePermission()) {
+						if (perm.equals(rp)) {
+							isPrem = true;
+						}
 					}
 				}
 			}

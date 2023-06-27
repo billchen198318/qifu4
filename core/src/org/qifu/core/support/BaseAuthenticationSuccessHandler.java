@@ -37,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.ScriptTypeCode;
+import org.qifu.base.model.UserRoleAndPermission;
 import org.qifu.base.model.YesNo;
 import org.qifu.core.entity.TbRolePermission;
 import org.qifu.core.entity.TbSysLoginLog;
@@ -78,9 +79,21 @@ public class BaseAuthenticationSuccessHandler implements AuthenticationSuccessHa
 					this.processLdapAccountData(u);
 				}
 				List<TbUserRole> userRoleList = this.findUserRoleList(user.getUsername());
-				if (userRoleList != null && userRoleList.size() > 0) {
-					u.setRoles(userRoleList);
+				List<UserRoleAndPermission> urapList = new ArrayList<UserRoleAndPermission>();
+				for (int i = 0; userRoleList != null && i < userRoleList.size(); i++) {
+					TbUserRole ur = userRoleList.get(i);
+					UserRoleAndPermission urap = new UserRoleAndPermission();
+					urap.setRole(ur.getRole());
+					List<TbRolePermission> rPermList = ur.getRolePermission();
+					if (urap.getRolePermission() == null) {
+						urap.setRolePermission(new ArrayList<String>());
+					}
+					for (int j = 0; rPermList != null && j < rPermList.size(); j++) {
+						urap.getRolePermission().add(rPermList.get(j).getPermission());
+					}
+					urapList.add(urap);
 				}
+				u.setRoles(urapList);
 			}
 			TbSysLoginLog loginLog = new TbSysLoginLog();
 			loginLog.setUser(user.getUsername());

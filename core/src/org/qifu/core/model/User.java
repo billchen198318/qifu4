@@ -24,8 +24,8 @@ package org.qifu.core.model;
 import org.apache.commons.collections.CollectionUtils;
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.model.BaseUserInfo;
+import org.qifu.base.model.UserRoleAndPermission;
 import org.qifu.base.model.YesNo;
-import org.qifu.core.entity.TbUserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,11 +39,11 @@ public class User extends BaseUserInfo implements UserDetails {
 	private String oid;
     private String username;
     private String password;
-    private List<TbUserRole> roles;
+    private List<UserRoleAndPermission> roles;
     private String onJob;
     private String byLdap = YesNo.NO;
 
-    public User(String oid, String username, String password, String onJob, List<TbUserRole> roles) {
+    public User(String oid, String username, String password, String onJob, List<UserRoleAndPermission> roles) {
     	this.oid = oid;
         this.username = username;
         this.password = password;
@@ -67,11 +67,13 @@ public class User extends BaseUserInfo implements UserDetails {
         	auths.add( new SimpleGrantedAuthority("ROLE_" + CoreAppConstants.SYS_BLANK_ROLE) );
         	return auths;
         }
-        for (TbUserRole userRole : this.roles) {
-            auths.add( new SimpleGrantedAuthority("ROLE_" + userRole.getRole()) );
-            for (int p = 0; userRole.getRolePermission() != null && p < userRole.getRolePermission().size(); p++) {
-            	auths.add( new SimpleGrantedAuthority(userRole.getRolePermission().get(p).getPermission()) );
-            }
+        for (UserRoleAndPermission userRoleAndPerm : this.roles) {
+            auths.add( new SimpleGrantedAuthority("ROLE_" + userRoleAndPerm.getRole()) );
+            if (userRoleAndPerm.getRolePermission() != null) {
+            	for (String perm : userRoleAndPerm.getRolePermission()) {
+            		auths.add( new SimpleGrantedAuthority(perm) );
+            	}
+            }            
         }
         return auths;
     }
@@ -118,11 +120,11 @@ public class User extends BaseUserInfo implements UserDetails {
 		this.oid = oid;
 	}	
 	
-	public List<TbUserRole> getRoles() {
+	public List<UserRoleAndPermission> getRoles() {
 		return roles;
 	}
 	
-	public void setRoles(List<TbUserRole> roles) {
+	public void setRoles(List<UserRoleAndPermission> roles) {
 		this.roles = roles;
 	}	
 	
