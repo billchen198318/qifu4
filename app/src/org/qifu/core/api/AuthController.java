@@ -75,6 +75,7 @@ public class AuthController {
 	    	throw e;
 		} catch (ServiceException e) {
 			e.printStackTrace();
+			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
