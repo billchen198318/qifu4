@@ -23,7 +23,6 @@ package org.qifu.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
@@ -52,7 +51,7 @@ public class UserUtils {
 		backgroundUser = new User(ZeroKeyProvide.OID_KEY, Constants.SYSTEM_BACKGROUND_USER, "", YesNo.YES, backgroundRoleList);
 	}
 	
-	public static BaseUserInfo setUserInfoForUserLocalUtils() {
+	public static User setUserInfoForUserLocalUtils() {
 		User user = getCurrentUser();
 		if (user == null) {
 			return null;
@@ -60,22 +59,22 @@ public class UserUtils {
 		return setUserInfoForUserLocalUtils(user.getUsername());
 	}
 	
-	public static BaseUserInfo setUserInfoForUserLocalUtils(String accountId) {
-		BaseUserInfo userInfo = new BaseUserInfo();
+	public static User setUserInfoForUserLocalUtils(String accountId) {
+		User userInfo = new User(ZeroKeyProvide.OID_KEY , accountId , "" , YesNo.YES);
 		userInfo.setUserId(accountId);
 		UserLocalUtils.setUserInfo(userInfo);
 		return userInfo;
 	}	
 	
-	public static BaseUserInfo setUserInfoForUserLocalUtils(String accountId, String roleIds) {
-		BaseUserInfo userInfo = new BaseUserInfo();
+	public static User setUserInfoForUserLocalUtils(String accountId, String roleIds) {
+		User userInfo = new User(ZeroKeyProvide.OID_KEY , accountId , "" , YesNo.YES);
 		userInfo.setUserId(accountId);
 		//userInfo.setRoleIds(roleIds);
 		UserLocalUtils.setUserInfo(userInfo);
 		return userInfo;
 	}		
 	
-	public static BaseUserInfo setUserInfoForUserLocalUtilsBackgroundMode() {
+	public static User setUserInfoForUserLocalUtilsBackgroundMode() {
 		return setUserInfoForUserLocalUtils( Constants.SYSTEM_BACKGROUND_USER );
 	}		
 	
