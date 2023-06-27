@@ -57,8 +57,8 @@ public class HelloApiController extends CoreApiSupport {
 	
 	private static final long serialVersionUID = -2710621780849674671L;
 	
-	@Autowired
-	RedisTemplate<String, String> redisTemplate;
+//	@Autowired
+//	RedisTemplate<String, String> redisTemplate;
 	
 	@ApiOperation(value="測試del", notes="測試用的接口del", authorizations={ @Authorization(value="Bearer") })
 	@ApiImplicitParams({
@@ -71,9 +71,9 @@ public class HelloApiController extends CoreApiSupport {
 		if (StringUtils.isBlank(key)) {
 			return YesNo.NO;
 		}		
-		if (this.redisTemplate.delete(key)) {
-			flag = YesNo.YES;
-		}
+//		if (this.redisTemplate.delete(key)) {
+//			flag = YesNo.YES;
+//		}
 		return flag;
 	}
 	
@@ -87,19 +87,19 @@ public class HelloApiController extends CoreApiSupport {
 			return result;
 		}
 		try {
-			if (StringUtils.isBlank(data.getMsg())) {
-				this.successResult(result, this.redisTemplate.opsForValue().get(data.getKey()));
-				return result;
-			}
-			if ( StringUtils.defaultString(this.redisTemplate.opsForValue().get(data.getKey())).length() > 1000 ) {
-				this.successResult(result, this.redisTemplate.opsForValue().get(data.getKey()));
-				return result;
-			}
+//			if (StringUtils.isBlank(data.getMsg())) {
+//				this.successResult(result, this.redisTemplate.opsForValue().get(data.getKey()));
+//				return result;
+//			}
+//			if ( StringUtils.defaultString(this.redisTemplate.opsForValue().get(data.getKey())).length() > 1000 ) {
+//				this.successResult(result, this.redisTemplate.opsForValue().get(data.getKey()));
+//				return result;
+//			}
 			Map<String, String> dataMap = new HashMap<String, String>();
 			dataMap.put("str", data.getMsg());
 			ObjectMapper om = new ObjectMapper();
 			String val = om.writeValueAsString(dataMap);
-			this.redisTemplate.opsForValue().append(data.getKey(), val);
+//			this.redisTemplate.opsForValue().append(data.getKey(), val);
 			this.successResult(result, val);
 		} catch (Exception e) {
 			e.printStackTrace();

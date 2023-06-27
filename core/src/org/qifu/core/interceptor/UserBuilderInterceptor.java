@@ -74,7 +74,10 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 		Map<String, Claim> claimToken = TokenBuilderUtils.verifyToken(authorization.replaceFirst(Constants.TOKEN_PREFIX, "").replaceAll(" ", ""), tsv);
 		if (TokenBuilderUtils.existsInfo(claimToken)) {
 			String clientId = StringUtils.defaultString( claimToken.get(PublicClaims.AUDIENCE).asString() );
+			String userId = StringUtils.defaultString( claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString() );
 			String roleIds = "";
+			
+			/*
 			TbSysCode sysCode = new TbSysCode();
 			sysCode.setCode(clientId);
 			try {
@@ -85,6 +88,8 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			*/
+			
 			UserUtils.setUserInfoForUserLocalUtils( claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString(), roleIds );
 			logger.info("User builder from JWT Authorization header : " + claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString() + " , role: " + roleIds);
 		}
