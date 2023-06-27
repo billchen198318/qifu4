@@ -44,7 +44,7 @@ public class JwtAuthLoginedUserRoleService {
     @Autowired
     IRolePermissionService<TbRolePermission, String> rolePermissionService;	
     
-	public void onAuthenticationSuccess(Authentication authentication) throws IOException, ServletException {
+	public void onLoginedSuccess(Authentication authentication) throws IOException, ServletException {
 		UserDetails user = (UserDetails) authentication.getPrincipal();
 		try {
 			if (user instanceof User) {

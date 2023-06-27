@@ -68,7 +68,7 @@ public class AuthController {
 				user.setAccessToken(tbv.getAccess());
 				user.setRefreshToken(tbv.getRefresh());
 				user.blankPassword();
-				this.jwtAuthLoginedUserRoleService.onAuthenticationSuccess(authentication);
+				this.jwtAuthLoginedUserRoleService.onLoginedSuccess(authentication);
 			}
 	    } catch (AuthenticationException e) {
 	    	e.printStackTrace();
