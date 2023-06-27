@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.qifu.base.model.YesNo;
+import org.qifu.util.SimpleUtils;
 
 public class Constants {
 	
@@ -129,6 +130,9 @@ public class Constants {
 	public static final String TOKEN_Authorization = "Authorization";
 	public static final String TOKEN_PREFIX = "Bearer";
 	
-	public static final String HTTP_REQUEST_PASSWORD_AuthLogin = "_userLoginPassword";
+	public static final String HTTP_REQUEST_PASSWORD_AuthLogin = "_qifu4_userLoginPassword_" + SimpleUtils.createRandomString(5);
+	public static final String SYSCODE_TOKEN_CODE = "TOKEN";
+	public static final String SYSCODE_TOKEN_TYPE = "AUTH";
+	
 	
 }

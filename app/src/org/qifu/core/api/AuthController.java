@@ -59,14 +59,12 @@ public class AuthController {
 		    SecurityContextHolder.getContext().setAuthentication(authentication);
 		    user = (User) authentication.getPrincipal();
 		    
-		    String clientToken = "";
 		    TbSysCode sysCode = new TbSysCode();
-		    sysCode.setCode("TOKEN");		    
+		    sysCode.setCode(Constants.SYSCODE_TOKEN_CODE);		    
 		    
 			sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
-			if (null != sysCode && "AUTH".equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {				
-				clientToken = sysCode.getParam1();
-			    tbv = TokenBuilderUtils.createToken(user.getUserId(), Constants.TOKEN_Authorization, clientToken, TokenStoreBuilder.build(this.dataSource));
+			if (null != sysCode && Constants.SYSCODE_TOKEN_TYPE.equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {								
+			    tbv = TokenBuilderUtils.createToken(user.getUserId(), Constants.TOKEN_Authorization, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
 				user.setAccessToken(tbv.getAccess());
 				user.setRefreshToken(tbv.getRefresh());
 				user.blankPassword();
