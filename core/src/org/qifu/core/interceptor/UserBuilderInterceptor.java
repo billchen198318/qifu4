@@ -22,6 +22,9 @@
 package org.qifu.core.interceptor;
 
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,14 +37,18 @@ import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.support.TokenStoreValidateBuilder;
 import org.qifu.base.util.TokenBuilderUtils;
+import org.qifu.core.entity.TbRolePermission;
 import org.qifu.core.entity.TbSysCode;
+import org.qifu.core.entity.TbUserRole;
+import org.qifu.core.service.IRolePermissionService;
 import org.qifu.core.service.ISysCodeService;
+import org.qifu.core.service.IUserRoleService;
 import org.qifu.core.util.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.auth0.jwt.impl.PublicClaims;
+//import com.auth0.jwt.impl.PublicClaims;
 import com.auth0.jwt.interfaces.Claim;
 
 public class UserBuilderInterceptor implements HandlerInterceptor {
@@ -50,6 +57,12 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 	
 	@Autowired
 	ISysCodeService<TbSysCode, String> sysCodeService;	
+	
+	@Autowired
+	IUserRoleService<TbUserRole, String> userRoleService; 
+	
+	@Autowired
+	IRolePermissionService<TbRolePermission, String> rolePermissionService;
 	
 	@Autowired
 	private DataSource dataSource;	
@@ -71,26 +84,39 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 		
 		TokenStoreValidateBuilder tsv = TokenStoreValidateBuilder.build(this.dataSource);
 		
+		Map<String, Object> param = new HashMap<String, Object>();
+		
 		Map<String, Claim> claimToken = TokenBuilderUtils.verifyToken(authorization.replaceFirst(Constants.TOKEN_PREFIX, "").replaceAll(" ", ""), tsv);
 		if (TokenBuilderUtils.existsInfo(claimToken)) {
-			String clientId = StringUtils.defaultString( claimToken.get(PublicClaims.AUDIENCE).asString() );
+			//String clientId = StringUtils.defaultString( claimToken.get(PublicClaims.AUDIENCE).asString() );
 			String userId = StringUtils.defaultString( claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString() );
-			String roleIds = "";
-			
-			/*
-			TbSysCode sysCode = new TbSysCode();
-			sysCode.setCode(clientId);
+			List<String> roleIds = new ArrayList<String>();
+			Map<String, List<String>> rolePermissionMap = new HashMap<String, List<String>>();
 			try {
-				sysCode = sysCodeService.selectByUniqueKey(sysCode).getValueEmptyThrowMessage();	
-				roleIds = StringUtils.defaultString( sysCode.getParam1() );
+				param.clear();
+				if (!StringUtils.isBlank(userId)) {
+					param.put("account", userId);
+					List<TbUserRole> urList = this.userRoleService.selectListByParams(param).getValue();
+					for (int j = 0; urList != null && j < urList.size(); j++) {
+						TbUserRole ur = urList.get(j);
+						roleIds.add(ur.getRole());
+						param.clear();
+						param.put("role", ur.getRole());
+						List<TbRolePermission> rpList = this.rolePermissionService.selectListByParams(param).getValue();
+						rolePermissionMap.put(ur.getRole(), new ArrayList<String>());
+						List<String> permList = rolePermissionMap.get(ur.getRole());
+						for (int x = 0; rpList != null && x < rpList.size(); x++) {
+							TbRolePermission rp = rpList.get(x);
+							permList.add(rp.getPermission());							
+						}
+					}
+				}				
 			} catch (ServiceException se) {
 				se.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-			*/
-			
-			UserUtils.setUserInfoForUserLocalUtils( claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString(), roleIds );
+			}			
+			UserUtils.setUserInfoForUserLocalUtils( claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString(), roleIds, rolePermissionMap);
 			logger.info("User builder from JWT Authorization header : " + claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString() + " , role: " + roleIds);
 		}
 		if ( UserUtils.getCurrentUser() == null ) {

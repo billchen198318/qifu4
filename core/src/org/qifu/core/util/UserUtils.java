@@ -23,6 +23,7 @@ package org.qifu.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
@@ -66,13 +67,37 @@ public class UserUtils {
 		return userInfo;
 	}	
 	
-	public static User setUserInfoForUserLocalUtils(String accountId, String roleIds) {
+	public static User setUserInfoForUserLocalUtils(String accountId, List<String> roleIds) {
 		User userInfo = new User(ZeroKeyProvide.OID_KEY , accountId , "" , YesNo.YES);
 		userInfo.setUserId(accountId);
-		//userInfo.setRoleIds(roleIds);
+		if (userInfo.getRoles() == null) {
+			userInfo.setRoles(new ArrayList<UserRoleAndPermission>());
+		}
+		for (int r = 0; roleIds != null && r < roleIds.size(); r++) {
+			if (StringUtils.isBlank(roleIds.get(r))) {
+				continue;
+			}
+			UserRoleAndPermission ur = new UserRoleAndPermission();
+			ur.setRole(roleIds.get(r));	
+			userInfo.getRoles().add(ur);
+		}
 		UserLocalUtils.setUserInfo(userInfo);
 		return userInfo;
 	}		
+	
+	public static User setUserInfoForUserLocalUtils(String accountId, List<String> roleIds, Map<String, List<String>> rolePermissionMap) {
+		User u = setUserInfoForUserLocalUtils(accountId, roleIds);
+		if (u.getRoles() != null) {
+			for (int i = 0; i < u.getRoles().size(); i++) {
+				UserRoleAndPermission urap = u.getRoles().get(i);
+				List<String> permList = rolePermissionMap.get(urap.getRole());
+				if (permList != null) {
+					urap.setRolePermission(permList);
+				}
+			}
+		}
+		return u;
+	}	
 	
 	public static User setUserInfoForUserLocalUtilsBackgroundMode() {
 		return setUserInfoForUserLocalUtils( Constants.SYSTEM_BACKGROUND_USER );
