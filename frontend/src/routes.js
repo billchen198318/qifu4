@@ -6,7 +6,7 @@ import Prog01C1 from "./components/PROG01_routes/PROG01_c1.svelte";
 import Prog01C2 from "./components/PROG01_routes/PROG01_c2.svelte";
 
 
-export const routes = {
+export const routes = {  
   "/prog01"   : wrap({
       component : PROG01,
       conditions: [

@@ -7,9 +7,13 @@
   import { onMount } from 'svelte';
   import jq from 'jquery'; /* 為了tree menu */
   
+  import LoginPage from './components/LoginPage.svelte';
+
   //const jq = window.$;
 
   let menuData = [];
+
+  let loginSuccess = false;
 
   onMount(() => {
 
@@ -106,8 +110,8 @@
 </style>
 
 
-
-
+{#if loginSuccess}
+  
     <!-- Navbar-->
     <header class="app-header"><a class="app-header__logo" href="#">QiFu4</a>
       <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
@@ -156,5 +160,8 @@
       </div>
     </main>
 
-
+{/if}
+{#if !loginSuccess}
+    <LoginPage></LoginPage>
+{/if}
     
