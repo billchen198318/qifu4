@@ -8,6 +8,7 @@
   import jq from 'jquery'; /* 為了tree menu */
   
   import LoginPage from './components/LoginPage.svelte';
+  import { _user } from './store/userStore.js';
 
   //const jq = window.$;
 
@@ -110,7 +111,7 @@
 </style>
 
 
-{#if loginSuccess}
+{#if _user != null }
   
     <!-- Navbar-->
     <header class="app-header"><a class="app-header__logo" href="#">QiFu4</a>
@@ -159,9 +160,6 @@
         <Router {routes} on:routeLoading={routeLoading} on:routeLoaded={routeLoaded} />
       </div>
     </main>
-
-{/if}
-{#if !loginSuccess}
+{:else}
     <LoginPage></LoginPage>
 {/if}
-    
