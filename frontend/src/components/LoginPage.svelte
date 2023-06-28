@@ -1,7 +1,12 @@
 <script>
-import { Icon } from 'sveltestrap';
-import { Button } from 'sveltestrap';
-import { Badge } from 'sveltestrap';
+import { 
+  Icon, 
+  Button, 
+  Badge,
+  Label,
+  Input,
+  FormGroup
+} from 'sveltestrap';
 
 </script>    
 <style>
@@ -13,43 +18,36 @@ import { Badge } from 'sveltestrap';
 
 
         <div class="login-box">
-          <form class="login-form" method="post" name="formLogin" id="formLogin" action="/login">
+          <div class="login-form">
             
             <h3 class="login-head">
               <!--
               <img src="resource/logo.svg" width="250px" style="margin-bottom:10px" />
               -->
-              qifu4 frontend
+              <Icon name="person-circle"/>
+              qífū - frontend
             </h3>
-            <div class="form-group">
-              <label class="control-label">帐户</label>
-              <input class="form-control" type="text" name="username" id="username" placeholder="Account" maxlength="34" autofocus>
-            </div>
-            <div class="form-group">
+            <FormGroup>
+              <Label for="username">帐户</Label>
+              <Input type="text" name="username" id="username" placeholder="Account"/>
+            </FormGroup>
+            <FormGroup>
               <label class="control-label">密码</label>
-              <input class="form-control" type="password" name="password" id="password" placeholder="Password" maxlength="16">
-            </div>
+              <input class="form-control" type="password" name="password" id="password" placeholder="Password">
+            </FormGroup>
 
-            <div class="form-group btn-container">
-              <button class="btn btn-primary btn-block" id="btnLogin" name="btnLogin" ><i class="fa fa-sign-in fa-lg fa-fw"></i>登入</button>
-            </div>
+            <FormGroup>
+              <div>
+                <Button color="primary"><Icon name="check-circle"/>&nbsp;登入</Button>
+              </div>
+
+              
+            </FormGroup>
 
             <p class="form-text"><Badge color='danger'>errMsg,errMsg,errMsg</Badge></p>
   
-          </form>
-          <form class="forget-form" action="index.html">
-            <h3 class="login-head"><i class="fa fa-lg fa-fw fa-lock"></i>Forgot Password ?</h3>
-            <div class="form-group">
-              <label class="control-label">EMAIL</label>
-              <input class="form-control" type="text" placeholder="Email">
-            </div>
-            <div class="form-group btn-container">
-              <button class="btn btn-primary btn-block"><i class="fa fa-unlock fa-lg fa-fw"></i>RESET</button>
-            </div>
-            <div class="form-group mt-3">
-              <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="fa fa-angle-left fa-fw"></i> Back to Login</a></p>
-            </div>
-          </form>
+          </div>
+
         </div>
   
       </section>
