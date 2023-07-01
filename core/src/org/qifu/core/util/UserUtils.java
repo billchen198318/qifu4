@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 import org.qifu.base.model.BaseUserInfo;
+import org.qifu.base.model.RolePermissionAttr;
 import org.qifu.base.model.UserRoleAndPermission;
 import org.qifu.base.model.YesNo;
 import org.qifu.base.model.ZeroKeyProvide;
@@ -85,12 +86,12 @@ public class UserUtils {
 		return userInfo;
 	}		
 	
-	public static User setUserInfoForUserLocalUtils(String accountId, List<String> roleIds, Map<String, List<String>> rolePermissionMap) {
+	public static User setUserInfoForUserLocalUtils(String accountId, List<String> roleIds, Map<String, List<RolePermissionAttr>> rolePermissionMap) {
 		User u = setUserInfoForUserLocalUtils(accountId, roleIds);
 		if (u.getRoles() != null) {
 			for (int i = 0; i < u.getRoles().size(); i++) {
 				UserRoleAndPermission urap = u.getRoles().get(i);
-				List<String> permList = rolePermissionMap.get(urap.getRole());
+				List<RolePermissionAttr> permList = rolePermissionMap.get(urap.getRole());
 				if (permList != null) {
 					urap.setRolePermission(permList);
 				}
@@ -201,8 +202,8 @@ public class UserUtils {
 			for (int i = 0; i < user.getRoles().size() && !isPrem; i++) {
 				UserRoleAndPermission userRole = user.getRoles().get(i);
 				if (userRole.getRolePermission() != null) {
-					for (String rp : userRole.getRolePermission()) {
-						if (perm.equals(rp)) {
+					for (RolePermissionAttr rp : userRole.getRolePermission()) {
+						if (perm.equals(rp.getPermission())) {
 							isPrem = true;
 						}
 					}

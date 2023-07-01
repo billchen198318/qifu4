@@ -35,6 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.RolePermissionAttr;
 import org.qifu.base.support.TokenStoreValidateBuilder;
 import org.qifu.base.util.TokenBuilderUtils;
 import org.qifu.core.entity.TbRolePermission;
@@ -91,7 +92,7 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 			//String clientId = StringUtils.defaultString( claimToken.get(PublicClaims.AUDIENCE).asString() );
 			String userId = StringUtils.defaultString( claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString() );
 			List<String> roleIds = new ArrayList<String>();
-			Map<String, List<String>> rolePermissionMap = new HashMap<String, List<String>>();
+			Map<String, List<RolePermissionAttr>> rolePermissionMap = new HashMap<String, List<RolePermissionAttr>>();
 			try {
 				param.clear();
 				if (!StringUtils.isBlank(userId)) {
@@ -103,11 +104,14 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 						param.clear();
 						param.put("role", ur.getRole());
 						List<TbRolePermission> rpList = this.rolePermissionService.selectListByParams(param).getValue();
-						rolePermissionMap.put(ur.getRole(), new ArrayList<String>());
-						List<String> permList = rolePermissionMap.get(ur.getRole());
+						rolePermissionMap.put(ur.getRole(), new ArrayList<RolePermissionAttr>());
+						List<RolePermissionAttr> permList = rolePermissionMap.get(ur.getRole());
 						for (int x = 0; rpList != null && x < rpList.size(); x++) {
 							TbRolePermission rp = rpList.get(x);
-							permList.add(rp.getPermission());							
+							RolePermissionAttr rpa = new RolePermissionAttr();
+							rpa.setPermission(rp.getPermission());
+							rpa.setType(rpa.getType());
+							permList.add(rpa);
 						}
 					}
 				}				

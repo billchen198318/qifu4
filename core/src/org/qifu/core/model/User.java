@@ -24,6 +24,7 @@ package org.qifu.core.model;
 import org.apache.commons.collections.CollectionUtils;
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.model.BaseUserInfo;
+import org.qifu.base.model.RolePermissionAttr;
 import org.qifu.base.model.UserRoleAndPermission;
 import org.qifu.base.model.YesNo;
 import org.springframework.security.core.GrantedAuthority;
@@ -70,8 +71,8 @@ public class User extends BaseUserInfo implements UserDetails {
         for (UserRoleAndPermission userRoleAndPerm : this.roles) {
             auths.add( new SimpleGrantedAuthority("ROLE_" + userRoleAndPerm.getRole()) );
             if (userRoleAndPerm.getRolePermission() != null) {
-            	for (String perm : userRoleAndPerm.getRolePermission()) {
-            		auths.add( new SimpleGrantedAuthority(perm) );
+            	for (RolePermissionAttr perm : userRoleAndPerm.getRolePermission()) {
+            		auths.add( new SimpleGrantedAuthority(perm.getPermission()) );
             	}
             }            
         }

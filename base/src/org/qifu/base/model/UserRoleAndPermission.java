@@ -7,7 +7,7 @@ public class UserRoleAndPermission implements java.io.Serializable {
 	
 	private String role;
 	
-	private List<String> rolePermission;
+	private List<RolePermissionAttr> rolePermission;
 	
 	public String getRole() {
 		return role;
@@ -17,11 +17,11 @@ public class UserRoleAndPermission implements java.io.Serializable {
 		this.role = role;
 	}
 
-	public List<String> getRolePermission() {
+	public List<RolePermissionAttr> getRolePermission() {
 		return rolePermission;
 	}
 
-	public void setRolePermission(List<String> rolePermission) {
+	public void setRolePermission(List<RolePermissionAttr> rolePermission) {
 		this.rolePermission = rolePermission;
 	}
 	

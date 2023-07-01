@@ -36,6 +36,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 import org.qifu.base.model.DefaultResult;
+import org.qifu.base.model.RolePermissionAttr;
 import org.qifu.base.model.ScriptTypeCode;
 import org.qifu.base.model.UserRoleAndPermission;
 import org.qifu.base.model.YesNo;
@@ -86,10 +87,13 @@ public class BaseAuthenticationSuccessHandler implements AuthenticationSuccessHa
 					urap.setRole(ur.getRole());
 					List<TbRolePermission> rPermList = ur.getRolePermission();
 					if (urap.getRolePermission() == null) {
-						urap.setRolePermission(new ArrayList<String>());
+						urap.setRolePermission(new ArrayList<RolePermissionAttr>());
 					}
 					for (int j = 0; rPermList != null && j < rPermList.size(); j++) {
-						urap.getRolePermission().add(rPermList.get(j).getPermission());
+						RolePermissionAttr rpa = new RolePermissionAttr();
+						rpa.setPermission(rPermList.get(j).getPermission());
+						rpa.setType(rPermList.get(j).getPermType());
+						urap.getRolePermission().add(rpa);
 					}
 					urapList.add(urap);
 				}
