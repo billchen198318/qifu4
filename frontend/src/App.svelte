@@ -14,7 +14,10 @@
 
   let menuData = [];
 
-  let loginSuccess = false; // 測試用
+	let userData;
+	_user.subscribe(value => {
+		userData = value;
+	});
 
   onMount(() => {
 
@@ -111,7 +114,7 @@
 </style>
 
 
-{#if _user != null }
+{#if null != userData && userData.hasOwnProperty("account") }
   
     <!-- Navbar-->
     <header class="app-header"><a class="app-header__logo" href="#">QiFu4</a>

@@ -8,6 +8,21 @@ import {
   FormGroup
 } from 'sveltestrap';
 
+function loginClick() {
+  fetch(import.meta.env.VITE_API_URL + '/auth/signin',{
+    method: "POST", 
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username : 'admin',
+        password : 'admin99'
+      }),
+  })    
+  .then(response => console.log(response.text()))
+  .then(data => console.log(data));
+}
+
 </script>    
 <style>
     @import '../assets/vali.css';
@@ -38,13 +53,13 @@ import {
 
             <FormGroup>
               <div>
-                <Button color="primary"><Icon name="check-circle"/>&nbsp;登入</Button>
+                <Button color="primary" on:click="{loginClick}"><Icon name="check-circle"/>&nbsp;登入</Button>
               </div>
 
               
             </FormGroup>
 
-            <p class="form-text"><Badge color='danger'>errMsg,errMsg,errMsg</Badge></p>
+            <p class="form-text"><Badge color='danger'>{import.meta.env.VITE_API_URL}</Badge></p>
   
           </div>
 
