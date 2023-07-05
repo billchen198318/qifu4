@@ -15,24 +15,7 @@ let lgParam = {
 }
 
 function loginClick() {
-
-  console.log('test>>>' + JSON.stringify(lgParam));
-
-  /*
-fetch(url).then((response) => {
-  if (response.ok) {
-    return response.json();
-  }
-  throw new Error('Something went wrong');
-})
-.then((responseJson) => {
-  // Do something with the response
-})
-.catch((error) => {
-  console.log(error)
-});  
-  */
-
+  //console.log('test>>>' + JSON.stringify(lgParam));
   fetch(import.meta.env.VITE_API_URL + '/auth/signin',{
     method: "POST", 
       headers: {
