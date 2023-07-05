@@ -8,7 +8,10 @@ import {
   FormGroup
 } from 'sveltestrap';
 
+import '../components/SvelteCookie.svelte';
+
 import { _user } from '../store/userStore.js';
+import { setRefreshCookie } from '../components/SvelteCookie.svelte';
 
 let userData;
 	_user.subscribe(value => {
@@ -48,6 +51,11 @@ function loginClick() {
     _user.update((val) => {return responseJson;});
     console.log('[userData]-----------------------------');
     console.log(userData);
+
+    setRefreshCookie(userData.refreshToken);
+
+    //var test = getCookie('user_refresh_token');
+    //alert(test);
 
     setTimeout(() => {
       jqTreeMenuInit(); // App.svelte 的 jq 選單 init

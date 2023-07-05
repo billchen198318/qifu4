@@ -10,6 +10,9 @@
   import LoginPage from './pages/LoginPage.svelte';
   import { _user } from './store/userStore.js';
 
+  import './components/SvelteCookie.svelte';
+  import { setRefreshCookie, getRefreshCookie } from "./components/SvelteCookie.svelte";
+
   //const jq = window.$;
 
   let menuData = [];
@@ -20,6 +23,9 @@
 	});
 
   onMount(() => {
+
+    var user_refresh_token = getRefreshCookie();
+    alert('user_refresh_token='+user_refresh_token);
 
     fetch("./menutest.json")
         .then(response => response.json())
