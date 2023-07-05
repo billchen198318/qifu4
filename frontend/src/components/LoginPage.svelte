@@ -8,19 +8,56 @@ import {
   FormGroup
 } from 'sveltestrap';
 
+let lgParam = {
+  username : '',
+  password : '',
+  message  : ''
+}
+
 function loginClick() {
+
+  console.log('test>>>' + JSON.stringify(lgParam));
+
+  /*
+fetch(url).then((response) => {
+  if (response.ok) {
+    return response.json();
+  }
+  throw new Error('Something went wrong');
+})
+.then((responseJson) => {
+  // Do something with the response
+})
+.catch((error) => {
+  console.log(error)
+});  
+  */
+
   fetch(import.meta.env.VITE_API_URL + '/auth/signin',{
     method: "POST", 
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username : 'admin',
-        password : 'admin99'
+        username : lgParam.username,
+        password : lgParam.password
       }),
   })    
-  .then(response => console.log(response.text()))
-  .then(data => console.log(data));
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    lgParam.message = '連線登入錯誤';
+    throw new Error('連線登入錯誤');
+  })
+  .then((responseJson) => {
+    console.log(responseJson);
+  })
+  .catch((error) => {
+    console.log(error);
+    lgParam.message = error;
+  });  
+
 }
 
 </script>    
@@ -44,11 +81,11 @@ function loginClick() {
             </h3>
             <FormGroup>
               <Label for="username">帐户</Label>
-              <Input type="text" name="username" id="username" placeholder="Account"/>
+              <Input type="text" name="username" id="username" placeholder="Account" bind:value={lgParam.username} />
             </FormGroup>
             <FormGroup>
-              <label class="control-label">密码</label>
-              <input class="form-control" type="password" name="password" id="password" placeholder="Password">
+              <Label for="password">密码</Label>
+              <input class="form-control" type="password" name="password" id="password" placeholder="Password" bind:value={lgParam.password} />
             </FormGroup>
 
             <FormGroup>
@@ -58,9 +95,11 @@ function loginClick() {
 
               
             </FormGroup>
+            
+            {#if null != lgParam && null != lgParam.message && '' != lgParam.message }
+            <p class="form-text"><Badge color='danger'>{lgParam.message}</Badge></p>
+            {/if}
 
-            <p class="form-text"><Badge color='danger'>{import.meta.env.VITE_API_URL}</Badge></p>
-  
           </div>
 
         </div>
