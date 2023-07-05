@@ -45,7 +45,7 @@
         
   });
 
-  function jqTreeMenuInit() {
+  export function jqTreeMenuInit() {
 
        //const jq = window.$;
 
@@ -114,7 +114,7 @@
 </style>
 
 
-{#if null != userData && userData.hasOwnProperty("account") }
+{#if null != userData && !(userData.accessToken === undefined) && '' != userData.accessToken }
   
     <!-- Navbar-->
     <header class="app-header"><a class="app-header__logo" href="#">QiFu4</a>
@@ -164,5 +164,5 @@
       </div>
     </main>
 {:else}
-    <LoginPage></LoginPage>
+    <LoginPage jqTreeMenuInit={jqTreeMenuInit}/>
 {/if}

@@ -8,11 +8,21 @@ import {
   FormGroup
 } from 'sveltestrap';
 
+import { _user } from '../store/userStore.js';
+
+let userData;
+	_user.subscribe(value => {
+		userData = value;
+});
+
+
 let lgParam = {
   username : '',
   password : '',
   message  : ''
 }
+
+export let jqTreeMenuInit;
 
 function loginClick() {
   //console.log('test>>>' + JSON.stringify(lgParam));
@@ -31,10 +41,18 @@ function loginClick() {
     if (response.ok) {
       return response.json();
     }
-    throw new Error( lgParam.message );
+    throw new Error( response.status + ' ' + response.statusText );
   })
   .then((responseJson) => {
-    console.log(responseJson);
+
+    _user.update((val) => {return responseJson;});
+    console.log('[userData]-----------------------------');
+    console.log(userData);
+
+    setTimeout(() => {
+      jqTreeMenuInit();
+    }, 100);
+
   })
   .catch((error) => {
     console.log(error);
