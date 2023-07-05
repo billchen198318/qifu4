@@ -50,8 +50,8 @@ function loginClick() {
     console.log(userData);
 
     setTimeout(() => {
-      jqTreeMenuInit();
-    }, 100);
+      jqTreeMenuInit(); // App.svelte 的 jq 選單 init
+    }, 50);
 
   })
   .catch((error) => {
