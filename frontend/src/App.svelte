@@ -7,7 +7,7 @@
   import { onMount } from 'svelte';
   import jq from 'jquery'; /* 為了tree menu */
   
-  import LoginPage from './components/LoginPage.svelte';
+  import LoginPage from './pages/LoginPage.svelte';
   import { _user } from './store/userStore.js';
 
   //const jq = window.$;
