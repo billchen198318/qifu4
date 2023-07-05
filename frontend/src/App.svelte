@@ -11,7 +11,7 @@
   import { _user } from './store/userStore.js';
 
   import './components/SvelteCookie.svelte';
-  import { setRefreshCookie, getRefreshCookie } from "./components/SvelteCookie.svelte";
+  import { setRefreshTokenAndUidCookie, getRefreshTokenCookie, getUserIdCookie } from "./components/SvelteCookie.svelte";
 
   //const jq = window.$;
 
@@ -24,8 +24,9 @@
 
   onMount(() => {
 
-    var user_refresh_token = getRefreshCookie();
-    alert('user_refresh_token='+user_refresh_token);
+    var ck_user_refresh_token = getRefreshTokenCookie();
+    var ck_user_id = getUserIdCookie();
+    alert('user_refresh_token='+ck_user_refresh_token + ',user_id='+ck_user_id);
 
     fetch("./menutest.json")
         .then(response => response.json())

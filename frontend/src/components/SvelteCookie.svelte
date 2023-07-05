@@ -34,12 +34,17 @@
         document.cookie = name+'=; Max-Age=-99999999;'; 
     }
 
-    export function setRefreshCookie(value) {
-        setCookie('_qifu4_user_refresh_token', value, 4, true);
+    export function setRefreshTokenAndUidCookie(rfToken, userId) {
+        setCookie('_qifu4_user_refresh_token', rfToken, 4, true);
+        setCookie('_qifu4_user_id', userId, 4, true);
     }
 
-    export function getRefreshCookie() {
+    export function getRefreshTokenCookie() {
         return getCookie('_qifu4_user_refresh_token');
+    }
+    
+    export function getUserIdCookie() {
+        return getCookie('_qifu4_user_id');
     }
 
 </script>

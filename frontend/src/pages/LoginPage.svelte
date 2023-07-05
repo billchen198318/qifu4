@@ -11,7 +11,7 @@ import {
 import '../components/SvelteCookie.svelte';
 
 import { _user } from '../store/userStore.js';
-import { setRefreshCookie } from '../components/SvelteCookie.svelte';
+import { setRefreshTokenAndUidCookie } from '../components/SvelteCookie.svelte';
 
 let userData;
 	_user.subscribe(value => {
@@ -52,7 +52,7 @@ function loginClick() {
     console.log('[userData]-----------------------------');
     console.log(userData);
 
-    setRefreshCookie(userData.refreshToken);
+    setRefreshTokenAndUidCookie(userData.refreshToken, userData.userId);
 
     //var test = getCookie('user_refresh_token');
     //alert(test);
