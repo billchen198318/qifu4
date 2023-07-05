@@ -16,6 +16,7 @@ let lgParam = {
 
 function loginClick() {
   //console.log('test>>>' + JSON.stringify(lgParam));
+  lgParam.message = '';
   fetch(import.meta.env.VITE_API_URL + '/auth/signin',{
     method: "POST", 
       headers: {
@@ -30,8 +31,7 @@ function loginClick() {
     if (response.ok) {
       return response.json();
     }
-    lgParam.message = '連線登入錯誤';
-    throw new Error('連線登入錯誤');
+    throw new Error( lgParam.message );
   })
   .then((responseJson) => {
     console.log(responseJson);
