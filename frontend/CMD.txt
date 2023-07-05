@@ -3,6 +3,7 @@ pnpm i
 #pnpm update
 #pnpm i sveltestrap
 #pnpm i jquery
+#pnpm i sweetalert2
 #pnpm i bootstrap
 #pnpm i bootstrap-icons
 #npm run build

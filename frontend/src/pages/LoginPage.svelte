@@ -10,6 +10,8 @@ import {
 
 import '../components/SvelteCookie.svelte';
 
+import Swal from 'sweetalert2';
+
 import { _user } from '../store/userStore.js';
 import { setRefreshTokenAndUidCookie } from '../components/SvelteCookie.svelte';
 
@@ -29,6 +31,15 @@ export let jqTreeMenuInit;
 
 function loginClick() {
   //console.log('test>>>' + JSON.stringify(lgParam));
+
+  Swal.fire({
+    title: "Loading...",
+    html: "Please wait a moment",
+    showConfirmButton: false,
+    allowOutsideClick: false
+  });
+  Swal.showLoading();
+
   lgParam.message = '';
   fetch(import.meta.env.VITE_API_URL + '/auth/signin',{
     method: "POST", 
@@ -41,13 +52,15 @@ function loginClick() {
       }),
   })    
   .then(response => {
+    Swal.hideLoading();
+    Swal.close();
+
     if (response.ok) {
       return response.json();
     }
     throw new Error( response.status + ' ' + response.statusText );
   })
   .then((responseJson) => {
-
     _user.update((val) => {return responseJson;});
     console.log('[userData]-----------------------------');
     console.log(userData);
@@ -63,6 +76,8 @@ function loginClick() {
 
   })
   .catch((error) => {
+    Swal.hideLoading();
+    Swal.close();
     console.log(error);
     lgParam.message = error;
   });  
