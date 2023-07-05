@@ -11,7 +11,14 @@
   import { _user } from './store/userStore.js';
 
   import './components/SvelteCookie.svelte';
-  import { setRefreshTokenAndUidCookie, getRefreshTokenCookie, getUserIdCookie } from "./components/SvelteCookie.svelte";
+  import { 
+    setRefreshTokenAndUidCookie, 
+    getRefreshTokenCookie, 
+    getUserIdCookie, 
+    userLogoutClearCookie } 
+  from "./components/SvelteCookie.svelte";
+
+  import Swal from 'sweetalert2';
 
   //const jq = window.$;
 
@@ -112,6 +119,24 @@
     console.log('Name', event.detail.name)
   }  
 
+  function userLogout() {
+    Swal.fire({
+      title: 'Logout, are you sure?',
+      icon: 'question',
+      iconHtml: '?',
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      showCancelButton: true,
+      showCloseButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+          userLogoutClearCookie();
+          _user.update((val) => {return {};});
+        }
+    });
+    
+  }
+
 </script>
 
 
@@ -124,12 +149,12 @@
 {#if null != userData && !(userData.accessToken === undefined) && '' != userData.accessToken }
   
     <!-- Navbar-->
-    <header class="app-header"><a class="app-header__logo" href="#">QiFu4</a>
+    <header class="app-header"><a class="app-header__logo" href="#">qífū</a>
       <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
       <!-- Navbar Right Menu-->
       <ul class="app-nav">
         <!-- User Menu-->
-        <li class="dropdown"><a class="app-nav__item" href="javascript:alert(123)" data-toggle="dropdown" aria-label="Open Profile Menu"><Icon name="door-open" /></a>
+        <li class="dropdown"><a class="app-nav__item" href="#" on:click={userLogout} data-toggle="dropdown" aria-label="Open Profile Menu"><Icon name="door-open" /></a>
           <!--
           <ul class="dropdown-menu settings-menu dropdown-menu-right">
             <li><a class="dropdown-item" href="#">Logout</a></li>

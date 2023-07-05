@@ -47,4 +47,9 @@
         return getCookie('_qifu4_user_id');
     }
 
+    export function userLogoutClearCookie(){
+        deleteCookie('_qifu4_user_refresh_token');
+        deleteCookie('_qifu4_user_id');
+    }
+
 </script>
