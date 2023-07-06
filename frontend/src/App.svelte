@@ -53,7 +53,7 @@
         if (response.ok) {
           return response.json();
         }
-        userLogoutClearCookie();
+        clearUserLoginData();
         throw new Error( response.status + ' ' + response.statusText );
       })
       .then((responseJson) => {
@@ -63,14 +63,21 @@
           _user.update((val) => { return {}; } );
         }  
         setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
+        initTreeMenu();      
       })
       .catch((error) => {
-        userLogoutClearCookie();
+        clearUserLoginData();
         console.log(error);
       });  
 
-    }
+    } 
 
+  });
+
+  function initTreeMenu() {
+    if (menuData != null && menuData.length > 0) {
+      return;
+    }
     fetch("./menutest.json")
         .then(response => response.json())
         .then(data => {
@@ -88,12 +95,8 @@
           //console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
           console.log(error);
           return [];
-        }); 
-
-
-
-        
-  });
+        });     
+  }
 
   export function jqTreeMenuInit() {
        var treeviewMenu = jq('.app-menu');
@@ -160,10 +163,15 @@
       showCloseButton: true
     }).then((result) => {
         if (result.isConfirmed) {
-          userLogoutClearCookie();
-          _user.update((val) => { return {}; });
+          clearUserLoginData();
         }
     });    
+  }
+
+  function clearUserLoginData() {
+    userLogoutClearCookie();
+    menuData = [];
+    _user.update((val) => { return {}; });    
   }
 
 </script>
@@ -225,5 +233,5 @@
       </div>
     </main>
 {:else}
-    <LoginPage jqTreeMenuInit={jqTreeMenuInit}/>
+    <LoginPage initTreeMenu={initTreeMenu}/>
 {/if}

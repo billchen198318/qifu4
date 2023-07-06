@@ -24,7 +24,7 @@ let lgParam = {
   message  : ''
 }
 
-export let jqTreeMenuInit;
+export let initTreeMenu;
 
 function loginClick() {
   Swal.fire({
@@ -63,7 +63,7 @@ function loginClick() {
     }    
     setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
     setTimeout(() => {
-      jqTreeMenuInit(); // App.svelte 的 jq 選單 init
+      initTreeMenu(); // App.svelte 的 jq 選單 init
     }, 50);
   })
   .catch((error) => {
