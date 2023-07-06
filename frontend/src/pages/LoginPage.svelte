@@ -45,6 +45,7 @@ function loginClick() {
         username : lgParam.username,
         password : lgParam.password
       }),
+      signal: AbortSignal.timeout(24000)
   })    
   .then(response => {
     Swal.hideLoading();
@@ -55,7 +56,11 @@ function loginClick() {
     throw new Error( response.status + ' ' + response.statusText );
   })
   .then((responseJson) => {
-    _user.update((val) => { return responseJson; } );   
+    if (null != responseJson) {
+      _user.update((val) => { return responseJson; } );   
+    } else {
+      _user.update((val) => { return {}; } );
+    }    
     setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
     setTimeout(() => {
       jqTreeMenuInit(); // App.svelte 的 jq 選單 init

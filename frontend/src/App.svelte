@@ -47,6 +47,7 @@
             accessToken : ck_user_access_token,
             refreshToken : ck_user_refresh_token
           }),
+          signal: AbortSignal.timeout(14000)
       })    
       .then(response => {
         if (response.ok) {
@@ -56,7 +57,11 @@
         throw new Error( response.status + ' ' + response.statusText );
       })
       .then((responseJson) => {
-        _user.update((val) => { return responseJson; } );   
+        if (null != responseJson) {
+          _user.update((val) => { return responseJson; } );   
+        } else {
+          _user.update((val) => { return {}; } );
+        }  
         setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
       })
       .catch((error) => {
