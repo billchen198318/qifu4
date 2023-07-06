@@ -30,7 +30,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:appConfig.properties")
 @ConfigurationProperties(prefix = "page")
 public class PageVariableConfigProperties {
-	
+	/*
 	private String jqXhrType;
 	
 	private String jqXhrTimeout;
@@ -38,9 +38,11 @@ public class PageVariableConfigProperties {
 	private String jqXhrCache;
 	
 	private String jqXhrAsync;
+	*/
 	
 	private String maxUploadSize;
-
+	
+	/*
 	public String getJqXhrType() {
 		return jqXhrType;
 	}
@@ -72,6 +74,7 @@ public class PageVariableConfigProperties {
 	public void setJqXhrAsync(String jqXhrAsync) {
 		this.jqXhrAsync = jqXhrAsync;
 	}
+	*/
 
 	public String getMaxUploadSize() {
 		if (NumberUtils.toInt(this.maxUploadSize, 0) < 1048576) {
