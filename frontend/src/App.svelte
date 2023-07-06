@@ -20,8 +20,6 @@
 
   import Swal from 'sweetalert2';
 
-  //const jq = window.$;
-
   let menuData = [];
 
 	let userData;
@@ -29,15 +27,17 @@
 		userData = value;
 	});
 
-  onMount(() => {
+  onMount(() => { 
 
+    loadUserLoginedFromClient();
+
+  });
+
+  // 驗證之前是否登入 refresh token , access token            
+  function loadUserLoginedFromClient() {
     var ck_user_refresh_token = getRefreshTokenCookie();
     var ck_user_access_token = getAccessTokenCookie();
-    //alert(ck_user_refresh_token);
-    //alert(ck_user_access_token);
-    if (!checkUserHasLogined(userData) && (null != ck_user_refresh_token && '' != ck_user_refresh_token) && (null != ck_user_access_token && '' != ck_user_access_token)) {
-      //alert(123);
-      // 驗證之前是否登入 refresh token , access token            
+    if (!checkUserHasLogined(userData) && (null != ck_user_refresh_token && '' != ck_user_refresh_token) && (null != ck_user_access_token && '' != ck_user_access_token)) {      
       fetch(import.meta.env.VITE_API_URL + '/auth/validLogined',{
         method: "POST", 
           headers: {
@@ -70,9 +70,8 @@
         console.log(error);
       });  
 
-    } 
-
-  });
+    }
+  }
 
   function initTreeMenu() {
     if (menuData != null && menuData.length > 0) {
