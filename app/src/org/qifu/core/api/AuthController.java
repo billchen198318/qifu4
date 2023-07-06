@@ -33,7 +33,6 @@ import org.qifu.core.support.JwtAuthLoginedUserRoleService;
 import org.qifu.core.util.UserUtils;
 import org.qifu.core.vo.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -174,7 +173,7 @@ public class AuthController {
 	    	user.blankPassword();
 	    	user.setUserId("");
 	    }
-	    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, tbv.getAccess())
+	    return ResponseEntity.ok() /* .header(HttpHeaders.SET_COOKIE, tbv.getAccess()) */
 	            .body(user);
 	}
 	

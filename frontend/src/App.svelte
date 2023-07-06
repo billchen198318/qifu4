@@ -80,18 +80,14 @@
     fetch("./menutest.json")
         .then(response => response.json())
         .then(data => {
-          //console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa');
           //console.log(data);
           menuData = data;
-          //apiData.set(data);
           //console.log(menuData);
-
           setTimeout(() => {
             jqTreeMenuInit();
-          }, 100);
+          }, 700);
 
         }).catch(error => {
-          //console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
           console.log(error);
           return [];
         });     
