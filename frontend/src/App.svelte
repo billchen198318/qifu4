@@ -10,13 +10,13 @@
   import LoginPage from './pages/LoginPage.svelte';
   import { _user } from './store/userStore.js';
 
-  import './components/SvelteCookie.svelte';
   import { 
-    setRefreshTokenAndUidCookie, 
+    setRefreshAndAccessTokenCookie, 
     getRefreshTokenCookie, 
-    getUserIdCookie, 
-    userLogoutClearCookie } 
-  from "./components/SvelteCookie.svelte";
+    getAccessTokenCookie, 
+    userLogoutClearCookie, 
+    checkUserHasLogined } 
+  from "./components/BaseHelper.svelte";
 
   import Swal from 'sweetalert2';
 
@@ -32,8 +32,11 @@
   onMount(() => {
 
     var ck_user_refresh_token = getRefreshTokenCookie();
-    var ck_user_id = getUserIdCookie();
-    alert('user_refresh_token='+ck_user_refresh_token + ',user_id='+ck_user_id);
+    var ck_user_access_token = getAccessTokenCookie();
+    if (!checkUserHasLogined(userData) && null != ck_user_refresh_token && '' != ck_user_refresh_token && null != ck_user_access_token && '' != ck_user_access_token) {
+      // 驗證之前是否登入 refresh token , access token      
+      
+    }
 
     fetch("./menutest.json")
         .then(response => response.json())
@@ -60,11 +63,6 @@
   });
 
   export function jqTreeMenuInit() {
-
-       //const jq = window.$;
-
-       //alert(jq);
-
        var treeviewMenu = jq('.app-menu');
 
       // Toggle Sidebar
@@ -86,8 +84,7 @@
       jq("[data-toggle='treeview.'].is-expanded").parent().toggleClass('is-expanded');
 
       //Activate bootstrip tooltips
-      //jq("[data-toggle='tooltip']").tooltip();    
-      //alert(55);
+      //jq("[data-toggle='tooltip']").tooltip();
   }
 
   
@@ -121,7 +118,7 @@
 
   function userLogout() {
     Swal.fire({
-      title: 'Logout, are you sure?',
+      title: '確定登出?',
       icon: 'question',
       iconHtml: '?',
       confirmButtonText: 'Yes',
@@ -131,10 +128,9 @@
     }).then((result) => {
         if (result.isConfirmed) {
           userLogoutClearCookie();
-          _user.update((val) => {return {};});
+          _user.update((val) => { return {}; });
         }
-    });
-    
+    });    
   }
 
 </script>
@@ -146,7 +142,7 @@
 </style>
 
 
-{#if null != userData && !(userData.accessToken === undefined) && '' != userData.accessToken }
+{#if checkUserHasLogined(userData) }
   
     <!-- Navbar-->
     <header class="app-header"><a class="app-header__logo" href="#">qífū</a>

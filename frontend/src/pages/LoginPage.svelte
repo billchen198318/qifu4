@@ -8,18 +8,15 @@ import {
   FormGroup
 } from 'sveltestrap';
 
-import '../components/SvelteCookie.svelte';
-
 import Swal from 'sweetalert2';
 
 import { _user } from '../store/userStore.js';
-import { setRefreshTokenAndUidCookie } from '../components/SvelteCookie.svelte';
+import { setRefreshAndAccessTokenCookie } from '../components/BaseHelper.svelte';
 
 let userData;
 	_user.subscribe(value => {
 		userData = value;
 });
-
 
 let lgParam = {
   username : '',
@@ -30,8 +27,6 @@ let lgParam = {
 export let jqTreeMenuInit;
 
 function loginClick() {
-  //console.log('test>>>' + JSON.stringify(lgParam));
-
   Swal.fire({
     title: "Loading...",
     html: "Please wait a moment",
@@ -54,32 +49,23 @@ function loginClick() {
   .then(response => {
     Swal.hideLoading();
     Swal.close();
-
     if (response.ok) {
       return response.json();
     }
     throw new Error( response.status + ' ' + response.statusText );
   })
   .then((responseJson) => {
-    _user.update((val) => {return responseJson;});
-    console.log('[userData]-----------------------------');
-    console.log(userData);
-
-    setRefreshTokenAndUidCookie(userData.refreshToken, userData.userId);
-
-    //var test = getCookie('user_refresh_token');
-    //alert(test);
-
+    _user.update((val) => { return responseJson; } );   
+    setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
     setTimeout(() => {
       jqTreeMenuInit(); // App.svelte 的 jq 選單 init
     }, 50);
-
   })
   .catch((error) => {
-    Swal.hideLoading();
-    Swal.close();
     console.log(error);
     lgParam.message = error;
+    Swal.hideLoading();
+    Swal.close();    
   });  
 
 }
@@ -104,11 +90,11 @@ function loginClick() {
               qífū - frontend
             </h3>
             <FormGroup>
-              <Label for="username">帐户</Label>
+              <Label for="username">帳戶</Label>
               <Input type="text" name="username" id="username" placeholder="Account" bind:value={lgParam.username} />
             </FormGroup>
             <FormGroup>
-              <Label for="password">密码</Label>
+              <Label for="password">密碼</Label>
               <input class="form-control" type="password" name="password" id="password" placeholder="Password" bind:value={lgParam.password} />
             </FormGroup>
 

@@ -34,22 +34,29 @@
         document.cookie = name+'=; Max-Age=-99999999;'; 
     }
 
-    export function setRefreshTokenAndUidCookie(rfToken, userId) {
+    export function setRefreshAndAccessTokenCookie(rfToken, accessToken) {
         setCookie('_qifu4_user_refresh_token', rfToken, 4, true);
-        setCookie('_qifu4_user_id', userId, 4, true);
+        setCookie('_qifu4_user_access_token', accessToken, 4, true);
     }
 
     export function getRefreshTokenCookie() {
         return getCookie('_qifu4_user_refresh_token');
     }
     
-    export function getUserIdCookie() {
-        return getCookie('_qifu4_user_id');
+    export function getAccessTokenCookie() {
+        return getCookie('_qifu4_user_access_token');
     }
 
     export function userLogoutClearCookie(){
         deleteCookie('_qifu4_user_refresh_token');
-        deleteCookie('_qifu4_user_id');
+        deleteCookie('_qifu4_user_access_token');
+    }
+
+    export function checkUserHasLogined(userData) {
+        if (null != userData && !(userData.accessToken === undefined) && '' != userData.accessToken && !(userData.refreshToken === undefined) && '' != userData.refreshToken) {
+            return true;
+        }
+        return false;
     }
 
 </script>
