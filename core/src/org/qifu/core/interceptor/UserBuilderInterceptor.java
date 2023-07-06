@@ -110,7 +110,7 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 							TbRolePermission rp = rpList.get(x);
 							RolePermissionAttr rpa = new RolePermissionAttr();
 							rpa.setPermission(rp.getPermission());
-							rpa.setType(rpa.getType());
+							rpa.setType(rp.getPermType());
 							permList.add(rpa);
 						}
 					}
