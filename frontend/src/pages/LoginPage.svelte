@@ -29,7 +29,7 @@ export let initTreeMenu;
 function loginClick() {
   Swal.fire({
     title: "Loading...",
-    html: "Please wait a moment",
+    html: "請等待",
     showConfirmButton: false,
     allowOutsideClick: false
   });
