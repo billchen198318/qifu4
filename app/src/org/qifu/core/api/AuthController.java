@@ -127,6 +127,8 @@ public class AuthController {
 		}		
 	    if (null == user) {
 	    	user = new User("", "", "", YesNo.NO);
+	    	user.setAccessToken("");
+	    	user.setRefreshToken("");
 	    }	    
 	    return ResponseEntity.ok().body(user);
 	}
@@ -164,6 +166,8 @@ public class AuthController {
 		}		
 	    if (null == user) {
 	    	user = new User("", "", "", YesNo.NO);
+	    	user.setAccessToken("");
+	    	user.setRefreshToken("");	    	
 	    }
 	    if (null == tbv) {
 	    	tbv = new TokenBuilderVariable();
