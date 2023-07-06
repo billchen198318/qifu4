@@ -1,4 +1,7 @@
 <script context="module">
+    let _q4urt_var = '_qifu4_user_refresh_token';
+    let _q4uat_var = '_qifu4_user_access_token';
+
     // GET COOKIE
     export function getCookie(name) {
         let cookieName = name + "=";
@@ -35,21 +38,21 @@
     }
 
     export function setRefreshAndAccessTokenCookie(rfToken, accessToken) {
-        setCookie('_qifu4_user_refresh_token', rfToken, 4, true);
-        setCookie('_qifu4_user_access_token', accessToken, 4, true);
+        setCookie(_q4urt_var, rfToken, 4, true);
+        setCookie(_q4uat_var, accessToken, 4, true);
     }
 
     export function getRefreshTokenCookie() {
-        return getCookie('_qifu4_user_refresh_token');
+        return getCookie(_q4urt_var);
     }
     
     export function getAccessTokenCookie() {
-        return getCookie('_qifu4_user_access_token');
+        return getCookie(_q4uat_var);
     }
 
     export function userLogoutClearCookie(){
-        deleteCookie('_qifu4_user_refresh_token');
-        deleteCookie('_qifu4_user_access_token');
+        deleteCookie(_q4urt_var);
+        deleteCookie(_q4uat_var);
     }
 
     export function checkUserHasLogined(userData) {
@@ -58,5 +61,5 @@
         }
         return false;
     }
-
+    
 </script>
