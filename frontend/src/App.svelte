@@ -33,9 +33,37 @@
 
     var ck_user_refresh_token = getRefreshTokenCookie();
     var ck_user_access_token = getAccessTokenCookie();
-    if (!checkUserHasLogined(userData) && null != ck_user_refresh_token && '' != ck_user_refresh_token && null != ck_user_access_token && '' != ck_user_access_token) {
-      // 驗證之前是否登入 refresh token , access token      
-      
+    //alert(ck_user_refresh_token);
+    //alert(ck_user_access_token);
+    if (!checkUserHasLogined(userData) && (null != ck_user_refresh_token && '' != ck_user_refresh_token) && (null != ck_user_access_token && '' != ck_user_access_token)) {
+      //alert(123);
+      // 驗證之前是否登入 refresh token , access token            
+      fetch(import.meta.env.VITE_API_URL + '/auth/validLogined',{
+        method: "POST", 
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            accessToken : ck_user_access_token,
+            refreshToken : ck_user_refresh_token
+          }),
+      })    
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        userLogoutClearCookie();
+        throw new Error( response.status + ' ' + response.statusText );
+      })
+      .then((responseJson) => {
+        _user.update((val) => { return responseJson; } );   
+        setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
+      })
+      .catch((error) => {
+        userLogoutClearCookie();
+        console.log(error);
+      });  
+
     }
 
     fetch("./menutest.json")

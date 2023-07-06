@@ -1,5 +1,10 @@
 package org.qifu.core.api;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -8,14 +13,24 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.RolePermissionAttr;
 import org.qifu.base.model.TokenBuilderVariable;
 import org.qifu.base.model.YesNo;
 import org.qifu.base.support.TokenStoreBuilder;
+import org.qifu.base.support.TokenStoreValidate;
+import org.qifu.base.support.TokenStoreValidateBuilder;
 import org.qifu.base.util.TokenBuilderUtils;
+import org.qifu.core.entity.TbAccount;
+import org.qifu.core.entity.TbRolePermission;
 import org.qifu.core.entity.TbSysCode;
+import org.qifu.core.entity.TbUserRole;
 import org.qifu.core.model.User;
+import org.qifu.core.service.IAccountService;
+import org.qifu.core.service.IRolePermissionService;
 import org.qifu.core.service.ISysCodeService;
+import org.qifu.core.service.IUserRoleService;
 import org.qifu.core.support.JwtAuthLoginedUserRoleService;
+import org.qifu.core.util.UserUtils;
 import org.qifu.core.vo.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +45,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.auth0.jwt.interfaces.Claim;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -47,6 +64,72 @@ public class AuthController {
 	
 	@Autowired
 	JwtAuthLoginedUserRoleService jwtAuthLoginedUserRoleService;
+	
+	@Autowired
+	IUserRoleService<TbUserRole, String> userRoleService; 
+	
+	@Autowired
+	IRolePermissionService<TbRolePermission, String> rolePermissionService;	
+	
+	@Autowired
+	IAccountService<TbAccount, String> accountService;
+	
+	@PostMapping("/validLogined")
+	public ResponseEntity<User> validCheck(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+		User user = null;
+	    try {
+	    	Map<String, Object> param = new HashMap<String, Object>();
+	    	TokenStoreValidate tsv = new TokenStoreValidateBuilder(this.dataSource);
+	    	if (TokenBuilderUtils.verifyRefresh(loginRequest.getRefreshToken(), tsv)) {
+	    		Map<String,Claim> userMapClaim = null;
+	    		if ((userMapClaim = TokenBuilderUtils.verifyToken(loginRequest.getAccessToken(), tsv)) != null) {
+	    			String userId = StringUtils.defaultString( userMapClaim.get(Constants.TOKEN_USER_PARAM_NAME).asString() );
+	    			List<String> roleIds = new ArrayList<String>();
+	    			Map<String, List<RolePermissionAttr>> rolePermissionMap = new HashMap<String, List<RolePermissionAttr>>();
+					param.clear();
+					if (!StringUtils.isBlank(userId)) {
+						param.put("account", userId);
+						List<TbUserRole> urList = this.userRoleService.selectListByParams(param).getValue();
+						for (int j = 0; urList != null && j < urList.size(); j++) {
+							TbUserRole ur = urList.get(j);
+							roleIds.add(ur.getRole());
+							param.clear();
+							param.put("role", ur.getRole());
+							List<TbRolePermission> rpList = this.rolePermissionService.selectListByParams(param).getValue();
+							rolePermissionMap.put(ur.getRole(), new ArrayList<RolePermissionAttr>());
+							List<RolePermissionAttr> permList = rolePermissionMap.get(ur.getRole());
+							for (int x = 0; rpList != null && x < rpList.size(); x++) {
+								TbRolePermission rp = rpList.get(x);
+								RolePermissionAttr rpa = new RolePermissionAttr();
+								rpa.setPermission(rp.getPermission());
+								rpa.setType(rpa.getType());
+								permList.add(rpa);
+							}
+						}
+						user = UserUtils.setUserInfoForUserLocalUtils( userId, roleIds, rolePermissionMap );
+						TbAccount acc = new TbAccount();
+						acc.setAccount(userId);
+						acc = accountService.selectByUniqueKey(acc).getValueEmptyThrowMessage();						
+						user.setOid( acc.getOid() );						
+						user.setAccessToken(loginRequest.getAccessToken());
+						user.setRefreshToken(loginRequest.getRefreshToken());
+					}	    			
+	    		}
+	    	}	    	
+	    } catch (AuthenticationException e) {
+	    	e.printStackTrace();
+	    	throw e;
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	    if (null == user) {
+	    	user = new User("", "", "", YesNo.NO);
+	    }	    
+	    return ResponseEntity.ok().body(user);
+	}
 	
 	@PostMapping("/signin")
 	public ResponseEntity<User> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {

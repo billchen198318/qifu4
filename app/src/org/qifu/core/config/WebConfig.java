@@ -96,7 +96,7 @@ public class WebConfig implements WebMvcConfigurer {
         
         registry.addInterceptor(UserBuilderInterceptor())
         	.addPathPatterns("/api/*", "/api/**")
-        	.excludePathPatterns( new String[]{ "/api/client", "/api/auth", "/api/auth/signin" } );
+        	.excludePathPatterns( new String[]{ "/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined" } );
     }
     
     @Override
