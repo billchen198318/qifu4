@@ -5,7 +5,6 @@
   import { Icon } from 'sveltestrap';
   import { Button, Col, Row } from 'sveltestrap';
   import { onMount } from 'svelte';
-  import jq from 'jquery'; /* 為了tree menu */
   
   import LoginPage from './pages/LoginPage.svelte';
   import { _user } from './store/userStore.js';
@@ -94,25 +93,36 @@
   }
 
   export function jqTreeMenuInit() {
-       var treeviewMenu = jq('.app-menu');
 
-      // Toggle Sidebar
-      jq('[data-toggle="sidebar"]').click(function(event) {
-        event.preventDefault();
-        jq('.app').toggleClass('sidenav-toggled');
-      });
+    var treeviewMenu = document.querySelector('.app-menu');
 
-      // Activate sidebar treeview toggle
-      jq("[data-toggle='treeview']").click(function(event) {
+    // Toggle Sidebar
+    document.querySelector('[data-toggle="sidebar"]').addEventListener('click', function(event) {
+      event.preventDefault();
+      document.querySelector('.app').classList.toggle('sidenav-toggled');
+    });
+
+    // Activate sidebar treeview toggle
+    var treeviewToggle = document.querySelectorAll("[data-toggle='treeview']");
+    treeviewToggle.forEach(function(toggle) {
+      toggle.addEventListener('click', function(event) {
         event.preventDefault();
-        if(!jq(this).parent().hasClass('is-expanded')) {
-          treeviewMenu.find("[data-toggle='treeview']").parent().removeClass('is-expanded');
+        var parent = toggle.parentNode;
+        if (!parent.classList.contains('is-expanded')) {
+          var expandedToggles = treeviewMenu.querySelectorAll("[data-toggle='treeview']");
+          expandedToggles.forEach(function(expandedToggle) {
+            expandedToggle.parentNode.classList.remove('is-expanded');
+          });
         }
-        jq(this).parent().toggleClass('is-expanded');
+        parent.classList.toggle('is-expanded');
       });
+    });
 
-      // Set initial active toggle
-      jq("[data-toggle='treeview.'].is-expanded").parent().toggleClass('is-expanded');
+    // Set initial active toggle
+    var initialActiveToggle = document.querySelector("[data-toggle='treeview.'].is-expanded");
+    if (initialActiveToggle) {
+      initialActiveToggle.parentNode.classList.toggle('is-expanded');
+    }
 
       //Activate bootstrip tooltips
       //jq("[data-toggle='tooltip']").tooltip();
