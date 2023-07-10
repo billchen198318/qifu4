@@ -1591,6 +1591,7 @@ be a descendant of the grid when it is being dragged.
 
 .dropdown-menu.show {
   display: block;
+  background-color: #a7a7a7;
 }
 
 .dropdown-header {

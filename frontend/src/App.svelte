@@ -4,6 +4,7 @@
   import { routes } from "./routes.js";  
   import { Icon } from 'sveltestrap';
   import { Button, Col, Row } from 'sveltestrap';
+  import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'sveltestrap';
   import { onMount } from 'svelte';
   
   import LoginPage from './pages/LoginPage.svelte';
@@ -84,7 +85,7 @@
           //console.log(menuData);
           setTimeout(() => {
             jsTreeMenuInit();
-          }, 700);
+          }, 500);
 
         }).catch(error => {
           console.log(error);
@@ -195,15 +196,14 @@
       <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
       <!-- Navbar Right Menu-->
       <ul class="app-nav">
-        <!-- User Menu-->
-        <li class="dropdown"><a class="app-nav__item" href="#" on:click={userLogout} data-toggle="dropdown" aria-label="Open Profile Menu"><Icon name="door-open" /></a>
-          <!--
-          <ul class="dropdown-menu settings-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#">Logout</a></li>
-          </ul>
-          -->
-        </li>
-      </ul>
+      <Dropdown>
+        <DropdownToggle nav class="nav-link app-nav__item"><Icon name="person-circle" /></DropdownToggle>
+        <DropdownMenu>
+          <DropdownItem on:click={userLogout}><Icon name="door-closed" />&nbsp;Logout</DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+    </ul>
+
     </header>
     
     <!-- Sidebar menu-->
