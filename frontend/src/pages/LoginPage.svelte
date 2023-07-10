@@ -45,7 +45,7 @@ function loginClick() {
         username : lgParam.username,
         password : lgParam.password
       }),
-      signal: AbortSignal.timeout(24000)
+      signal: AbortSignal.timeout(import.meta.env.VITE_FETCH_TIMEOUT)
   })    
   .then(response => {
     Swal.hideLoading();

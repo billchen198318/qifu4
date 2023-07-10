@@ -47,7 +47,7 @@
             accessToken : ck_user_access_token,
             refreshToken : ck_user_refresh_token
           }),
-          signal: AbortSignal.timeout(14000)
+          signal: AbortSignal.timeout(import.meta.env.VITE_FETCH_TIMEOUT)
       })    
       .then(response => {
         if (response.ok) {
