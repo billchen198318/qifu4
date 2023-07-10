@@ -1,6 +1,6 @@
 <script context="module">
-    let _q4urt_var = '_qifu4_user_refresh_token';
-    let _q4uat_var = '_qifu4_user_access_token';
+    let _q4urt_var = import.meta.env.VITE_CK_HEAD_NAME + '_qifu4_urt';
+    let _q4uat_var = import.meta.env.VITE_CK_HEAD_NAME + '_qifu4_uat';
 
     // GET COOKIE
     export function getCookie(name) {
