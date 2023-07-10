@@ -83,7 +83,7 @@
           menuData = data;
           //console.log(menuData);
           setTimeout(() => {
-            jqTreeMenuInit();
+            jsTreeMenuInit();
           }, 700);
 
         }).catch(error => {
@@ -92,7 +92,7 @@
         });     
   }
 
-  export function jqTreeMenuInit() {
+  export function jsTreeMenuInit() {
 
     var treeviewMenu = document.querySelector('.app-menu');
 

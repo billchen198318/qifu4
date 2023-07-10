@@ -62,7 +62,7 @@ function loginClick() {
       _user.update((val) => { return {}; } );
     }    
     setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
-    initTreeMenu(); // App.svelte 的 jq 選單 init
+    initTreeMenu(); // App.svelte 的 js 選單 init
   })
   .catch((error) => {
     console.log(error);
