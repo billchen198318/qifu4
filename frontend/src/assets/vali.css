@@ -737,12 +737,12 @@ be a descendant of the grid when it is being dragged.
 
 ::-moz-selection {
   color: #FFF;
-  background-color: #00635a;
+  background-color: #001763;
 }
 
 ::selection {
   color: #FFF;
-  background-color: #00635a;
+  background-color: #3390FF;
 }
 
 @media (min-width: 768px) {
@@ -876,7 +876,7 @@ be a descendant of the grid when it is being dragged.
             flex: 0 0 auto;
     display: block;
     width: 230px;
-    background-color: #00598e; /* 2021-09-08 #007d71 */
+    background-color: #453cc1;
   }
 }
 
@@ -904,13 +904,12 @@ be a descendant of the grid when it is being dragged.
 }
 
 .app-sidebar__toggle:before {  
-  content: "\039e";
   font-size: 21px;
 }
 
 .app-sidebar__toggle:focus, .app-sidebar__toggle:hover {
   color: #fff;
-  background-color: #0093ea; /* 2021-09-08 #00635a; */
+  background-color: #0093ea; /* 2021-09-08 #3390FF; */
   text-decoration: none;
 }
 
@@ -1580,7 +1579,7 @@ be a descendant of the grid when it is being dragged.
 .dropdown-item.active, .dropdown-item:active {
   color: #FFF;
   text-decoration: none;
-  background-color: #009688;
+  background-color: #006bac; /* #009688; */
 }
 
 .dropdown-item.disabled, .dropdown-item:disabled {
@@ -1836,7 +1835,7 @@ be a descendant of the grid when it is being dragged.
 
 .animated-checkbox input[type="checkbox"]:checked + .label-text:before {
   content: "";
-  color: #009688;
+  color: #006bac; /* #009688; */
   -webkit-animation: tick 180ms ease-in;
           animation: tick 180ms ease-in;
 }
@@ -1881,7 +1880,7 @@ be a descendant of the grid when it is being dragged.
 
 .animated-radio-button input[type="radio"]:checked + .label-text:before {
   content: "";
-  color: #009688;
+  color: #006bac; /* #009688; */
   -webkit-animation: tick 180ms ease-in;
           animation: tick 180ms ease-in;
 }
@@ -1960,7 +1959,7 @@ be a descendant of the grid when it is being dragged.
 
 .toggle input[type="checkbox"]:checked + .button-indecator:before {
   content: "";
-  color: #009688;
+  color: #006bac; /* #009688; */
   -webkit-animation: toggleBtn 0.3s ease-in-out;
           animation: toggleBtn 0.3s ease-in-out;
 }
@@ -2014,7 +2013,7 @@ be a descendant of the grid when it is being dragged.
 
 .toggle-flip input[type="checkbox"] + .flip-indecator:after {
   content: attr(data-toggle-on);
-  background-color: #009688;
+  background-color: #006bac; /* #009688; */
   color: #fff;
   -webkit-transform: rotateY(-180deg);
           transform: rotateY(-180deg);
@@ -2107,7 +2106,7 @@ be a descendant of the grid when it is being dragged.
 .path {
   stroke-dasharray: 1,200;
   stroke-dashoffset: 0;
-  stroke: #009688;
+  stroke: #006bac; /* #009688; */
   -webkit-animation: dash 1.5s ease-in-out infinite;
           animation: dash 1.5s ease-in-out infinite;
   stroke-linecap: round;
@@ -2246,7 +2245,7 @@ be a descendant of the grid when it is being dragged.
 }
 
 .widget-small.primary {
-  background-color: #009688;
+  background-color: #006bac; /* #009688; */
 }
 
 .widget-small.primary.coloured-icon {
@@ -2255,7 +2254,7 @@ be a descendant of the grid when it is being dragged.
 }
 
 .widget-small.primary.coloured-icon .icon {
-  background-color: #009688;
+  background-color: #006bac; /* #009688; */
   color: #fff;
 }
 
@@ -2345,7 +2344,7 @@ be a descendant of the grid when it is being dragged.
 }
 
 .messanger .messages .message.me .info {
-  background-color: #009688;
+  background-color: #006bac; /* #009688; */
   color: #FFF;
 }
 
@@ -2362,7 +2361,7 @@ be a descendant of the grid when it is being dragged.
   height: 0;
   border-style: solid;
   border-width: 0 16px 16px 0;
-  border-color: transparent #009688 transparent transparent;
+  border-color: transparent #006bac transparent transparent; /* #009688*/
   -webkit-transform: rotate(270deg);
       -ms-transform: rotate(270deg);
           transform: rotate(270deg);
@@ -2405,7 +2404,7 @@ be a descendant of the grid when it is being dragged.
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
-  border: 1px solid #009688;
+  border: 1px solid #006bac; /* #009688; */
   outline: none;
   padding: 5px 10px;
 }
@@ -2512,7 +2511,7 @@ be a descendant of the grid when it is being dragged.
   margin: 0 auto 8px;
   padding: 15px;
   border-radius: 50%;
-  background-color: #009688;
+  background-color: #006bac; /* #009688; */
 }
 
 .feature-icon {
@@ -2833,7 +2832,7 @@ be a descendant of the grid when it is being dragged.
 }
 
 .user .user-tabs .nav-link.active {
-  border-left-color: #009688;
+  border-left-color: #006bac; /* #009688; */
   border-bottom: 0;
 }
 
