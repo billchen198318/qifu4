@@ -38,7 +38,7 @@
 				"type"	:	"I",
 				"name"	:	"ZA05 - Report",
 				"icon"	:	"globe2",
-				"url"	:	""
+				"url"	:	"#/name"
 			},
 			{
 				"id"	:	"CORE_PROG001D0007Q",

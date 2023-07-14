@@ -4,6 +4,7 @@ import PROG01 from "./components/PROG01.svelte";
 import About from "./components/About.svelte"
 import Prog01C1 from "./components/PROG01_routes/PROG01_c1.svelte";
 import Prog01C2 from "./components/PROG01_routes/PROG01_c2.svelte";
+import NameIndex from "./components/NameIndex.svelte";
 
 
 export const routes = {  
@@ -30,6 +31,9 @@ export const routes = {
   "/prog01/c2/:oid" : wrap({
       asyncComponent: () => import('./components/PROG01_routes/PROG01_c2.svelte')
   }),
+
+  "/name"     : NameIndex,
+  "/name/*"   : NameIndex,
   
   "*"   : wrap({
     asyncComponent: () => import('./components/NotFound.svelte')
