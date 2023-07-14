@@ -3,6 +3,7 @@ pnpm i
 #pnpm update
 #pnpm i sveltestrap
 #pnpm i sweetalert2
+#pnpm i @zerodevx/svelte-toast
 #pnpm i bootstrap
 #pnpm i bootstrap-icons
 #npm run build
