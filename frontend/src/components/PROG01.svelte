@@ -13,6 +13,10 @@ import {
     CardTitle
   } from 'sveltestrap';
 
+import Router from 'svelte-spa-router'
+import FullName from './FullName.svelte'
+import ShortName from './ShortName.svelte'  
+
 const colors = [
     'primary',
     'secondary',
@@ -23,6 +27,22 @@ const colors = [
     'light',
     'dark'
   ];
+
+const prefix = '/prog01';
+const routes = new Map()
+    .set("/", FullName)
+    .set("/:first/:last", FullName)
+    .set("/:first", ShortName);
+
+/*
+  
+const routes = new Map()
+    .set("/", List)
+    // .set("/:ID", Show)
+    // .set("/:ID/*", Show);
+    .set(/^\/(.*?)(\/(.*?))?/, Show);
+
+*/
 
 </script>
 <div>
@@ -75,7 +95,15 @@ const colors = [
   
 </div>
 
+<br>
 
+<div>
+  <h2>Nested routers</h2>
+  <Button color='primary' on:click={() => push('#/prog01/Joe/Tern')}>Full</Button> &nbsp;
+  <Button color='primary' on:click={() => push('#/prog01/Kie')}>Short</Button> &nbsp;
+
+  <Router {routes} {prefix} />
+</div>
 
 <br><br>
 
