@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.6.5-MariaDB, for Win64 (AMD64)
+-- MySQL dump 10.19  Distrib 10.3.31-MariaDB, for Win64 (AMD64)
 --
 -- Host: localhost    Database: qifu4
 -- ------------------------------------------------------
--- Server version	10.6.5-MariaDB
+-- Server version	10.3.31-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -33,7 +33,7 @@ CREATE TABLE `tb_account` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ACCOUNT`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +63,7 @@ CREATE TABLE `tb_role` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ROLE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `tb_role_permission` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ROLE`,`PERMISSION`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +128,7 @@ CREATE TABLE `tb_sys` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`SYS_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +161,7 @@ CREATE TABLE `tb_sys_bean_help` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`BEAN_ID`,`METHOD`,`SYSTEM`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +193,7 @@ CREATE TABLE `tb_sys_bean_help_expr` (
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`EXPR_ID`,`HELP_OID`,`RUN_TYPE`),
   KEY `IDX_1` (`HELP_OID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -226,7 +226,7 @@ CREATE TABLE `tb_sys_bean_help_expr_map` (
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`VAR_NAME`,`HELP_EXPR_OID`),
   KEY `IDX_1` (`HELP_EXPR_OID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,7 +261,7 @@ CREATE TABLE `tb_sys_code` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -294,7 +294,7 @@ CREATE TABLE `tb_sys_event_log` (
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`USER`),
   KEY `IDX_2` (`CDATE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -335,7 +335,7 @@ CREATE TABLE `tb_sys_expr_job` (
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ID`),
   KEY `IDX_1` (`SYSTEM`,`ACTIVE`,`EXPR_ID`,`NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -368,7 +368,7 @@ CREATE TABLE `tb_sys_expr_job_log` (
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`ID`,`LOG_STATUS`,`BEGIN_DATETIME`),
   KEY `IDX_2` (`CDATE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -400,7 +400,7 @@ CREATE TABLE `tb_sys_expression` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`EXPR_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -429,7 +429,7 @@ CREATE TABLE `tb_sys_icon` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ICON_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -438,7 +438,6 @@ CREATE TABLE `tb_sys_icon` (
 
 LOCK TABLES `tb_sys_icon` WRITE;
 /*!40000 ALTER TABLE `tb_sys_icon` DISABLE KEYS */;
-INSERT INTO `tb_sys_icon` VALUES ('00a11813-0fbd-481f-bab8-11bdf0df1a7e','HELP_ABOUT','help-about.png','admin','2014-09-29 00:00:00',NULL,NULL),('01a5ebc8-b79a-4960-8dac-c6543c7fa56b','REFRESH','view-refresh.png','admin','2014-09-29 00:00:00',NULL,NULL),('035d1d3b-7223-448b-a7e8-660d47c5c1a2','STOCK_HOME','stock_home.png','admin','2014-09-29 00:00:00',NULL,NULL),('140a343b-f276-49c4-9bce-69b6c1b81736','GO_LEFT','stock_left.png','admin','2014-09-29 00:00:00',NULL,NULL),('3ee47be9-dc2d-4c7f-842b-e8f807b96e4b','PDCA','pdca.png','admin','2016-04-07 11:53:39',NULL,NULL),('3f70f89b-6ef9-4112-916f-e9994519557c','SIGNATURE','text_signature.png','admin','2015-02-14 10:17:50',NULL,NULL),('4471df15-4346-4c58-9f19-572ceeca4d9d','IMPORTANT','important.png','admin','2014-09-29 00:00:00',NULL,NULL),('45cd5523-c08e-45bd-9461-67064b41052a','GWENVIEW','gwenview.png','admin','2014-09-29 00:00:00',NULL,NULL),('4b84ee11-4e89-45b0-aca2-04db58ccdfd2','DIAGRAM','x-dia-diagram.png','admin','2014-10-22 12:15:02',NULL,NULL),('4c664a5c-69cd-4e4e-8d55-050423d4e0f1','PROPERTIES','document-properties.png','admin','2014-09-29 00:00:00',NULL,NULL),('4f875ea6-6d30-4e72-ba91-56b07890325d','CHART_AREA','area_chart.png','admin','2015-01-17 12:05:49',NULL,NULL),('547c4780-4c26-4552-b5dd-f41ed3fbf6f1','REMOVE','list-remove.png','admin','2014-09-29 00:00:00',NULL,NULL),('5a5279f9-f2ab-471a-a83d-8e5e8019de90','LOCK','lock.png','admin','2014-09-29 00:00:00',NULL,NULL),('5df6aac2-03b9-45e5-b4f0-b6b549813e7d','GIMP','gimp.png','admin','2014-12-02 10:11:46',NULL,NULL),('65b10fb0-9140-4490-9d15-94148be067a8','FOLDER','folder_home.png','admin','2014-09-29 00:00:00',NULL,NULL),('7492a872-520d-48ef-bfa3-518502d48d3b','CALENDAR','xfcalendar.png','admin','2014-09-29 00:00:00',NULL,NULL),('77c3c562-b85c-4a72-b8ac-c8bc94f58df3','EXCEL','excel.png','admin','2014-09-29 00:00:00',NULL,NULL),('793989f2-4818-49d6-ab2b-44bc9ee75b43','CHART_PIE','chart-pie.png','admin','2015-01-15 22:52:29',NULL,NULL),('80d813f6-0c91-4e0b-95ef-a17bcc02e8ce','GO_FIRST','stock_first.png','admin','2014-09-29 00:00:00',NULL,NULL),('81100942-0cda-43c1-84f9-034d39ac8c58','PERSON','stock_person.png','admin','2014-09-29 00:00:00',NULL,NULL),('81959e3c-7205-4fff-8b2b-6bad5770e8c1','IMPORT','document-import.png','admin','2014-09-29 00:00:00',NULL,NULL),('92f6e3b4-e757-414f-a512-9eb53d7d7b90','INTER_ARCHIVE','internet-archive.png','admin','2014-09-29 00:00:00',NULL,NULL),('966b2e28-2168-4172-ac2d-31b429336c1c','CHART_LINE','charts-line-chart-icon.png','admin','2015-01-16 14:05:52',NULL,NULL),('9eac6e4e-3796-4e0a-b9c4-fa337d01517b','APPLICATION_PDF','application-pdf.png','admin','2014-10-30 14:26:56',NULL,NULL),('9f3b3020-b76c-4af0-ad69-7a15c4e5d022','SHARED','emblem-shared.png','admin','2014-09-29 00:00:00',NULL,NULL),('9fb99e36-6ee9-4e1c-9629-8336ede133da','PEOPLE','emblem-people.png','admin','2014-09-29 00:00:00',NULL,NULL),('a788062a-22da-4734-b63d-087f2aee32b8','FULL_SCREEN','fullscreen.png','admin','2015-08-10 21:31:30',NULL,NULL),('a9fd2f30-4960-42fd-a175-a462c6f281fb','EXPORT','document-export.png','admin','2014-09-29 00:00:00',NULL,NULL),('ad1d0d5e-111d-4020-ade4-6bcf167fed0e','WWW','www.png','admin','2014-10-22 12:14:29',NULL,NULL),('b4f3acb8-72bc-49c1-a7a5-50106181facf','SYSTEM','system-run.png','admin','2014-09-29 00:00:00',NULL,NULL),('b5d46f00-8146-4e0e-8812-6e5b56843e5b','TWITTER','twitter.png','admin','2014-12-18 19:51:48',NULL,NULL),('bbff137e-7be8-4e8f-a1d2-db41444345d3','TEXT_SOURCE','text-x-source.png','admin','2014-10-23 10:08:48',NULL,NULL),('c739a407-82d2-4e2e-be95-3df87e280bfd','COMPUTER','computer.png','admin','2014-09-29 00:00:00',NULL,NULL),('cb219bbc-db12-4765-8922-ffd76773d907','STAR','star.png','admin','2014-09-29 00:00:00',NULL,NULL),('d1727475-258b-44f6-8f4a-f36cff81fb85','GO_LAST','stock_last.png','admin','2014-09-29 00:00:00',NULL,NULL),('d1fb350e-e2f6-439a-9934-65e1b26ada3e','GO_RIGHT','stock_right.png','admin','2014-09-29 00:00:00',NULL,NULL),('d24d1ac9-bdb3-40ef-95ef-9845b47b0182','G_APP_INSTALL','gnome-app-install.png','admin','2014-09-29 00:00:00',NULL,NULL),('e5d8eec7-2063-4806-b401-5d415dbd6c25','TEMPLATE','libreoffice-template.png','admin','2014-10-21 13:40:26',NULL,NULL),('ed735416-7d0e-4df0-aa1c-7787bbc5953e','VIEW_LIST','view-list-icons.png','admin','2014-11-28 08:54:06',NULL,NULL),('f05b7819-b9ee-4409-8d2f-b9e067280acd','USERS','system-users.png','admin','2014-09-29 00:00:00',NULL,NULL),('feddb360-0b6f-4ee2-8206-b961bcb2a76d','CHART_BAR','chart-graph-2d-1.png','admin','2015-01-16 13:27:00',NULL,NULL);
 /*!40000 ALTER TABLE `tb_sys_icon` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -462,7 +461,7 @@ CREATE TABLE `tb_sys_jreport` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`REPORT_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -492,7 +491,7 @@ CREATE TABLE `tb_sys_jreport_param` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`REPORT_ID`,`RPT_PARAM`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -521,7 +520,7 @@ CREATE TABLE `tb_sys_login_log` (
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`USER`),
   KEY `IDX_2` (`CDATE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -530,6 +529,7 @@ CREATE TABLE `tb_sys_login_log` (
 
 LOCK TABLES `tb_sys_login_log` WRITE;
 /*!40000 ALTER TABLE `tb_sys_login_log` DISABLE KEYS */;
+INSERT INTO `tb_sys_login_log` VALUES ('2592967f-2217-11ee-8dd4-7b7b35819928','admin','admin','2023-07-14 15:22:10',NULL,NULL),('527b3830-21dd-11ee-804a-bf1afe098344','admin','admin','2023-07-14 08:28:15',NULL,NULL),('b5eb59df-221d-11ee-a0b9-fbd6fa4af079','admin','admin','2023-07-14 16:09:09',NULL,NULL),('d6f52873-250c-11ee-8228-8b2f00284b9c','admin','admin','2023-07-18 09:45:57',NULL,NULL),('e826dceb-1f80-11ee-b218-0d0c5d6062e6','admin','admin','2023-07-11 08:21:40',NULL,NULL);
 /*!40000 ALTER TABLE `tb_sys_login_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -560,7 +560,7 @@ CREATE TABLE `tb_sys_mail_helper` (
   UNIQUE KEY `UK_1` (`MAIL_ID`),
   KEY `IDX_1` (`MAIL_ID`),
   KEY `IDX_2` (`SUCCESS_FLAG`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -590,7 +590,7 @@ CREATE TABLE `tb_sys_menu` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`PROG_ID`,`PARENT_OID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -620,7 +620,7 @@ CREATE TABLE `tb_sys_menu_role` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`PROG_ID`,`ROLE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -659,7 +659,7 @@ CREATE TABLE `tb_sys_prog` (
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`PROG_ID`),
   KEY `IDX_1` (`PROG_SYSTEM`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -668,7 +668,7 @@ CREATE TABLE `tb_sys_prog` (
 
 LOCK TABLES `tb_sys_prog` WRITE;
 /*!40000 ALTER TABLE `tb_sys_prog` DISABLE KEYS */;
-INSERT INTO `tb_sys_prog` VALUES ('005463fd-a1f4-4e9f-89a7-bd86aedfcbdf','CORE_PROG003D0002E','ZC02 - Expression (Edit)','#/prog01','Y','N',0,0,'CORE','ITEM','TEXT_SOURCE','globe2','admin','2017-05-24 11:38:45','admin','2021-01-20 08:59:10'),('186b1fb1-749f-4b6f-97d1-6b7fb8115345','CORE_PROG001D0004E','ZA04 - Template (Edit)','#/prog01c1','Y','N',0,0,'CORE','ITEM','TEMPLATE','globe2','admin','2017-05-12 10:40:10','admin','2021-01-20 08:33:54'),('1b11c7eb-6133-48fb-87f0-dfbd098ce914','CORE_PROG001D0001E','ZA01 - System site (Edit)','#/prog01/c2/f11e322d-9126-4760-bd2b-24d78b7fa85a','Y','N',0,0,'CORE','ITEM','COMPUTER','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:20:58'),('1e393fe3-8bbc-482c-aa23-bbb22a1dbafb','CORE_PROG001D0005A','ZA05 - Report (Create)','#/prog01/c2/0000','N','N',0,0,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 09:55:46','admin','2021-01-20 08:38:47'),('22560527-90fb-4e5a-a89b-353d2aa1d433','CORE_PROG001D0005E','ZA05 - Report (Edit)','#/prog01c1','Y','N',0,0,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 09:56:27','admin','2021-01-20 08:39:00'),('23aeeb27-e4ed-498b-a233-526d58d12e88','CORE_PROG003D0006E','ZC06 - Expression Job (Edit)','#/prog01c1','Y','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-06-03 08:41:33','admin','2021-01-20 09:05:43'),('3630ee1b-6169-452f-821f-5c015dfb84d5','CORE_PROG001D','ZA. Config','','N','N',0,0,'CORE','FOLDER','PROPERTIES','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 06:54:55'),('3862b6d0-0551-45d8-8dd1-cd988a5e8e50','CORE_PROG004D0002Q','ZD02 - Login log','#/prog01','N','N',0,0,'CORE','ITEM','PROPERTIES','globe2','admin','2017-06-03 14:22:29','admin','2021-01-27 08:53:48'),('41fa29d8-3a53-4fbd-b2b1-cdbfd0729767','CORE_PROG001D0004Q','ZA04 - Template','#/prog01c1','N','N',0,0,'CORE','ITEM','TEMPLATE','globe2','admin','2017-05-12 10:36:41','admin','2021-01-20 08:33:37'),('5599c3a9-f971-432a-a8e7-807d960ef196','CORE_PROG003D0003E','ZC03 - Bean support (Edit)','#/prog01/c2/f11e322d-9126-4760-bd2b-24d78b7fa85a','Y','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:39:32','admin','2021-01-20 09:01:03'),('5e082c7c-1730-4176-89c6-93e235707deb','CORE_PROG002D0001A','ZB01 - Role (Create)','#/prog01/c2/0000','N','N',0,0,'CORE','ITEM','PEOPLE','globe2','admin','2017-05-09 11:15:50','admin','2021-01-20 08:48:15'),('61aea7ff-7a42-4a92-9a0b-4a0dfe60858b','CORE_PROG004D0001Q','ZD01 - Event log','#/prog01c1','N','N',0,0,'CORE','ITEM','PROPERTIES','globe2','admin','2017-06-03 14:22:07','admin','2021-01-27 08:53:36'),('6a442973-0e0c-4a7a-d546-464f4ff5f7a9','CORE_PROG001D0003Q','ZA03 - Menu settings','#/prog01c1','N','N',0,0,'CORE','ITEM','FOLDER','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:31:39'),('6b210525-8975-4fb5-954c-fe349f66d3fe','CORE_PROG002D0001S01Q','ZB01 - Role (permission)','#/prog01','Y','N',0,0,'CORE','ITEM','IMPORTANT','globe2','admin','2017-05-09 14:32:47','admin','2021-01-20 08:48:52'),('6b481707-31ff-422b-a45c-38724d83772c','CORE_PROG999D9999Q','About','#/prog01','N','N',0,0,'CORE','ITEM','HELP_ABOUT','globe2','admin','2017-06-05 11:02:04','admin','2021-01-27 08:53:15'),('72e6e0d1-1818-47d3-99f9-5134fb211b79','CORE_PROG002D','ZB. Role authority','','N','N',0,0,'CORE','FOLDER','SHARED','globe2','admin','2017-05-08 21:27:52','admin','2021-01-20 06:59:26'),('7746f746-961f-44c2-9b66-fa43c0f49838','CORE_PROG001D0004S01Q','ZA04 - Template (Parameter)','#/prog01','Y','N',0,0,'CORE','ITEM','TEMPLATE','globe2','admin','2017-05-12 10:42:04','admin','2021-01-20 08:36:42'),('7984332c-7963-4a02-9888-75a55b5af9f9','CORE_PROG003D0003S02Q','ZC03 - Bean support (Parameter)','#/prog01','Y','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:42:08','admin','2021-01-20 09:01:43'),('7c1e2c5e-1d62-432a-8cbb-42f550694b4b','CORE_PROG003D0006Q','ZC06 - Expression Job','#/prog01','N','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-06-03 08:40:57','admin','2021-01-20 09:05:52'),('7d9ddc45-3eab-4f61-8c0a-d5505c0cc748','CORE_PROG001D0004A','ZA04 - Template (Create)','#/prog01','N','N',0,0,'CORE','ITEM','TEMPLATE','globe2','admin','2017-05-12 10:39:20','admin','2021-01-20 08:34:10'),('8499957e-6da9-4160-c2ec-dfb7dbc202fe','CORE_PROG001D0002E','ZA02 - Program (Edit)','#/prog01','Y','N',0,0,'CORE','ITEM','G_APP_INSTALL','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:29:44'),('91a2dad4-95d2-45c3-9fda-ae0d69ad6f22','CORE_PROG003D0006A','ZC06 - Expression Job (Create)','#/prog01','N','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-06-03 08:41:15','admin','2021-01-20 09:05:30'),('ac5bcfd0-4abd-11e4-916c-0800200c9a66','CORE_PROG001D0001A','ZA01 - System site (Create)','#/prog01','N','N',0,0,'CORE','ITEM','COMPUTER','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:20:45'),('b39159ad-0707-4515-b78d-e3fc72c53974','CORE_PROG002D0001E','ZB01 - Role (Edit)','#/prog01','Y','N',0,0,'CORE','ITEM','PEOPLE','globe2','admin','2017-05-09 12:11:53','admin','2021-01-20 08:48:32'),('b3f7654a-9b35-4b9d-8cb7-bc2557869a3b','CORE_PROG004D0003Q','ZD03 - Expression Job log','#/prog01','N','N',0,0,'CORE','ITEM','PROPERTIES','globe2','admin','2017-06-03 14:22:58','admin','2021-01-27 08:53:59'),('b6b89559-6864-46ab-9ca9-0992dcf238f1','CORE_PROG001D0001Q','ZA01 - System site','#/prog01c1','N','N',0,0,'CORE','ITEM','COMPUTER','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:20:29'),('b978f706-4c5f-40f8-83b1-395492f141d4','CORE_PROG002D0001Q','ZB01 - Role','#/prog01','N','N',0,0,'CORE','ITEM','PEOPLE','globe2','admin','2017-05-08 21:32:50','admin','2021-01-20 08:47:52'),('bc97b0d4-516a-4f26-a79a-88ecc65bfe50','CORE_PROG003D0003Q','ZC03 - Bean support','#/prog01','N','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:38:42','admin','2021-01-20 09:01:17'),('bffce168-6b55-47ed-9fa3-d37666a1e9c7','CORE_PROG003D0003A','ZC03 - Bean support (Create)','#/prog01','N','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:39:07','admin','2021-01-20 09:00:46'),('c96ebde8-7044-4b05-a155-68a0c2605619','CORE_PROG002D0003Q','ZB03 - Role for menu','#/prog01','N','N',0,0,'CORE','ITEM','FOLDER','globe2','admin','2017-05-08 21:37:01','admin','2021-01-20 08:57:28'),('da0e70df-29b1-4a2e-890c-eab723c86ed6','CORE_PROG002D0001S02Q','ZB01 - Role (copy)','#/prog01','Y','Y',650,600,'CORE','ITEM','PEOPLE','globe2','admin','2017-05-09 20:56:50','admin','2021-01-20 08:49:09'),('da7d969a-5efb-4e84-9eab-4fdae236f28c','CORE_PROG002D0002Q','ZB02 - User role','#/prog01','N','N',0,0,'CORE','ITEM','PERSON','globe2','admin','2017-05-08 21:34:39','admin','2021-01-20 08:52:28'),('dda67b1d-e3a2-4534-835a-c62d9e8421f3','CORE_PROG001D0005S01Q','ZA05 - Report (Parameter)','#/prog01','Y','N',0,0,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 09:57:26','admin','2021-01-20 08:39:19'),('e32b9329-bb38-46d7-8552-2307bac77724','CORE_PROG001D0002A','ZA02 - Program (Create)','#/prog01/c2/0000','N','N',0,0,'CORE','ITEM','G_APP_INSTALL','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:29:53'),('e42f4e11-ddf2-49f5-9267-7cfed6ab1d02','CORE_PROG001D0005S02Q','ZA05 - Report (Preview)','#/prog01','Y','Y',600,600,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 10:00:04','admin','2021-01-20 08:39:34'),('e4e691f8-2cd8-444d-b412-ccdbbec029a1','CORE_PROG003D','ZC. Service','','N','N',0,0,'CORE','FOLDER','DIAGRAM','globe2','admin','2017-05-23 08:53:46','admin','2021-01-20 07:02:51'),('e86dbb1b-6870-4827-8039-72f5e15fa4f2','CORE_PROG004D','ZD. Log','','N','N',0,0,'CORE','FOLDER','PROPERTIES','globe2','admin','2017-06-03 14:21:03','admin','2021-01-20 07:05:05'),('eb6e199f-c853-4fbf-acf3-0c9c77ba9953','CORE_PROG001D0002Q','ZA02 - Program','#/prog01','N','N',0,0,'CORE','ITEM','G_APP_INSTALL','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:29:34'),('eb786ffd-c7d1-4631-aed2-4d9d7368eb13','CORE_PROG001D0005Q','ZA05 - Report','#/prog01','N','N',0,0,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 09:54:35','admin','2021-01-20 08:38:34'),('edf4ab8c-df86-4ef0-91f6-c2ddcc6e8f7d','CORE_PROG003D0002A','ZC02 - Expression (Create)','#/prog01','N','N',0,0,'CORE','ITEM','TEXT_SOURCE','globe2','admin','2017-05-24 11:38:27','admin','2021-01-20 08:59:25'),('ef6963fe-171e-4ebe-ae24-aef7388fccce','CORE_PROG001D0007Q','ZA07 - Setting','#/prog01','N','N',0,0,'CORE','ITEM','PROPERTIES','globe2','admin','2017-06-05 09:54:48','admin','2021-01-20 08:46:38'),('fa1e4078-638f-41e6-82d4-77ef92e76374','CORE_PROG003D0002Q','ZC02 - Expression','#/prog01','N','N',0,0,'CORE','ITEM','TEXT_SOURCE','globe2','admin','2017-05-24 11:38:04','admin','2021-01-20 08:58:41'),('fee6533d-da1c-444b-aec9-6d4f81fa051d','CORE_PROG003D0003S01Q','ZC03 - Bean support (Expression)','#/prog01','Y','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:41:46','admin','2021-01-20 09:01:29');
+INSERT INTO `tb_sys_prog` VALUES ('005463fd-a1f4-4e9f-89a7-bd86aedfcbdf','CORE_PROG003D0002E','ZC02 - Expression (Edit)','#/prog01','Y','N',0,0,'CORE','ITEM','TEXT_SOURCE','globe2','admin','2017-05-24 11:38:45','admin','2021-01-20 08:59:10'),('186b1fb1-749f-4b6f-97d1-6b7fb8115345','CORE_PROG001D0004E','ZA04 - Template (Edit)','#/prog01c1','Y','N',0,0,'CORE','ITEM','TEMPLATE','globe2','admin','2017-05-12 10:40:10','admin','2021-01-20 08:33:54'),('1b11c7eb-6133-48fb-87f0-dfbd098ce914','CORE_PROG001D0001E','ZA01 - System site (Edit)','#/prog01/c2/f11e322d-9126-4760-bd2b-24d78b7fa85a','Y','N',0,0,'CORE','ITEM','COMPUTER','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:20:58'),('1e393fe3-8bbc-482c-aa23-bbb22a1dbafb','CORE_PROG001D0005A','ZA05 - Report (Create)','#/prog01/c2/0000','N','N',0,0,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 09:55:46','admin','2021-01-20 08:38:47'),('22560527-90fb-4e5a-a89b-353d2aa1d433','CORE_PROG001D0005E','ZA05 - Report (Edit)','#/prog01c1','Y','N',0,0,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 09:56:27','admin','2021-01-20 08:39:00'),('23aeeb27-e4ed-498b-a233-526d58d12e88','CORE_PROG003D0006E','ZC06 - Expression Job (Edit)','#/prog01c1','Y','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-06-03 08:41:33','admin','2021-01-20 09:05:43'),('3630ee1b-6169-452f-821f-5c015dfb84d5','CORE_PROG001D','ZA. Config','','N','N',0,0,'CORE','FOLDER','PROPERTIES','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 06:54:55'),('3862b6d0-0551-45d8-8dd1-cd988a5e8e50','CORE_PROG004D0002Q','ZD02 - Login log','#/prog01','N','N',0,0,'CORE','ITEM','PROPERTIES','globe2','admin','2017-06-03 14:22:29','admin','2021-01-27 08:53:48'),('41fa29d8-3a53-4fbd-b2b1-cdbfd0729767','CORE_PROG001D0004Q','ZA04 - Template','#/prog01/c2/0000','N','N',0,0,'CORE','ITEM','TEMPLATE','globe2','admin','2017-05-12 10:36:41','admin','2021-01-20 08:33:37'),('5599c3a9-f971-432a-a8e7-807d960ef196','CORE_PROG003D0003E','ZC03 - Bean support (Edit)','#/prog01/c2/f11e322d-9126-4760-bd2b-24d78b7fa85a','Y','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:39:32','admin','2021-01-20 09:01:03'),('5e082c7c-1730-4176-89c6-93e235707deb','CORE_PROG002D0001A','ZB01 - Role (Create)','#/prog01/c2/0000','N','N',0,0,'CORE','ITEM','PEOPLE','globe2','admin','2017-05-09 11:15:50','admin','2021-01-20 08:48:15'),('61aea7ff-7a42-4a92-9a0b-4a0dfe60858b','CORE_PROG004D0001Q','ZD01 - Event log','#/prog01c1','N','N',0,0,'CORE','ITEM','PROPERTIES','globe2','admin','2017-06-03 14:22:07','admin','2021-01-27 08:53:36'),('6a442973-0e0c-4a7a-d546-464f4ff5f7a9','CORE_PROG001D0003Q','ZA03 - Menu settings','#/prog01/c2/f11e322d-9126-4760-bd2b-24d78b7fa85a','N','N',0,0,'CORE','ITEM','FOLDER','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:31:39'),('6b210525-8975-4fb5-954c-fe349f66d3fe','CORE_PROG002D0001S01Q','ZB01 - Role (permission)','#/prog01','Y','N',0,0,'CORE','ITEM','IMPORTANT','globe2','admin','2017-05-09 14:32:47','admin','2021-01-20 08:48:52'),('6b481707-31ff-422b-a45c-38724d83772c','CORE_PROG999D9999Q','About','#/prog01','N','N',0,0,'CORE','ITEM','HELP_ABOUT','globe2','admin','2017-06-05 11:02:04','admin','2021-01-27 08:53:15'),('72e6e0d1-1818-47d3-99f9-5134fb211b79','CORE_PROG002D','ZB. Role authority','','N','N',0,0,'CORE','FOLDER','SHARED','globe2','admin','2017-05-08 21:27:52','admin','2021-01-20 06:59:26'),('7746f746-961f-44c2-9b66-fa43c0f49838','CORE_PROG001D0004S01Q','ZA04 - Template (Parameter)','#/prog01','Y','N',0,0,'CORE','ITEM','TEMPLATE','globe2','admin','2017-05-12 10:42:04','admin','2021-01-20 08:36:42'),('7984332c-7963-4a02-9888-75a55b5af9f9','CORE_PROG003D0003S02Q','ZC03 - Bean support (Parameter)','#/prog01','Y','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:42:08','admin','2021-01-20 09:01:43'),('7c1e2c5e-1d62-432a-8cbb-42f550694b4b','CORE_PROG003D0006Q','ZC06 - Expression Job','#/prog01','N','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-06-03 08:40:57','admin','2021-01-20 09:05:52'),('7d9ddc45-3eab-4f61-8c0a-d5505c0cc748','CORE_PROG001D0004A','ZA04 - Template (Create)','#/prog01','N','N',0,0,'CORE','ITEM','TEMPLATE','globe2','admin','2017-05-12 10:39:20','admin','2021-01-20 08:34:10'),('8499957e-6da9-4160-c2ec-dfb7dbc202fe','CORE_PROG001D0002E','ZA02 - Program (Edit)','#/prog01','Y','N',0,0,'CORE','ITEM','G_APP_INSTALL','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:29:44'),('91a2dad4-95d2-45c3-9fda-ae0d69ad6f22','CORE_PROG003D0006A','ZC06 - Expression Job (Create)','#/prog01','N','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-06-03 08:41:15','admin','2021-01-20 09:05:30'),('ac5bcfd0-4abd-11e4-916c-0800200c9a66','CORE_PROG001D0001A','ZA01 - System site (Create)','#/prog01','N','N',0,0,'CORE','ITEM','COMPUTER','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:20:45'),('b39159ad-0707-4515-b78d-e3fc72c53974','CORE_PROG002D0001E','ZB01 - Role (Edit)','#/prog01','Y','N',0,0,'CORE','ITEM','PEOPLE','globe2','admin','2017-05-09 12:11:53','admin','2021-01-20 08:48:32'),('b3f7654a-9b35-4b9d-8cb7-bc2557869a3b','CORE_PROG004D0003Q','ZD03 - Expression Job log','#/prog01','N','N',0,0,'CORE','ITEM','PROPERTIES','globe2','admin','2017-06-03 14:22:58','admin','2021-01-27 08:53:59'),('b6b89559-6864-46ab-9ca9-0992dcf238f1','CORE_PROG001D0001Q','ZA01 - System site','#/prog01','N','N',0,0,'CORE','ITEM','COMPUTER','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:20:29'),('b978f706-4c5f-40f8-83b1-395492f141d4','CORE_PROG002D0001Q','ZB01 - Role','#/prog01','N','N',0,0,'CORE','ITEM','PEOPLE','globe2','admin','2017-05-08 21:32:50','admin','2021-01-20 08:47:52'),('bc97b0d4-516a-4f26-a79a-88ecc65bfe50','CORE_PROG003D0003Q','ZC03 - Bean support','#/prog01','N','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:38:42','admin','2021-01-20 09:01:17'),('bffce168-6b55-47ed-9fa3-d37666a1e9c7','CORE_PROG003D0003A','ZC03 - Bean support (Create)','#/prog01','N','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:39:07','admin','2021-01-20 09:00:46'),('c96ebde8-7044-4b05-a155-68a0c2605619','CORE_PROG002D0003Q','ZB03 - Role for menu','#/prog01','N','N',0,0,'CORE','ITEM','FOLDER','globe2','admin','2017-05-08 21:37:01','admin','2021-01-20 08:57:28'),('da0e70df-29b1-4a2e-890c-eab723c86ed6','CORE_PROG002D0001S02Q','ZB01 - Role (copy)','#/prog01','Y','Y',650,600,'CORE','ITEM','PEOPLE','globe2','admin','2017-05-09 20:56:50','admin','2021-01-20 08:49:09'),('da7d969a-5efb-4e84-9eab-4fdae236f28c','CORE_PROG002D0002Q','ZB02 - User role','#/prog01','N','N',0,0,'CORE','ITEM','PERSON','globe2','admin','2017-05-08 21:34:39','admin','2021-01-20 08:52:28'),('dda67b1d-e3a2-4534-835a-c62d9e8421f3','CORE_PROG001D0005S01Q','ZA05 - Report (Parameter)','#/prog01','Y','N',0,0,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 09:57:26','admin','2021-01-20 08:39:19'),('e32b9329-bb38-46d7-8552-2307bac77724','CORE_PROG001D0002A','ZA02 - Program (Create)','#/prog01/c2/0000','N','N',0,0,'CORE','ITEM','G_APP_INSTALL','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:29:53'),('e42f4e11-ddf2-49f5-9267-7cfed6ab1d02','CORE_PROG001D0005S02Q','ZA05 - Report (Preview)','#/prog01','Y','Y',600,600,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 10:00:04','admin','2021-01-20 08:39:34'),('e4e691f8-2cd8-444d-b412-ccdbbec029a1','CORE_PROG003D','ZC. Service','','N','N',0,0,'CORE','FOLDER','DIAGRAM','globe2','admin','2017-05-23 08:53:46','admin','2021-01-20 07:02:51'),('e86dbb1b-6870-4827-8039-72f5e15fa4f2','CORE_PROG004D','ZD. Log','','N','N',0,0,'CORE','FOLDER','PROPERTIES','globe2','admin','2017-06-03 14:21:03','admin','2021-01-20 07:05:05'),('eb6e199f-c853-4fbf-acf3-0c9c77ba9953','CORE_PROG001D0002Q','ZA02 - Program','#/prog01c1','N','N',0,0,'CORE','ITEM','G_APP_INSTALL','globe2','admin','2014-10-02 00:00:00','admin','2021-01-20 08:29:34'),('eb786ffd-c7d1-4631-aed2-4d9d7368eb13','CORE_PROG001D0005Q','ZA05 - Report','#/name','N','N',0,0,'CORE','ITEM','APPLICATION_PDF','globe2','admin','2017-05-18 09:54:35','admin','2021-01-20 08:38:34'),('edf4ab8c-df86-4ef0-91f6-c2ddcc6e8f7d','CORE_PROG003D0002A','ZC02 - Expression (Create)','#/prog01','N','N',0,0,'CORE','ITEM','TEXT_SOURCE','globe2','admin','2017-05-24 11:38:27','admin','2021-01-20 08:59:25'),('ef6963fe-171e-4ebe-ae24-aef7388fccce','CORE_PROG001D0007Q','ZA07 - Setting','#/prog01','N','N',0,0,'CORE','ITEM','PROPERTIES','globe2','admin','2017-06-05 09:54:48','admin','2021-01-20 08:46:38'),('fa1e4078-638f-41e6-82d4-77ef92e76374','CORE_PROG003D0002Q','ZC02 - Expression','#/prog01','N','N',0,0,'CORE','ITEM','TEXT_SOURCE','globe2','admin','2017-05-24 11:38:04','admin','2021-01-20 08:58:41'),('fee6533d-da1c-444b-aec9-6d4f81fa051d','CORE_PROG003D0003S01Q','ZC03 - Bean support (Expression)','#/prog01','Y','N',0,0,'CORE','ITEM','SYSTEM','globe2','admin','2017-05-25 10:41:46','admin','2021-01-20 09:01:29');
 /*!40000 ALTER TABLE `tb_sys_prog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -694,7 +694,7 @@ CREATE TABLE `tb_sys_qfield_log` (
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`SYSTEM`,`PROG_ID`),
   KEY `IDX_2` (`QUERY_USER_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -725,7 +725,7 @@ CREATE TABLE `tb_sys_template` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`TEMPLATE_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -756,7 +756,7 @@ CREATE TABLE `tb_sys_template_param` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`TEMPLATE_ID`,`TEMPLATE_VAR`,`IS_TITLE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -785,7 +785,7 @@ CREATE TABLE `tb_sys_token` (
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`USER_ID`),
   KEY `IDX_2` (`TOKEN`(1024))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -819,7 +819,7 @@ CREATE TABLE `tb_sys_upload` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   KEY `IDX_1` (`SYSTEM`,`TYPE`,`SUB_DIR`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -850,7 +850,7 @@ CREATE TABLE `tb_sys_usess` (
   PRIMARY KEY (`OID`,`SESSION_ID`),
   UNIQUE KEY `UK_1` (`ACCOUNT`,`SESSION_ID`),
   KEY `IDX_1` (`CURRENT_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -880,7 +880,7 @@ CREATE TABLE `tb_user_role` (
   `UDATE` datetime DEFAULT NULL,
   PRIMARY KEY (`OID`),
   UNIQUE KEY `UK_1` (`ROLE`,`ACCOUNT`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -902,4 +902,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-10 20:14:13
+-- Dump completed on 2023-07-19  8:43:43
