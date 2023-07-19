@@ -45,6 +45,10 @@ public class LdapLoginConfigProperties {
 	private String authSearchBase;
 	
 	private String javaNamingReferral;
+	
+	private String pooled;
+	
+	private String ignorePartialResultException;
 
 	public String getLoginEnable() {
 		return loginEnable;
@@ -108,6 +112,22 @@ public class LdapLoginConfigProperties {
 
 	public void setJavaNamingReferral(String javaNamingReferral) {
 		this.javaNamingReferral = javaNamingReferral;
+	}
+
+	public String getPooled() {
+		return pooled;
+	}
+
+	public void setPooled(String pooled) {
+		this.pooled = pooled;
+	}
+
+	public String getIgnorePartialResultException() {
+		return ignorePartialResultException;
+	}
+
+	public void setIgnorePartialResultException(String ignorePartialResultException) {
+		this.ignorePartialResultException = ignorePartialResultException;
 	}
 	
 }

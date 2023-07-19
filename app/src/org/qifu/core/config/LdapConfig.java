@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.qifu.base.model.YesNo;
 import org.qifu.base.properties.LdapLoginConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -50,12 +51,18 @@ public class LdapConfig {
     	contextSource.setBase( ldapLoginConfigProperties.getContextBase() );
     	contextSource.setUserDn( ldapLoginConfigProperties.getContextUserDn() );
     	contextSource.setPassword( ldapLoginConfigProperties.getContextPassword() );
+    	if (YesNo.YES.equals( ldapLoginConfigProperties.getPooled() )) {
+    		contextSource.setPooled(true);
+    	}
     	return contextSource;
     }
     
     @Bean
     public LdapTemplate ldapTemplate() {
     	LdapTemplate template = new LdapTemplate(contextSource());
+    	if (YesNo.YES.equals( ldapLoginConfigProperties.getIgnorePartialResultException() )) {
+    		template.setIgnorePartialResultException(true);
+    	}    	
     	return template;
     }
     
