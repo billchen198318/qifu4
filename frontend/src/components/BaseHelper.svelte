@@ -1,4 +1,12 @@
 <script context="module">
+    import { _user } from '../store/userStore.js';
+
+    let userData;
+	_user.subscribe(value => {
+		userData = value;
+    });
+
+
     let _q4urt_var = import.meta.env.VITE_CK_HEAD_NAME + '_qifu4_urt';
     let _q4uat_var = import.meta.env.VITE_CK_HEAD_NAME + '_qifu4_uat';
 
@@ -68,46 +76,55 @@
         return request;
     }    
 
-    
-
-    /*
-    export function postData(apiPath, jsonParam, thenFn, catchFn) {
-
-        fetch(import.meta.env.VITE_API_URL + apiPath,{
-            method: "POST",
-            headers: {
-                "Content-Type" : "application/json",
-                "Authorization" : "Bearer " + getAccessTokenCookie()
-            },
-            body: JSON.stringify(jsonParam),
-            signal: AbortSignal.timeout(import.meta.env.VITE_FETCH_TIMEOUT)
-        }).then(response => {
-            if (response.ok) {
-                // { "success":"N","message":"Please login!","login":"N","isAuthorize":"N" }
+    export function tokenRefreshMiddleware(response) {
+        var refreshTokenFlag = false;
+        if (response.status === 401) {
+            refreshTokenFlag = true;
+        }
+        const access_token = getAccessTokenCookie();
+        const refresh_token = getRefreshTokenCookie();
+        if (response.status === 200) {            
+            if (null != access_token && '' != access_token) {
                 var res = response.json();
-                if (res != null) {
-                    if ('login' in res) {
-                        if ('Y' != res.login) {
-
-                        }
-                    }
-                    if ('isAuthorize' in res) {
-                        if ('Y' != res.isAuthorize) {
-
-                        }
+                if ('login' in res) {
+                    if ('Y' != res.login) {
+                        refreshTokenFlag = true;
                     }
                 }
-                return res;
+                if ('isAuthorize' in res) {
+                    if ('Y' != res.isAuthorize) {
+                        refreshTokenFlag = true;
+                    }
+                }
             }
-            throw new Error( response.status + ' ' + response.statusText );
-        }).then(responseJson => {
-            //thenFn(responseJson)
-        }).catch((error) => {
-            //catchFn(error);
-        });
-
+        }
+        if (refreshTokenFlag) {
+            return fetch(import.meta.env.VITE_API_URL + '/auth/refreshToken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'access_token'  :   access_token,
+                    'refresh_token' :   refresh_token
+                })
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Refresh Token failed');                
+            }).then(data => {                               
+                _user.update((val) => { return response; } );
+                setRefreshAndAccessTokenCookie(data.refreshToken, data.accessToken);
+                return Promise.resolve('refreshed');
+            }).catch(error => {
+                userLogoutClearCookie();
+                return Promise.reject(error);
+            });     
+        }
+        return Promise.resolve('ok');
     }
-    */
+
 
 
     /*
