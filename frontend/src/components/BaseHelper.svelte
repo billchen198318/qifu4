@@ -1,4 +1,5 @@
 <script context="module">
+    import axios from "axios";
     import { _user } from '../store/userStore.js';
 
     let userData;
@@ -70,6 +71,12 @@
         return false;
     }
 
+
+    // https://zhuanlan.zhihu.com/p/80125501
+    // 改用 axios
+    
+
+    /*
     export function authMiddleware(request) {
         const access_token = getAccessTokenCookie();
         request.headers.set('Authorization', `Bearer ${access_token}`);
@@ -130,6 +137,7 @@
         }
         return Promise.resolve('ok');
     }
+    */
 
 
 

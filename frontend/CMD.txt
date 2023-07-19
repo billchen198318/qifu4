@@ -6,6 +6,7 @@ pnpm i
 #pnpm i @zerodevx/svelte-toast
 #pnpm i bootstrap
 #pnpm i bootstrap-icons
+#pnpm i axios
 #npm run build
 
 
