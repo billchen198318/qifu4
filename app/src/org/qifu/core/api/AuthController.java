@@ -12,7 +12,9 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
+import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.message.BaseSystemMessage;
 import org.qifu.base.model.RolePermissionAttr;
 import org.qifu.base.model.TokenBuilderVariable;
 import org.qifu.base.model.YesNo;
@@ -178,5 +180,38 @@ public class AuthController {
 	    return ResponseEntity.ok() /* .header(HttpHeaders.SET_COOKIE, tbv.getAccess()) */
 	            .body(user);
 	}
+	
+	@PostMapping("/refreshNewToken")
+	public ResponseEntity<LoginRequest> refreshNewToken(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+		TokenBuilderVariable tbv = null;
+		TokenStoreValidateBuilder tsv = null;
+		LoginRequest res = new LoginRequest();
+	    try {
+	    	if (StringUtils.isBlank(loginRequest.getAccessToken()) || StringUtils.isBlank(loginRequest.getRefreshToken())) {
+	    		throw new ControllerException( BaseSystemMessage.parameterBlank() );
+	    	}
+	    	tsv = TokenStoreValidateBuilder.build(this.dataSource);
+	    	if (TokenBuilderUtils.verifyRefresh(loginRequest.getRefreshToken(), tsv)) {
+			    TbSysCode sysCode = new TbSysCode();
+			    sysCode.setCode(Constants.SYSCODE_TOKEN_CODE);	
+			    sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
+			    if (null != sysCode && Constants.SYSCODE_TOKEN_TYPE.equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {
+			    	tbv = TokenBuilderUtils.createToken(loginRequest.getUsername(), Constants.TOKEN_Authorization, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
+			    	res.setAccessToken(tbv.getAccess());
+			    	res.setRefreshToken(tbv.getRefresh());
+			    	res.setUsername(loginRequest.getUsername());
+			    }
+	    	}
+	    } catch (AuthenticationException e) {
+	    	e.printStackTrace();
+	    	throw e;
+		} catch (ControllerException | ServiceException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	    return ResponseEntity.ok().body(res);
+	}	
 	
 }

@@ -99,24 +99,30 @@
             }
         }
         if (refreshTokenFlag) {
-            return fetch(import.meta.env.VITE_API_URL + '/auth/refreshToken', {
+            return fetch(import.meta.env.VITE_API_URL + '/auth/refreshNewToken', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    'access_token'  :   access_token,
-                    'refresh_token' :   refresh_token
+                    'accessToken'  :   access_token,
+                    'refreshToken' :   refresh_token,
+                    'username'     :   userData.username
                 })
             }).then(response => {
                 if (response.ok) {
                     return response.json();
                 }
                 throw new Error('Refresh Token failed');                
-            }).then(data => {                               
-                _user.update((val) => { return response; } );
-                setRefreshAndAccessTokenCookie(data.refreshToken, data.accessToken);
-                return Promise.resolve('refreshed');
+            }).then(data => {                       
+                if ('username' in data) {
+                    _user.update(state => ({...state, accessToken : data.accessToken}));
+                    _user.update(state => ({...state, refreshToken : data.refreshToken}));
+                    setRefreshAndAccessTokenCookie(data.refreshToken, data.accessToken);
+                    return Promise.resolve('refreshed');
+                } else {
+                    return Promise.reject(data);
+                }
             }).catch(error => {
                 userLogoutClearCookie();
                 return Promise.reject(error);
