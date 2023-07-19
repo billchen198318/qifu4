@@ -62,6 +62,14 @@
         return false;
     }
 
+    export function authMiddleware(request) {
+        const access_token = getAccessTokenCookie();
+        request.headers.set('Authorization', `Bearer ${access_token}`);
+        return request;
+    }    
+
+    
+
     /*
     export function postData(apiPath, jsonParam, thenFn, catchFn) {
 
@@ -101,7 +109,7 @@
     }
     */
 
-    
+
     /*
 function authMiddleware(request) {
   const access_token = localStorage.getItem('access_token');
