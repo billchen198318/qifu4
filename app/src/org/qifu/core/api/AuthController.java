@@ -187,11 +187,11 @@ public class AuthController {
 		TokenStoreValidateBuilder tsv = null;
 		LoginRequest res = new LoginRequest();
 	    try {
-	    	if (StringUtils.isBlank(loginRequest.getAccessToken()) || StringUtils.isBlank(loginRequest.getRefreshToken())) {
+	    	if (StringUtils.isBlank(loginRequest.getAccessToken()) || StringUtils.isBlank(loginRequest.getRefreshToken()) || StringUtils.isBlank(loginRequest.getUsername())) {
 	    		throw new ControllerException( BaseSystemMessage.parameterBlank() );
 	    	}
 	    	tsv = TokenStoreValidateBuilder.build(this.dataSource);
-	    	if (TokenBuilderUtils.verifyRefresh(loginRequest.getRefreshToken(), tsv)) {
+	    	if (tsv.refreshValidate(loginRequest.getRefreshToken(), loginRequest.getUsername())) {
 			    TbSysCode sysCode = new TbSysCode();
 			    sysCode.setCode(Constants.SYSCODE_TOKEN_CODE);	
 			    sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
