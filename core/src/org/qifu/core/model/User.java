@@ -37,15 +37,15 @@ import java.util.List;
 public class User extends BaseUserInfo implements UserDetails {
 	private static final long serialVersionUID = 8145283038236989680L;
 	
-	private String oid;
+	//private String oid;
     private String username;
     private String password;
     private List<UserRoleAndPermission> roles;
     private String onJob;
     private String byLdap = YesNo.NO;
 
-    public User(String oid, String username, String password, String onJob, List<UserRoleAndPermission> roles) {
-    	this.oid = oid;
+    public User(/*String oid,*/ String username, String password, String onJob, List<UserRoleAndPermission> roles) {
+    	//this.oid = oid;
         this.username = username;
         this.password = password;
         this.onJob = onJob;
@@ -53,8 +53,8 @@ public class User extends BaseUserInfo implements UserDetails {
         this.setUserId( this.username );
     }
     
-    public User(String oid, String username, String password, String onJob) {
-    	this.oid = oid;
+    public User(/*String oid,*/ String username, String password, String onJob) {
+    	//this.oid = oid;
         this.username = username;
         this.password = password;
         this.onJob = onJob;
@@ -112,7 +112,8 @@ public class User extends BaseUserInfo implements UserDetails {
     public boolean isEnabled() {
         return (YesNo.YES.equals(this.onJob) ? true : false);
     }
-
+    
+    /*
 	public String getOid() {
 		return oid;
 	}
@@ -120,6 +121,7 @@ public class User extends BaseUserInfo implements UserDetails {
 	public void setOid(String oid) {
 		this.oid = oid;
 	}	
+	*/
 	
 	public List<UserRoleAndPermission> getRoles() {
 		return roles;

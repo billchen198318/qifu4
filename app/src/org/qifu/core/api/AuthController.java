@@ -109,7 +109,7 @@ public class AuthController {
 						TbAccount acc = new TbAccount();
 						acc.setAccount(userId);
 						acc = accountService.selectByUniqueKey(acc).getValueEmptyThrowMessage();						
-						user.setOid( acc.getOid() );						
+						//user.setOid( acc.getOid() );						
 						user.setAccessToken(loginRequest.getAccessToken());
 						user.setRefreshToken(loginRequest.getRefreshToken());
 					}	    			
@@ -125,7 +125,8 @@ public class AuthController {
 			e.printStackTrace();
 		}		
 	    if (null == user) {
-	    	user = new User("", "", "", YesNo.NO);
+	    	//user = new User("", "", "", YesNo.NO);
+	    	user = new User("", "", YesNo.NO);
 	    	user.setAccessToken("");
 	    	user.setRefreshToken("");
 	    }	    
@@ -164,7 +165,8 @@ public class AuthController {
 			e.printStackTrace();
 		}		
 	    if (null == user) {
-	    	user = new User("", "", "", YesNo.NO);
+	    	//user = new User("", "", "", YesNo.NO);
+	    	user = new User("", "", YesNo.NO);
 	    	user.setAccessToken("");
 	    	user.setRefreshToken("");	    	
 	    }

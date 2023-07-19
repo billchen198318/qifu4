@@ -21,18 +21,25 @@
  */
 package org.qifu.core.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.mapper.IBaseMapper;
 import org.qifu.base.message.BaseSystemMessage;
 import org.qifu.base.model.DefaultResult;
+import org.qifu.base.model.YesNo;
+import org.qifu.base.properties.BaseInfoConfigProperties;
 import org.qifu.base.service.BaseService;
 import org.qifu.core.entity.TbSysMenu;
 import org.qifu.core.mapper.TbSysMenuMapper;
+import org.qifu.core.model.MenuItemType;
 import org.qifu.core.service.ISysMenuService;
 import org.qifu.core.vo.SysMenuVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +55,9 @@ public class SysMenuServiceImpl extends BaseService<TbSysMenu, String> implement
 	
 	@Autowired
 	TbSysMenuMapper tbSysMenuMapper;
+	
+	@Autowired
+	BaseInfoConfigProperties baseInfoConfigProperties;	
 
 	@Override
 	protected IBaseMapper<TbSysMenu, String> getBaseMapper() {
@@ -73,6 +83,79 @@ public class SysMenuServiceImpl extends BaseService<TbSysMenu, String> implement
 			result.setMessage(BaseSystemMessage.searchNoData());
 		}
 		return result;
+	}
+
+	@Override
+	public List<Map<String, Object>> getMemuItemListForFrontend(String account) throws ServiceException, Exception {
+		List<SysMenuVO> menuList = this.findForMenuGenerator(baseInfoConfigProperties.getMainSystem(), account).getValueEmptyThrowMessage();
+		if (CollectionUtils.isEmpty(menuList)) {
+			throw new ServiceException(BaseSystemMessage.searchNoData());
+		}
+		List<Map<String, Object>> menuTreeList = new ArrayList<Map<String, Object>>();		
+		List<SysMenuVO> parentSysMenuList = searchFolder(menuList);
+		for (SysMenuVO pMenu : parentSysMenuList) {
+			List<SysMenuVO> childSysMenuList = searchItem(pMenu.getOid(), menuList);
+			if (CollectionUtils.isEmpty(childSysMenuList)) {
+				continue;
+			}
+			Map<String, Object> menuMap = new LinkedHashMap<String, Object>();					
+			menuMap.put("id", pMenu.getProgId());
+			menuMap.put("type", pMenu.getItemType());
+			menuMap.put("name", pMenu.getName());
+			menuMap.put("icon", pMenu.getFontIconClassId());			
+			
+			List<Map<String, String>> menuItemList = new LinkedList<Map<String, String>>();			
+			menuMap.put("items", menuItemList);
+			
+			for (SysMenuVO cMenu : childSysMenuList) {
+				Map<String, String> cItemMap = new HashMap<String, String>();
+				cItemMap.put("id", cMenu.getProgId());
+				cItemMap.put("type", cMenu.getItemType());
+				cItemMap.put("name", cMenu.getName());
+				cItemMap.put("icon", cMenu.getFontIconClassId());
+				cItemMap.put("url", cMenu.getUrl());
+				menuItemList.add(cItemMap);
+			}
+			
+			menuTreeList.add(menuMap);	
+		}		
+		return menuTreeList;
+	}
+	
+	/**
+	 * 取是目錄選單的資料
+	 * 
+	 * @param sysMenuList
+	 * @return
+	 * @throws Exception
+	 */
+	protected static List<SysMenuVO> searchFolder(List<SysMenuVO> sysMenuList) throws Exception {
+		List<SysMenuVO> folderList = new ArrayList<SysMenuVO>();
+		for (SysMenuVO sysMenu : sysMenuList) {
+			if (MenuItemType.FOLDER.equals(sysMenu.getItemType()) && YesNo.YES.equals(sysMenu.getEnableFlag()) ) {
+				folderList.add(sysMenu);
+			}
+		}
+		return folderList;
+	}		
+	
+	/**
+	 * 取目錄下的選單項目
+	 * 
+	 * @param parentOid
+	 * @param sysMenuList
+	 * @return
+	 * @throws Exception
+	 */
+	protected static List<SysMenuVO> searchItem(String parentOid, List<SysMenuVO> sysMenuList) throws Exception {
+		List<SysMenuVO> folderList = new ArrayList<SysMenuVO>();
+		for (SysMenuVO sysMenu : sysMenuList) {
+			if (MenuItemType.ITEM.equals(sysMenu.getItemType()) && parentOid.equals(sysMenu.getParentOid())
+					&& YesNo.YES.equals(sysMenu.getEnableFlag()) ) {
+				folderList.add(sysMenu);
+			}
+		}
+		return folderList;
 	}
 	
 }

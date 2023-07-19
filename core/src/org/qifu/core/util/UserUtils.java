@@ -31,7 +31,6 @@ import org.qifu.base.model.BaseUserInfo;
 import org.qifu.base.model.RolePermissionAttr;
 import org.qifu.base.model.UserRoleAndPermission;
 import org.qifu.base.model.YesNo;
-import org.qifu.base.model.ZeroKeyProvide;
 import org.qifu.base.util.UserLocalUtils;
 import org.qifu.core.model.User;
 import org.springframework.security.core.Authentication;
@@ -50,7 +49,8 @@ public class UserUtils {
 		backgroundUserRole2.setRole(Constants.SUPER_ROLE_ALL);
 		backgroundRoleList.add(backgroundUserRole1);
 		backgroundRoleList.add(backgroundUserRole2);
-		backgroundUser = new User(ZeroKeyProvide.OID_KEY, Constants.SYSTEM_BACKGROUND_USER, "", YesNo.YES, backgroundRoleList);
+		//backgroundUser = new User(ZeroKeyProvide.OID_KEY, Constants.SYSTEM_BACKGROUND_USER, "", YesNo.YES, backgroundRoleList);
+		backgroundUser = new User(Constants.SYSTEM_BACKGROUND_USER, "", YesNo.YES, backgroundRoleList);
 	}
 	
 	public static User setUserInfoForUserLocalUtils() {
@@ -62,14 +62,16 @@ public class UserUtils {
 	}
 	
 	public static User setUserInfoForUserLocalUtils(String accountId) {
-		User userInfo = new User(ZeroKeyProvide.OID_KEY , accountId , "" , YesNo.YES);
+		//User userInfo = new User(ZeroKeyProvide.OID_KEY , accountId , "" , YesNo.YES);
+		User userInfo = new User(accountId , "" , YesNo.YES);
 		userInfo.setUserId(accountId);
 		UserLocalUtils.setUserInfo(userInfo);
 		return userInfo;
 	}	
 	
 	public static User setUserInfoForUserLocalUtils(String accountId, List<String> roleIds) {
-		User userInfo = new User(ZeroKeyProvide.OID_KEY , accountId , "" , YesNo.YES);
+		//User userInfo = new User(ZeroKeyProvide.OID_KEY , accountId , "" , YesNo.YES);
+		User userInfo = new User(accountId , "" , YesNo.YES);
 		userInfo.setUserId(accountId);
 		if (userInfo.getRoles() == null) {
 			userInfo.setRoles(new ArrayList<UserRoleAndPermission>());
@@ -120,7 +122,8 @@ public class UserUtils {
 			if (backgroundUser != null) {
 				return backgroundUser;
 			}
-			return new User(ZeroKeyProvide.OID_KEY, Constants.SYSTEM_BACKGROUND_USER, "", YesNo.YES, backgroundRoleList);
+			//return new User(ZeroKeyProvide.OID_KEY, Constants.SYSTEM_BACKGROUND_USER, "", YesNo.YES, backgroundRoleList);
+			return new User(Constants.SYSTEM_BACKGROUND_USER, "", YesNo.YES, backgroundRoleList);
 		}
 		// 2021-08-26 move , for META-INF/resource/create-user-data-ldap-mode.groovy and some background job.
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -130,6 +133,9 @@ public class UserUtils {
 		
 		// 2021-10-31 add , for JWT token USER_ID info
 		if ( UserLocalUtils.getUserInfo() != null ) {
+			if ( UserLocalUtils.getUserInfo() instanceof User ) {
+				return (User) UserLocalUtils.getUserInfo();
+			}
 			if ( UserLocalUtils.getUserInfo() instanceof BaseUserInfo ) {
 				BaseUserInfo userInfo = (BaseUserInfo) UserLocalUtils.getUserInfo();
 				
@@ -150,7 +156,8 @@ public class UserUtils {
 					currentRoleList.add(ur);
 				}
 				*/
-				return new User(ZeroKeyProvide.OID_KEY, userInfo.getUserId(), "", isAdmin, currentRoleList);				
+				//return new User(ZeroKeyProvide.OID_KEY, userInfo.getUserId(), "", isAdmin, currentRoleList);
+				return new User(userInfo.getUserId(), "", isAdmin, currentRoleList);
 			}
 		}
 		

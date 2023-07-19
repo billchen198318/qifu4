@@ -101,7 +101,8 @@ public class BaseUserDetailsService implements UserDetailsService {
 		if (!auth) {
 			throw new UsernameNotFoundException("LDAP auth fail!");
 		}
-		User user = new User(ZeroKeyProvide.OID_KEY, username, passwordEncoder.encode(userPassword), YesNo.YES);
+		//User user = new User(ZeroKeyProvide.OID_KEY, username, passwordEncoder.encode(userPassword), YesNo.YES);
+		User user = new User(username, passwordEncoder.encode(userPassword), YesNo.YES);
 		user.setByLdap(YesNo.YES);
     	return user;
     }
@@ -122,7 +123,8 @@ public class BaseUserDetailsService implements UserDetailsService {
         if (!YesNo.YES.equals(accObj.getOnJob())) {
         	throw new UsernameNotFoundException("auth fail!");
         }
-        return new User(accObj.getOid(), accObj.getAccount(), accObj.getPassword(), accObj.getOnJob());    	
+        //return new User(accObj.getOid(), accObj.getAccount(), accObj.getPassword(), accObj.getOnJob());    	
+        return new User(accObj.getAccount(), accObj.getPassword(), accObj.getOnJob());
     }
     
 }

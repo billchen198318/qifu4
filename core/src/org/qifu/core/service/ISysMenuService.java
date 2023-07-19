@@ -22,6 +22,7 @@
 package org.qifu.core.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.DefaultResult;
@@ -32,5 +33,7 @@ import org.qifu.core.vo.SysMenuVO;
 public interface ISysMenuService<T, E> extends IBaseService<TbSysMenu, String> {
 	
 	public DefaultResult<List<SysMenuVO>> findForMenuGenerator(String sysId, String account) throws ServiceException, Exception;
+	
+	public List<Map<String, Object>> getMemuItemListForFrontend(String account) throws ServiceException, Exception;
 	
 }
