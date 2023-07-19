@@ -39,11 +39,13 @@ public class Constants {
 	/**
 	 * EncryptorUtils 要用的 key1
 	 */
+	@Deprecated
 	public static final String ENCRYPTOR_KEY1 = "pOk%$ewQaIUyBvCS@Oj!~%O$kW1p2Rh9";
 	
 	/**
 	 * EncryptorUtils 要用的 key2
 	 */
+	@Deprecated
 	public static final String ENCRYPTOR_KEY2 = "7913670289654325";		
 	
 	/**
