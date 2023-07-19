@@ -14,9 +14,9 @@
             filePattern="${APP_LOG_ROOT}/qifu4/qifu4-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout pattern="${LOG_PATTERN}" />
             <Policies>
-                <SizeBasedTriggeringPolicy size="19500KB" />
+                <SizeBasedTriggeringPolicy size="32768KB" />
             </Policies>
-            <DefaultRolloverStrategy max="256" />
+            <DefaultRolloverStrategy max="512" />
         </RollingFile>
  
     </Appenders>
@@ -26,7 +26,25 @@
     	<logger name="org.springframework.core" level="info"></logger>  
     	<logger name="org.springframework.beans" level="info"></logger>  
     	<logger name="org.springframework.context" level="info"></logger>  
-    	<logger name="org.springframework.web" level="info"></logger>      
+    	<logger name="org.springframework.web" level="debug"></logger>      
+    	
+    	<!-- add jdbc trace log -->
+        <Logger name="org.springframework.jdbc.core" level="trace" additivity="false">
+            <AppenderRef ref="appLog" />
+            <AppenderRef ref="Console" />
+        </Logger>    	    	
+    	
+    	<!-- add apache cxf trace log -->
+        <Logger name="org.apache.cxf" level="trace" additivity="false">
+            <AppenderRef ref="appLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        
+        <!-- add apache http common trace log -->    	
+        <Logger name="org.apache.http" level="trace" additivity="false">
+            <AppenderRef ref="appLog" />
+            <AppenderRef ref="Console" />
+        </Logger>    	
     	
     	<!-- [trace] or [debug] for developer mode , [info] for product mode -->
         <Logger name="org.qifu" level="trace" additivity="false">
@@ -34,9 +52,15 @@
             <AppenderRef ref="Console" />
         </Logger>
         
+        <!-- 
         <Root level="debug">
             <AppenderRef ref="Console" />
         </Root>    
+        -->
+        <Root level="info"> 
+            <AppenderRef ref="Console" />
+			<AppenderRef ref="appLog" />
+        </Root>           
         
     </Loggers>
 </Configuration>
