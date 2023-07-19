@@ -61,5 +61,95 @@
         }
         return false;
     }
+
+    /*
+    export function postData(apiPath, jsonParam, thenFn, catchFn) {
+
+        fetch(import.meta.env.VITE_API_URL + apiPath,{
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization" : "Bearer " + getAccessTokenCookie()
+            },
+            body: JSON.stringify(jsonParam),
+            signal: AbortSignal.timeout(import.meta.env.VITE_FETCH_TIMEOUT)
+        }).then(response => {
+            if (response.ok) {
+                // { "success":"N","message":"Please login!","login":"N","isAuthorize":"N" }
+                var res = response.json();
+                if (res != null) {
+                    if ('login' in res) {
+                        if ('Y' != res.login) {
+
+                        }
+                    }
+                    if ('isAuthorize' in res) {
+                        if ('Y' != res.isAuthorize) {
+
+                        }
+                    }
+                }
+                return res;
+            }
+            throw new Error( response.status + ' ' + response.statusText );
+        }).then(responseJson => {
+            //thenFn(responseJson)
+        }).catch((error) => {
+            //catchFn(error);
+        });
+
+    }
+    */
+
     
+    /*
+function authMiddleware(request) {
+  const access_token = localStorage.getItem('access_token');
+  if (access_token) {
+    request.headers.set('Authorization', `Bearer ${access_token}`);
+  }
+  return request;
+}
+
+function tokenRefreshMiddleware(response) {
+  if (response.status === 401) {
+    const refreshToken = localStorage.getItem('refresh_token');
+    return fetch('/api/refresh_token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ refreshToken })
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Refresh Token failed');
+    }).then(data => {
+      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('refresh_token', data.refresh_token);
+      return Promise.resolve('refreshed');
+    }).catch(error => {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      return Promise.reject(error);
+    });
+  }
+  return Promise.resolve('ok');
+}
+
+fetch('/api/user', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  middleware: [authMiddleware, tokenRefreshMiddleware]
+}).then(response => {
+  console.log(response);
+}).catch(error => {
+  console.error(error);
+});
+    */
+
+
 </script>
