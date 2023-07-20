@@ -136,5 +136,4 @@ public class Constants {
 	public static final String SYSCODE_TOKEN_CODE = "TOKEN";
 	public static final String SYSCODE_TOKEN_TYPE = "AUTH";
 	
-	
 }
