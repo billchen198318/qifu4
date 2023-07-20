@@ -121,10 +121,10 @@
                       // [更新 access_token 成功]
 
                       // 刷新 storage (其他呼叫 api 的地方都會從此處取得新 access_token)
-                      setRefreshAndAccessTokenCookie(response.data.refreshToken, response.data.accessToken)
+                      setRefreshAndAccessTokenCookie(response.data.value.refreshToken, response.data.value.accessToken)
 
                       // 刷新原始 request 的 access_token
-                      originalRequest.headers.Authorization = 'Bearer ' + response.data.accessToken
+                      originalRequest.headers.Authorization = 'Bearer ' + response.data.value.accessToken
 
                       // 重送 request (with new access_token)
                       return axios(originalRequest)
