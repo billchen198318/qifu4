@@ -74,44 +74,24 @@
     }
   }
 
-  function initTreeMenu() {
+  function initTreeMenu() {    
     if (menuData != null && menuData.length > 0) {
       return;
     }
-    const axiosInstance = getAxiosInstance();
-
-   axiosInstance
-   .post(import.meta.env.VITE_API_URL + '/menu/getMemuItem')
-   .then(response => {
+    const axiosInstance = getAxiosInstance();    
+    axiosInstance.post(import.meta.env.VITE_API_URL + '/menu/getMemuItem')
+    .then(response => {
       if (null != response.data.value) {
         menuData = response.data.value;
         setTimeout(() => {
           jsTreeMenuInit();
         }, 500);
       }
-   })
-   .catch(e => {
+    })
+    .catch(e => {
       alert(e);
       clearUserLoginData();
-   })
-
-   /*
-    fetch("./menutest.json")
-        .then(response => response.json())
-        .then(data => {
-          //console.log(data);
-          menuData = data;
-          //console.log(menuData);
-          setTimeout(() => {
-            jsTreeMenuInit();
-          }, 500);
-
-        }).catch(error => {
-          console.log(error);
-          return [];
-        });     
-        */
-
+    });
   }
 
   export function jsTreeMenuInit() {
