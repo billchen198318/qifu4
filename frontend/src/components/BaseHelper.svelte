@@ -71,264 +71,93 @@
         return false;
     }
 
+    export function getAxiosInstance() {
+      // 全局設定 AJAX Request 攔截器 (interceptor)
+      axios.interceptors.request.use(async function (config) {
+        return config
+      }, function (error) {
+        return Promise.reject(error)
+      });
+      // 全局設定 AJAX Response 攔截器 (interceptor)
+      axios.interceptors.response.use(function (response) {
+        return response
+      }, function (error) {
+        if (error.response) {
+          
+          // server responded status code falls out of the range of 2xx
+          switch (error.response.status) {
+            case 400:
+              {
+                const { message } = error.response.data
+                alert(`${error.response.status}: ${message || '資料錯誤'}。`)
+              }
 
-    // https://zhuanlan.zhihu.com/p/80125501
-    // 改用 axios
-    export function getAxiosInstance(apiPath) {
-        const instance = axios.create({
-            baseURL: import.meta.env.VITE_API_URL + apiPath,
-            timeout: 300000,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getAccessTokenCookie()
-            }
-        });
+              break
 
-        instance.setToken = (rftk) => {
-            instance.defaults.headers['Authorization'] = 'Bearer ' + rftk.accessToken;
-            setRefreshAndAccessTokenCookie(rftk.refreshToken, rftk.accessToken);
-        }
-        
-        let isRefreshing = false;
-        instance.interceptors.response.use(response => {
-            const { code } = response.data
-            if (code === 401) {
-                const config = response.config;
-                if (!isRefreshing) {
-                    isRefreshing = true;
-                    return refreshToken().then(res => {
-                    const { token } = res.data
-                    instance.setToken(token)
-                    config.headers['X-Token'] = token
-                    config.baseURL = ''
-                    // 已经刷新了token，将所有队列中的请求进行重试
-                    requests.forEach(cb => cb(token))
-                    requests = []
-                    return instance(config)
-                }).catch(res => {
-                    console.error('refreshtoken error =>', res)
-                    window.location.href = '/'
-                }).finally(() => {
-                    isRefreshing = false
-                })
+            case 401:
+              {
+                // 當不是 refresh token 作業發生 401 才需要更新 access token 並重發
+                // 如果是就略過此刷新 access token 作業，直接不處理(因為 catch 已經攔截處理更新失敗的情況了)
+                const refreshTokeUrl = `${constant.apiUrl}users/refresh-token/`
+                if (error.config.url !== refreshTokeUrl) {
+                  // 原始 request 資訊
+                  const originalRequest = error.config
 
+                  // 依據 refresh_token 刷新 access_token 並重發 request
+                  return axios
+                    .post(refreshTokeUrl) // refresh_toke is attached in cookie
+                    .then((response) => {
+                      // [更新 access_token 成功]
 
-            } else {
-      // 正在刷新token，将返回一个未执行resolve的promise
-      return new Promise((resolve) => {
-        // 将resolve放进队列，用一个函数形式来保存，等token刷新后直接执行
-        requests.push((token) => {
-          config.baseURL = ''
-          config.headers['X-Token'] = token
-          resolve(instance(config))
-        })
-      })
-    }
-  }
-  return response
-}, error => {
-  return Promise.reject(error)
-})        
+                      // 刷新 storage (其他呼叫 api 的地方都會從此處取得新 access_token)
+                      storage.token.value = response.data.jwtToken
 
-        return instance;
-    }
+                      // 刷新原始 request 的 access_token
+                      originalRequest.headers.Authorization = 'Bearer ' + response.data.jwtToken
 
-    
-
-
-
-    /*
-
-// 从localStorage中获取token
-function getLocalToken () {
-    const token = window.localStorage.getItem('token')
-    return token
-}
-
-// 给实例添加一个setToken方法，用于登录后将最新token动态添加到header，同时将token保存在localStorage中
-instance.setToken = (token) => {
-  instance.defaults.headers['X-Token'] = token
-  window.localStorage.setItem('token', token)
-}
-
-function refreshToken () {
-    // instance是当前request.js中已创建的axios实例
-    return instance.post('/refreshtoken').then(res => res.data)
-}
-
-// 创建一个axios实例
-const instance = axios.create({
-  baseURL: '/api',
-  timeout: 300000,
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Token': getLocalToken() // headers塞token
-  }
-})
-
-// 是否正在刷新的标记
-let isRefreshing = false
-// 重试队列，每一项将是一个待执行的函数形式
-let requests = []
-
-instance.interceptors.response.use(response => {
-  const { code } = response.data
-  if (code === 1234) {
-    const config = response.config
-    if (!isRefreshing) {
-      isRefreshing = true
-      return refreshToken().then(res => {
-        const { token } = res.data
-        instance.setToken(token)
-        config.headers['X-Token'] = token
-        config.baseURL = ''
-        // 已经刷新了token，将所有队列中的请求进行重试
-        requests.forEach(cb => cb(token))
-        requests = []
-        return instance(config)
-      }).catch(res => {
-        console.error('refreshtoken error =>', res)
-        window.location.href = '/'
-      }).finally(() => {
-        isRefreshing = false
-      })
-    } else {
-      // 正在刷新token，将返回一个未执行resolve的promise
-      return new Promise((resolve) => {
-        // 将resolve放进队列，用一个函数形式来保存，等token刷新后直接执行
-        requests.push((token) => {
-          config.baseURL = ''
-          config.headers['X-Token'] = token
-          resolve(instance(config))
-        })
-      })
-    }
-  }
-  return response
-}, error => {
-  return Promise.reject(error)
-})
-
-export default instance
-
-    */
-
-    
-    
-
-    /*
-    export function authMiddleware(request) {
-        const access_token = getAccessTokenCookie();
-        request.headers.set('Authorization', `Bearer ${access_token}`);
-        return request;
-    }    
-
-    export function tokenRefreshMiddleware(response) {
-        var refreshTokenFlag = false;
-        if (response.status === 401) {
-            refreshTokenFlag = true;
-        }
-        const access_token = getAccessTokenCookie();
-        const refresh_token = getRefreshTokenCookie();
-        if (response.status === 200) {            
-            if (null != access_token && '' != access_token) {
-                var res = response.json();
-                if ('login' in res) {
-                    if ('Y' != res.login) {
-                        refreshTokenFlag = true;
-                    }
+                      // 重送 request (with new access_token)
+                      return axios(originalRequest)
+                    })
+                    .catch((err) => {
+                      // [更新 access_token 失敗] ( e.g. refresh_token 過期無效)
+                      storage.token.value = ''
+                      alert(`${err.response.status}: 作業逾時或無相關使用授權，請重新登入`)
+                      window.location.href = '/login'
+                      return Promise.reject(error)
+                    })
                 }
-                if ('isAuthorize' in res) {
-                    if ('Y' != res.isAuthorize) {
-                        refreshTokenFlag = true;
-                    }
-                }
-            }
+              }
+
+              break
+
+            case 404:
+              alert(`${error.response.status}: 資料來源不存在`)
+              break
+
+            case 500:
+              alert(`${error.response.status}: 內部系統發生錯誤`)
+              break
+
+            default:
+              alert(`${error.response.status}: 系統維護中，造成您的不便，敬請見諒。`)
+
+              break
+          }
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          if (error.code === 'ECONNABORTED' && error.message && error.message.indexOf('timeout') !== -1) {
+            // request time out will be here
+            alert('網路連線逾時，請點「確認」鍵後繼續使用。')
+          } else {
+            // shutdonw api server
+            alert('網路連線不穩定，請稍候再試')
+          }
         }
-        if (refreshTokenFlag) {
-            return fetch(import.meta.env.VITE_API_URL + '/auth/refreshNewToken', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    'accessToken'  :   access_token,
-                    'refreshToken' :   refresh_token,
-                    'username'     :   userData.username
-                })
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Refresh Token failed');                
-            }).then(data => {                       
-                if ('username' in data) {
-                    _user.update(state => ({...state, accessToken : data.accessToken}));
-                    _user.update(state => ({...state, refreshToken : data.refreshToken}));
-                    setRefreshAndAccessTokenCookie(data.refreshToken, data.accessToken);
-                    return Promise.resolve('refreshed');
-                } else {
-                    return Promise.reject(data);
-                }
-            }).catch(error => {
-                userLogoutClearCookie();
-                return Promise.reject(error);
-            });     
-        }
-        return Promise.resolve('ok');
+
+        return Promise.reject(error)
+      })    
+      
+      return axios;
     }
-    */
-
-
-
-    /*
-function authMiddleware(request) {
-  const access_token = localStorage.getItem('access_token');
-  if (access_token) {
-    request.headers.set('Authorization', `Bearer ${access_token}`);
-  }
-  return request;
-}
-
-function tokenRefreshMiddleware(response) {
-  if (response.status === 401) {
-    const refreshToken = localStorage.getItem('refresh_token');
-    return fetch('/api/refresh_token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ refreshToken })
-    }).then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error('Refresh Token failed');
-    }).then(data => {
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
-      return Promise.resolve('refreshed');
-    }).catch(error => {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      return Promise.reject(error);
-    });
-  }
-  return Promise.resolve('ok');
-}
-
-fetch('/api/user', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  middleware: [authMiddleware, tokenRefreshMiddleware]
-}).then(response => {
-  console.log(response);
-}).catch(error => {
-  console.error(error);
-});
-    */
-
 
 </script>
