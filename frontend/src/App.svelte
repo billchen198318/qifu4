@@ -194,7 +194,7 @@
   
     <!-- Navbar-->
     <header class="app-header"><a class="app-header__logo" href="#">qífū</a>
-      <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"><Icon name="list"/></a>
+      <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"><h4><Icon name="list"/></h4></a>
       <!-- Navbar Right Menu-->
       <ul class="app-nav">
       <Dropdown>

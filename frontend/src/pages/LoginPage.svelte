@@ -103,7 +103,7 @@ function loginClick() {
 
             <FormGroup>
               <div>
-                <Button color="primary" class="col-12" on:click="{loginClick}"><Icon name="arrow-right-circle"/>&nbsp;登入</Button>
+                <Button color="primary" class="col-12" on:click="{loginClick}"><Icon name="box-arrow-in-right"/>&nbsp;登入</Button>
               </div>
 
               
