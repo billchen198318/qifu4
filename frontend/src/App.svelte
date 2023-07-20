@@ -15,7 +15,8 @@
     getRefreshTokenCookie, 
     getAccessTokenCookie, 
     userLogoutClearCookie, 
-    checkUserHasLogined } 
+    checkUserHasLogined,
+    getAxiosInstance } 
   from "./components/BaseHelper.svelte";
 
   import Swal from 'sweetalert2';
@@ -77,6 +78,24 @@
     if (menuData != null && menuData.length > 0) {
       return;
     }
+    const axiosInstance = getAxiosInstance();
+
+   axiosInstance
+   .post(import.meta.env.VITE_API_URL + '/menu/getMemuItem')
+   .then(response => {
+      if (null != response.data.value) {
+        menuData = response.data.value;
+        setTimeout(() => {
+          jsTreeMenuInit();
+        }, 500);
+      }
+   })
+   .catch(e => {
+      alert(e);
+      clearUserLoginData();
+   })
+
+   /*
     fetch("./menutest.json")
         .then(response => response.json())
         .then(data => {
@@ -91,6 +110,8 @@
           console.log(error);
           return [];
         });     
+        */
+
   }
 
   export function jsTreeMenuInit() {

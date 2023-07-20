@@ -72,6 +72,12 @@
     }
 
     export function getAxiosInstance() {
+
+      axios.defaults.headers = {
+        'Content-Type' : 'application/json',
+        'Authorization' : 'Bearer ' + getAccessTokenCookie()
+      };
+
       // 全局設定 AJAX Request 攔截器 (interceptor)
       axios.interceptors.request.use(async function (config) {
         return config
