@@ -224,7 +224,7 @@
         {/each}
         
        	<li><a class="app-menu__item" href="#/about" ><Icon name="info-circle" />&nbsp;<span class="app-menu__label">About</span></a></li>
-       	<li><a class="app-menu__item" href="#" ><Icon name="door-open" />&nbsp;<span class="app-menu__label">Logout</span></a></li>
+       	<li><a class="app-menu__item" href="#" on:click={userLogout} ><Icon name="door-open" />&nbsp;<span class="app-menu__label">Logout</span></a></li>
        	        
         
       </ul>
