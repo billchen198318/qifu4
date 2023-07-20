@@ -3,8 +3,8 @@
     import { _user } from '../store/userStore.js';
 
     let userData;
-	_user.subscribe(value => {
-		userData = value;
+	  _user.subscribe(value => {
+		  userData = value;
     });
 
 
@@ -98,31 +98,36 @@
               {
                 // 當不是 refresh token 作業發生 401 才需要更新 access token 並重發
                 // 如果是就略過此刷新 access token 作業，直接不處理(因為 catch 已經攔截處理更新失敗的情況了)
-                const refreshTokeUrl = `${constant.apiUrl}users/refresh-token/`
+                const refreshTokeUrl = import.meta.env.VITE_API_URL + '/auth/refreshNewToken';
                 if (error.config.url !== refreshTokeUrl) {
                   // 原始 request 資訊
                   const originalRequest = error.config
 
                   // 依據 refresh_token 刷新 access_token 並重發 request
                   return axios
-                    .post(refreshTokeUrl) // refresh_toke is attached in cookie
+                    .post(refreshTokeUrl, JSON.stringify({
+                        username : userData.username,
+                        accessToken : getAccessTokenCookie(),
+                        refreshToken : getRefreshTokenCookie()
+                      })
+                    ) // refresh_toke is attached in cookie
                     .then((response) => {
                       // [更新 access_token 成功]
 
                       // 刷新 storage (其他呼叫 api 的地方都會從此處取得新 access_token)
-                      storage.token.value = response.data.jwtToken
+                      setRefreshAndAccessTokenCookie(response.data.refreshToken, response.data.accessToken)
 
                       // 刷新原始 request 的 access_token
-                      originalRequest.headers.Authorization = 'Bearer ' + response.data.jwtToken
+                      originalRequest.headers.Authorization = 'Bearer ' + response.data.accessToken
 
                       // 重送 request (with new access_token)
                       return axios(originalRequest)
                     })
                     .catch((err) => {
                       // [更新 access_token 失敗] ( e.g. refresh_token 過期無效)
-                      storage.token.value = ''
+                      userLogoutClearCookie();
                       alert(`${err.response.status}: 作業逾時或無相關使用授權，請重新登入`)
-                      window.location.href = '/login'
+                      window.location.href = '/'
                       return Promise.reject(error)
                     })
                 }
