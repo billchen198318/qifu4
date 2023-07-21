@@ -180,10 +180,12 @@
     
     export function getProgItem(progId) {
       var item = null;
-      for (p in menuData) {
-        for (i in p.items) {
-          if (i.id == progId) {
-            item = i;
+      for (var p = 0; p < menuData.length; p++) {
+        var fItem = menuData[p];
+        for (var c in fItem.items) {
+          var currItem = fItem.items[c];
+          if (progId == currItem.id) {
+            item = currItem;
           }
         }
       }
