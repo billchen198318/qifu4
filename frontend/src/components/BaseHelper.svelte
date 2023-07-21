@@ -1,6 +1,13 @@
 <script context="module">
     import axios from "axios";
     import { _user } from '../store/userStore.js';
+    import { _menu } from "../store/menuStore.js";
+
+
+    let menuData = [];
+      _menu.subscribe(value => {
+        menuData = value;
+    });
 
     let userData;
 	  _user.subscribe(value => {
@@ -169,6 +176,18 @@
       })    
       
       return axios;
+    }
+    
+    export function getProgItem(progId) {
+      var item = null;
+      for (p in menuData) {
+        for (i in p.items) {
+          if (i.id == progId) {
+            item = i;
+          }
+        }
+      }
+      return item;
     }
 
 </script>

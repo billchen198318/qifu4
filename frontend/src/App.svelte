@@ -9,6 +9,7 @@
   
   import LoginPage from './pages/LoginPage.svelte';
   import { _user } from './store/userStore.js';
+  import { _menu } from './store/menuStore.js';
 
   import { 
     setRefreshAndAccessTokenCookie, 
@@ -22,6 +23,9 @@
   import Swal from 'sweetalert2';
 
   let menuData = [];
+  _menu.subscribe(value => {
+    menuData = value;
+  });
 
 	let userData;
 	_user.subscribe(value => {
@@ -85,7 +89,8 @@
     axiosInstance.post(import.meta.env.VITE_API_URL + '/menu/getMemuItem')
     .then(response => {
       if (null != response.data.value) {
-        menuData = response.data.value;
+        //menuData = response.data.value;
+        _menu.update((val) => { return response.data.value; });   
         setTimeout(() => {
           jsTreeMenuInit();
         }, 500);
