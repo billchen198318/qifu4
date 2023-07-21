@@ -1,5 +1,5 @@
 <script>
-import { Icon } from "sveltestrap";
+import { Icon, Tooltip } from "sveltestrap";
 import { onMount } from 'svelte';    
 import { getProgItem } from "../components/BaseHelper.svelte";
 export let progId = '';
@@ -23,18 +23,23 @@ onMount(()=>{
 
 		<div>		
 			
-			<Icon name="plus-circle" />
+			
+			<Icon name="repeat" class="btn btn-light btn-lg" id="tb_repeat"/>
+			<Tooltip target="tb_repeat" placement="bottom">刷新</Tooltip>
 			&nbsp;
 
-            <Icon name="save2-fill" />
+			<Icon name="plus-circle" class="btn btn-light btn-lg" id="tb_plus"/>
+			<Tooltip target="tb_plus" placement="bottom">新增頁</Tooltip>
+			&nbsp;
+
+            <Icon name="save" class="btn btn-light btn-lg" id="tb_save"/>
+			<Tooltip target="tb_save" placement="bottom">儲存/更新</Tooltip>
 			&nbsp;
 
 				
 		</div>
 	</div>    
 	
-        <ul class="app-breadcrumb breadcrumb">
-          <li class="breadcrumb-item" title="{pageProg.name}"><font color="#6c757d">{pageProg.id}</font>&nbsp;&nbsp;&nbsp;</li>
-        </ul>
+
         		
 </div> 
