@@ -1,5 +1,8 @@
 import { wrap } from 'svelte-spa-router/wrap'
 
+import PROG001 from "./pages/CORE_PROG001D/IndexPage.svelte";
+
+/* ------------------- 測試,之後要移除掉 ------------------- */
 import PROG01 from "./components/PROG01.svelte";
 import About from "./components/About.svelte"
 import Prog01C1 from "./components/PROG01_routes/PROG01_c1.svelte";
@@ -8,6 +11,12 @@ import NameIndex from "./components/NameIndex.svelte";
 
 
 export const routes = {  
+  "/prog001"      : PROG001,
+  "/prog001/*"    : PROG001,
+
+  
+
+  /* ------------------- 測試,之後要移除掉 ------------------- */
   "/prog01"   : wrap({
       component : PROG01,
       conditions: [
@@ -34,6 +43,10 @@ export const routes = {
 
   "/name"     : NameIndex,
   "/name/*"   : NameIndex,
+  
+  /* ------------------- 測試,之後要移除掉 ------------------- */
+
+
   
   "*"   : wrap({
     asyncComponent: () => import('./components/NotFound.svelte')
