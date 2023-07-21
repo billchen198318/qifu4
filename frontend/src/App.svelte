@@ -76,6 +76,9 @@
 
   function initTreeMenu() {    
     if (menuData != null && menuData.length > 0) {
+      setTimeout(() => {
+        jsTreeMenuInit();
+      }, 500);      
       return;
     }
     const axiosInstance = getAxiosInstance();    
