@@ -1646,8 +1646,8 @@ be a descendant of the grid when it is being dragged.
       -ms-flex-direction: row;
           flex-direction: row;
   background-color: #FFF;
-  margin: -30px -30px 30px;
-  padding: 20px 30px;
+  margin: -9px 0px 0px;
+  /* padding: 20px 30px; */
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
           box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
@@ -1674,13 +1674,16 @@ be a descendant of the grid when it is being dragged.
 
 .app-title h1 {
   margin: 0;
-  font-size: 24px;
+  /* font-size: 24px; */
+  font-size: 18px;
   font-weight: 400;
+  color:#3a3a3a;
 }
 
 .app-title p {
   margin-bottom: 0;
   font-style: italic;
+  color:#707070;
 }
 
 @media (max-width: 480px) {

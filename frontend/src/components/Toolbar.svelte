@@ -24,15 +24,15 @@ onMount(()=>{
 		<div>		
 			
 			
-			<Icon name="repeat" class="btn btn-light btn-lg" id="tb_repeat"/>
+			<Icon name="repeat" class="btn btn-light btn-sm" id="tb_repeat"/>
 			<Tooltip target="tb_repeat" placement="bottom">刷新</Tooltip>
 			&nbsp;
 
-			<Icon name="plus-circle" class="btn btn-light btn-lg" id="tb_plus"/>
+			<Icon name="plus-circle" class="btn btn-light btn-sm" id="tb_plus"/>
 			<Tooltip target="tb_plus" placement="bottom">新增頁</Tooltip>
 			&nbsp;
 
-            <Icon name="save" class="btn btn-light btn-lg" id="tb_save"/>
+            <Icon name="save" class="btn btn-light btn-sm" id="tb_save"/>
 			<Tooltip target="tb_save" placement="bottom">儲存/更新</Tooltip>
 			&nbsp;
 
