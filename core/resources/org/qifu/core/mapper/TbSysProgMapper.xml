@@ -281,4 +281,20 @@
     ORDER BY PROG_ID ASC
   </select>     
   
+  <!-- 抓取TB_SYS_PROG 用 帳戶的 ROLE -->
+  <select id="findForInThePermRoleOfUserId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+	SELECT * FROM <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_prog 
+	WHERE ITEM_TYPE = #{itemType,jdbcType=VARCHAR}
+	<if test="account != null and account != ''.toString() ">
+	AND PROG_ID IN (
+		SELECT PERMISSION FROM <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_role_permission 
+		WHERE PERM_TYPE='CONTROLLER' AND ROLE IN (
+			SELECT ROLE FROM <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_user_role 
+			WHERE ACCOUNT = #{account,jdbcType=VARCHAR}
+		)
+	) 
+	</if>
+	ORDER BY PROG_ID ASC  
+  </select>
+  
 </mapper>

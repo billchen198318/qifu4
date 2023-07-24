@@ -100,5 +100,14 @@ public class SysProgServiceImpl extends BaseService<TbSysProg, String> implement
 		DefaultResult<List<TbSysProg>> result = this.selectListByParams(paramMap, "PROG_ID", SortType.ASC);
 		return result.getValue();
 	}
+
+	@Override
+	public List<TbSysProg> findForInThePermRoleOfUserId(String accountId) throws ServiceException, Exception {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		if (!StringUtils.isBlank(accountId)) {
+			paramMap.put("account", accountId);
+		}
+		return this.tbSysProgMapper.findForInThePermRoleOfUserId(paramMap);
+	}
 	
 }

@@ -60,4 +60,6 @@ public interface ISysProgService<T, E> extends IBaseService<TbSysProg, String> {
 	 */
 	public List<TbSysProg> findForSystemItems(String progSystem) throws ServiceException, Exception;	
 	
+	public List<TbSysProg> findForInThePermRoleOfUserId(String accountId) throws ServiceException, Exception;
+	
 }

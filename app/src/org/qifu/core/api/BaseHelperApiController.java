@@ -65,16 +65,11 @@ public class BaseHelperApiController extends CoreApiSupport {
 		try {
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("itemType", MenuItemType.ITEM);
-			List<TbSysProg> progList = this.sysProgService.selectListByParams(param, "PROG_ID", SortType.ASC).getValue();
-			
-			/*
 			if (UserUtils.isAdmin()) {
-				result.setValue( this.sysMenuService.getMemuItemListForFrontend("") );
+				result.setValue( this.sysProgService.findForInThePermRoleOfUserId("") );
 			} else {
-				result.setValue( this.sysMenuService.getMemuItemListForFrontend(UserUtils.getCurrentUser().getUserId()) );
+				result.setValue( this.sysProgService.findForInThePermRoleOfUserId(UserUtils.getCurrentUser().getUserId()) );
 			}			
-			*/
-			
 			result.setSuccess( YES );
 		} catch (ServiceException | AuthorityException e) {
 			e.printStackTrace();
