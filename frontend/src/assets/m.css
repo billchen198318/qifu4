@@ -16,7 +16,7 @@ iframe {
 	height: 93vh;
 	background: #ffffff;
 	margin-left: -25px;
-	margin-right: -25px;
+	margin-right: -23px; /* margin-right: -25px; */
 	overflow:auto;
 }
 

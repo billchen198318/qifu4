@@ -29,7 +29,8 @@ onMount(()=>{
 });
 
 </script>
-<div>
+
+<div class="row">
     <Toolbar args={toolbar}></Toolbar>
 
     <div class="col-xs-12 col-md-12 col-lg-12">
