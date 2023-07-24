@@ -2,12 +2,14 @@
 import { Icon, Tooltip } from "sveltestrap";
 import { onMount } from 'svelte';    
 import { getProgItem } from "../components/BaseHelper.svelte";
-export let progId = '';
-export let description = '';
+
+export let args = {};
+
 let pageProg = {};
 
+
 onMount(()=>{        
-    pageProg = getProgItem(progId);    
+    pageProg = getProgItem(args.id);    
     if (null == pageProg) {
         window.location.href = '/';
     }
@@ -15,27 +17,31 @@ onMount(()=>{
 
 </script>
 
-<div class="app-title" style="background: linear-gradient(to top, #f8f9fa, #ffffff); position: fixed; width: 103vw; overflow: hidden;">
+<div class="app-title" style="background: linear-gradient(to top, #f8f9fa, #ffffff); width: 103vw; overflow: hidden;">
 	<div>
 		<h1>{pageProg.name}</h1>
 
-		<p>{description}</p>
+		<p>{args.description}</p>
 
 		<div>		
 			
-			
-			<Icon name="repeat" class="btn btn-light btn-sm" id="tb_repeat"/>
+		{#if null != args.methods && (typeof args.methods.refresh === 'function') }	
+			<Icon name="repeat" class="btn btn-light btn-sm" id="tb_repeat" onclick={args.methods.refresh} />
 			<Tooltip target="tb_repeat" placement="bottom">刷新</Tooltip>
 			&nbsp;
+		{/if}	
 
-			<Icon name="plus-circle" class="btn btn-light btn-sm" id="tb_plus"/>
+		{#if null != args.methods && (typeof args.methods.create === 'function') }
+			<Icon name="plus-circle" class="btn btn-light btn-sm" id="tb_plus" onclick={args.methods.create} />
 			<Tooltip target="tb_plus" placement="bottom">新增頁</Tooltip>
 			&nbsp;
+		{/if}	
 
-            <Icon name="save" class="btn btn-light btn-sm" id="tb_save"/>
+		{#if null != args.methods && (typeof args.methods.save === 'function') }
+            <Icon name="save" class="btn btn-light btn-sm" id="tb_save" onclick={args.methods.save} />
 			<Tooltip target="tb_save" placement="bottom">儲存/更新</Tooltip>
 			&nbsp;
-
+		{/if}	
 				
 		</div>
 	</div>    
