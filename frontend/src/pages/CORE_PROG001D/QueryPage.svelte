@@ -1,6 +1,7 @@
 <script>
 import { onMount } from 'svelte';    
 import { getProgItem } from "../../components/BaseHelper.svelte";
+import { push } from 'svelte-spa-router';
 import Toolbar from "../../components/Toolbar.svelte";
 import { Form, FormGroup, FormText, Input, Label } from 'sveltestrap';
 
@@ -13,7 +14,7 @@ let toolbar = {
         }
         ,
         "create"    :   function() {
-            test = 'create';
+            push('#/prog001/create');
         }
         ,
         "save"      :   function() {
