@@ -194,4 +194,15 @@
       return item;
     }
 
+    export function getProgFolderUrlPrefix(folderProgId) {
+      var url = '';
+      for (var p = 0; p < menuData.length; p++) {
+        var fItem = menuData[p];
+        if (fItem.id == folderProgId) {
+          url = fItem.prefix;
+        }
+      }
+      return url;
+    }
+
 </script>

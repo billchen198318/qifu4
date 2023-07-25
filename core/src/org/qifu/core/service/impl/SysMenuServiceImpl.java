@@ -102,7 +102,8 @@ public class SysMenuServiceImpl extends BaseService<TbSysMenu, String> implement
 			menuMap.put("id", pMenu.getProgId());
 			menuMap.put("type", pMenu.getItemType());
 			menuMap.put("name", pMenu.getName());
-			menuMap.put("icon", pMenu.getFontIconClassId());			
+			menuMap.put("icon", pMenu.getFontIconClassId());
+			menuMap.put("prefix", StringUtils.defaultString(pMenu.getUrl()));
 			
 			List<Map<String, String>> menuItemList = new LinkedList<Map<String, String>>();			
 			menuMap.put("items", menuItemList);
