@@ -10,7 +10,7 @@ let toolbar = {
     description : 'Application site.',
     methods     :  {
         "refresh"    :   function() {
-            test = 'refresh';
+            test = '';
         }
         ,
         "create"    :   function() {
@@ -28,6 +28,12 @@ let test = '';
 onMount(()=>{
 
 });
+
+/*
+$ : {
+    alert('q');
+}
+*/
 
 </script>
 
