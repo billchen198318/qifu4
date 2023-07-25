@@ -5,7 +5,7 @@ import { push } from 'svelte-spa-router';
 import Toolbar from "../../components/Toolbar.svelte";
 import { Form, FormGroup, FormText, Input, Label } from 'sveltestrap';
 
-let toolbar = {
+let toolbarParam = {
     id          : 'CORE_PROG001D0001Q',
     description : 'Application site.',
     methods     :  {
@@ -38,7 +38,7 @@ $ : {
 </script>
 
 <div class="row">
-    <Toolbar args={toolbar}></Toolbar>
+    <Toolbar args={toolbarParam}></Toolbar>
 
     <div class="col-xs-12 col-md-12 col-lg-12">
         <Form>
@@ -49,7 +49,7 @@ $ : {
                 name="testInp"
                 id="testInp"
                 placeholder="Please input name."     
-                value={test}     
+                bind:value={test}     
                 />
             </FormGroup>      
         </Form>
