@@ -205,4 +205,13 @@
       return url;
     }
 
+    export function getNestedRoutesMap(queryPage, createPage, editPage) {
+      var nestedRoutersMap = new Map()
+        .set("/", queryPage)
+        .set("/create", createPage)
+        .set("/edit/:oid", editPage)
+        .set(/^\/(.*?)(\/(.*?))?/, queryPage);
+      return nestedRoutersMap;
+    }
+
 </script>
