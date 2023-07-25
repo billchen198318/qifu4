@@ -9,7 +9,7 @@
   
   import LoginPage from './pages/LoginPage.svelte';
   import { _user } from './store/userStore.js';
-  import { _menu } from './store/menuStore.js';
+  import { _menu, _progList } from './store/menuStore.js';
 
   import { 
     setRefreshAndAccessTokenCookie, 
@@ -25,6 +25,11 @@
   let menuData = [];
   _menu.subscribe(value => {
     menuData = value;
+  });
+
+  let progListData = [];
+  _progList.subscribe(value => {
+    progListData = value;
   });
 
 	let userData;
@@ -86,11 +91,12 @@
       return;
     }
     const axiosInstance = getAxiosInstance();    
-    axiosInstance.post(import.meta.env.VITE_API_URL + '/menu/getMemuItem')
+    axiosInstance.post(import.meta.env.VITE_API_URL + '/menu/getMemuItemAndProgList')
     .then(response => {
       if (null != response.data.value) {
         //menuData = response.data.value;
-        _menu.update((val) => { return response.data.value; });   
+        _menu.update((val) => { return response.data.value.menuList; });   
+        _progList.update((val) => { return response.data.value.programList; });   
         setTimeout(() => {
           jsTreeMenuInit();
         }, 500);
@@ -186,7 +192,10 @@
   function clearUserLoginData() {
     userLogoutClearCookie();
     menuData = [];
+    progListData = [];
     _user.update((val) => { return {}; });    
+    _menu.update((val) => { return []; });
+    _progList.update((val) => { return []; });
   }
 
 </script>

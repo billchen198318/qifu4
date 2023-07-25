@@ -35,6 +35,7 @@ import org.qifu.base.model.SortType;
 import org.qifu.base.service.BaseService;
 import org.qifu.core.entity.TbSysProg;
 import org.qifu.core.mapper.TbSysProgMapper;
+import org.qifu.core.model.MenuItemType;
 import org.qifu.core.service.ISysProgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -107,6 +108,7 @@ public class SysProgServiceImpl extends BaseService<TbSysProg, String> implement
 		if (!StringUtils.isBlank(accountId)) {
 			paramMap.put("account", accountId);
 		}
+		paramMap.put("itemType", MenuItemType.ITEM);
 		return this.tbSysProgMapper.findForInThePermRoleOfUserId(paramMap);
 	}
 	

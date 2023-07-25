@@ -1,12 +1,17 @@
 <script context="module">
     import axios from "axios";
     import { _user } from '../store/userStore.js';
-    import { _menu } from "../store/menuStore.js";
+    import { _menu, _progList } from "../store/menuStore.js";
 
 
     let menuData = [];
-      _menu.subscribe(value => {
-        menuData = value;
+    _menu.subscribe(value => {
+      menuData = value;
+    });
+
+    let progListData = [];   
+    _progList.subscribe(value => {
+      progListData = value;
     });
 
     let userData;
@@ -180,13 +185,10 @@
     
     export function getProgItem(progId) {
       var item = null;
-      for (var p = 0; p < menuData.length; p++) {
-        var fItem = menuData[p];
-        for (var c in fItem.items) {
-          var currItem = fItem.items[c];
-          if (progId == currItem.id) {
-            item = currItem;
-          }
+      for (var p = 0; p < progListData.length; p++) {
+        var fItem = progListData[p];
+        if (fItem.progId == progId) {
+          item = fItem;
         }
       }
       return item;
