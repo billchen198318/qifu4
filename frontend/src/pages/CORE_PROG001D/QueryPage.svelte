@@ -14,7 +14,7 @@ let toolbar = {
         }
         ,
         "create"    :   function() {
-            push('#/prog001/create');
+            push( getProgItem('CORE_PROG001D0001A').url );
         }
         ,
         "save"      :   function() {
