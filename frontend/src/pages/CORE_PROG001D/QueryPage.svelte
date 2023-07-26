@@ -8,6 +8,7 @@ import {
     Pagination, PaginationItem, PaginationLink,
     Table 
 } from 'sveltestrap';
+import Grid from "../../components/Grid.svelte";
 
 let toolbarParam = {
     id          : 'CORE_PROG001D0001Q',
@@ -39,6 +40,55 @@ $ : {
 }
 */
 
+let gridConfig = {
+  row : 30,
+  theadColor : {
+    'backgroundColor' : '#1a1a1a',
+    'color'           : 'whitesmoke'
+  },
+  formatter : {
+    'field' : 'oid',
+    'item'  : [
+      {
+        'method'  : function(val) {},
+        'icon'    : 'pen',
+        'name'    : 'Edit'
+      },
+      {
+        'method'  : function(val) {},
+        'icon'    : 'trash',
+        'name'    : 'Delete'
+      },      
+    ]
+  },
+  column : [
+    {
+      'label' : '#',
+      'field' : 'oid'
+    },
+    {
+      'label' : 'Id',
+      'field' : 'sysId'
+    },
+    {
+      'label' : 'Name',
+      'field' : 'name'
+    },
+    {
+      'label' : 'Host',
+      'field' : 'host'
+    },
+    {
+      'label' : 'Context Path',
+      'field' : 'contextPath'
+    },
+    {
+      'label' : 'Local',
+      'field' : 'local'
+    }
+  ]
+};
+
 </script>
 
 <div class="row">
@@ -59,40 +109,8 @@ $ : {
         </Form>
     </div>
 
-    <div class="col-xs-12 col-md-12 col-lg-12">
-        <Table bordered hover>
-            <thead style="background-color:#1a1a1a; color:whitesmoke;">
-            <tr>
-                <th>#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                </tr>
-            </tbody>
-        </Table>
-      
-    </div>
-
+    <Grid config={gridConfig} />
+  
     <Pagination ariaLabel="Page navigation example">
         <PaginationItem disabled>
           <PaginationLink first href="#" />
