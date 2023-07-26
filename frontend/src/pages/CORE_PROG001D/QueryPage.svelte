@@ -61,7 +61,7 @@ $ : {
 
     <div class="col-xs-12 col-md-12 col-lg-12">
         <Table bordered hover>
-            <thead style="background-color:silver;">
+            <thead style="background-color:#1a1a1a; color:whitesmoke;">
             <tr>
                 <th>#</th>
                 <th>First Name</th>
