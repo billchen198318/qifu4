@@ -16,8 +16,8 @@ let toolbarParam = {
     methods     :  {
         "refresh"    :   function() {
             test = '';
-            gridRowData.ts = 'query_' + (new Date()).toString();
-            gridRowData.dataList.splice(0);
+            dsList.splice(0);
+            dsList = dsList; // 這很重要, 讓 svelte 知道 list 被變更了, 讓 child compoment 知道資料被更改了
         }
         ,
         "create"    :   function() {
@@ -37,8 +37,8 @@ onMount(()=>{
   // test  
   setTimeout(function() {
     
-    //gridRowData.dataList.splice(0);
-    gridRowData.dataList.push({
+    //dataList.splice(0);
+    dsList.push({
       'oid'   : '3e0de6da-c76d-4550-901b-08cfd97d8cfb',
       'sysId' : 'OTH',
       'name'  : 'Other system',
@@ -46,7 +46,7 @@ onMount(()=>{
       'contextPath' : '/other',
       'local' : 'N'
     });
-    gridRowData.ts = 'query_' + (new Date()).toString();
+    dsList = dsList; // 這很重要, 讓 svelte 知道 list 被變更了, 讓 child compoment 知道資料被更改了
 
   },5000);
 
@@ -137,10 +137,6 @@ let dsList = [
   }  
 ];
 
-let gridRowData = {
-  'ts'        : 'query_' + (new Date()).toString(),
-  'dataList'  : dsList
-};
 
 
 </script>
@@ -163,7 +159,7 @@ let gridRowData = {
         </Form>
     </div>
 
-    <Grid config={gridConfig} bind:dataSource={gridRowData} />
+    <Grid config={gridConfig} bind:dataSource={dsList} />
   
     <Pagination ariaLabel="Page navigation example">
         <PaginationItem disabled>

@@ -2,7 +2,7 @@
 import { Table, Button, Icon, Tooltip } from "sveltestrap";
 
 export let config = {};
-export let dataSource = {};
+export let dataSource = [];
 
 </script>
 
@@ -16,9 +16,9 @@ export let dataSource = {};
         </tr>
         </thead>
         
-        {#if null != dataSource && dataSource.dataList != null && dataSource.dataList.length > 0 }
+        {#if null != dataSource && dataSource.length > 0 }
         <tbody>
-            {#each dataSource.dataList as row}
+            {#each dataSource as row}
             <tr>
                 {#each config.column as col}
                     {#if config.keyFieldFormatter.field == col.field}
