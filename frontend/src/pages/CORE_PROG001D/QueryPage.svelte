@@ -16,6 +16,8 @@ let toolbarParam = {
     methods     :  {
         "refresh"    :   function() {
             test = '';
+            gridRowData.ts = 'query_' + (new Date()).toString();
+            gridRowData.dataList.splice(0);
         }
         ,
         "create"    :   function() {
@@ -31,6 +33,22 @@ let toolbarParam = {
 let test = '';
 
 onMount(()=>{
+
+  // test  
+  setTimeout(function() {
+    
+    //gridRowData.dataList.splice(0);
+    gridRowData.dataList.push({
+      'oid'   : '3e0de6da-c76d-4550-901b-08cfd97d8cfb',
+      'sysId' : 'OTH',
+      'name'  : 'Other system',
+      'host'  : '127.0.0.1:8088',
+      'contextPath' : '/other',
+      'local' : 'N'
+    });
+    gridRowData.ts = 'query_' + (new Date()).toString();
+
+  },5000);
 
 });
 
@@ -119,6 +137,12 @@ let dsList = [
   }  
 ];
 
+let gridRowData = {
+  'ts'        : 'query_' + (new Date()).toString(),
+  'dataList'  : dsList
+};
+
+
 </script>
 
 <div class="row">
@@ -139,7 +163,7 @@ let dsList = [
         </Form>
     </div>
 
-    <Grid config={gridConfig} dataSource={dsList} />
+    <Grid config={gridConfig} bind:dataSource={gridRowData} />
   
     <Pagination ariaLabel="Page navigation example">
         <PaginationItem disabled>
