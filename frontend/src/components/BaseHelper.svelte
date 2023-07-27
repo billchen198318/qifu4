@@ -214,4 +214,21 @@
       return nestedRoutersMap;
     }
 
+    export function getGridConfig(keyFieldName, formatterItems, columnItems) {
+      var gridConfig = {
+        row : 30,
+        theadColor : {
+          'backgroundColor' : '#1a1a1a',
+          'color'           : 'whitesmoke'
+        },
+        keyFieldFormatter : {
+          'field' : (null == keyFieldName || '' == keyFieldName) ? 'oid' : keyFieldName,
+          'showTooltip' : false,
+          'item' : formatterItems
+        },
+        column : columnItems
+      };
+      return gridConfig;
+    }
+
 </script>

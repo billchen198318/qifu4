@@ -1,6 +1,6 @@
 <script>
 import { onMount } from 'svelte';    
-import { getProgItem } from "../../components/BaseHelper.svelte";
+import { getProgItem, getGridConfig } from "../../components/BaseHelper.svelte";
 import { push } from 'svelte-spa-router';
 import Toolbar from "../../components/Toolbar.svelte";
 import { 
@@ -57,17 +57,10 @@ $ : {
     alert('q');
 }
 */
-
-let gridConfig = {
-  row : 30,
-  theadColor : {
-    'backgroundColor' : '#1a1a1a',
-    'color'           : 'whitesmoke'
-  },
-  keyFieldFormatter : {
-    'field' : 'oid',
-    'showTooltip' : false,
-    'item'  : [
+let gridConfig = getGridConfig(
+  'oid'
+  ,
+  [
       {
         'method'  : function(val) { test = 'edit->' + val; },
         'icon'    : 'pen',
@@ -80,9 +73,9 @@ let gridConfig = {
         'type'    : 'delete',
         'memo'    : 'Delete current item.'
       },      
-    ]
-  },
-  column : [
+  ]
+  ,
+  [
     {
       'label' : '#',
       'field' : 'oid'
@@ -107,8 +100,8 @@ let gridConfig = {
       'label' : 'Local',
       'field' : 'local'
     }
-  ]
-};
+  ]    
+);
 
 let dsList = [
   {
