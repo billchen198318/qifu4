@@ -46,18 +46,21 @@ let gridConfig = {
     'backgroundColor' : '#1a1a1a',
     'color'           : 'whitesmoke'
   },
-  formatter : {
+  keyFieldFormatter : {
     'field' : 'oid',
+    'showTooltip' : false,
     'item'  : [
       {
-        'method'  : function(val) {},
+        'method'  : function(val) { test = 'edit->' + val; },
         'icon'    : 'pen',
-        'name'    : 'Edit'
+        'type'    : 'edit',
+        'memo'    : 'Edit current item.'
       },
       {
-        'method'  : function(val) {},
+        'method'  : function(val) { test = 'trash->' + val; },
         'icon'    : 'trash',
-        'name'    : 'Delete'
+        'type'    : 'delete',
+        'memo'    : 'Delete current item.'
       },      
     ]
   },
@@ -89,6 +92,33 @@ let gridConfig = {
   ]
 };
 
+let dsList = [
+  {
+    'oid'   : '000',
+    'sysId' : 'CORE',
+    'name'  : 'Core',
+    'host'  : '127.0.0.1:8088',
+    'contextPath' : '/cs',
+    'local' : 'Y'
+  },
+  {
+    'oid'   : '111',
+    'sysId' : 'BB',
+    'name'  : 'b',
+    'host'  : '127.0.0.1:8088',
+    'contextPath' : '/bb',
+    'local' : 'N'
+  },
+  {
+    'oid'   : '222',
+    'sysId' : 'ccc',
+    'name'  : 'c',
+    'host'  : '127.0.0.1:8088',
+    'contextPath' : '/cc',
+    'local' : 'N'
+  }  
+];
+
 </script>
 
 <div class="row">
@@ -109,7 +139,7 @@ let gridConfig = {
         </Form>
     </div>
 
-    <Grid config={gridConfig} />
+    <Grid config={gridConfig} dataSource={dsList} />
   
     <Pagination ariaLabel="Page navigation example">
         <PaginationItem disabled>

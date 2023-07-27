@@ -1,7 +1,8 @@
 <script>
-import { Table } from "sveltestrap";
+import { Table, Button, Icon, Tooltip } from "sveltestrap";
 
 export let config = {};
+export let dataSource = [];
 </script>
 
 <div class="col-xs-12 col-md-12 col-lg-12">
@@ -13,6 +14,32 @@ export let config = {};
             {/each}
         </tr>
         </thead>
+        
+        {#if null != dataSource && dataSource.length > 0 }
+        <tbody>
+            {#each dataSource as row}
+            <tr>
+                {#each config.column as col}
+                    {#if config.keyFieldFormatter.field == col.field}
+                        <td>
+                        {#each config.keyFieldFormatter.item as keyFieldFormatItem}                            
+                            {#if config.keyFieldFormatter.showTooltip }
+                            <Button id={keyFieldFormatItem.type + '_' + row[col.field]} class="btn btn-light btn-sm" on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
+                            <Tooltip target={keyFieldFormatItem.type + '_' + row[col.field]} placement="bottom">{keyFieldFormatItem.memo}</Tooltip>
+                            {:else}
+                            <Button class="btn btn-light btn-sm" on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
+                            {/if}
+                        {/each}
+                        </td>
+                    {:else}
+                        <td>{row[col.field]}</td>
+                    {/if}                
+                {/each}                
+            </tr>        
+            {/each}
+        </tbody>
+        {/if}
+
     </Table>
   
 </div>
