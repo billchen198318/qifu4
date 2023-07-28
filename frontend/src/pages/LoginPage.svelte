@@ -67,6 +67,8 @@ function loginClick() {
   .catch((error) => {
     console.log(error);
     lgParam.message = error;
+    lgParam.username = '';
+    lgParam.password = '';
     Swal.hideLoading();
     Swal.close();    
   });  
