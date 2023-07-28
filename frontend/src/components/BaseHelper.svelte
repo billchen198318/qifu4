@@ -83,6 +83,40 @@
         return false;
     }
 
+    export function checkHasRole(roleId) {
+      var hasRole = false;
+      if (null == userData) {
+        return hasRole;
+      }
+      if (userData.admin) {
+        return true;
+      }
+      for (var r in userData.roles) {
+        if (roleId == r.role) {
+          hasRole = true;
+        }
+      }
+      return hasRole;
+    }
+
+    export function checkHasPermission(perm) {
+      var hasPerm = false;
+      if (null == userData) {
+        return hasPerm;
+      }
+      if (userData.admin) {
+        return true;
+      }      
+      for (var r in userData.roles) {
+        for (var p in r.rolePermission) {
+          if (perm == r.permission) {
+            hasPerm = true;
+          }
+        }
+      }
+      return hasPerm;
+    }
+
     export function getAxiosInstance() {
 
       axios.defaults.headers = {

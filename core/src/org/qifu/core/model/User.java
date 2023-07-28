@@ -22,6 +22,7 @@
 package org.qifu.core.model;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.qifu.base.Constants;
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.model.BaseUserInfo;
 import org.qifu.base.model.RolePermissionAttr;
@@ -143,4 +144,15 @@ public class User extends BaseUserInfo implements UserDetails {
 		this.byLdap = byLdap;
 	}
     
+	public boolean isAdmin() {
+		boolean f = false;
+		for (int i = 0; !f && this.roles != null && i < this.roles.size(); i++) {
+			String roleId = this.roles.get(i).getRole();
+			if (Constants.SUPER_ROLE_ADMIN.equals(roleId) || Constants.SUPER_ROLE_ALL.equals(roleId)) {
+				f = true;
+			}
+		}
+		return f;
+	}
+	
 }
