@@ -1,5 +1,5 @@
 <script>
-import { Table, Button, Icon, Tooltip } from "sveltestrap";
+import { Table, Button, Icon, Tooltip, NavItem } from "sveltestrap";
 
 export let config = {};
 export let dataSource = [];
@@ -24,11 +24,15 @@ export let dataSource = [];
                     {#if config.keyFieldFormatter.field == col.field}
                         <td>
                         {#each config.keyFieldFormatter.item as keyFieldFormatItem}                            
-                            {#if config.keyFieldFormatter.showTooltip }
-                            <Button id={'_' + keyFieldFormatItem.type + '_' + row[col.field]} class="btn btn-light btn-sm" on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
-                            <Tooltip target={'_' + keyFieldFormatItem.type + '_' + row[col.field]} placement="bottom">{keyFieldFormatItem.memo}</Tooltip>
+                            {#if typeof keyFieldFormatItem.method === 'function' }
+                                {#if config.keyFieldFormatter.showTooltip }
+                                <Button id={'_' + keyFieldFormatItem.type + '_' + row[col.field]} class="btn btn-light btn-sm" on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
+                                <Tooltip target={'_' + keyFieldFormatItem.type + '_' + row[col.field]} placement="bottom">{keyFieldFormatItem.memo}</Tooltip>
+                                {:else}
+                                <Button class="btn btn-light btn-sm" on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
+                                {/if}
                             {:else}
-                            <Button class="btn btn-light btn-sm" on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
+                                {row[col.field]}
                             {/if}
                         {/each}
                         </td>
