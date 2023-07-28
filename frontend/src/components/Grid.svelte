@@ -1,5 +1,5 @@
 <script>
-import { Table, Button, Icon, Tooltip, NavItem } from "sveltestrap";
+import { Table, Button, Icon, Tooltip } from "sveltestrap";
 
 export let config = {};
 export let dataSource = [];
