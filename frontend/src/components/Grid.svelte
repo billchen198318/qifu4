@@ -5,7 +5,24 @@ export let config = {};
 export let dataSource = [];
 
 </script>
-
+<script context="module">
+export function getGridConfig(keyFieldName, formatterItems, columnItems) {
+    var gridConfig = {
+        row : 30,
+        theadColor : {
+            'backgroundColor' : '#1a1a1a',
+            'color'           : 'whitesmoke'
+        },
+        keyFieldFormatter : {
+            'field' : (null == keyFieldName || '' == keyFieldName) ? 'oid' : keyFieldName,
+            'showTooltip' : false,
+            'item' : formatterItems
+        },
+        column : columnItems
+    };
+    return gridConfig;
+}
+</script>
 <div class="col-xs-12 col-md-12 col-lg-12">
     <Table bordered hover>
         <thead style="background-color:{config.theadColor.backgroundColor}; color:{config.theadColor.color};">

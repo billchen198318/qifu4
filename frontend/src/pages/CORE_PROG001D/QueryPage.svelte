@@ -1,6 +1,6 @@
 <script>
 import { onMount } from 'svelte';    
-import { getProgItem, getGridConfig } from "../../components/BaseHelper.svelte";
+import { getProgItem } from "../../components/BaseHelper.svelte";
 import { push } from 'svelte-spa-router';
 import Toolbar from "../../components/Toolbar.svelte";
 import { 
@@ -8,7 +8,7 @@ import {
     Pagination, PaginationItem, PaginationLink,
     Table 
 } from 'sveltestrap';
-import Grid from "../../components/Grid.svelte";
+import Grid, { getGridConfig } from "../../components/Grid.svelte";
 
 let toolbarParam = {
     id          : 'CORE_PROG001D0001Q',
