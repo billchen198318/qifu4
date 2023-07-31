@@ -8,7 +8,7 @@ export let dataSource = [];
 <script context="module">
 export function getGridConfig(keyFieldName, formatterItems, columnItems) {
     var gridConfig = {
-        row : 30,
+        row : 10,
         theadColor : {
             'backgroundColor' : '#1a1a1a',
             'color'           : 'whitesmoke'

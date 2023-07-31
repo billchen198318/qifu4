@@ -4,11 +4,10 @@ import { getProgItem } from "../../components/BaseHelper.svelte";
 import { push } from 'svelte-spa-router';
 import Toolbar from "../../components/Toolbar.svelte";
 import { 
-    Form, FormGroup, FormText, Input, Label,
-    Pagination, PaginationItem, PaginationLink,
-    Table 
+    Form, FormGroup, Input, Label 
 } from 'sveltestrap';
 import Grid, { getGridConfig } from "../../components/Grid.svelte";
+import GridPagination from '../../components/GridPagination.svelte';
 
 let toolbarParam = {
     id          : 'CORE_PROG001D0001Q',
@@ -152,37 +151,8 @@ let dsList = [
         </Form>
     </div>
 
+    <GridPagination />
     <Grid config={gridConfig} bind:dataSource={dsList} />
-  
-    <Pagination ariaLabel="Page navigation example">
-        <PaginationItem disabled>
-          <PaginationLink first href="#" />
-        </PaginationItem>
-        <PaginationItem disabled>
-          <PaginationLink previous href="#" />
-        </PaginationItem>
-        <PaginationItem active>
-          <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">2</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">4</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">5</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink next href="#" />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink last href="#" />
-        </PaginationItem>
-      </Pagination>
 
-
+    
 </div>
