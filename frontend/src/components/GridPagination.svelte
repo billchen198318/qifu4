@@ -2,10 +2,17 @@
 import { 
     Pagination, PaginationItem, PaginationLink, Button, ButtonGroup
 } from 'sveltestrap';
+
+export let changeGridConfigRowMethod;
+export let gridConfig;
+export let dataSource;
+
 </script>
 
 <div class="row">
   <div class="col-xs-12 col-md-12 col-lg-12">
+    {#if dataSource != null && dataSource.length > 0 }
+
     <table width="100%" border="0" cellspacing="0" cellpadding="1" >
       <tr>
         <td  width="70%" align="left" valign="middle">
@@ -42,13 +49,37 @@ import {
         </td>
         <td width="30%" align="right" valign="middle">
           <ButtonGroup>
-            <Button active>Row 10</Button>
-            <Button>30</Button>
-            <Button>50</Button>
-            <Button>100</Button>
+            {#if gridConfig.row == 10 }
+              <Button active on:click={changeGridConfigRowMethod(10)}>Row 10</Button>
+            {:else}
+              <Button on:click={changeGridConfigRowMethod(10)}>Row 10</Button>
+            {/if}
+            
+            {#if gridConfig.row == 30 }
+              <Button active on:click={changeGridConfigRowMethod(30)}>30</Button>
+            {:else}
+              <Button on:click={changeGridConfigRowMethod(30)}>30</Button>
+            {/if}
+            
+            {#if gridConfig.row == 50 }
+              <Button active on:click={changeGridConfigRowMethod(50)}>50</Button>
+            {:else}
+              <Button on:click={changeGridConfigRowMethod(50)}>50</Button>
+            {/if}
+
+            {#if gridConfig.row == 100 }
+              <Button active on:click={changeGridConfigRowMethod(100)}>100</Button>
+            {:else}
+              <Button on:click={changeGridConfigRowMethod(100)}>100</Button>
+            {/if}
+
           </ButtonGroup>
         </td>        
       </tr>
-    </table>    
+    </table>  
+    {:else}
+      &nbsp;
+    {/if}
+    
   </div>
 </div>

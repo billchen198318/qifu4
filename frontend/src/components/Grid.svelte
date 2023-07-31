@@ -22,6 +22,9 @@ export function getGridConfig(keyFieldName, formatterItems, columnItems) {
     };
     return gridConfig;
 }
+export function setConfigRow(gridConfig, row) {
+    gridConfig.row = row;
+}
 </script>
 <div class="col-xs-12 col-md-12 col-lg-12">
     <Table bordered hover>

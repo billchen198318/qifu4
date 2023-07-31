@@ -6,7 +6,7 @@ import Toolbar from "../../components/Toolbar.svelte";
 import { 
     Form, FormGroup, Input, Label 
 } from 'sveltestrap';
-import Grid, { getGridConfig } from "../../components/Grid.svelte";
+import Grid, { getGridConfig, setConfigRow } from "../../components/Grid.svelte";
 import GridPagination from '../../components/GridPagination.svelte';
 
 let toolbarParam = {
@@ -129,7 +129,11 @@ let dsList = [
   }  
 ];
 
-
+function resetQueryGridRow(row) {
+  setConfigRow(gridConfig, row);
+  gridConfig = gridConfig; // 讓 svelte child compomenet 知道 gridConfig被修改了
+  // call query event
+}
 
 </script>
 
@@ -151,8 +155,8 @@ let dsList = [
         </Form>
     </div>
 
-    <GridPagination />
+    <GridPagination changeGridConfigRowMethod={resetQueryGridRow} gridConfig={gridConfig} bind:dataSource={dsList}/>
     <Grid config={gridConfig} bind:dataSource={dsList} />
 
-    
+
 </div>
