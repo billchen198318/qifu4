@@ -33,7 +33,7 @@ public class PageOf implements java.io.Serializable {
 	private static final long serialVersionUID = -3060749245195776228L;
 	
 	@ApiParam(hidden = true)
-	public static final int Rows[]={10, 20, 30, 50, 75, 100}; // 要配合 ui.grid.htm.flt
+	public static final int Rows[]={10, 30, 50, 100}; // 要配合 ui.grid.htm.flt
 	
 	private String countSize="0"; // count record 頁面grid資料count的筆數
 	private String showRow=Rows[0]+""; // a page show size 頁面要顯示grid row比數
