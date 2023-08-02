@@ -14,7 +14,8 @@ let toolbarParam = {
     description : 'Application site.',
     methods     :  {
         "refresh"    :   function() {
-            test = '';
+            queryParam.name = '';
+            queryParam.sysId = '';
             dsList.splice(0);
             dsList = dsList; // 這很重要, 讓 svelte 知道 list 被變更了, 讓 child compoment 知道資料被更改了
         }
@@ -24,12 +25,15 @@ let toolbarParam = {
         }
         ,
         "save"      :   function() {
-            test = 'save';     
+            queryParam.name = 'save';     
         }
     }
 }
 
-let test = '';
+var queryParam = {
+  'sysId' : '',
+  'name'  : ''
+}
 
 onMount(()=>{
 
@@ -61,13 +65,13 @@ let gridConfig = getGridConfig(
   ,
   [
       {
-        'method'  : function(val) { test = 'edit->' + val; },
+        'method'  : function(val) { queryParam.sysId = 'edit->' + val; queryParam = queryParam; },
         'icon'    : 'pen',
         'type'    : 'edit',
         'memo'    : 'Edit current item.'
       },
       {
-        'method'  : function(val) { test = 'trash->' + val; },
+        'method'  : function(val) { queryParam.name = 'trash->' + val; queryParam = queryParam; },
         'icon'    : 'trash',
         'type'    : 'delete',
         'memo'    : 'Delete current item.'
@@ -140,20 +144,35 @@ function resetQueryGridRow(row) {
 <div class="row">
     <Toolbar args={toolbarParam}></Toolbar>
 
-    <div class="col-xs-12 col-md-12 col-lg-12">
+    <div class="col-xs-6 col-md-6 col-lg-6">
         <Form>
             <FormGroup>
-                <Label for="testInp">Test</Label>
+                <Label for="sysId">Id</Label>
                 <Input
                 type="text"
-                name="testInp"
-                id="testInp"
-                placeholder="Please input name."     
-                bind:value={test}     
+                name="sysId"
+                id="sysId"
+                placeholder="Please input Id."     
+                bind:value={queryParam.sysId}     
                 />
             </FormGroup>      
         </Form>
     </div>
+    <div class="col-xs-6 col-md-6 col-lg-6">
+      <Form>
+          <FormGroup>
+              <Label for="name">Name</Label>
+              <Input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="Please input name."     
+              bind:value={queryParam.name}     
+              />
+          </FormGroup>      
+      </Form>
+  </div>
+
 
     <GridPagination changeGridConfigRowMethod={resetQueryGridRow} gridConfig={gridConfig} bind:dataSource={dsList}/>
     <Grid config={gridConfig} bind:dataSource={dsList} />

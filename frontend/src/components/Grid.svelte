@@ -28,6 +28,8 @@ export function setConfigRow(gridConfig, row) {
 }
 </script>
 <div class="col-xs-12 col-md-12 col-lg-12">
+    
+    {#if null != dataSource && dataSource.length > 0 }
     <Table bordered hover>
         <thead style="background-color:{config.theadColor.backgroundColor}; color:{config.theadColor.color};">
         <tr>
@@ -36,8 +38,6 @@ export function setConfigRow(gridConfig, row) {
             {/each}
         </tr>
         </thead>
-        
-        {#if null != dataSource && dataSource.length > 0 }
         <tbody>
             {#each dataSource as row}
             <tr>
@@ -64,8 +64,8 @@ export function setConfigRow(gridConfig, row) {
             </tr>        
             {/each}
         </tbody>
-        {/if}
 
     </Table>
-  
+    {/if}
+
 </div>
