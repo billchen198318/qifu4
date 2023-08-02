@@ -4,7 +4,8 @@ import { getProgItem } from "../../components/BaseHelper.svelte";
 import { push } from 'svelte-spa-router';
 import Toolbar from "../../components/Toolbar.svelte";
 import { 
-    Form, FormGroup, Input, Label 
+    Form, FormGroup, Input, Label, Button, Icon
+
 } from 'sveltestrap';
 import Grid, { getGridConfig, setConfigRow } from "../../components/Grid.svelte";
 import GridPagination from '../../components/GridPagination.svelte';
@@ -139,6 +140,18 @@ function resetQueryGridRow(row) {
   // call query event
 }
 
+function btnQuery() {
+  alert('test');
+}
+
+function btnClear() {
+  setConfigRow(gridConfig, import.meta.env.VITE_DEFAULT_ROW);
+  gridConfig = gridConfig;
+  queryParam.name = '';
+  queryParam.sysId = '';
+  dsList = [];
+}
+
 </script>
 
 <div class="row">
@@ -172,10 +185,18 @@ function resetQueryGridRow(row) {
           </FormGroup>      
       </Form>
   </div>
-
-
-    <GridPagination changeGridConfigRowMethod={resetQueryGridRow} gridConfig={gridConfig} bind:dataSource={dsList}/>
-    <Grid config={gridConfig} bind:dataSource={dsList} />
-
-
+</div>
+<div class="row">
+  <div class="col-xs-12 col-md-12 col-lg-12">
+      <Button color="primary" on:click={btnQuery}><Icon name="search"/>&nbsp;Query</Button>
+      &nbsp;
+      <Button color="primary" on:click={btnClear}><Icon name="eraser"/>&nbsp;Clear</Button>
+  </div>  
+</div>
+<div class="row">
+  &nbsp;
+</div>
+<div class="row">
+  <GridPagination changeGridConfigRowMethod={resetQueryGridRow} gridConfig={gridConfig} bind:dataSource={dsList}/>
+  <Grid config={gridConfig} bind:dataSource={dsList} />
 </div>
