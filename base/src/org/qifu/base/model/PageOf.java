@@ -233,6 +233,7 @@ public class PageOf implements java.io.Serializable {
 		return queryParam;
 	}
 	
+	@ApiParam(hidden = true)
 	public PageOf orderBy(String orderBy) {
 		this.setOrderBy(orderBy);
 		return this;
@@ -243,17 +244,20 @@ public class PageOf implements java.io.Serializable {
 		return this;
 	}
 	
+	@ApiParam(hidden = true)
 	public PageOf sortTypeAsc() {
 		this.sortBy( SortType.ASC );
 		return this;
 	}
 	
+	@ApiParam(hidden = true)
 	public PageOf sortTypeDesc() {
 		this.sortBy( SortType.DESC );
 		return this;
 	}	
 	
 	// for postgresql, ex: SELECT * FROM "tb_prog" ORDER BY "PROG_ID", "NAME" ASC
+	@ApiParam(hidden = true)
 	public PageOf andFieldWrap() {
 		if (StringUtils.isBlank(this.orderBy)) {
 			return this;
