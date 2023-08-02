@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 @Api(tags = {"PROG001D"}, value = "Application site.")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -36,22 +38,17 @@ public class Prog001ApiController extends CoreApiSupport {
 	
 	@ApiOperation(
 			value="PROG001 - findPage", 
-			notes="查核TB_SYS資料"
+			notes="查核TB_SYS資料", 
+			authorizations={ @Authorization(value="Bearer") }
 	)
     @ApiImplicitParams({
-    	@ApiImplicitParam(name = "field.sysId", value = "系統Id", required = false, dataType = "String"),
-    	@ApiImplicitParam(name = "field.name", value = "名稱", required = false, dataType = "String"),
-    	@ApiImplicitParam(name = "field.createDate", value = "產生日期", required = false, dataType = "String"),
-    	@ApiImplicitParam(name = "pageOf.select", value = "換頁代碼-頁", required = true),
-    	@ApiImplicitParam(name = "pageOf.showRow", value = "換頁代碼-row", required = true)
+    	@ApiImplicitParam(name = "field.sysId", value = "系統Id"),
+    	@ApiImplicitParam(name = "field.name", value = "名稱"),
+    	@ApiImplicitParam(name = "pageOf.select", value = "換頁代碼-頁"),
+    	@ApiImplicitParam(name = "pageOf.showRow", value = "換頁代碼-row")
     })		
 	@ResponseBody
-	@RequestMapping(
-			value = "/findPage", 
-			consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE}, 
-			produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE}, 
-			method = {RequestMethod.POST}
-	)	
+	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<QueryResult<List<TbSys>>> findPage(@RequestBody SearchBody searchBody) {
 		QueryResult<List<TbSys>> result = this.initResult();
 		try {
