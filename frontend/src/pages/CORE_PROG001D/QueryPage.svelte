@@ -160,12 +160,11 @@ function btnClear() {
     <div class="col-xs-6 col-md-6 col-lg-6">
         <Form>
             <FormGroup>
-                <Label for="sysId">Id</Label>
+                <Label for="sysId">編號</Label>
                 <Input
                 type="text"
-                name="sysId"
                 id="sysId"
-                placeholder="Please input Id."     
+                placeholder="輸入編號"     
                 bind:value={queryParam.sysId}     
                 />
             </FormGroup>      
@@ -174,12 +173,11 @@ function btnClear() {
     <div class="col-xs-6 col-md-6 col-lg-6">
       <Form>
           <FormGroup>
-              <Label for="name">Name</Label>
+              <Label for="name">名稱</Label>
               <Input
               type="text"
-              name="name"
               id="name"
-              placeholder="Please input name."     
+              placeholder="輸入名稱"     
               bind:value={queryParam.name}     
               />
           </FormGroup>      
@@ -188,9 +186,9 @@ function btnClear() {
 </div>
 <div class="row">
   <div class="col-xs-12 col-md-12 col-lg-12">
-      <Button color="primary" on:click={btnQuery}><Icon name="search"/>&nbsp;Query</Button>
+      <Button color="primary" on:click={btnQuery}><Icon name="search"/>&nbsp;查詢</Button>
       &nbsp;
-      <Button color="primary" on:click={btnClear}><Icon name="eraser"/>&nbsp;Clear</Button>
+      <Button color="primary" on:click={btnClear}><Icon name="eraser"/>&nbsp;清除</Button>
   </div>  
 </div>
 <div class="row">
