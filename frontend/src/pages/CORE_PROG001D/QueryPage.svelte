@@ -1,12 +1,11 @@
 <script>
 import { onMount } from 'svelte';    
-import { getProgItem } from "../../components/BaseHelper.svelte";
 import { push } from 'svelte-spa-router';
-import Toolbar from "../../components/Toolbar.svelte";
 import { 
     Form, FormGroup, Input, Label, Button, Icon
-
 } from 'sveltestrap';
+import { getProgItem, getAxiosInstance } from "../../components/BaseHelper.svelte";
+import Toolbar from "../../components/Toolbar.svelte";
 import Grid, { getGridConfig, setConfigRow } from "../../components/Grid.svelte";
 import GridPagination from '../../components/GridPagination.svelte';
 
@@ -141,7 +140,25 @@ function resetQueryGridRow(row) {
 }
 
 function btnQuery() {
-  alert('test');
+  var axiosInstance = getAxiosInstance();
+  axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/findPage', {
+    "field": {
+      "sysId" : queryParam.sysId,
+      "name"  : queryParam.name
+    },
+    "pageOf": {
+      "select"  : gridConfig.page,
+      "showRow" : gridConfig.row
+    }
+  })
+  .then(response => {
+    if (null != response) {
+      console.log(response);
+    }
+  })
+  .catch(e => {
+    alert(e);
+  });
 }
 
 function btnClear() {
