@@ -1,6 +1,6 @@
 <script>
 import { 
-    Pagination, PaginationItem, PaginationLink, Button, ButtonGroup
+    Pagination, PaginationItem, PaginationLink, Button, ButtonGroup, Badge 
 } from 'sveltestrap';
 
 export let changeGridConfigRowMethod;
@@ -48,32 +48,43 @@ export let dataSource;
       
         </td>
         <td width="30%" align="right" valign="middle">
-          <ButtonGroup>
-            {#if gridConfig.row == 10 }
-              <Button active on:click={changeGridConfigRowMethod(10)}>Row 10</Button>
-            {:else}
-              <Button on:click={changeGridConfigRowMethod(10)}>Row 10</Button>
-            {/if}
-            
-            {#if gridConfig.row == 30 }
-              <Button active on:click={changeGridConfigRowMethod(30)}>30</Button>
-            {:else}
-              <Button on:click={changeGridConfigRowMethod(30)}>30</Button>
-            {/if}
-            
-            {#if gridConfig.row == 50 }
-              <Button active on:click={changeGridConfigRowMethod(50)}>50</Button>
-            {:else}
-              <Button on:click={changeGridConfigRowMethod(50)}>50</Button>
-            {/if}
-
-            {#if gridConfig.row == 100 }
-              <Button active on:click={changeGridConfigRowMethod(100)}>100</Button>
-            {:else}
-              <Button on:click={changeGridConfigRowMethod(100)}>100</Button>
-            {/if}
-
-          </ButtonGroup>
+          <table width="100%" border="0" cellspacing="0" cellpadding="1" >
+            <tr>
+              <td align="right">
+                <ButtonGroup>
+                  {#if gridConfig.row == 10 }
+                    <Button active on:click={changeGridConfigRowMethod(10)}>Row 10</Button>
+                  {:else}
+                    <Button on:click={changeGridConfigRowMethod(10)}>Row 10</Button>
+                  {/if}
+                  
+                  {#if gridConfig.row == 30 }
+                    <Button active on:click={changeGridConfigRowMethod(30)}>30</Button>
+                  {:else}
+                    <Button on:click={changeGridConfigRowMethod(30)}>30</Button>
+                  {/if}
+                  
+                  {#if gridConfig.row == 50 }
+                    <Button active on:click={changeGridConfigRowMethod(50)}>50</Button>
+                  {:else}
+                    <Button on:click={changeGridConfigRowMethod(50)}>50</Button>
+                  {/if}
+      
+                  {#if gridConfig.row == 100 }
+                    <Button active on:click={changeGridConfigRowMethod(100)}>100</Button>
+                  {:else}
+                    <Button on:click={changeGridConfigRowMethod(100)}>100</Button>
+                  {/if}
+                </ButtonGroup>
+              </td>
+              <td align="left">
+                <h6>
+                  Total
+                  <Badge>{gridConfig.total}</Badge>
+                </h6>
+              </td>
+            </tr>
+          </table>    
         </td>        
       </tr>
     </table>  

@@ -10,6 +10,7 @@ export function getGridConfig(keyFieldName, formatterItems, columnItems) {
     var gridConfig = {
         row : 10,
         page : 1,
+        total : 0,
         theadColor : {
             'backgroundColor' : '#1a1a1a',
             'color'           : 'whitesmoke'

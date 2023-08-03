@@ -4,6 +4,7 @@ import { push } from 'svelte-spa-router';
 import { 
     Form, FormGroup, Input, Label, Button, Icon
 } from 'sveltestrap';
+import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import { getProgItem, getAxiosInstance } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
 import Grid, { getGridConfig, setConfigRow } from "../../components/Grid.svelte";
@@ -37,29 +38,8 @@ var queryParam = {
 
 onMount(()=>{
 
-  // test  
-  setTimeout(function() {
-    
-    //dataList.splice(0);
-    dsList.push({
-      'oid'   : '3e0de6da-c76d-4550-901b-08cfd97d8cfb',
-      'sysId' : 'OTH',
-      'name'  : 'Other system',
-      'host'  : '127.0.0.1:8088',
-      'contextPath' : '/other',
-      'local' : 'N'
-    });
-    dsList = dsList; // 這很重要, 讓 svelte 知道 list 被變更了, 讓 child compoment 知道資料被更改了
-
-  },5000);
-
 });
 
-/*
-$ : {
-    alert('q');
-}
-*/
 let gridConfig = getGridConfig(
   'oid'
   ,
@@ -101,45 +81,22 @@ let gridConfig = getGridConfig(
     },
     {
       'label' : 'Local',
-      'field' : 'local'
+      'field' : 'isLocal'
     }
   ]    
 );
 
-let dsList = [
-  {
-    'oid'   : '000',
-    'sysId' : 'CORE',
-    'name'  : 'Core',
-    'host'  : '127.0.0.1:8088',
-    'contextPath' : '/cs',
-    'local' : 'Y'
-  },
-  {
-    'oid'   : '111',
-    'sysId' : 'BB',
-    'name'  : 'b',
-    'host'  : '127.0.0.1:8088',
-    'contextPath' : '/bb',
-    'local' : 'N'
-  },
-  {
-    'oid'   : '222',
-    'sysId' : 'ccc',
-    'name'  : 'c',
-    'host'  : '127.0.0.1:8088',
-    'contextPath' : '/cc',
-    'local' : 'N'
-  }  
-];
+let dsList = [];
 
 function resetQueryGridRow(row) {
   setConfigRow(gridConfig, row);
   gridConfig = gridConfig; // 讓 svelte child compomenet 知道 gridConfig被修改了
-  // call query event
+  btnQuery();
 }
 
 function btnQuery() {
+  dsList = [];
+  dsList = dsList;
   var axiosInstance = getAxiosInstance();
   axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/findPage', {
     "field": {
@@ -152,8 +109,16 @@ function btnQuery() {
     }
   })
   .then(response => {
-    if (null != response) {
-      console.log(response);
+    if (null != response && null != response.data && null != response.data.value) {
+      if ('Y' != response.data.success) {
+        toast.push(response.data.message);
+        return;
+      }
+      dsList = response.data.value;
+      gridConfig.total = response.data.pageOf.countSize;
+      //console.log(response.data);
+    } else {
+      toast.push('error, null');
     }
   })
   .catch(e => {
@@ -215,3 +180,5 @@ function btnClear() {
   <GridPagination changeGridConfigRowMethod={resetQueryGridRow} gridConfig={gridConfig} bind:dataSource={dsList}/>
   <Grid config={gridConfig} bind:dataSource={dsList} />
 </div>
+
+<SvelteToast/>
