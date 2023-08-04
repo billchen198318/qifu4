@@ -11,16 +11,21 @@ export let dataSource;
 let prevPage = 1;
 let nexPage = 1;
 let lastPage = 1;
+
+let midMaxShow = 3;
+let pStart;
+let pEnd;
+let pItem = [];
+
 $ : {  
+  pItem = [];
   if (gridConfig.total > 0) {
     prevPage = gridConfig.page - 1;
     nexPage = gridConfig.page + 1;
     lastPage = parseInt( gridConfig.total / gridConfig.row );
     if (parseInt(gridConfig.total % gridConfig.row) != 0) {
       lastPage += 1;
-      //alert('total: ' + gridConfig.total);
     }
-
     if (prevPage < 1) {
       prevPage = 1;
     }
@@ -28,6 +33,17 @@ $ : {
       nexPage = lastPage;
     }
 
+    pStart = gridConfig.page - midMaxShow;
+    pEnd = gridConfig.page + midMaxShow;
+    if (pStart < 1) { 
+      pStart = 1;
+    }
+    if (pEnd > lastPage) {
+      pEnd = lastPage;
+    }
+    for (let i = pStart; i <= pEnd; i++) {
+      pItem.push(i);
+    }
   }
 }
 
@@ -40,12 +56,6 @@ $ : {
       <tr>
         <td  width="70%" align="left" valign="middle">
 
-<!--
-        row : 10,
-        page : 1,
-        total : 0,
--->
-
           <Pagination ariaLabel="Page navigation">
             <PaginationItem>
                 <PaginationLink first href={window.location} on:click={changePageSelectMethod(1)} />
@@ -53,21 +63,13 @@ $ : {
               <PaginationItem>
                 <PaginationLink previous href={window.location} on:click={changePageSelectMethod(prevPage)} />
               </PaginationItem>
-              <PaginationItem active>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">4</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">5</PaginationLink>
-              </PaginationItem>
+
+              {#each pItem as pNum }
+              <PaginationItem active={ pNum == gridConfig.page } >
+                <PaginationLink href={window.location} on:click={changePageSelectMethod(pNum)}>{pNum}</PaginationLink>
+              </PaginationItem> 
+              {/each}
+
               <PaginationItem>
                 <PaginationLink next href={window.location} on:click={changePageSelectMethod(nexPage)} />
               </PaginationItem>
