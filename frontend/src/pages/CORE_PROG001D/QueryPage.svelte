@@ -105,7 +105,7 @@ function changePageSelect(page) {
 function btnQuery() {
   Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
   Swal.showLoading();
-  
+
   dsList = [];
   dsList = dsList;
   var axiosInstance = getAxiosInstance();
@@ -122,8 +122,8 @@ function btnQuery() {
   .then(response => {
     Swal.hideLoading();
     Swal.close();
-    if (null != response && null != response.data && null != response.data.value) {
-      if ('Y' != response.data.success) {
+    if (null != response.data) {
+      if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
         toast.push(response.data.message);
         return;
       }
