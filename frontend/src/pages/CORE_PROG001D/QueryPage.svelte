@@ -12,7 +12,7 @@ import GridPagination from '../../components/GridPagination.svelte';
 
 let toolbarParam = {
     id          : 'CORE_PROG001D0001Q',
-    description : 'Application site.',
+    description : '站台測試用.',
     methods     :  {
         "refresh"    :   function() {
             queryParam.name = '';
