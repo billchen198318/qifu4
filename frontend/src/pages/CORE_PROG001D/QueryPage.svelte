@@ -124,6 +124,7 @@ function btnQuery() {
     Swal.close();
     if (null != response.data) {
       if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+        clearGridConfig();
         toast.push(response.data.message);
         return;
       }
@@ -132,18 +133,26 @@ function btnQuery() {
       gridConfig = gridConfig; // 讓 GridPagination 知道 gridConfig 被更動了
     } else {
       toast.push('error, null');
+      clearGridConfig();
     }
   })
   .catch(e => {
     Swal.hideLoading();
     Swal.close();    
+    clearGridConfig();
     alert(e);
   });
 }
 
-function btnClear() {
+function clearGridConfig() {
   setConfigRow(gridConfig, import.meta.env.VITE_DEFAULT_ROW);
+  setConfigPage(gridConfig, 1);
+  setConfigTotal(gridConfig, 0);
   gridConfig = gridConfig; // 讓 GridPagination 知道 gridConfig 被更動了
+}
+
+function btnClear() {
+  clearGridConfig();  
   queryParam.name = '';
   queryParam.sysId = '';
   dsList = [];
@@ -192,7 +201,7 @@ function btnClear() {
   &nbsp;
 </div>
 <div class="row">
-  <GridPagination changeGridConfigRowMethod={changeQueryGridRow} changePageSelectMethod={changePageSelect} gridConfig={gridConfig} bind:dataSource={dsList} />
+  <GridPagination changeGridConfigRowMethod={changeQueryGridRow} changePageSelectMethod={changePageSelect} gridConfig={gridConfig} />
   <Grid config={gridConfig} bind:dataSource={dsList} />
 </div>
 

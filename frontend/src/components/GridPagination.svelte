@@ -6,7 +6,6 @@ import {
 export let changeGridConfigRowMethod;
 export let changePageSelectMethod;
 export let gridConfig;
-export let dataSource;
 
 let prevPage = 1;
 let nexPage = 1;
@@ -51,7 +50,7 @@ $ : {
 
 <div class="row">
   <div class="col-xs-12 col-md-12 col-lg-12">
-    {#if dataSource != null && dataSource.length > 0 }
+    {#if gridConfig != null && gridConfig.total > 0 }
     <table width="100%" border="0" cellspacing="0" cellpadding="1" >
       <tr>
         <td  width="70%" align="left" valign="middle">
