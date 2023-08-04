@@ -27,6 +27,12 @@ export function getGridConfig(keyFieldName, formatterItems, columnItems) {
 export function setConfigRow(gridConfig, row) {
     gridConfig.row = row;
 }
+export function setConfigPage(gridConfig, page) {
+    gridConfig.page = page;
+}
+export function setConfigTotal(gridConfig, total) {
+    gridConfig.total = total;
+}
 </script>
 <div class="col-xs-12 col-md-12 col-lg-12">
     

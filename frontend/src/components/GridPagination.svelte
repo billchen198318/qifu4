@@ -4,24 +4,54 @@ import {
 } from 'sveltestrap';
 
 export let changeGridConfigRowMethod;
+export let changePageSelectMethod;
 export let gridConfig;
 export let dataSource;
+
+let prevPage = 1;
+let nexPage = 1;
+let lastPage = 1;
+$ : {  
+  if (gridConfig.total > 0) {
+    prevPage = gridConfig.page - 1;
+    nexPage = gridConfig.page + 1;
+    lastPage = parseInt( gridConfig.total / gridConfig.row );
+    if (parseInt(gridConfig.total % gridConfig.row) != 0) {
+      lastPage += 1;
+      //alert('total: ' + gridConfig.total);
+    }
+
+    if (prevPage < 1) {
+      prevPage = 1;
+    }
+    if (nexPage > lastPage) {
+      nexPage = lastPage;
+    }
+
+  }
+}
 
 </script>
 
 <div class="row">
   <div class="col-xs-12 col-md-12 col-lg-12">
     {#if dataSource != null && dataSource.length > 0 }
-
     <table width="100%" border="0" cellspacing="0" cellpadding="1" >
       <tr>
         <td  width="70%" align="left" valign="middle">
+
+<!--
+        row : 10,
+        page : 1,
+        total : 0,
+-->
+
           <Pagination ariaLabel="Page navigation">
             <PaginationItem>
-                <PaginationLink first href="#" />
+                <PaginationLink first href={window.location} on:click={changePageSelectMethod(1)} />
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink previous href="#" />
+                <PaginationLink previous href={window.location} on:click={changePageSelectMethod(prevPage)} />
               </PaginationItem>
               <PaginationItem active>
                 <PaginationLink href="#">1</PaginationLink>
@@ -39,10 +69,10 @@ export let dataSource;
                 <PaginationLink href="#">5</PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink next href="#" />
+                <PaginationLink next href={window.location} on:click={changePageSelectMethod(nexPage)} />
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink last href="#" />
+                <PaginationLink last href={window.location} on:click={changePageSelectMethod(lastPage)} />
               </PaginationItem>    
           </Pagination>        
       

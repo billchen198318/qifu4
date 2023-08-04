@@ -7,7 +7,7 @@ import {
 import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import { getProgItem, getAxiosInstance } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
-import Grid, { getGridConfig, setConfigRow } from "../../components/Grid.svelte";
+import Grid, { getGridConfig, setConfigRow, setConfigPage, setConfigTotal } from "../../components/Grid.svelte";
 import GridPagination from '../../components/GridPagination.svelte';
 
 let toolbarParam = {
@@ -88,10 +88,18 @@ let gridConfig = getGridConfig(
 
 let dsList = [];
 
-function resetQueryGridRow(row) {
+function changeQueryGridRow(row) {
   setConfigRow(gridConfig, row);
+  gridConfig.page = 1;
   gridConfig = gridConfig; // 讓 svelte child compomenet 知道 gridConfig被修改了
   btnQuery();
+}
+
+function changePageSelect(page) {
+  setConfigPage(gridConfig, page);
+  gridConfig = gridConfig; // 讓 svelte child compomenet 知道 gridConfig被修改了
+  // call query event
+  alert('page>>' + page);
 }
 
 function btnQuery() {
@@ -115,8 +123,8 @@ function btnQuery() {
         return;
       }
       dsList = response.data.value;
-      gridConfig.total = response.data.pageOf.countSize;
-      //console.log(response.data);
+      setConfigTotal(gridConfig, response.data.pageOf.countSize);
+      gridConfig = gridConfig; // 讓 GridPagination 知道 gridConfig 被更動了
     } else {
       toast.push('error, null');
     }
@@ -128,7 +136,7 @@ function btnQuery() {
 
 function btnClear() {
   setConfigRow(gridConfig, import.meta.env.VITE_DEFAULT_ROW);
-  gridConfig = gridConfig;
+  gridConfig = gridConfig; // 讓 GridPagination 知道 gridConfig 被更動了
   queryParam.name = '';
   queryParam.sysId = '';
   dsList = [];
@@ -177,7 +185,7 @@ function btnClear() {
   &nbsp;
 </div>
 <div class="row">
-  <GridPagination changeGridConfigRowMethod={resetQueryGridRow} gridConfig={gridConfig} bind:dataSource={dsList}/>
+  <GridPagination changeGridConfigRowMethod={changeQueryGridRow} changePageSelectMethod={changePageSelect} gridConfig={gridConfig} bind:dataSource={dsList} />
   <Grid config={gridConfig} bind:dataSource={dsList} />
 </div>
 
