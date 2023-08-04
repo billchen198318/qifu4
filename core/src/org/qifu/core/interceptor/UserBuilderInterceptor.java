@@ -79,7 +79,8 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 			response.setCharacterEncoding( Constants.BASE_ENCODING );
 			response.getWriter().print( "{ \"success\":\"N\",\"message\":\"No authorization head " + Constants.TOKEN_PREFIX + "\",\"login\":\"N\",\"isAuthorize\":\"N\" }" );
 			response.getWriter().flush();
-			response.getWriter().close();
+			response.getWriter().close();			
+			response.setStatus(401); // 2023-08-04 add , 讓前端的 axios interceptor 去接
 			return false;
 		}
 		
@@ -129,6 +130,7 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 			response.getWriter().print( Constants.NO_LOGIN_JSON_DATA );
 			response.getWriter().flush();
 			response.getWriter().close();
+			response.setStatus(401); // 2023-08-04 add , 讓前端的 axios interceptor 去接
 			return false;
 		}
 		return true;
