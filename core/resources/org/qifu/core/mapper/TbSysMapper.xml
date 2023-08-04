@@ -32,6 +32,9 @@
 	<if test="name != null and name != ''.toString() ">
 		AND NAME = #{name,jdbcType=VARCHAR}
 	</if>	
+	<if test="nameLike != null and nameLike != ''.toString() ">
+		AND NAME like #{nameLike,jdbcType=VARCHAR}
+	</if>		
 	<if test="isLocal != null and isLocal != ''.toString() ">
 		AND IS_LOCAL = #{isLocal,jdbcType=VARCHAR}
 	</if>			
@@ -52,6 +55,9 @@
 	<if test="name != null and name != ''.toString() ">
 		AND NAME LIKE #{name,jdbcType=VARCHAR}
 	</if>	
+	<if test="nameLike != null and nameLike != ''.toString() ">
+		AND NAME like #{nameLike,jdbcType=VARCHAR}
+	</if>	
 	<if test="isLocal != null and isLocal != ''.toString() ">
 		AND IS_LOCAL = #{isLocal,jdbcType=VARCHAR}
 	</if>		
@@ -67,6 +73,9 @@
 	</if>
 	<if test="name != null and name != ''.toString() ">
 		AND NAME LIKE #{name,jdbcType=VARCHAR}
+	</if>	
+	<if test="nameLike != null and nameLike != ''.toString() ">
+		AND NAME like #{nameLike,jdbcType=VARCHAR}
 	</if>	
 	<if test="isLocal != null and isLocal != ''.toString() ">
 		AND IS_LOCAL = #{isLocal,jdbcType=VARCHAR}

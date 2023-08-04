@@ -52,7 +52,7 @@ public class Prog001ApiController extends CoreApiSupport {
 		QueryResult<List<TbSys>> result = this.initResult();
 		try {
 			QueryResult<List<TbSys>> queryResult = this.sysService.findPage(
-					this.queryParameter(searchBody).fullEquals("sysId").fullEquals("name").value(), 
+					this.queryParameter(searchBody).fullEquals("sysId").fullLink("nameLike").value(), 
 					searchBody.getPageOf().orderBy("SYS_ID").sortTypeAsc());
 			this.fillEventResult2ResponseResultForPage(queryResult, result, searchBody.getPageOf());
 		} catch (ServiceException | ControllerException e) {

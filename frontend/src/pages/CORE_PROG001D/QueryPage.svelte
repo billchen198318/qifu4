@@ -16,10 +16,7 @@ let toolbarParam = {
     description : '站台測試用.',
     methods     :  {
         "refresh"    :   function() {
-            queryParam.name = '';
-            queryParam.sysId = '';
-            dsList.splice(0);
-            dsList = dsList; // 這很重要, 讓 svelte 知道 list 被變更了, 讓 child compoment 知道資料被更改了
+            btnClear();
         }
         ,
         "create"    :   function() {
@@ -111,8 +108,8 @@ function btnQuery() {
   var axiosInstance = getAxiosInstance();
   axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/findPage', {
     "field": {
-      "sysId" : queryParam.sysId,
-      "name"  : queryParam.name
+      "sysId"     : queryParam.sysId,
+      "nameLike"  : queryParam.name
     },
     "pageOf": {
       "select"  : gridConfig.page,
