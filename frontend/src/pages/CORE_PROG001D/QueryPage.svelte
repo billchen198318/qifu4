@@ -98,8 +98,7 @@ function changeQueryGridRow(row) {
 function changePageSelect(page) {
   setConfigPage(gridConfig, page);
   gridConfig = gridConfig; // 讓 svelte child compomenet 知道 gridConfig被修改了
-  // call query event
-  alert('page>>' + page);
+  btnQuery();
 }
 
 function btnQuery() {
