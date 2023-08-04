@@ -5,6 +5,7 @@ import {
     Form, FormGroup, Input, Label, Button, Icon
 } from 'sveltestrap';
 import { toast, SvelteToast } from '@zerodevx/svelte-toast';
+import Swal from 'sweetalert2';
 import { getProgItem, getAxiosInstance } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
 import Grid, { getGridConfig, setConfigRow, setConfigPage, setConfigTotal } from "../../components/Grid.svelte";
@@ -102,6 +103,9 @@ function changePageSelect(page) {
 }
 
 function btnQuery() {
+  Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+  Swal.showLoading();
+  
   dsList = [];
   dsList = dsList;
   var axiosInstance = getAxiosInstance();
@@ -116,6 +120,8 @@ function btnQuery() {
     }
   })
   .then(response => {
+    Swal.hideLoading();
+    Swal.close();
     if (null != response && null != response.data && null != response.data.value) {
       if ('Y' != response.data.success) {
         toast.push(response.data.message);
@@ -129,6 +135,8 @@ function btnQuery() {
     }
   })
   .catch(e => {
+    Swal.hideLoading();
+    Swal.close();    
     alert(e);
   });
 }
