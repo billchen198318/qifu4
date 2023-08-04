@@ -43,6 +43,13 @@ $ : {
     for (let i = pStart; i <= pEnd; i++) {
       pItem.push(i);
     }
+
+    if (gridConfig.page > lastPage) {
+      gridConfig.page = lastPage;
+    }
+    if (gridConfig.page < 1) {
+      gridConfig.page = 1;
+    }
   }
 }
 
