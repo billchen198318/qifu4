@@ -31,7 +31,7 @@ public class DefaultControllerJsonResultObj<T> implements java.io.Serializable {
 	private String success = YesNo.NO;
 	private String message = "";
 	private String login = YesNo.NO;
-	private String isAuthorize = YesNo.NO;
+	private String isAuth = YesNo.NO;
 	private Map<String, String> checkFields = new LinkedHashMap<String, String>(); // 不符合條件的輸入欄位
 	
 	public static <T> DefaultControllerJsonResultObj<T> build() {
@@ -71,12 +71,12 @@ public class DefaultControllerJsonResultObj<T> implements java.io.Serializable {
 		this.login = login;
 	}
 	
-	public String getIsAuthorize() {
-		return isAuthorize;
+	public String getIsAuth() {
+		return isAuth;
 	}
-	
-	public void setIsAuthorize(String isAuthorize) {
-		this.isAuthorize = isAuthorize;
+
+	public void setIsAuth(String isAuth) {
+		this.isAuth = isAuth;
 	}
 
 	public Map<String, String> getCheckFields() {

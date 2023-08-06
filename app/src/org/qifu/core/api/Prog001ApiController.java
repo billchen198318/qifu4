@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.DefaultControllerJsonResultObj;
+import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbSys;
@@ -59,6 +61,25 @@ public class Prog001ApiController extends CoreApiSupport {
 			this.noSuccessResult(result, e);
 		} catch (Exception e) {
 			this.noSuccessResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}
+	
+	@ApiOperation(value="PROG001 - delete", notes="刪除TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "oid", value = "TB_SYS.OID")
+    })
+	@ResponseBody
+	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> delete(@RequestBody TbSys sys) {
+		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<Boolean> delResult = this.sysService.delete(sys);
+			this.fillEventResult2ResponseResult(delResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
 		}
 		return ResponseEntity.ok().body(result);
 	}

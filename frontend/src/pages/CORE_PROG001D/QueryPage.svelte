@@ -6,7 +6,10 @@ import {
 } from 'sveltestrap';
 import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
-import { getProgItem, getAxiosInstance } from "../../components/BaseHelper.svelte";
+import { 
+    getProgItem, getAxiosInstance, 
+    getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme 
+} from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
 import Grid, { getGridConfig, setConfigRow, setConfigPage, setConfigTotal } from "../../components/Grid.svelte";
 import GridPagination from '../../components/GridPagination.svelte';
@@ -122,14 +125,14 @@ function btnQuery() {
     if (null != response.data) {
       if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
         clearGridConfig();
-        toast.push(response.data.message);
+        toast.push(response.data.message, getToastWarningTheme());
         return;
       }
       dsList = response.data.value;
       setConfigTotal(gridConfig, response.data.pageOf.countSize);
       gridConfig = gridConfig; // 讓 GridPagination 知道 gridConfig 被更動了
     } else {
-      toast.push('error, null');
+      toast.push('error, null', getToastErrorTheme());
       clearGridConfig();
     }
   })

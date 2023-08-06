@@ -21,7 +21,9 @@
  */
 package org.qifu.base.util;
 
+import org.qifu.base.exception.ControllerException;
 import org.qifu.base.message.BaseSystemMessage;
+import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.QueryParamBuilder;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
@@ -60,6 +62,15 @@ public class BaseApiSupport extends YesNo {
 	}
 	*/
 	
+	protected <T> DefaultControllerJsonResultObj<T> initDefaultJsonResult() {
+		DefaultControllerJsonResultObj<T> r = new DefaultControllerJsonResultObj<T>();
+		if (UserLocalUtils.getUserInfo() != null) {
+			r.setIsAuth(YES);
+			r.setLogin(YES);
+		}
+		return r;
+	}
+	
 	protected <T> QueryResult<T> initResult() {
 		QueryResult<T> result = new QueryResult<T>();
 		this.initResult(result);
@@ -77,6 +88,13 @@ public class BaseApiSupport extends YesNo {
 		}
 		result.setSuccess(NO);
 	}
+	
+	protected <T> void successResult(DefaultControllerJsonResultObj<T> result) {
+		if (result == null) {
+			return;
+		}
+		result.setSuccess(YES);
+	}	
 	
 	protected <T> void successResult(QueryResult<T> result) {
 		if (result == null) {
@@ -111,6 +129,16 @@ public class BaseApiSupport extends YesNo {
 	protected <T> void noSuccessResult(QueryResult<T> result, Exception e) {
 		this.noSuccessResult(result, ( (e != null && e.getMessage() !=null) ? e.getMessage().toString() : BaseSystemMessage.objectNull() ));		
 	}	
+	
+	protected void exceptionResult(DefaultControllerJsonResultObj<?> result, Exception e) {
+		e.printStackTrace();
+		if (e == null || e.getMessage() == null) {
+			result.setMessage( BaseSystemMessage.objectNull() );
+		} else {
+			result.setMessage( e.getMessage().toString() );
+		}
+		result.setSuccess( ControllerException.PAGE_EXCEPTION_CODE );
+	}
 	
 }
 

@@ -22,6 +22,7 @@
 package org.qifu.core.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.PageOf;
 import org.qifu.base.model.QueryResult;
@@ -129,6 +130,25 @@ public class CoreApiSupport extends BaseApiSupport {
 	}
 	
 	public <T> void fillEventResult2ResponseResult(DefaultResult<T> queryResult, QueryResult<T> responseResult) {
+		if (queryResult == null || responseResult == null) {
+			return;
+		}
+		// FIXME: 要改 UserLocalUtils 為 Apache-shiro 或別的登入session管理元件
+		if (UserLocalUtils.getUserInfo() != null) {
+			responseResult.setIsAuth(YES);
+		}
+		if (StringUtils.isBlank(responseResult.getMessage())) {
+			if (!StringUtils.isBlank(queryResult.getMessage())) {
+				responseResult.setMessage( queryResult.getMessage() );
+			}
+		}
+		if ( queryResult.getValue() != null ) {
+			responseResult.setValue( queryResult.getValue() );
+			this.successResult(responseResult);
+		}
+	}	
+	
+	public <T> void fillEventResult2ResponseResult(DefaultResult<T> queryResult, DefaultControllerJsonResultObj<T> responseResult) {
 		if (queryResult == null || responseResult == null) {
 			return;
 		}

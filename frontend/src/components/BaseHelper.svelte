@@ -247,5 +247,38 @@
         .set(/^\/(.*?)(\/(.*?))?/, queryPage);
       return nestedRoutersMap;
     }
+
+    export function getToastDefaultTheme() {
+      return {
+        theme: {
+          '--toastBackground': 'rgba(66, 66, 66, 0.9)',
+          '--toastColor': '#FFFFFF',
+          '--toastBarBackground': '#318DE9',
+          '--toastBorderRadius' : '0.25rem'
+        }
+      };
+    }    
+
+    export function getToastWarningTheme() {
+      return {
+        theme: {
+          '--toastBackground': 'rgba(247,228,0,0.9)',
+          '--toastColor': '#0C0C0C',
+          '--toastBarBackground': '#F00000',
+          '--toastBorderRadius' : '0.25rem'
+        }
+      };
+    }
     
+    export function getToastErrorTheme() {
+      return {
+        theme: {
+          '--toastBackground': 'rgba(240,0,0,0.9)',
+          '--toastColor': '#FBFBFB',
+          '--toastBarBackground': '#F7E400',
+          '--toastBorderRadius' : '0.25rem'
+        }
+      };
+    }
+
 </script>
