@@ -52,7 +52,21 @@ let gridConfig = getGridConfig(
         'memo'    : 'Edit current item.'
       },
       {
-        'method'  : function(val) { queryParam.name = 'trash->' + val; queryParam = queryParam; },
+        'method'  : function(val) { 
+          Swal.fire({
+            title: '刪除?',
+            icon: 'question',
+            iconHtml: '?',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            showCancelButton: true,
+            showCloseButton: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              delItem(val);
+            }
+          });            
+        },
         'icon'    : 'trash',
         'type'    : 'delete',
         'memo'    : 'Delete current item.'
@@ -156,6 +170,34 @@ function btnClear() {
   queryParam.name = '';
   queryParam.sysId = '';
   dsList = [];
+}
+
+function delItem(oid) {
+  Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+  Swal.showLoading();  
+  var axiosInstance = getAxiosInstance();  
+  axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/delete', {"oid": oid})
+  .then(response => {
+    Swal.hideLoading();
+    Swal.close();
+    if (null != response.data) {
+      if (import.meta.env.VITE_SUCCESS_FLAG == response.data.success) {
+        toast.push(response.data.message, getToastDefaultTheme());
+      } else {        
+        toast.push(response.data.message, getToastWarningTheme());
+      }      
+      btnQuery();
+    } else {
+      toast.push('error, null', getToastErrorTheme());
+      clearGridConfig();
+    }
+  })
+  .catch(e => {
+    Swal.hideLoading();
+    Swal.close();    
+    btnQuery();
+    alert(e);
+  });  
 }
 
 </script>
