@@ -69,11 +69,11 @@
       .then((responseJson) => {
         if (null != responseJson) {
           _user.update((val) => { return responseJson; } );   
+          setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
+          initTreeMenu();
         } else {
           _user.update((val) => { return {}; } );
-        }  
-        setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
-        initTreeMenu();      
+        }    
       })
       .catch((error) => {
         clearUserLoginData();
@@ -88,6 +88,9 @@
       setTimeout(() => {
         jsTreeMenuInit();
       }, 500);      
+      return;
+    }
+    if (!checkUserHasLogined(userData)) {
       return;
     }
     const axiosInstance = getAxiosInstance();    

@@ -8,7 +8,8 @@ import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
 import { 
     getProgItem, getAxiosInstance, 
-    getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme 
+    getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme,
+    invalidFeedback, checkInvalid
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
 
@@ -30,8 +31,14 @@ let toolbarParam = {
 }
 
 var formParam = {
-
+    'sysId'     :   '',
+    'name'      :   ''
 }
+
+var checkFields = [
+    {'sysId_test'    :   '編號錯誤'      },
+    {'name_test'     :   '名稱不可以空白' }
+];
 
 onMount(()=>{
 
@@ -40,8 +47,35 @@ onMount(()=>{
 </script>
 
 <div class="row">
-    <Toolbar args={toolbarParam}></Toolbar>
-
-    <h5>create-page</h5>
-
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <Toolbar args={toolbarParam}></Toolbar>
+    </div>
 </div>
+<div class="row">
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Label for="sysId">編號</Label>
+            <Input
+            type="text"
+            id="sysId"
+            placeholder="輸入編號"     
+            feedback={invalidFeedback('sysId', checkFields)}
+            invalid={checkInvalid('sysId', checkFields)}
+            bind:value={formParam.sysId}     
+            />
+        </FormGroup>         
+    </div>
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Label for="name">名稱</Label>
+            <Input
+            type="text"
+            id="name"
+            placeholder="輸入名稱"     
+            feedback={invalidFeedback('name', checkFields)}
+            invalid={checkInvalid('name', checkFields)}
+            bind:value={formParam.name}     
+            />
+        </FormGroup> 
+    </div>    
+</div>        

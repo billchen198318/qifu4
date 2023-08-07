@@ -281,4 +281,24 @@
       };
     }
 
+    export function checkInvalid(field, checkFields) {
+      var invalid = false;
+      for (var d in checkFields) {
+        if (!(undefined === checkFields[d][field]) && null != checkFields[d][field]) {
+          invalid = true;
+        }
+      }
+      return invalid;
+    }
+
+    export function invalidFeedback(field, checkFields) {
+      var feedback = '';
+      for (var d in checkFields) {
+        if (!(undefined === checkFields[d][field]) && null != checkFields[d][field]) {
+          feedback = checkFields[d][field];
+        }
+      }
+      return feedback;      
+    }
+
 </script>
