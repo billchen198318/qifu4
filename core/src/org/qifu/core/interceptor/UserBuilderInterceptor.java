@@ -77,10 +77,10 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 		if (!authorization.startsWith(Constants.TOKEN_PREFIX)) {
 			logger.warn(">>> No authorization uri: " + request.getRequestURI() + " , remote-address: " + request.getRemoteAddr() + " , remote-port: " + request.getRemotePort());
 			response.setCharacterEncoding( Constants.BASE_ENCODING );
+			response.setStatus(401); // 2023-08-04 add , 讓前端的 axios interceptor 去接
 			response.getWriter().print( "{ \"success\":\"N\",\"message\":\"No authorization head " + Constants.TOKEN_PREFIX + "\",\"login\":\"N\",\"isAuthorize\":\"N\" }" );
 			response.getWriter().flush();
-			response.getWriter().close();			
-			response.setStatus(401); // 2023-08-04 add , 讓前端的 axios interceptor 去接
+			response.getWriter().close();						
 			return false;
 		}
 		
@@ -127,10 +127,10 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 		if ( UserUtils.getCurrentUser() == null ) {
 			logger.warn(">>> No authorization uri: " + request.getRequestURI() + " , remote-address: " + request.getRemoteAddr() + " , remote-port: " + request.getRemotePort());
 			response.setCharacterEncoding( Constants.BASE_ENCODING );
+			response.setStatus(401); // 2023-08-04 add , 讓前端的 axios interceptor 去接
 			response.getWriter().print( Constants.NO_LOGIN_JSON_DATA );
 			response.getWriter().flush();
-			response.getWriter().close();
-			response.setStatus(401); // 2023-08-04 add , 讓前端的 axios interceptor 去接
+			response.getWriter().close();			
 			return false;
 		}
 		return true;
