@@ -24,7 +24,13 @@ onMount(()=>{
 		<p>{args.description}</p>
 
 		<div>		
-			
+
+		{#if null != args.methods && (typeof args.methods.back === 'function') }	
+			<Icon name="arrow-left-square" class="btn btn-light btn-sm" id="tb_back" onclick={args.methods.back} />
+			<Tooltip target="tb_back" placement="bottom">上一頁</Tooltip>
+			&nbsp;
+		{/if}				
+
 		{#if null != args.methods && (typeof args.methods.refresh === 'function') }	
 			<Icon name="repeat" class="btn btn-light btn-sm" id="tb_repeat" onclick={args.methods.refresh} />
 			<Tooltip target="tb_repeat" placement="bottom">刷新</Tooltip>
