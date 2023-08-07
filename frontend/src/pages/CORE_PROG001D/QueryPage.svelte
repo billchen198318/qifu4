@@ -203,8 +203,11 @@ function delItem(oid) {
 </script>
 
 <div class="row">
+  <div class="col-xs-12 col-md-12 col-lg-12">
     <Toolbar args={toolbarParam}></Toolbar>
-
+  </div>  
+</div>
+<div class="row">
     <div class="col-xs-6 col-md-6 col-lg-6">
         <Form>
             <FormGroup>
@@ -240,11 +243,13 @@ function delItem(oid) {
   </div>  
 </div>
 <div class="row">
-  &nbsp;
+  <div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
 </div>
 <div class="row">
-  <GridPagination changeGridConfigRowMethod={changeQueryGridRow} changePageSelectMethod={changePageSelect} gridConfig={gridConfig} />
-  <Grid config={gridConfig} bind:dataSource={dsList} />
+  <div class="col-xs-12 col-md-12 col-lg-12">
+    <GridPagination changeGridConfigRowMethod={changeQueryGridRow} changePageSelectMethod={changePageSelect} gridConfig={gridConfig} />
+    <Grid config={gridConfig} bind:dataSource={dsList} />  
+  </div>
 </div>
 
 <SvelteToast/>
