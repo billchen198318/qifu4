@@ -46,7 +46,10 @@ let gridConfig = getGridConfig(
   ,
   [
       {
-        'method'  : function(val) { queryParam.sysId = 'edit->' + val; queryParam = queryParam; },
+        'method'  : function(val) { 
+          var url = getProgItem('CORE_PROG001D0001E').url + '/' + val;
+          push( url );
+         },
         'icon'    : 'pen',
         'type'    : 'edit',
         'memo'    : 'Edit current item.'
