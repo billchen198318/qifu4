@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.CheckControllerFieldHandler;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbSys;
+import org.qifu.core.logic.IApplicationSystemLogicService;
 import org.qifu.core.service.ISysService;
 import org.qifu.core.util.CoreApiSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,10 @@ public class Prog001ApiController extends CoreApiSupport {
 	
 	@Autowired
 	ISysService<TbSys, String> sysService;
+	
+	@Autowired
+	IApplicationSystemLogicService applicationSystemLogicService;
+	
 	
 	@ApiOperation(
 			value="PROG001 - findPage", 
@@ -71,7 +77,7 @@ public class Prog001ApiController extends CoreApiSupport {
     })
 	@ResponseBody
 	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
-	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> delete(@RequestBody TbSys sys) {
+	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDelete(@RequestBody TbSys sys) {
 		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
 		try {
 			DefaultResult<Boolean> delResult = this.sysService.delete(sys);
@@ -82,6 +88,22 @@ public class Prog001ApiController extends CoreApiSupport {
 			this.exceptionResult(result, e);
 		}
 		return ResponseEntity.ok().body(result);
+	}
+	
+	private void save(DefaultControllerJsonResultObj<TbSys> result, TbSys sys) throws ControllerException, ServiceException, Exception {
+		CheckControllerFieldHandler<TbSys> chk = this.getCheckControllerFieldHandler(result);
+		
+		chk.testField("sysId", sys, "@org.apache.commons.lang3.StringUtils@isBlank(sysId)", "請輸入編號")
+		.testField("name", sys, "@org.apache.commons.lang3.StringUtils@isBlank(name)", "請輸入名稱")
+		.testField("host", sys, "@org.apache.commons.lang3.StringUtils@isBlank(host)", "請輸入host")
+		.testField("contextPath", sys, "@org.apache.commons.lang3.StringUtils@isBlank(contextPath)", "請輸入Context path")
+		.throwHtmlMessage();
+		
+		chk.testField("sysId", sys, "!@org.qifu.util.SimpleUtils@checkBeTrueOf_azAZ09Id(sysId)", "編號只允許輸入0-9,a-z,A-Z正常字元")
+		.throwHtmlMessage();
+		
+		DefaultResult<TbSys> cResult = this.applicationSystemLogicService.create(sys);
+		this.fillEventResult2ResponseResult(cResult, result);
 	}
 	
 	@ApiOperation(value="PROG001 - save", notes="新增TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
@@ -95,12 +117,10 @@ public class Prog001ApiController extends CoreApiSupport {
     })
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
-	public ResponseEntity<DefaultControllerJsonResultObj<TbSys>> save(@RequestBody TbSys sys) {
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSys>> doSave(@RequestBody TbSys sys) {
 		DefaultControllerJsonResultObj<TbSys> result = this.initDefaultJsonResult();
 		try {
-			result.getCheckFields().put("sysId", "請輸入編號");
-			result.getCheckFields().put("name", "請輸入名稱");
-			result.setMessage("測試中");
+			this.save(result, sys);
 		} catch (ServiceException | ControllerException e) {
 			this.exceptionResult(result, e);
 		} catch (Exception e) {

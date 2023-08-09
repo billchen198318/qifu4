@@ -23,6 +23,7 @@ package org.qifu.base.model;
 
 import java.util.Map;
 
+import org.qifu.base.Constants;
 import org.qifu.base.exception.ControllerException;
 import org.qifu.util.OgnlContextDefaultMemberAccessBuildUtils;
 
@@ -54,6 +55,14 @@ public class CheckControllerFieldHandler<T> {
 		}
 		return msg.toString();
 	}
+	
+	public String getHtmlCheckFieldsMessage() {
+		msg.setLength(0);
+		for (Map.Entry<String, String> entry : this.result.getCheckFields().entrySet()) {
+			msg.append( entry.getValue() ).append(Constants.HTML_BR);
+		}
+		return msg.toString();
+	}	
 	
 	public CheckControllerFieldHandler<T> testField(String id, boolean checkStatus, String message) {
 		if (this.result.getCheckFields().get(id) != null) {
@@ -90,5 +99,16 @@ public class CheckControllerFieldHandler<T> {
 		this.result.getCheckFields().put(id, message);
 		this.throwMessage();
 	}
+	
+	public void throwHtmlMessage() throws ControllerException {
+		if (this.getHtmlCheckFieldsMessage().length() > 0) {
+			throw new ControllerException(this.msg.toString());
+		}
+	}	
+	
+	public void throwHtmlMessage(String id, String message) throws ControllerException {
+		this.result.getCheckFields().put(id, message);
+		this.throwHtmlMessage();
+	}	
 	
 }

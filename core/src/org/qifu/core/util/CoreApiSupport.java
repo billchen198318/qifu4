@@ -22,6 +22,7 @@
 package org.qifu.core.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.qifu.base.model.CheckControllerFieldHandler;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.PageOf;
@@ -175,6 +176,10 @@ public class CoreApiSupport extends BaseApiSupport {
 	public <T> void fillEventResult2ResponseResultForPage(DefaultResult<T> queryResult, QueryResult<T> responseResult, PageOf pageOf) {
 		this.fillEventResult2ResponseResult(queryResult, responseResult);
 		responseResult.setPageOf( pageOf );
+	}	
+	
+	protected <T> CheckControllerFieldHandler<T> getCheckControllerFieldHandler(DefaultControllerJsonResultObj<T> result) {
+		return CheckControllerFieldHandler.build(result);
 	}	
 	
 }

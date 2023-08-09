@@ -36,7 +36,7 @@ public interface IApplicationSystemLogicService {
 	 * @throws ServiceException
 	 * @throws Exception
 	 */
-	public DefaultResult<TbSys> create(TbSys sys, String iconOid) throws ServiceException, Exception;
+	public DefaultResult<TbSys> create(TbSys sys /*, String iconOid*/ ) throws ServiceException, Exception;
 	
 	/**
 	 * 刪除 TB_SYS 資料
@@ -57,6 +57,6 @@ public interface IApplicationSystemLogicService {
 	 * @throws ServiceException
 	 * @throws Exception
 	 */
-	public DefaultResult<TbSys> update(TbSys sys, String iconOid) throws ServiceException, Exception;
+	public DefaultResult<TbSys> update(TbSys sys /*, String iconOid*/ ) throws ServiceException, Exception;
 	
 }

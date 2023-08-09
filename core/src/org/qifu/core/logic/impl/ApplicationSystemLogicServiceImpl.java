@@ -81,7 +81,8 @@ public class ApplicationSystemLogicServiceImpl extends BaseLogicService implemen
 			readOnly=false,
 			rollbackFor={RuntimeException.class, IOException.class, Exception.class} )		
 	@Override
-	public DefaultResult<TbSys> create(TbSys sys, String iconOid) throws ServiceException, Exception {
+	public DefaultResult<TbSys> create(TbSys sys /*, String iconOid*/ ) throws ServiceException, Exception {
+		/*
 		TbSysIcon sysIcon = new TbSysIcon();
 		sysIcon.setOid(iconOid);
 		DefaultResult<TbSysIcon> iconResult = this.sysIconService.selectByPrimaryKey(iconOid);
@@ -89,6 +90,7 @@ public class ApplicationSystemLogicServiceImpl extends BaseLogicService implemen
 			throw new ServiceException( iconResult.getMessage() );
 		}		
 		sys.setIcon(iconResult.getValue().getIconId());
+		*/
 		return this.sysService.insert(sys);
 	}
 	
@@ -138,7 +140,8 @@ public class ApplicationSystemLogicServiceImpl extends BaseLogicService implemen
 			readOnly=false,
 			rollbackFor={RuntimeException.class, IOException.class, Exception.class} )			
 	@Override
-	public DefaultResult<TbSys> update(TbSys sys, String iconOid) throws ServiceException, Exception {
+	public DefaultResult<TbSys> update(TbSys sys /*, String iconOid*/) throws ServiceException, Exception {
+		/*
 		if (null == sys || StringUtils.isBlank(sys.getOid()) ) {
 			throw new ServiceException( BaseSystemMessage.parameterBlank() );
 		}
@@ -147,6 +150,7 @@ public class ApplicationSystemLogicServiceImpl extends BaseLogicService implemen
 			throw new ServiceException(iconResult.getMessage());
 		}		
 		sys.setIcon(iconResult.getValue().getIconId());
+		*/
 		return this.sysService.update(sys);
 	}
 	
