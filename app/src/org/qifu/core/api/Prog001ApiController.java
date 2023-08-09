@@ -129,4 +129,23 @@ public class Prog001ApiController extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@ApiOperation(value="PROG001 - load", notes="讀取TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "oid", value = "TB_SYS.OID")
+    })
+	@ResponseBody
+	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSys>> doLoad(@RequestBody TbSys sys) {
+		DefaultControllerJsonResultObj<TbSys> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<TbSys> lResult = this.sysService.selectByEntityPrimaryKey(sys);
+			this.fillEventResult2ResponseResult(lResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
+	
 }

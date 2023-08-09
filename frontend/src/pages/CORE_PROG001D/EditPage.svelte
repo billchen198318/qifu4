@@ -21,11 +21,11 @@ let toolbarParam = {
             push( getProgItem('CORE_PROG001D0001Q').url );
         },
         "refresh"   :   function() {
-            //btnClear();
+            loadData();
         }
         ,
         "save"      :   function() {
-            //btnUpdate();
+            btnUpdate();
         } 
     }
 }
@@ -45,17 +45,46 @@ var formParam = {
 var checkFields = new Object();
 
 onMount(()=>{
-
-    alert(formParam.oid);
-
+    loadData();
 });
+
+function loadData() {
+    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    Swal.showLoading(); 
+    let axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/load', {'oid' : formParam.oid})
+    .then(response => {
+        Swal.hideLoading();
+        Swal.close();
+        if (null != response.data) {
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.push(response.data.message, getToastWarningTheme());
+                push( getProgItem('CORE_PROG001D0001Q').url );
+                return;
+            }
+            formParam = response.data.value;
+        } else {
+            toast.push('error, null', getToastErrorTheme());
+            push( getProgItem('CORE_PROG001D0001Q').url );
+        }
+    })
+    .catch(e => {
+        Swal.hideLoading();
+        Swal.close();        
+        alert(e);
+        push( getProgItem('CORE_PROG001D0001Q').url );
+    });         
+}
 
 function btnUpdate() {
 
 }
 
 function btnClear() {
-
+    formParam.sysId = '';
+    formParam.name = '';
+    formParam.host = '';
+    formParam.contextPath = '';
 }
 
 </script>
