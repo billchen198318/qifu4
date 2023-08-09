@@ -21,28 +21,65 @@ let toolbarParam = {
             push( getProgItem('CORE_PROG001D0001Q').url );
         },
         "refresh"   :   function() {
-            // clear inpur field
+            btnClear();
         }
         ,
         "save"      :   function() {
-            
+            btnSave();
         } 
     }
 }
 
 var formParam = {
-    'sysId'     :   '',
-    'name'      :   ''
+    'sysId'         :   '',
+    'name'          :   '',
+    'host'          :   '',
+    'contextPath'   :   '',
+    'isLocal'       :   'N',
+    'icon'          :   'SYSTEM'
 }
 
-var checkFields = [
-    {'sysId_test'    :   '編號錯誤'      },
-    {'name_test'     :   '名稱不可以空白' }
-];
+var checkFields = new Object();
 
 onMount(()=>{
 
 });
+
+function btnSave() {
+    checkFields = new Object();
+    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    Swal.showLoading();      
+    let axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/save', formParam)
+    .then(response => {
+        Swal.hideLoading();
+        Swal.close();
+        if (null != response.data) {
+            checkFields = response.data.checkFields;
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.push(response.data.message, getToastWarningTheme());
+                return;
+            }            
+            toast.push(response.data.message, getToastDefaultTheme());   
+            btnClear();
+        } else {
+            toast.push('error, null', getToastErrorTheme());
+        }
+    })
+    .catch(e => {
+        Swal.hideLoading();
+        Swal.close();        
+        alert(e);
+    }); 
+}
+
+function btnClear() {
+    checkFields = new Object();
+    formParam.sysId = '';
+    formParam.name = '';
+    formParam.host = '';
+    formParam.contextPath = '';
+}
 
 </script>
 
@@ -79,3 +116,40 @@ onMount(()=>{
         </FormGroup> 
     </div>    
 </div>        
+<div class="row">
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Label for="host">Host</Label>
+            <Input
+            type="text"
+            id="host"
+            placeholder="輸入Host"     
+            feedback={invalidFeedback('host', checkFields)}
+            invalid={checkInvalid('host', checkFields)}
+            bind:value={formParam.host}     
+            />
+        </FormGroup>         
+    </div>
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Label for="name">Context path</Label>
+            <Input
+            type="text"
+            id="contextPath"
+            placeholder="輸入Context path"     
+            feedback={invalidFeedback('contextPath', checkFields)}
+            invalid={checkInvalid('contextPath', checkFields)}
+            bind:value={formParam.contextPath}     
+            />
+        </FormGroup> 
+    </div>    
+</div>  
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <Button color="primary" on:click={btnSave}><Icon name="save"/>&nbsp;儲存</Button>
+        &nbsp;
+        <Button color="primary" on:click={btnClear}><Icon name="eraser"/>&nbsp;清除</Button>
+    </div>
+</div>    
+
+<SvelteToast></SvelteToast>

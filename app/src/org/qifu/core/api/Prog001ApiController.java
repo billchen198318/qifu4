@@ -84,4 +84,29 @@ public class Prog001ApiController extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@ApiOperation(value="PROG001 - save", notes="新增TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "sysId", value = ""),
+    	@ApiImplicitParam(name = "name", value = ""),
+    	@ApiImplicitParam(name = "host", value = ""),
+    	@ApiImplicitParam(name = "contextPath", value = ""),
+    	@ApiImplicitParam(name = "icon", value = ""),
+    	@ApiImplicitParam(name = "isLocal", value = "")
+    })
+	@ResponseBody
+	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSys>> save(@RequestBody TbSys sys) {
+		DefaultControllerJsonResultObj<TbSys> result = this.initDefaultJsonResult();
+		try {
+			result.getCheckFields().put("sysId", "請輸入編號");
+			result.getCheckFields().put("name", "請輸入名稱");
+			result.setMessage("測試中");
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}
+	
 }

@@ -284,7 +284,7 @@
     export function checkInvalid(field, checkFields) {
       var invalid = false;
       for (var d in checkFields) {
-        if (!(undefined === checkFields[d][field]) && null != checkFields[d][field]) {
+        if (field == d && !(undefined === checkFields[d]) && null != checkFields[d]) {
           invalid = true;
         }
       }
@@ -294,8 +294,8 @@
     export function invalidFeedback(field, checkFields) {
       var feedback = '';
       for (var d in checkFields) {
-        if (!(undefined === checkFields[d][field]) && null != checkFields[d][field]) {
-          feedback = checkFields[d][field];
+        if (field == d && !(undefined === checkFields[d]) && null != checkFields[d]) {
+          feedback = checkFields[d];
         }
       }
       return feedback;      
