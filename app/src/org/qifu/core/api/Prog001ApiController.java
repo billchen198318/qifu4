@@ -90,7 +90,7 @@ public class Prog001ApiController extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
-	private void save(DefaultControllerJsonResultObj<TbSys> result, TbSys sys) throws ControllerException, ServiceException, Exception {
+	private void handlerCheck(DefaultControllerJsonResultObj<TbSys> result, TbSys sys) throws ControllerException, ServiceException, Exception {
 		CheckControllerFieldHandler<TbSys> chk = this.getCheckControllerFieldHandler(result);
 		
 		chk.testField("sysId", sys, "@org.apache.commons.lang3.StringUtils@isBlank(sysId)", "請輸入編號")
@@ -100,10 +100,19 @@ public class Prog001ApiController extends CoreApiSupport {
 		.throwHtmlMessage();
 		
 		chk.testField("sysId", sys, "!@org.qifu.util.SimpleUtils@checkBeTrueOf_azAZ09Id(sysId)", "編號只允許輸入0-9,a-z,A-Z正常字元")
-		.throwHtmlMessage();
-		
+		.throwHtmlMessage();		
+	}
+	
+	private void save(DefaultControllerJsonResultObj<TbSys> result, TbSys sys) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, sys);
 		DefaultResult<TbSys> cResult = this.applicationSystemLogicService.create(sys);
 		this.fillEventResult2ResponseResult(cResult, result);
+	}
+	
+	private void update(DefaultControllerJsonResultObj<TbSys> result, TbSys sys) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, sys);
+		DefaultResult<TbSys> uResult = this.applicationSystemLogicService.update(sys);
+		this.fillEventResult2ResponseResult(uResult, result);
 	}
 	
 	@ApiOperation(value="PROG001 - save", notes="新增TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
@@ -140,6 +149,29 @@ public class Prog001ApiController extends CoreApiSupport {
 		try {
 			DefaultResult<TbSys> lResult = this.sysService.selectByEntityPrimaryKey(sys);
 			this.fillEventResult2ResponseResult(lResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
+	
+	@ApiOperation(value="PROG001 - update", notes="更新TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "sysId", value = ""),
+    	@ApiImplicitParam(name = "name", value = ""),
+    	@ApiImplicitParam(name = "host", value = ""),
+    	@ApiImplicitParam(name = "contextPath", value = ""),
+    	@ApiImplicitParam(name = "icon", value = ""),
+    	@ApiImplicitParam(name = "isLocal", value = "")
+    })
+	@ResponseBody
+	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSys>> doUpdate(@RequestBody TbSys sys) {
+		DefaultControllerJsonResultObj<TbSys> result = this.initDefaultJsonResult();
+		try {
+			this.update(result, sys);
 		} catch (ServiceException | ControllerException e) {
 			this.exceptionResult(result, e);
 		} catch (Exception e) {

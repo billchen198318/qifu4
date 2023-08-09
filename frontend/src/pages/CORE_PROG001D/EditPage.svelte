@@ -77,11 +77,34 @@ function loadData() {
 }
 
 function btnUpdate() {
-
+    checkFields = new Object();
+    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    Swal.showLoading();      
+    let axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/update', formParam)
+    .then(response => {
+        Swal.hideLoading();
+        Swal.close();
+        if (null != response.data) {
+            checkFields = response.data.checkFields;
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.push(response.data.message, getToastWarningTheme());
+                return;
+            }
+            toast.push(response.data.message, getToastDefaultTheme());
+        } else {
+            toast.push('error, null', getToastErrorTheme());
+        }
+    })
+    .catch(e => {
+        Swal.hideLoading();
+        Swal.close();        
+        alert(e);
+    }); 
 }
 
 function btnClear() {
-    formParam.sysId = '';
+    //formParam.sysId = '';
     formParam.name = '';
     formParam.host = '';
     formParam.contextPath = '';
@@ -97,7 +120,7 @@ function btnClear() {
 <div class="row">
     <div class="col-xs-6 col-md-6 col-lg-6">
         <FormGroup>
-            <Label for="sysId">編號</Label>
+            <Label for="sysId">編號(唯讀)</Label>
             <Input
             type="text"
             id="sysId"
@@ -105,6 +128,7 @@ function btnClear() {
             feedback={invalidFeedback('sysId', checkFields)}
             invalid={checkInvalid('sysId', checkFields)}
             bind:value={formParam.sysId}     
+            readonly={true}
             />
         </FormGroup>         
     </div>
