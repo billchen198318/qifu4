@@ -25,13 +25,22 @@ $ : {
     if (parseInt(gridConfig.total % gridConfig.row) != 0) {
       lastPage += 1;
     }
+    if (gridConfig.page > lastPage) {
+      gridConfig.page = lastPage;
+      prevPage = gridConfig.page - 1;
+      nexPage = gridConfig.page + 1;      
+    }
+    if (gridConfig.page < 1) {
+      gridConfig.page = 1;
+      prevPage = 1;
+      nexPage = 1;
+    }    
     if (prevPage < 1) {
       prevPage = 1;
     }
     if (nexPage > lastPage) {
       nexPage = lastPage;
     }
-
     pStart = gridConfig.page - midMaxShow;
     pEnd = gridConfig.page + midMaxShow;
     if (pStart < 1) { 
@@ -42,13 +51,6 @@ $ : {
     }
     for (let i = pStart; i <= pEnd; i++) {
       pItem.push(i);
-    }
-
-    if (gridConfig.page > lastPage) {
-      gridConfig.page = lastPage;
-    }
-    if (gridConfig.page < 1) {
-      gridConfig.page = 1;
     }
   }
 }

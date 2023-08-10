@@ -13,6 +13,7 @@ import {
 import Toolbar from "../../components/Toolbar.svelte";
 import Grid, { getGridConfig, setConfigRow, setConfigPage, setConfigTotal } from "../../components/Grid.svelte";
 import GridPagination from '../../components/GridPagination.svelte';
+import { _queryState, _queryParam } from './QueryStateStore';
 
 let toolbarParam = {
     id          : 'CORE_PROG001D0001Q',
@@ -28,13 +29,32 @@ let toolbarParam = {
     }
 }
 
-var queryParam = {
+let queryParam = {
   'sysId' : '',
   'name'  : ''
 }
+let queryState = {
+  'total' : 0,
+  'page'  : 1
+}
+
+/* ------------------- query page state ------------------- */
+_queryParam.subscribe(value => {
+  queryParam = value;
+});
+_queryState.subscribe(value => {
+  queryState = value;
+});
+/* -------------------------------------------------------- */
+
 
 onMount(()=>{
-  
+
+  /* ----- set before page state ----- */
+  gridConfig.page = queryState.page;
+  gridConfig.row = queryState.row;
+  /* --------------------------------- */
+
   btnQuery();
 
 });
@@ -146,6 +166,11 @@ function btnQuery() {
       dsList = response.data.value;
       setConfigTotal(gridConfig, response.data.pageOf.countSize);
       gridConfig = gridConfig; // 讓 GridPagination 知道 gridConfig 被更動了
+      
+      /* -------------------- set page state -------------------- */
+      _queryState.update(state => ({...state, page : gridConfig.page, row : gridConfig.row}));
+      /* -------------------------------------------------------- */
+      
     } else {
       toast.push('error, null', getToastErrorTheme());
       clearGridConfig();
