@@ -38,6 +38,8 @@ var queryParam = {
 }
 
 onMount(()=>{
+  
+  btnQuery();
 
 });
 

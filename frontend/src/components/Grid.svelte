@@ -59,6 +59,7 @@ export function setConfigTotal(gridConfig, total) {
                                 {:else}
                                 <Button class="btn btn-light btn-sm" on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
                                 {/if}
+                                &nbsp;
                             {:else}
                                 {row[col.field]}
                             {/if}
