@@ -7,7 +7,6 @@ import PROG01 from "./pages/PROG01.svelte";
 import About from "./pages/About.svelte"
 import Prog01C1 from "./pages/PROG01_routes/PROG01_c1.svelte";
 import Prog01C2 from "./pages/PROG01_routes/PROG01_c2.svelte";
-import NameIndex from "./pages/NameIndex.svelte";
 
 
 export const routes = {  
@@ -40,12 +39,6 @@ export const routes = {
   "/prog01/c2/:oid" : wrap({
       asyncComponent: () => import('./pages/PROG01_routes/PROG01_c2.svelte')
   }),
-
-  "/name"     : NameIndex,
-  "/name/*"   : NameIndex,
-  
-  /* ------------------- 測試,之後要移除掉 ------------------- */
-
 
   
   "*"   : wrap({
