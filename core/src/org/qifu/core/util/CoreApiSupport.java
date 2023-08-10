@@ -22,11 +22,14 @@
 package org.qifu.core.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.qifu.base.model.CheckControllerFieldHandler;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.PageOf;
+import org.qifu.base.model.QueryControllerJsonResultObj;
 import org.qifu.base.model.QueryResult;
+import org.qifu.base.model.YesNo;
 import org.qifu.base.util.BaseApiSupport;
 import org.qifu.base.util.UserLocalUtils;
 
@@ -110,8 +113,30 @@ public class CoreApiSupport extends BaseApiSupport {
 		UserBuilder.logout();
 	}
 	*/
+	
+	protected <T> void setQueryGridJsonResult(QueryControllerJsonResultObj<T> jsonResult, QueryResult<T> queryResult, PageOf pageOf) {
+		if (queryResult.getValue() != null) {
+			jsonResult.setValue( queryResult.getValue() );
+			jsonResult.setPageOfCountSize( NumberUtils.toInt(pageOf.getCountSize(), 0) ); // queryResult.getRowCount()
+			jsonResult.setPageOfSelect( NumberUtils.toInt(pageOf.getSelect(), 1) );
+			jsonResult.setPageOfShowRow( NumberUtils.toInt(pageOf.getShowRow(), PageOf.Rows[0]) );
+			jsonResult.setPageOfSize( NumberUtils.toInt(pageOf.getSize(), 1) );
+			jsonResult.setSuccess(YesNo.YES);
+		} else {
+			jsonResult.setMessage( queryResult.getMessage() );
+		}		
+	}
+	
+	protected <T> void setDefaultResponseJsonResult(DefaultControllerJsonResultObj<T> jsonResult, DefaultResult<T> actionResult) {
+		if ( actionResult.getValue() != null || (actionResult.getValue() instanceof Boolean && Boolean.TRUE.equals(actionResult.getValue())) ) {
+			jsonResult.setValue(actionResult.getValue());
+			jsonResult.setSuccess( YES );
+		}
+		jsonResult.setMessage( actionResult.getMessage() );
+	}
+		
 
-	public <T> void fillEventResult2ResponseResult(QueryResult<T> queryResult, QueryResult<T> responseResult) {
+	protected <T> void setDefaultResponseJsonResult(QueryResult<T> queryResult, QueryResult<T> responseResult) {
 		if (queryResult == null || responseResult == null) {
 			return;
 		}
@@ -130,7 +155,7 @@ public class CoreApiSupport extends BaseApiSupport {
 		}
 	}
 	
-	public <T> void fillEventResult2ResponseResult(DefaultResult<T> queryResult, QueryResult<T> responseResult) {
+	protected <T> void setDefaultResponseJsonResult(DefaultResult<T> queryResult, QueryResult<T> responseResult) {
 		if (queryResult == null || responseResult == null) {
 			return;
 		}
@@ -149,7 +174,7 @@ public class CoreApiSupport extends BaseApiSupport {
 		}
 	}	
 	
-	public <T> void fillEventResult2ResponseResult(DefaultResult<T> queryResult, DefaultControllerJsonResultObj<T> responseResult) {
+	protected <T> void setDefaultResponseJsonResult(DefaultResult<T> queryResult, DefaultControllerJsonResultObj<T> responseResult) {
 		if (queryResult == null || responseResult == null) {
 			return;
 		}
@@ -168,13 +193,13 @@ public class CoreApiSupport extends BaseApiSupport {
 		}
 	}	
 	
-	public <T> void fillEventResult2ResponseResultForPage(QueryResult<T> queryResult, QueryResult<T> responseResult, PageOf pageOf) {
-		this.fillEventResult2ResponseResult(queryResult, responseResult);
+	protected <T> void setQueryResponseJsonResult(QueryResult<T> queryResult, QueryResult<T> responseResult, PageOf pageOf) {
+		this.setDefaultResponseJsonResult(queryResult, responseResult);
 		responseResult.setPageOf( pageOf );
 	}		
 
-	public <T> void fillEventResult2ResponseResultForPage(DefaultResult<T> queryResult, QueryResult<T> responseResult, PageOf pageOf) {
-		this.fillEventResult2ResponseResult(queryResult, responseResult);
+	protected <T> void setQueryResponseJsonResult(DefaultResult<T> queryResult, QueryResult<T> responseResult, PageOf pageOf) {
+		this.setDefaultResponseJsonResult(queryResult, responseResult);
 		responseResult.setPageOf( pageOf );
 	}	
 	

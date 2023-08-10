@@ -62,7 +62,7 @@ public class Prog001ApiController extends CoreApiSupport {
 			QueryResult<List<TbSys>> queryResult = this.sysService.findPage(
 					this.queryParameter(searchBody).fullEquals("sysId").fullLink("nameLike").value(), 
 					searchBody.getPageOf().orderBy("SYS_ID").sortTypeAsc());
-			this.fillEventResult2ResponseResultForPage(queryResult, result, searchBody.getPageOf());
+			this.setQueryResponseJsonResult(queryResult, result, searchBody.getPageOf());
 		} catch (ServiceException | ControllerException e) {
 			this.noSuccessResult(result, e);
 		} catch (Exception e) {
@@ -81,7 +81,7 @@ public class Prog001ApiController extends CoreApiSupport {
 		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
 		try {
 			DefaultResult<Boolean> delResult = this.sysService.delete(sys);
-			this.fillEventResult2ResponseResult(delResult, result);
+			this.setDefaultResponseJsonResult(delResult, result);
 		} catch (ServiceException | ControllerException e) {
 			this.exceptionResult(result, e);
 		} catch (Exception e) {
@@ -106,13 +106,13 @@ public class Prog001ApiController extends CoreApiSupport {
 	private void save(DefaultControllerJsonResultObj<TbSys> result, TbSys sys) throws ControllerException, ServiceException, Exception {
 		this.handlerCheck(result, sys);
 		DefaultResult<TbSys> cResult = this.applicationSystemLogicService.create(sys);
-		this.fillEventResult2ResponseResult(cResult, result);
+		this.setDefaultResponseJsonResult(cResult, result);
 	}
 	
 	private void update(DefaultControllerJsonResultObj<TbSys> result, TbSys sys) throws ControllerException, ServiceException, Exception {
 		this.handlerCheck(result, sys);
 		DefaultResult<TbSys> uResult = this.applicationSystemLogicService.update(sys);
-		this.fillEventResult2ResponseResult(uResult, result);
+		this.setDefaultResponseJsonResult(uResult, result);
 	}
 	
 	@ApiOperation(value="PROG001 - save", notes="新增TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
@@ -148,7 +148,7 @@ public class Prog001ApiController extends CoreApiSupport {
 		DefaultControllerJsonResultObj<TbSys> result = this.initDefaultJsonResult();
 		try {
 			DefaultResult<TbSys> lResult = this.sysService.selectByEntityPrimaryKey(sys);
-			this.fillEventResult2ResponseResult(lResult, result);
+			this.setDefaultResponseJsonResult(lResult, result);
 		} catch (ServiceException | ControllerException e) {
 			this.exceptionResult(result, e);
 		} catch (Exception e) {
