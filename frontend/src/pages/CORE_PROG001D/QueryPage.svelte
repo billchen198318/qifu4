@@ -24,11 +24,7 @@ let toolbarParam = {
         ,
         "create"    :   function() {
             push( getProgItem('CORE_PROG001D0001A').url );
-        } /*
-        ,
-        "save"      :   function() {
-            queryParam.name = 'save';     
-        } */
+        }
     }
 }
 

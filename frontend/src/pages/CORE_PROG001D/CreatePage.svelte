@@ -19,7 +19,8 @@ let toolbarParam = {
     methods     :  {
         "back"      :   function() {
             push( getProgItem('CORE_PROG001D0001Q').url );
-        },
+        }
+        ,
         "refresh"   :   function() {
             btnClear();
         }
