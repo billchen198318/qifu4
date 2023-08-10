@@ -35,6 +35,7 @@ import org.qifu.core.support.JwtAuthLoginedUserRoleService;
 import org.qifu.core.util.UserUtils;
 import org.qifu.core.vo.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -186,6 +187,7 @@ public class AuthController {
 		TokenBuilderVariable tbv = null;
 		TokenStoreValidateBuilder tsv = null;
 		LoginRequest res = new LoginRequest();
+		boolean refreshNew = false;
 	    try {
 	    	if (StringUtils.isBlank(loginRequest.getAccessToken()) || StringUtils.isBlank(loginRequest.getRefreshToken()) || StringUtils.isBlank(loginRequest.getUsername())) {
 	    		throw new ControllerException( BaseSystemMessage.parameterBlank() );
@@ -200,6 +202,7 @@ public class AuthController {
 			    	res.setAccessToken(tbv.getAccess());
 			    	res.setRefreshToken(tbv.getRefresh());
 			    	res.setUsername(loginRequest.getUsername());
+			    	refreshNew = true;
 			    }
 	    	}
 	    } catch (AuthenticationException e) {
@@ -211,7 +214,10 @@ public class AuthController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	    return ResponseEntity.ok().body(res);
+	    if (refreshNew) {
+	    	return ResponseEntity.ok().body(res);
+	    }
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
 	}	
 	
 }

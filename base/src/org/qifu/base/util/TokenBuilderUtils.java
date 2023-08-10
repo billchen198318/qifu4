@@ -60,7 +60,8 @@ public class TokenBuilderUtils {
 		DecodedJWT jwt = null;
 		try {
 			if (!storeValidate.accessValidate(token)) {
-				throw new Exception("access token no validate of store!");
+				//throw new Exception("access token no validate of store!");
+				return null;
 			}
 			JWTVerifier verifier = JWT.require(Algorithm.HMAC256(Constants.TOKEN_SECRET)).withIssuer(Constants.TOKEN_ISSUER).build();
 			jwt = verifier.verify(token);

@@ -264,7 +264,7 @@
         theme: {
           '--toastBackground': 'rgba(247,228,0,0.9)',
           '--toastColor': '#0C0C0C',
-          '--toastBarBackground': '#F00000',
+          '--toastBarBackground': '#318DE9',
           '--toastBorderRadius' : '0.25rem'
         }
       };
@@ -275,7 +275,7 @@
         theme: {
           '--toastBackground': 'rgba(240,0,0,0.9)',
           '--toastColor': '#FBFBFB',
-          '--toastBarBackground': '#F7E400',
+          '--toastBarBackground': '#318DE9',
           '--toastBorderRadius' : '0.25rem'
         }
       };
