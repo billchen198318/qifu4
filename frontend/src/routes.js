@@ -6,6 +6,7 @@ export const routes = {
   "/prog001"    : PROG001,
   "/prog001/*"  : PROG001,
   "/about"      : About,
+  "/"           : About,
   "*"           : wrap({
     asyncComponent: () => import('./pages/NotFound.svelte')
   })
