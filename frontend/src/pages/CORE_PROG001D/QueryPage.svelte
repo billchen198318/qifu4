@@ -8,7 +8,7 @@ import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
 import { 
     getProgItem, getAxiosInstance, 
-    getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme 
+    getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
 import Grid, { getGridConfig, setConfigRow, setConfigPage, setConfigTotal } from "../../components/Grid.svelte";
@@ -204,7 +204,7 @@ function delItem(oid) {
 		Swal.close();
 		if (null != response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG == response.data.success) {
-				toast.push(response.data.message, getToastDefaultTheme());
+				toast.push(response.data.message, getToastSuccessTheme());
 			} else {        
 				toast.push(response.data.message, getToastWarningTheme());
 			}      

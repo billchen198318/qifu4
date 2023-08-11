@@ -8,7 +8,7 @@ import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
 import { 
     getProgItem, getAxiosInstance, 
-    getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme,
+    getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme,
     invalidFeedback, checkInvalid
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
@@ -61,7 +61,7 @@ function btnSave() {
                 toast.push(response.data.message, getToastWarningTheme());
                 return;
             }            
-            toast.push(response.data.message, getToastDefaultTheme());   
+            toast.push(response.data.message, getToastSuccessTheme());   
             btnClear();
         } else {
             toast.push('error, null', getToastErrorTheme());
