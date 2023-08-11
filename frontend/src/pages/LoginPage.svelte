@@ -1,78 +1,86 @@
 <script>
-import { 
-  Icon, 
-  Button, 
-  Badge,
-  Label,
-  Input,
-  FormGroup
+import {
+	Icon,
+	Button,
+	Badge,
+	Label,
+	Input,
+	FormGroup
 } from 'sveltestrap';
 
 import Swal from 'sweetalert2';
 
-import { _user } from '../store/userStore.js';
-import { setRefreshAndAccessTokenCookie } from '../components/BaseHelper.svelte';
+import {
+	_user
+} from '../store/userStore.js';
+
+import {
+	setRefreshAndAccessTokenCookie
+} from '../components/BaseHelper.svelte';
 
 let userData;
-	_user.subscribe(value => {
-		userData = value;
+_user.subscribe(value => {
+	userData = value;
 });
 
 let lgParam = {
-  username : '',
-  password : '',
-  message  : ''
+	username: '',
+	password: '',
+	message: ''
 }
 
 export let initTreeMenu;
 
 function loginClick() {
-  Swal.fire({
-    title: "Loading...",
-    html: "請等待",
-    showConfirmButton: false,
-    allowOutsideClick: false
-  });
-  Swal.showLoading();
+	Swal.fire({
+		title: "Loading...",
+		html: "請等待",
+		showConfirmButton: false,
+		allowOutsideClick: false
+	});
+	Swal.showLoading();
 
-  lgParam.message = '';
-  fetch(import.meta.env.VITE_API_URL + '/auth/signin',{
-    method: "POST", 
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username : lgParam.username,
-        password : lgParam.password
-      }),
-      signal: AbortSignal.timeout(import.meta.env.VITE_FETCH_TIMEOUT)
-  })    
-  .then(response => {
-    Swal.hideLoading();
-    Swal.close();
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error( response.status + ' ' + response.statusText );
-  })
-  .then((responseJson) => {
-    if (null != responseJson) {
-      _user.update((val) => { return responseJson; } );   
-    } else {
-      _user.update((val) => { return {}; } );
-    }    
-    setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
-    initTreeMenu(); // App.svelte 的 js 選單 init
-  })
-  .catch((error) => {
-    console.log(error);
-    lgParam.message = error;
-    lgParam.username = '';
-    lgParam.password = '';
-    Swal.hideLoading();
-    Swal.close();    
-  });  
-
+	lgParam.message = '';
+	fetch(import.meta.env.VITE_API_URL + '/auth/signin', {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			username: lgParam.username,
+			password: lgParam.password
+		}),
+		signal: AbortSignal.timeout(import.meta.env.VITE_FETCH_TIMEOUT)
+	})
+	.then(response => {
+		Swal.hideLoading();
+		Swal.close();
+		if (response.ok) {
+			return response.json();
+		}
+		throw new Error(response.status + ' ' + response.statusText);
+	})
+	.then((responseJson) => {
+		if (null != responseJson) {
+			_user.update((val) => {
+				return responseJson;
+			});
+		} else {
+			_user.update((val) => {
+				return {};
+			});
+		}
+		setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
+		initTreeMenu(); // App.svelte 的 js 選單 init
+	})
+	.catch((error) => {
+		console.log(error);
+		lgParam.message = error;
+		lgParam.username = '';
+		lgParam.password = '';
+		Swal.hideLoading();
+		Swal.close();
+	});
 }
 
 </script>    
