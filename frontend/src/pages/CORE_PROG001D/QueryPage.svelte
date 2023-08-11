@@ -13,7 +13,7 @@ import {
 import Toolbar from "../../components/Toolbar.svelte";
 import Grid, { getGridConfig, setConfigRow, setConfigPage, setConfigTotal } from "../../components/Grid.svelte";
 import GridPagination from '../../components/GridPagination.svelte';
-import { _queryState, _queryParam } from './QueryStateStore';
+import { _gridConfig, _queryParam } from './QueryStateStore';
 
 let toolbarParam = {
     id          : 'CORE_PROG001D0001Q',
@@ -29,98 +29,88 @@ let toolbarParam = {
     }
 }
 
-let queryParam = {
-  'sysId' : '',
-  'name'  : ''
-}
-let queryState = {
-  'total' : 0,
-  'page'  : 1
-}
-
 /* ------------------- query page state ------------------- */
+let queryParam = { };
+let gridConfig = { };
 _queryParam.subscribe(value => {
   queryParam = value;
 });
-_queryState.subscribe(value => {
-  queryState = value;
+_gridConfig.subscribe(value => {
+  gridConfig = value;
 });
 /* -------------------------------------------------------- */
 
-
-onMount(()=>{
-
-  /* ----- set before page state ----- */
-  gridConfig.page = queryState.page;
-  gridConfig.row = queryState.row;
-  /* --------------------------------- */
-
-  btnQuery();
-
-});
-
-let gridConfig = getGridConfig(
-  'oid'
-  ,
-  [
+if (Object.keys(queryParam).length == 0) {
+  queryParam = {
+    'sysId' : '',
+    'name'  : ''
+  }
+}
+if (Object.keys(gridConfig).length == 0) {
+    gridConfig = getGridConfig(
+    'oid'
+    ,
+    [
+        {
+          'method'  : function(val) { 
+            var url = getProgItem('CORE_PROG001D0001E').url + '/' + val;
+            push( url );
+          },
+          'icon'    : 'pen',
+          'type'    : 'edit',
+          'memo'    : 'Edit current item.'
+        },
+        {
+          'method'  : function(val) { 
+            Swal.fire({
+              title: '刪除?',
+              icon: 'question',
+              iconHtml: '?',
+              confirmButtonText: 'Yes',
+              cancelButtonText: 'No',
+              showCancelButton: true,
+              showCloseButton: true
+            }).then((result) => {
+              if (result.isConfirmed) {
+                delItem(val);
+              }
+            });            
+          },
+          'icon'    : 'trash',
+          'type'    : 'delete',
+          'memo'    : 'Delete current item.'
+        },      
+    ]
+    ,
+    [
       {
-        'method'  : function(val) { 
-          var url = getProgItem('CORE_PROG001D0001E').url + '/' + val;
-          push( url );
-         },
-        'icon'    : 'pen',
-        'type'    : 'edit',
-        'memo'    : 'Edit current item.'
+        'label' : '#',
+        'field' : 'oid'
       },
       {
-        'method'  : function(val) { 
-          Swal.fire({
-            title: '刪除?',
-            icon: 'question',
-            iconHtml: '?',
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
-            showCancelButton: true,
-            showCloseButton: true
-          }).then((result) => {
-            if (result.isConfirmed) {
-              delItem(val);
-            }
-          });            
-        },
-        'icon'    : 'trash',
-        'type'    : 'delete',
-        'memo'    : 'Delete current item.'
-      },      
-  ]
-  ,
-  [
-    {
-      'label' : '#',
-      'field' : 'oid'
-    },
-    {
-      'label' : 'Id',
-      'field' : 'sysId'
-    },
-    {
-      'label' : 'Name',
-      'field' : 'name'
-    },
-    {
-      'label' : 'Host',
-      'field' : 'host'
-    },
-    {
-      'label' : 'Context Path',
-      'field' : 'contextPath'
-    },
-    {
-      'label' : 'Local',
-      'field' : 'isLocal'
-    }
-  ]    
-);
+        'label' : 'Id',
+        'field' : 'sysId'
+      },
+      {
+        'label' : 'Name',
+        'field' : 'name'
+      },
+      {
+        'label' : 'Host',
+        'field' : 'host'
+      },
+      {
+        'label' : 'Context Path',
+        'field' : 'contextPath'
+      },
+      {
+        'label' : 'Local',
+        'field' : 'isLocal'
+      }
+    ]    
+  );
+
+}
 
 let dsList = [];
 
@@ -168,7 +158,7 @@ function btnQuery() {
       gridConfig = gridConfig; // 讓 GridPagination 知道 gridConfig 被更動了
       
       /* -------------------- set page state -------------------- */
-      _queryState.update(state => ({...state, page : gridConfig.page, row : gridConfig.row}));
+      _gridConfig.update((value) => { return gridConfig;});
       /* -------------------------------------------------------- */
       
     } else {
@@ -225,6 +215,12 @@ function delItem(oid) {
     alert(e);
   });  
 }
+
+onMount(()=>{
+
+  btnQuery();
+
+});
 
 </script>
 
