@@ -1,4 +1,5 @@
 <script>
+import { onMount } from 'svelte';
 import { 
     Card,
     CardBody,
@@ -8,7 +9,10 @@ import {
     CardTitle
 } from 'sveltestrap';
 
-let currLocHash = window.location.hash;
+let currLocHash = '';
+onMount(()=>{
+    currLocHash = window.location.hash;
+});
 
 </script>
 
