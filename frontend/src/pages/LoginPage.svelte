@@ -88,45 +88,37 @@ function loginClick() {
     @import '../assets/vali.css';
     @import '../assets/m.css';
 </style>
+
 <div class="login-body">
     <section class="login-content">
-
-
         <div class="login-box">
-          <div class="login-form">
+			<div class="login-form">
             
-            <h3 class="login-head">
-              <!--
-              <img src="resource/logo.svg" width="250px" style="margin-bottom:10px" />
-              -->
-              <Icon name="person-circle"/>
-              qífū - frontend
-            </h3>
-            <FormGroup>
-              <Label for="username">帳戶</Label>
-              <Input type="text" name="username" id="username" placeholder="Account" bind:value={lgParam.username} />
-            </FormGroup>
-            <FormGroup>
-              <Label for="password">密碼</Label>
-              <input class="form-control" type="password" name="password" id="password" placeholder="Password" bind:value={lgParam.password} />
-            </FormGroup>
+				<h3 class="login-head">
+					<!-- <img src="resource/logo.svg" width="250px" style="margin-bottom:10px" /> -->
+					<Icon name="person-circle"/>
+					qífū - frontend
+				</h3>
+				<FormGroup>
+					<Label for="username">帳戶</Label>
+					<Input type="text" name="username" id="username" placeholder="Account" bind:value={lgParam.username} />
+				</FormGroup>
+				<FormGroup>
+					<Label for="password">密碼</Label>
+					<input class="form-control" type="password" name="password" id="password" placeholder="Password" bind:value={lgParam.password} />
+				</FormGroup>
 
-            <FormGroup>
-              <div>
-                <Button color="primary" class="col-12" on:click="{loginClick}"><Icon name="box-arrow-in-right"/>&nbsp;登入</Button>
-              </div>
-
-              
-            </FormGroup>
-            
-            {#if null != lgParam && null != lgParam.message && '' != lgParam.message }
-            <p class="form-text"><Badge color='danger'>{lgParam.message}</Badge></p>
-            {/if}
-
-          </div>
-
-        </div>
-  
-      </section>
-
+				<FormGroup>
+					<div>
+						<Button color="primary" class="col-12" on:click="{loginClick}"><Icon name="box-arrow-in-right"/>&nbsp;登入</Button>
+					</div>
+				</FormGroup>
+				
+				{#if null != lgParam && null != lgParam.message && '' != lgParam.message }
+				<p class="form-text"><Badge color='danger'>{lgParam.message}</Badge></p>
+				{/if}
+						
+			</div>	
+		</div>
+	</section>
 </div>    
