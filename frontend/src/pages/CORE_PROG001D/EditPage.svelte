@@ -2,7 +2,7 @@
 import { onMount } from 'svelte';    
 import { push } from 'svelte-spa-router';
 import { 
-    Form, FormGroup, Input, Label, Button, Icon
+    FormGroup, Input, Label, Button, Icon
 } from 'sveltestrap';
 import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';

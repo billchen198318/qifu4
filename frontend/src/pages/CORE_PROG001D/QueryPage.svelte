@@ -2,7 +2,7 @@
 import { onMount } from 'svelte';    
 import { push } from 'svelte-spa-router';
 import { 
-	Form, FormGroup, Input, Label, Button, Icon
+	FormGroup, Input, Label, Button, Icon
 } from 'sveltestrap';
 import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
@@ -59,7 +59,8 @@ if (Object.keys(gridConfig).length == 0) {
 				'icon'    : 'pen',
 				'type'    : 'edit',
 				'memo'    : 'Edit current item.'
-			},
+			}
+			,
 			{
 				'method'  : function(val) { 
 					Swal.fire({
@@ -79,7 +80,7 @@ if (Object.keys(gridConfig).length == 0) {
 				'icon'    : 'trash',
 				'type'    : 'delete',
 				'memo'    : 'Delete current item.'
-			},      
+			}     
 		]
 		,
 		[
@@ -234,38 +235,24 @@ onMount(()=>{
 </div>
 <div class="row">
     <div class="col-xs-6 col-md-6 col-lg-6">
-        <Form>
-            <FormGroup>
-                <Label for="sysId">編號</Label>
-                <Input
-                type="text"
-                id="sysId"
-                placeholder="輸入編號"     
-                bind:value={queryParam.sysId}     
-                />
-            </FormGroup>      
-        </Form>
+		<FormGroup>
+			<Label for="sysId">編號</Label>
+			<Input type="text" id="sysId" placeholder="輸入編號" bind:value={queryParam.sysId} />
+		</FormGroup>
     </div>
     <div class="col-xs-6 col-md-6 col-lg-6">
-      <Form>
-          <FormGroup>
-              <Label for="name">名稱</Label>
-              <Input
-              type="text"
-              id="name"
-              placeholder="輸入名稱"     
-              bind:value={queryParam.name}     
-              />
-          </FormGroup>      
-      </Form>
-  </div>
+		<FormGroup>
+			<Label for="name">名稱</Label>
+			<Input type="text" id="name" placeholder="輸入名稱" bind:value={queryParam.name} />
+		</FormGroup>
+	</div>
 </div>
 <div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-xs-12 col-md-12 col-lg-12">
 		<Button color="primary" on:click={btnQuery}><Icon name="search"/>&nbsp;查詢</Button>
 		&nbsp;
 		<Button color="primary" on:click={btnClear}><Icon name="eraser"/>&nbsp;清除</Button>
-  </div>  
+	</div>  
 </div>
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
