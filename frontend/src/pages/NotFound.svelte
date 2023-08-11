@@ -12,6 +12,7 @@ import {
 let currLocHash = '';
 onMount(()=>{
     currLocHash = window.location.hash;
+    setInterval(() => (currLocHash = window.location.hash), 1000);
 });
 
 </script>
