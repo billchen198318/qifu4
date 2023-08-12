@@ -4,10 +4,10 @@ import {
 
 export const routes = {
 	"/prog001": wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0001Q/IndexPage.svelte')
 	}),
 	"/prog001/*": wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0001Q/IndexPage.svelte')
 	}),
 	"/about": wrap({
 		asyncComponent: () => import('./pages/About.svelte')

@@ -221,13 +221,19 @@ export function getProgItem(progId) {
 	return item;
 }
 
-export function getProgFolderUrlPrefix(folderProgId) {
+export function getMainProgUrlPrefix(mainPageProgId) {
 	var url = '';
 	for (var p = 0; p < menuData.length; p++) {
 		var fItem = menuData[p];
-		if (fItem.id == folderProgId) {
-			url = fItem.prefix;
+		for (var c in fItem.items) {
+			var cItem = fItem.items[c];
+			if (cItem.id == mainPageProgId) {
+				url = cItem.url;
+			}
 		}
+	}
+	if (url.startsWith('#') && url.length > 2) {
+		url = url.substring(1, url.length);
 	}
 	return url;
 }
