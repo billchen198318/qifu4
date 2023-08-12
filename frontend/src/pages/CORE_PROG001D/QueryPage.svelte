@@ -1,5 +1,5 @@
 <script>
-import { onMount } from 'svelte';    
+import { onMount, onDestroy } from 'svelte';    
 import { push } from 'svelte-spa-router';
 import { 
 	FormGroup, Input, Label, Button, Icon
@@ -47,7 +47,20 @@ if (Object.keys(queryParam).length == 0) {
 	}
 }
 if (Object.keys(gridConfig).length == 0) {
-    gridConfig = getGridConfig(
+    gridConfig = initQueryGridConfig();
+} else {
+	let befPage = gridConfig.page;
+	let befTotal = gridConfig.total;
+	let befRow = gridConfig.row;
+	gridConfig = { };
+	gridConfig = initQueryGridConfig();
+	setConfigPage(gridConfig, befPage);
+	setConfigTotal(gridConfig, befTotal);
+	setConfigRow(gridConfig, befRow);
+}
+
+function initQueryGridConfig() {
+    return getGridConfig(
 		'oid'
 		,
 		[
@@ -224,6 +237,10 @@ function delItem(oid) {
 
 onMount(()=>{
 	btnQuery();
+});
+
+onDestroy(()=>{
+
 });
 
 </script>
