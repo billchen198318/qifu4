@@ -178,6 +178,7 @@ function btnQuery() {
       
 			/* -------------------- set page state -------------------- */
 			_gridConfig.update((value) => { return gridConfig;});
+			_queryParam.update((value) => { return queryParam;});
 			/* -------------------------------------------------------- */
       
 		} else {
