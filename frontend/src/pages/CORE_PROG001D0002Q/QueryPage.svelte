@@ -108,12 +108,12 @@ function initQueryGridConfig() {
 			}
 			,
 			{
-				'label' : 'Id',
+				'label' : '程式編號',
 				'field' : 'progId'
 			}
 			,
 			{
-				'label' : 'Name',
+				'label' : '程式名稱',
 				'field' : 'name'
 			}
 			,
@@ -123,17 +123,17 @@ function initQueryGridConfig() {
 			}
 			,
 			{
-				'label' : 'progSystem',
-				'field' : 'System'
+				'label' : '主系統',
+				'field' : 'progSystem'
 			}
 			,
 			{
-				'label' : 'Item type',
+				'label' : '類別',
 				'field' : 'itemType'
 			}            
             ,            
 			{
-				'label' : 'Edit',
+				'label' : '編輯頁',
 				'field' : 'editMode'
 			}
             ,            

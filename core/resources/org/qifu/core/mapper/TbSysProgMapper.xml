@@ -45,7 +45,10 @@
 	</if>	
 	<if test="itemType != null and itemType != ''.toString() ">
 		AND ITEM_TYPE = #{itemType,jdbcType=VARCHAR}
-	</if>				
+	</if>			
+	<if test="nameLike != null and nameLike != ''.toString() ">
+		AND NAME like #{nameLike,jdbcType=VARCHAR}
+	</if>			
 	<if test="orderBy != null and orderBy != ''.toString() and sortType != null and sortType != ''.toString() ">
 		ORDER BY  ${orderBy} ${sortType}
 	</if>	
@@ -72,7 +75,10 @@
 	<if test="itemType != null and itemType != ''.toString() ">
 		AND ITEM_TYPE = #{itemType,jdbcType=VARCHAR}
 	</if>		
-		
+	<if test="nameLike != null and nameLike != ''.toString() ">
+		AND NAME like #{nameLike,jdbcType=VARCHAR}
+	</if>	
+			
 	<include refid="org.qifu.core.mapper.DB1Config.sql2"/>
   </select>  
   
@@ -94,6 +100,9 @@
 	<if test="itemType != null and itemType != ''.toString() ">
 		AND ITEM_TYPE = #{itemType,jdbcType=VARCHAR}
 	</if>
+	<if test="nameLike != null and nameLike != ''.toString() ">
+		AND NAME like #{nameLike,jdbcType=VARCHAR}
+	</if>		
   </select>  
   
   <insert id="insert" parameterType="org.qifu.core.entity.TbSysProg"> 
