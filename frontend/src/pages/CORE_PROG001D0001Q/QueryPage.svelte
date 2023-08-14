@@ -14,18 +14,18 @@ import Toolbar from "../../components/Toolbar.svelte";
 import Grid, { getGridConfig, setConfigRow, setConfigPage, setConfigTotal } from "../../components/Grid.svelte";
 import GridPagination from '../../components/GridPagination.svelte';
 import { _gridConfig, _queryParam } from './QueryStateStore';
-import { EVENT_NAMESPACE } from './config';
+import { EVENT_NAMESPACE, PAGE_ID_Query, PAGE_ID_Create, PAGE_ID_Edit } from './config';
 
 let toolbarParam = {
-    id          : 'CORE_PROG001D0001Q',
+    id          : PAGE_ID_Query,
     description : '站台測試用.',
-    methods     :  {
+    methods     : {
         "refresh"    :   function() {
             btnClear();
         }
         ,
         "create"    :   function() {
-            push( getProgItem('CORE_PROG001D0001A').url );
+            push( getProgItem(PAGE_ID_Create).url );
         }
     }
 }
@@ -72,7 +72,7 @@ function initQueryGridConfig() {
 		[
 			{
 				'method'  : function(val) { 
-					var url = getProgItem('CORE_PROG001D0001E').url + '/' + val;
+					var url = getProgItem(PAGE_ID_Edit).url + '/' + val;
 					push( url );
 				},
 				'icon'    : 'pen',

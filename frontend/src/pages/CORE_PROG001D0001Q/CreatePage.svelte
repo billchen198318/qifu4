@@ -12,14 +12,14 @@ import {
     invalidFeedback, checkInvalid
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
-import { EVENT_NAMESPACE } from './config';
+import { EVENT_NAMESPACE, PAGE_ID_Query, PAGE_ID_Create, PAGE_ID_Edit } from './config';
 
 let toolbarParam = {
-    id          : 'CORE_PROG001D0001A',
+    id          : PAGE_ID_Create,
     description : '站台測試用，新增資料作業.',
-    methods     :  {
+    methods     : {
         "back"      :   function() {
-            push( getProgItem('CORE_PROG001D0001Q').url );
+            push( getProgItem(PAGE_ID_Query).url );
         }
         ,
         "refresh"   :   function() {

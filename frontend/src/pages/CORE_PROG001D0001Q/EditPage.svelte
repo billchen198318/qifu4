@@ -12,14 +12,14 @@ import {
     invalidFeedback, checkInvalid
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
-import { EVENT_NAMESPACE } from './config';
+import { EVENT_NAMESPACE, PAGE_ID_Query, PAGE_ID_Create, PAGE_ID_Edit } from './config';
 
 let toolbarParam = {
-    id          : 'CORE_PROG001D0001E',
+    id          : PAGE_ID_Edit,
     description : '站台測試用，修改資料作業.',
-    methods     :  {
+    methods     : {
         "back"      :   function() {
-            push( getProgItem('CORE_PROG001D0001Q').url );
+            push( getProgItem(PAGE_ID_Query).url );
         }
         ,
         "refresh"   :   function() {
@@ -61,20 +61,20 @@ function loadData() {
         if (null != response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.push(response.data.message, getToastWarningTheme());
-                push( getProgItem('CORE_PROG001D0001Q').url );
+                push( getProgItem(PAGE_ID_Query).url );
                 return;
             }
             formParam = response.data.value;
         } else {
             toast.push('error, null', getToastErrorTheme());
-            push( getProgItem('CORE_PROG001D0001Q').url );
+            push( getProgItem(PAGE_ID_Query).url );
         }
     })
     .catch(e => {
         Swal.hideLoading();
         Swal.close();        
         alert(e);
-        push( getProgItem('CORE_PROG001D0001Q').url );
+        push( getProgItem(PAGE_ID_Query).url );
     });         
 }
 
