@@ -12,14 +12,14 @@ import {
     invalidFeedback, checkInvalid
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
-import { EVENT_NAMESPACE, PAGE_ID_Query, PAGE_ID_Create, PAGE_ID_Edit } from './config';
+import { PageConstants } from './config';
 
 let toolbarParam = {
-    id          : PAGE_ID_Create,
+    id          : PageConstants.CreateId,
     description : '站台測試用，新增資料作業.',
     methods     : {
         "back"      :   function() {
-            push( getProgItem(PAGE_ID_Query).url );
+            push( getProgItem(PageConstants.QueryId).url );
         }
         ,
         "refresh"   :   function() {
@@ -52,7 +52,7 @@ function btnSave() {
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading();      
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + EVENT_NAMESPACE + '/save', formParam)
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/save', formParam)
     .then(response => {
         Swal.hideLoading();
         Swal.close();

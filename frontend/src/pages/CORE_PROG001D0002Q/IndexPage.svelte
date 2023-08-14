@@ -4,9 +4,9 @@ import { getMainProgUrlPrefix, getNestedRoutesMap } from "../../components/BaseH
 import QueryPage from "./QueryPage.svelte";
 import CreatePage from "./CreatePage.svelte";
 import EditPage from "./EditPage.svelte";
-import { PAGE_ID_Query } from "./config";
+import { PageConstants } from "./config";
 
-const prefix = getMainProgUrlPrefix(PAGE_ID_Query);
+const prefix = getMainProgUrlPrefix(PageConstants.QueryId);
 const routes = getNestedRoutesMap(QueryPage, CreatePage, EditPage);
 
 </script>

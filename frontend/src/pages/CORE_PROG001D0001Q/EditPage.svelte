@@ -12,14 +12,14 @@ import {
     invalidFeedback, checkInvalid
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
-import { EVENT_NAMESPACE, PAGE_ID_Query, PAGE_ID_Create, PAGE_ID_Edit } from './config';
+import { PageConstants } from './config';
 
 let toolbarParam = {
-    id          : PAGE_ID_Edit,
+    id          : PageConstants.EditId,
     description : '站台測試用，修改資料作業.',
     methods     : {
         "back"      :   function() {
-            push( getProgItem(PAGE_ID_Query).url );
+            push( getProgItem(PageConstants.QueryId).url );
         }
         ,
         "refresh"   :   function() {
@@ -54,27 +54,27 @@ function loadData() {
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading(); 
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + EVENT_NAMESPACE + '/load', {'oid' : formParam.oid})
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/load', {'oid' : formParam.oid})
     .then(response => {
         Swal.hideLoading();
         Swal.close();
         if (null != response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.push(response.data.message, getToastWarningTheme());
-                push( getProgItem(PAGE_ID_Query).url );
+                push( getProgItem(PageConstants.QueryId).url );
                 return;
             }
             formParam = response.data.value;
         } else {
             toast.push('error, null', getToastErrorTheme());
-            push( getProgItem(PAGE_ID_Query).url );
+            push( getProgItem(PageConstants.QueryId).url );
         }
     })
     .catch(e => {
         Swal.hideLoading();
         Swal.close();        
         alert(e);
-        push( getProgItem(PAGE_ID_Query).url );
+        push( getProgItem(PageConstants.QueryId).url );
     });         
 }
 
@@ -83,7 +83,7 @@ function btnUpdate() {
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading();      
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + EVENT_NAMESPACE + '/update', formParam)
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/update', formParam)
     .then(response => {
         Swal.hideLoading();
         Swal.close();

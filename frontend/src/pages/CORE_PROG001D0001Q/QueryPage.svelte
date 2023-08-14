@@ -14,10 +14,10 @@ import Toolbar from "../../components/Toolbar.svelte";
 import Grid, { getGridConfig, setConfigRow, setConfigPage, setConfigTotal } from "../../components/Grid.svelte";
 import GridPagination from '../../components/GridPagination.svelte';
 import { _gridConfig, _queryParam } from './QueryStateStore';
-import { EVENT_NAMESPACE, PAGE_ID_Query, PAGE_ID_Create, PAGE_ID_Edit } from './config';
+import { PageConstants } from './config';
 
 let toolbarParam = {
-    id          : PAGE_ID_Query,
+    id          : PageConstants.QueryId,
     description : '站台測試用.',
     methods     : {
         "refresh"    :   function() {
@@ -25,7 +25,7 @@ let toolbarParam = {
         }
         ,
         "create"    :   function() {
-            push( getProgItem(PAGE_ID_Create).url );
+            push( getProgItem(PageConstants.CreateId).url );
         }
     }
 }
@@ -72,7 +72,7 @@ function initQueryGridConfig() {
 		[
 			{
 				'method'  : function(val) { 
-					var url = getProgItem(PAGE_ID_Edit).url + '/' + val;
+					var url = getProgItem(PageConstants.EditId).url + '/' + val;
 					push( url );
 				},
 				'icon'    : 'pen',
@@ -158,7 +158,7 @@ function btnQuery() {
 	dsList = [];
 	dsList = dsList;
 	var axiosInstance = getAxiosInstance();
-	axiosInstance.post(import.meta.env.VITE_API_URL + EVENT_NAMESPACE + '/findPage', {
+	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findPage', {
 		"field": {
 			"sysId"     : queryParam.sysId,
 			"nameLike"  : queryParam.name
@@ -213,7 +213,7 @@ function delItem(oid) {
 	Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
 	Swal.showLoading();  
 	var axiosInstance = getAxiosInstance();  
-	axiosInstance.post(import.meta.env.VITE_API_URL + EVENT_NAMESPACE + '/delete', {"oid": oid})
+	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/delete', {"oid": oid})
 	.then(response => {
 		Swal.hideLoading();
 		Swal.close();
