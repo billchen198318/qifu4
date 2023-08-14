@@ -59,6 +59,11 @@ if (Object.keys(gridConfig).length == 0) {
 	setConfigRow(gridConfig, befRow);
 }
 
+function setQueryPageState(gridConfig, queryParam) {
+	_gridConfig.update((value) => { return gridConfig;});
+	_queryParam.update((value) => { return queryParam;});
+}
+
 function initQueryGridConfig() {
     return getGridConfig(
 		'oid'
@@ -175,12 +180,7 @@ function btnQuery() {
 			dsList = response.data.value;
 			setConfigTotal(gridConfig, response.data.pageOf.countSize);
 			gridConfig = gridConfig; // 讓 GridPagination 知道 gridConfig 被更動了
-      
-			/* -------------------- set page state -------------------- */
-			_gridConfig.update((value) => { return gridConfig;});
-			_queryParam.update((value) => { return queryParam;});
-			/* -------------------------------------------------------- */
-      
+			setQueryPageState(gridConfig, queryParam);      
 		} else {
 			toast.push('error, null', getToastErrorTheme());
 			clearGridConfig();
