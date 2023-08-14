@@ -12,7 +12,7 @@ export function getGridConfig(keyFieldName, formatterItems, columnItems) {
         page : 1,
         total : 0,
         theadColor : {
-            'backgroundColor' : '#1a1a1a',
+            'backgroundColor' : '#575757',
             'color'           : 'whitesmoke'
         },
         keyFieldFormatter : {
@@ -38,10 +38,10 @@ export function setConfigTotal(gridConfig, total) {
     
     {#if null != dataSource && dataSource.length > 0 }
     <Table bordered hover>
-        <thead style="background-color:{config.theadColor.backgroundColor}; color:{config.theadColor.color};">
+        <thead>
         <tr>
             {#each config.column as col}
-            <th>{col.label}</th>
+            <th style="background-color:{config.theadColor.backgroundColor}; color:{config.theadColor.color};">{col.label}</th>
             {/each}
         </tr>
         </thead>

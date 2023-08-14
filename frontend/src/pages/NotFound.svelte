@@ -21,7 +21,7 @@ onMount(()=>{
 	<div class="col-xs-12 col-md-12 col-lg-12">
         <Card class="mb-3">
             <CardHeader>
-                <CardTitle>網站資源不存在</CardTitle>
+                <CardTitle>Not found resources.</CardTitle>
             </CardHeader>
             <CardBody>
                 <CardText>

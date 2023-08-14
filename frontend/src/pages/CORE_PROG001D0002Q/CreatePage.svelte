@@ -23,17 +23,27 @@ let toolbarParam = {
         }
         ,
         "refresh"   :   function() {
-            //btnClear();
+            btnClear();
         }
         ,
         "save"      :   function() {
-            //btnSave();
+            btnSave();
         } 
     }
 }
 
 var formParam = {
-	
+    'progId'            :   '',
+    'name'              :   '',
+    'url'               :   '',
+    'editMode'          :   '',
+    'isDialog'          :   '',
+    'dialogW'           :   '',
+    'dialogH'           :   '',
+    'progSystem'        :   'CORE',
+    'itemType'          :   '',
+    'fontIconClassId'   :   'globe2',
+    'icon'              :   'SYSTEM'
 }
 
 var checkFields = new Object();
@@ -42,6 +52,48 @@ onMount(()=>{
 
 });
 
+function btnSave() {
+    checkFields = new Object();
+    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    Swal.showLoading();      
+    let axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/save', formParam)
+    .then(response => {
+        Swal.hideLoading();
+        Swal.close();
+        if (null != response.data) {
+            checkFields = response.data.checkFields;
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.push(response.data.message, getToastWarningTheme());
+                return;
+            }            
+            toast.push(response.data.message, getToastSuccessTheme());   
+            btnClear();
+        } else {
+            toast.push('error, null', getToastErrorTheme());
+        }
+    })
+    .catch(e => {
+        Swal.hideLoading();
+        Swal.close();        
+        alert(e);
+    }); 
+}
+
+function btnClear() {
+    checkFields = new Object();
+    formParam.progId = '';
+    formParam.name = '';
+    formParam.url = '';
+    formParam.editMode = 'N';
+    formParam.isDialog = 'N';
+    formParam.dialogW = '0';
+    formParam.dialogH = '0';
+    formParam.progSystem = 'CORE';
+    formParam.itemType = 'ITEM';
+    formParam.fontIconClassId = 'globe2';
+    formParam.icon = 'SYSTEM';
+}
 
 </script>
 
@@ -50,6 +102,59 @@ onMount(()=>{
         <Toolbar args={toolbarParam}></Toolbar>
     </div>
 </div>
+<div class="row">
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Label for="progId">程式編號</Label>
+            <Input type="text" id="progId" placeholder="輸入程式編號" feedback={invalidFeedback('progId', checkFields)} invalid={checkInvalid('progId', checkFields)} bind:value={formParam.progId} />
+        </FormGroup>         
+    </div>
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Label for="name">程式名稱</Label>
+            <Input type="text" id="name" placeholder="輸入名稱" feedback={invalidFeedback('name', checkFields)} invalid={checkInvalid('name', checkFields)} bind:value={formParam.name} />
+        </FormGroup> 
+    </div>    
+</div>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <FormGroup>
+            <Label for="url">url</Label>
+            <Input type="text" id="url" placeholder="輸入Url" feedback={invalidFeedback('url', checkFields)} invalid={checkInvalid('url', checkFields)} bind:value={formParam.url} />            
+        </FormGroup>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Input id="editMode" type="switch" label="編輯頁" />            
+        </FormGroup>         
+    </div>
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Input id="isDialog" type="switch" label="Dialog模式" />
+        </FormGroup> 
+    </div>    
+</div>
+<div class="row">
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Label for="dialogW">Dialog寬</Label>
+            <Input type="text" id="dialogW" placeholder="Dialog width" feedback={invalidFeedback('dialogW', checkFields)} invalid={checkInvalid('dialogW', checkFields)} bind:value={formParam.dialogW} />
+        </FormGroup>         
+    </div>
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Label for="name">Dialog高</Label>
+            <Input type="text" id="dialogH" placeholder="Dialog height" feedback={invalidFeedback('dialogH', checkFields)} invalid={checkInvalid('dialogH', checkFields)} bind:value={formParam.dialogH} />
+        </FormGroup> 
+    </div>    
+</div>
 
+<!--
+    formParam.itemType = 'ITEM';
+
+    formParam.fontIconClassId = 'globe2';    
+-->
 
 <SvelteToast></SvelteToast>

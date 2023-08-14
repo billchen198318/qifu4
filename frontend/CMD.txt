@@ -9,5 +9,6 @@ pnpm i
 #pnpm i axios
 #npm run build
 
+# pnpm up --latest
 
 npm run dev
