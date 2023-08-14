@@ -50,7 +50,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
-@Api(tags = {"PROG001D"}, value = "Application site.")
+@Api(tags = {"CORE_PROG001D0001"}, value = "Application site.")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/prog001")
@@ -65,7 +65,7 @@ public class Prog001ApiController extends CoreApiSupport {
 	
 	
 	@ApiOperation(
-			value="PROG001 - findPage", 
+			value="CORE_PROG001D0001 - findPage", 
 			notes="查核TB_SYS資料", 
 			authorizations={ @Authorization(value="Bearer") }
 	)
@@ -92,7 +92,7 @@ public class Prog001ApiController extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
-	@ApiOperation(value="PROG001 - delete", notes="刪除TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
+	@ApiOperation(value="CORE_PROG001D0001 - delete", notes="刪除TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "oid", value = "TB_SYS.OID")
     })
@@ -101,7 +101,7 @@ public class Prog001ApiController extends CoreApiSupport {
 	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDelete(@RequestBody TbSys sys) {
 		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
 		try {
-			DefaultResult<Boolean> delResult = this.sysService.delete(sys);
+			DefaultResult<Boolean> delResult = this.applicationSystemLogicService.delete(sys);
 			this.setDefaultResponseJsonResult(delResult, result);
 		} catch (ServiceException | ControllerException e) {
 			this.exceptionResult(result, e);
@@ -136,7 +136,7 @@ public class Prog001ApiController extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(uResult, result);
 	}
 	
-	@ApiOperation(value="PROG001 - save", notes="新增TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
+	@ApiOperation(value="CORE_PROG001D0001 - save", notes="新增TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "sysId", value = ""),
     	@ApiImplicitParam(name = "name", value = ""),
@@ -159,7 +159,7 @@ public class Prog001ApiController extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
-	@ApiOperation(value="PROG001 - load", notes="讀取TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
+	@ApiOperation(value="CORE_PROG001D0001 - load", notes="讀取TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "oid", value = "TB_SYS.OID")
     })
@@ -178,7 +178,7 @@ public class Prog001ApiController extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
-	@ApiOperation(value="PROG001 - update", notes="更新TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
+	@ApiOperation(value="CORE_PROG001D0001 - update", notes="更新TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "sysId", value = ""),
     	@ApiImplicitParam(name = "name", value = ""),

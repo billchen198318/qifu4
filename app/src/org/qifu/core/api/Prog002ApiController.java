@@ -25,9 +25,12 @@ import java.util.List;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.DefaultControllerJsonResultObj;
+import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbSysProg;
+import org.qifu.core.logic.ISystemProgramLogicService;
 import org.qifu.core.service.ISysProgService;
 import org.qifu.core.util.CoreApiSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +49,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
-@Api(tags = {"PROG001D"}, value = "Program page management.")
+@Api(tags = {"CORE_PROG001D0002"}, value = "Program page management.")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/prog002")
@@ -56,8 +59,12 @@ public class Prog002ApiController extends CoreApiSupport {
 	@Autowired
 	ISysProgService<TbSysProg, String> SysProgService;
 	
+	@Autowired
+	ISystemProgramLogicService systemProgramLogicService;
+	
+	
 	@ApiOperation(
-			value="PROG002 - findPage", 
+			value="CORE_PROG001D0002 - findPage", 
 			notes="查詢TB_SYS_PROG資料", 
 			authorizations={ @Authorization(value="Bearer") }
 	)
@@ -83,6 +90,25 @@ public class Prog002ApiController extends CoreApiSupport {
 		}
 		return ResponseEntity.ok().body(result);
 	}	
+	
+	@ApiOperation(value="CORE_PROG001D0002 - delete", notes="刪除TB_SYS_PROG資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "oid", value = "TB_SYS_PROG.OID")
+    })
+	@ResponseBody
+	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDelete(@RequestBody TbSysProg sysProg) {
+		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<Boolean> delResult = this.systemProgramLogicService.delete(sysProg);
+			this.setDefaultResponseJsonResult(delResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}
 	
 	
 }
