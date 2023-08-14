@@ -12,6 +12,7 @@ import {
     invalidFeedback, checkInvalid
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
+import { EVENT_NAMESPACE } from './config';
 
 let toolbarParam = {
     id          : 'CORE_PROG001D0001A',
@@ -51,7 +52,7 @@ function btnSave() {
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading();      
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/save', formParam)
+    axiosInstance.post(import.meta.env.VITE_API_URL + EVENT_NAMESPACE + '/save', formParam)
     .then(response => {
         Swal.hideLoading();
         Swal.close();

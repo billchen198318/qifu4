@@ -12,6 +12,7 @@ import {
     invalidFeedback, checkInvalid
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
+import { EVENT_NAMESPACE } from './config';
 
 let toolbarParam = {
     id          : 'CORE_PROG001D0001E',
@@ -53,7 +54,7 @@ function loadData() {
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading(); 
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/load', {'oid' : formParam.oid})
+    axiosInstance.post(import.meta.env.VITE_API_URL + EVENT_NAMESPACE + '/load', {'oid' : formParam.oid})
     .then(response => {
         Swal.hideLoading();
         Swal.close();
@@ -82,7 +83,7 @@ function btnUpdate() {
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading();      
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + '/prog001/update', formParam)
+    axiosInstance.post(import.meta.env.VITE_API_URL + EVENT_NAMESPACE + '/update', formParam)
     .then(response => {
         Swal.hideLoading();
         Swal.close();

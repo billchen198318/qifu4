@@ -12,6 +12,7 @@ import {
     invalidFeedback, checkInvalid
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
+import { EVENT_NAMESPACE } from './config';
 
 let toolbarParam = {
     id          : 'CORE_PROG001D0002E',
