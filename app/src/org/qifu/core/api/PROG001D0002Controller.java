@@ -53,8 +53,8 @@ import io.swagger.annotations.Authorization;
 @Api(tags = {"CORE_PROG001D0002"}, value = "Program page management.")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/prog002")
-public class Prog002ApiController extends CoreApiSupport {
+@RequestMapping("/api/PROG001D0002")
+public class PROG001D0002Controller extends CoreApiSupport {
 	private static final long serialVersionUID = -2060599663035482390L;
 	
 	@Autowired
