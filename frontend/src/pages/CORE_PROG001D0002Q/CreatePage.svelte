@@ -36,12 +36,12 @@ var formParam = {
     'progId'            :   '',
     'name'              :   '',
     'url'               :   '',
-    'editMode'          :   '',
-    'isDialog'          :   '',
-    'dialogW'           :   '',
-    'dialogH'           :   '',
+    'editModeVar'       :   false,
+    'isDialogVar'       :   false,
+    'dialogW'           :   '0',
+    'dialogH'           :   '0',
     'progSystem'        :   'CORE',
-    'itemType'          :   '',
+    'itemType'          :   'ITEM',
     'fontIconClassId'   :   'globe2',
     'icon'              :   'SYSTEM'
 }
@@ -85,8 +85,8 @@ function btnClear() {
     formParam.progId = '';
     formParam.name = '';
     formParam.url = '';
-    formParam.editMode = 'N';
-    formParam.isDialog = 'N';
+    formParam.editModeVar = false;
+    formParam.isDialogVar = false;
     formParam.dialogW = '0';
     formParam.dialogH = '0';
     formParam.progSystem = 'CORE';
@@ -119,7 +119,7 @@ function btnClear() {
 <div class="row">
     <div class="col-xs-12 col-md-12 col-lg-12">
         <FormGroup>
-            <Label for="url">url</Label>
+            <Label for="url">Url</Label>
             <Input type="text" id="url" placeholder="輸入Url" feedback={invalidFeedback('url', checkFields)} invalid={checkInvalid('url', checkFields)} bind:value={formParam.url} />            
         </FormGroup>
     </div>
@@ -127,12 +127,12 @@ function btnClear() {
 <div class="row">
     <div class="col-xs-6 col-md-6 col-lg-6">
         <FormGroup>
-            <Input id="editMode" type="switch" label="編輯頁" />            
+            <Input id="editMode" type="switch" label="編輯頁" bind:checked={formParam.editModeVar} />            
         </FormGroup>         
     </div>
     <div class="col-xs-6 col-md-6 col-lg-6">
         <FormGroup>
-            <Input id="isDialog" type="switch" label="Dialog模式" />
+            <Input id="isDialog" type="switch" label="Dialog模式" bind:checked={formParam.isDialogVar} />
         </FormGroup> 
     </div>    
 </div>
@@ -140,21 +140,41 @@ function btnClear() {
     <div class="col-xs-6 col-md-6 col-lg-6">
         <FormGroup>
             <Label for="dialogW">Dialog寬</Label>
-            <Input type="text" id="dialogW" placeholder="Dialog width" feedback={invalidFeedback('dialogW', checkFields)} invalid={checkInvalid('dialogW', checkFields)} bind:value={formParam.dialogW} />
+            <Input type="number" id="dialogW" placeholder="Dialog width" feedback={invalidFeedback('dialogW', checkFields)} invalid={checkInvalid('dialogW', checkFields)} bind:value={formParam.dialogW} />
         </FormGroup>         
     </div>
     <div class="col-xs-6 col-md-6 col-lg-6">
         <FormGroup>
-            <Label for="name">Dialog高</Label>
-            <Input type="text" id="dialogH" placeholder="Dialog height" feedback={invalidFeedback('dialogH', checkFields)} invalid={checkInvalid('dialogH', checkFields)} bind:value={formParam.dialogH} />
+            <Label for="dialogH">Dialog高</Label>
+            <Input type="number" id="dialogH" placeholder="Dialog height" feedback={invalidFeedback('dialogH', checkFields)} invalid={checkInvalid('dialogH', checkFields)} bind:value={formParam.dialogH} />
+        </FormGroup> 
+    </div>    
+</div>
+<div class="row">
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <FormGroup floating label="類別">
+                <Input type="select" placeholder="請選取類別" bind:value={formParam.itemType}>
+                    <option value="ITEM">ITEM-頁面</option>
+                    <option value="FOLDER">FOLDER-目錄</option>
+                </Input>
+              </FormGroup>
+        </FormGroup>         
+    </div>
+    <div class="col-xs-6 col-md-6 col-lg-6">
+        <FormGroup>
+            <Label for="fontIconClassId">Icon class</Label>
+            <Input type="text" id="fontIconClassId" placeholder="Icon class" feedback={invalidFeedback('fontIconClassId', checkFields)} invalid={checkInvalid('fontIconClassId', checkFields)} bind:value={formParam.fontIconClassId} />
         </FormGroup> 
     </div>    
 </div>
 
-<!--
-    formParam.itemType = 'ITEM';
-
-    formParam.fontIconClassId = 'globe2';    
--->
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <Button color="primary" on:click={btnSave}><Icon name="save"/>&nbsp;儲存</Button>
+        &nbsp;
+        <Button color="primary" on:click={btnClear}><Icon name="eraser"/>&nbsp;清除</Button>
+    </div>
+</div>    
 
 <SvelteToast></SvelteToast>
