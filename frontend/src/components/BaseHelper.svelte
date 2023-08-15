@@ -239,11 +239,15 @@ export function getMainProgUrlPrefix(mainPageProgId) {
 }
 
 export function getNestedRoutesMap(queryPage, createPage, editPage) {
-	var nestedRoutersMap = new Map()
-		.set("/", queryPage)
-		.set("/create", createPage)
-		.set("/edit/:oid", editPage)
-		.set(/^\/(.*?)(\/(.*?))?/, queryPage);
+	var nestedRoutersMap = new Map();
+	nestedRoutersMap.set("/", queryPage);
+	if (createPage != null) {
+		nestedRoutersMap.set("/create", createPage);
+	}
+	if (editPage != null) {
+		nestedRoutersMap.set("/edit/:oid", editPage)
+	}
+	nestedRoutersMap.set(/^\/(.*?)(\/(.*?))?/, queryPage);
 	return nestedRoutersMap;
 }
 

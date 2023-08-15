@@ -1,5 +1,5 @@
 <script>
-import { onMount } from 'svelte';
+import { onMount, onDestroy } from 'svelte';
 import { 
     Card,
     CardBody,
@@ -10,9 +10,12 @@ import {
 } from 'sveltestrap';
 
 let currLocHash = '';
+const updateInfoInterval = setInterval(() => (currLocHash = window.location.hash), 500);
 onMount(()=>{
     currLocHash = window.location.hash;
-    setInterval(() => (currLocHash = window.location.hash), 1000);
+});
+onDestroy(()=>{
+    clearInterval(updateInfoInterval);
 });
 
 </script>
