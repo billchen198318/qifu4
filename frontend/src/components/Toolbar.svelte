@@ -19,9 +19,9 @@ onMount(()=>{
 
 <div class="app-title" style="background: linear-gradient(to top, #f8f9fa, #ffffff); width: 103vw; overflow: hidden;">
 	<div>
-		<h1><Icon name={pageProg.fontIconClassId}/>&nbsp;{pageProg.name}</h1>
+		<h1 style="color: #003366;"><Icon name={pageProg.fontIconClassId}/>&nbsp;{pageProg.name}</h1>
 
-		<p>{args.description}</p>
+		<p style="color: #333300;">{args.description}</p>
 
 		<div>		
 
