@@ -161,7 +161,7 @@ $ : {
     <div class="col-xs-6 col-md-6 col-lg-6">
         <FormGroup>
             <Label for="progId">程式編號</Label>
-            <Input type="text" id="progId" placeholder="輸入程式編號" feedback={invalidFeedback('progId', checkFields)} invalid={checkInvalid('progId', checkFields)} bind:value={formParam.progId} />
+            <Input type="text" id="progId" placeholder="輸入程式編號" feedback={invalidFeedback('progId', checkFields)} invalid={checkInvalid('progId', checkFields)} bind:value={formParam.progId} readonly={true} />
         </FormGroup>         
     </div>
     <div class="col-xs-6 col-md-6 col-lg-6">
