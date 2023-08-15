@@ -136,6 +136,12 @@ public class Prog002ApiController extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(cResult, result);
 	}	
 	
+	private void update(DefaultControllerJsonResultObj<TbSysProg> result, TbSysProg sysProg) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, sysProg);
+		DefaultResult<TbSysProg> cResult = this.sysProgService.update(sysProg);
+		this.setDefaultResponseJsonResult(cResult, result);
+	}	
+	
 	@ApiOperation(value="CORE_PROG001D0002 - save", notes="新增TB_SYS_PROG資料", authorizations={ @Authorization(value="Bearer") })
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "progId", value = ""),
@@ -163,5 +169,53 @@ public class Prog002ApiController extends CoreApiSupport {
 		}
 		return ResponseEntity.ok().body(result);
 	}	
+	
+	@ApiOperation(value="CORE_PROG001D0002 - load", notes="讀取TB_SYS_PROG資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "oid", value = "TB_SYS_PROG.OID")
+    })
+	@ResponseBody
+	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysProg>> doLoad(@RequestBody TbSysProg sysProg) {
+		DefaultControllerJsonResultObj<TbSysProg> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<TbSysProg> lResult = this.sysProgService.selectByEntityPrimaryKey(sysProg);
+			this.setDefaultResponseJsonResult(lResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}
+	
+	@ApiOperation(value="CORE_PROG001D0002 - update", notes="更新TB_SYS_PROG資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "oid", value = ""),
+    	@ApiImplicitParam(name = "progId", value = ""),
+    	@ApiImplicitParam(name = "name", value = ""),
+    	@ApiImplicitParam(name = "url", value = ""),
+    	@ApiImplicitParam(name = "editMode", value = ""),
+    	@ApiImplicitParam(name = "isDialog", value = ""),
+    	@ApiImplicitParam(name = "dialogW", value = ""),
+    	@ApiImplicitParam(name = "dialogH", value = ""),
+    	@ApiImplicitParam(name = "progSystem", value = ""),
+    	@ApiImplicitParam(name = "itemType", value = ""),
+    	@ApiImplicitParam(name = "icon", value = ""),
+    	@ApiImplicitParam(name = "fontIconClassId", value = "")
+    })
+	@ResponseBody
+	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysProg>> doUpdate(@RequestBody TbSysProg sysProg) {
+		DefaultControllerJsonResultObj<TbSysProg> result = this.initDefaultJsonResult();
+		try {
+			this.update(result, sysProg);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}		
 	
 }
