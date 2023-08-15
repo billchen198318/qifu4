@@ -86,6 +86,7 @@ public class SystemProgramLogicServiceImpl extends BaseLogicService implements I
 	 * @throws ServiceException
 	 * @throws Exception
 	 */	
+	@Deprecated
 	@ServiceMethodAuthority(type = ServiceMethodType.INSERT)
 	@Transactional(
 			propagation=Propagation.REQUIRED, 
@@ -122,6 +123,7 @@ public class SystemProgramLogicServiceImpl extends BaseLogicService implements I
 	 * @throws ServiceException
 	 * @throws Exception
 	 */	
+	@Deprecated
 	@ServiceMethodAuthority(type = ServiceMethodType.UPDATE)
 	@Transactional(
 			propagation=Propagation.REQUIRED, 

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.CheckControllerFieldHandler;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
@@ -57,7 +58,7 @@ public class Prog002ApiController extends CoreApiSupport {
 	private static final long serialVersionUID = -2060599663035482390L;
 	
 	@Autowired
-	ISysProgService<TbSysProg, String> SysProgService;
+	ISysProgService<TbSysProg, String> sysProgService;
 	
 	@Autowired
 	ISystemProgramLogicService systemProgramLogicService;
@@ -79,7 +80,7 @@ public class Prog002ApiController extends CoreApiSupport {
 	public ResponseEntity<QueryResult<List<TbSysProg>>> findPage(@RequestBody SearchBody searchBody) {
 		QueryResult<List<TbSysProg>> result = this.initResult();
 		try {
-			QueryResult<List<TbSysProg>> queryResult = this.SysProgService.findPage(
+			QueryResult<List<TbSysProg>> queryResult = this.sysProgService.findPage(
 					this.queryParameter(searchBody).fullEquals("progId").fullLink("nameLike").value(), 
 					searchBody.getPageOf().orderBy("PROG_ID").sortTypeAsc());
 			this.setQueryResponseJsonResult(queryResult, result, searchBody.getPageOf());
@@ -110,5 +111,57 @@ public class Prog002ApiController extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	private void handlerCheck(DefaultControllerJsonResultObj<TbSysProg> result, TbSysProg sysProg) throws ControllerException, ServiceException, Exception {
+		CheckControllerFieldHandler<TbSysProg> chk = this.getCheckControllerFieldHandler(result);
+		chk
+		.testField("progId", sysProg, "@org.apache.commons.lang3.StringUtils@isBlank(progId)", "請輸入程式編號")
+		.testField("name", sysProg, "@org.apache.commons.lang3.StringUtils@isBlank(name)", "請輸入程式名稱")
+		.testField("url", sysProg, "@org.apache.commons.lang3.StringUtils@isBlank(url)", "請輸入Url")		
+		.testField("editMode", sysProg, "@org.apache.commons.lang3.StringUtils@isBlank(editMode)", "請輸入Edit mode")
+		.testField("isDialog", sysProg, "@org.apache.commons.lang3.StringUtils@isBlank(isDialog)", "請輸入Dialog")		
+		.testField("dialogW", sysProg, "null == dialogW", "請輸入Dialog寬")
+		.testField("dialogH", sysProg, "null == dialogH", "請輸入Dialog高")
+		.testField("progSystem", sysProg, "@org.apache.commons.lang3.StringUtils@isBlank(progSystem)", "請輸入系統")		
+		.testField("itemType", sysProg, "@org.apache.commons.lang3.StringUtils@isBlank(itemType)", "請輸入Item類別")		
+		.testField("icon", sysProg, "@org.apache.commons.lang3.StringUtils@isBlank(icon)", "請輸入ICON")
+		.testField("fontIconClassId", sysProg, "@org.apache.commons.lang3.StringUtils@isBlank(fontIconClassId)", "請輸入ICON class")		
+		.throwHtmlMessage();
+		
+		chk.testField("progId", sysProg, "!@org.qifu.util.SimpleUtils@checkBeTrueOf_azAZ09Id(sysId)", "程式編號只允許輸入0-9,a-z,A-Z正常字元");		
+	}	
+	
+	private void save(DefaultControllerJsonResultObj<TbSysProg> result, TbSysProg sysProg) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, sysProg);
+		DefaultResult<TbSysProg> cResult = this.sysProgService.insert(sysProg);
+		this.setDefaultResponseJsonResult(cResult, result);
+	}	
+	
+	@ApiOperation(value="CORE_PROG001D0002 - save", notes="新增TB_SYS_PROG資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "progId", value = ""),
+    	@ApiImplicitParam(name = "name", value = ""),
+    	@ApiImplicitParam(name = "url", value = ""),
+    	@ApiImplicitParam(name = "editMode", value = ""),
+    	@ApiImplicitParam(name = "isDialog", value = ""),
+    	@ApiImplicitParam(name = "dialogW", value = ""),
+    	@ApiImplicitParam(name = "dialogH", value = ""),
+    	@ApiImplicitParam(name = "progSystem", value = ""),
+    	@ApiImplicitParam(name = "itemType", value = ""),
+    	@ApiImplicitParam(name = "icon", value = ""),
+    	@ApiImplicitParam(name = "fontIconClassId", value = "")
+    })
+	@ResponseBody
+	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysProg>> doSave(@RequestBody TbSysProg sysProg) {
+		DefaultControllerJsonResultObj<TbSysProg> result = this.initDefaultJsonResult();
+		try {
+			this.save(result, sysProg);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
 	
 }

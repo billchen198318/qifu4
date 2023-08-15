@@ -36,6 +36,7 @@ public interface ISystemProgramLogicService {
 	 * @throws ServiceException
 	 * @throws Exception
 	 */
+	@Deprecated
 	public DefaultResult<TbSysProg> create(TbSysProg sysProg, String sysOid, String iconOid) throws ServiceException, Exception;
 	
 	/**
@@ -48,6 +49,7 @@ public interface ISystemProgramLogicService {
 	 * @throws ServiceException
 	 * @throws Exception
 	 */
+	@Deprecated
 	public DefaultResult<TbSysProg> update(TbSysProg sysProg, String sysOid, String iconOid) throws ServiceException, Exception;
 	
 	/**

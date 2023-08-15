@@ -38,6 +38,8 @@ var formParam = {
     'url'               :   '',
     'editModeVar'       :   false,
     'isDialogVar'       :   false,
+    'editMode'          :   'N',
+    'isDialog'          :   'N',    
     'dialogW'           :   '0',
     'dialogH'           :   '0',
     'progSystem'        :   'CORE',
@@ -87,12 +89,28 @@ function btnClear() {
     formParam.url = '';
     formParam.editModeVar = false;
     formParam.isDialogVar = false;
+    formParam.editMode = 'N';
+    formParam.isDialog = 'N';
     formParam.dialogW = '0';
     formParam.dialogH = '0';
     formParam.progSystem = 'CORE';
     formParam.itemType = 'ITEM';
     formParam.fontIconClassId = 'globe2';
     formParam.icon = 'SYSTEM';
+}
+
+$ : {
+    if (formParam.editModeVar) {
+        formParam.editMode = 'Y';
+    } else {
+        formParam.editMode = 'N';
+    }
+
+    if (formParam.isDialogVar) {
+        formParam.isDialog = 'Y';
+    } else {
+        formParam.isDialog = 'N';
+    }
 }
 
 </script>
