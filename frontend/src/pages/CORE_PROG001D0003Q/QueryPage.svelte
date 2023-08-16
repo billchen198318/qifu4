@@ -1,6 +1,5 @@
 <script>
 import { onMount, onDestroy } from 'svelte';    
-import { push } from 'svelte-spa-router';
 import { 
 	FormGroup, Input, Label, Button, Icon, Table
 } from 'sveltestrap';
@@ -18,7 +17,7 @@ let toolbarParam = {
     description : '選單配置.',
     methods     : {
         "refresh"    :   function() {
-            loadProgramFolder();
+            clearPage();
         }
     }
 }
@@ -109,16 +108,18 @@ function programItemEnableChange(e, itemOid) {
         if (null != response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.push(response.data.message, getToastWarningTheme());
+                clearPage();
             }            
         } else {
-            toast.push('error, null', getToastErrorTheme());            
-        }
-        loadProgramFolder();
+            toast.push('error, null', getToastErrorTheme());
+            clearPage();
+        }        
     })
     .catch(e => {
         Swal.hideLoading();
         Swal.close();        
         alert(e);        
+        clearPage();
     });
 }
 
@@ -142,6 +143,12 @@ function checkItemChecked(itemOid) {
     return f;
 }
 
+function clearPage() {
+    itemAllList = [];
+    itemEnableList = [];    
+    queryParam.folderOid = import.meta.env.VITE_PLEASE_SELECT_ID;
+}
+
 onMount(()=>{
 	loadProgramFolder();
 });
@@ -160,7 +167,7 @@ onDestroy(()=>{
 <div class="row">
     <div class="col-xs-12 col-md-12 col-lg-12">
         <FormGroup>            
-            <Input type="select" bind:value={queryParam.folderOid} on:change={programFolderChange}>
+            <Input type="select" bind:value={queryParam.folderOid} on:change={programFolderChange} >
                 <option value={import.meta.env.VITE_PLEASE_SELECT_ID}>{import.meta.env.VITE_PLEASE_SELECT_LABEL}</option>
                 {#each folderList as item}
                 <option value={item.oid}>{item.progId} - {item.name}</option>
