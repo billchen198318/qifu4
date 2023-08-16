@@ -24,14 +24,15 @@ let toolbarParam = {
 }
 
 let queryParam = {
-    'folderOid'      :      'all'
+    'folderOid' :   import.meta.env.VITE_PLEASE_SELECT_ID
 };
 
 let folderList = [];
+let itemAllList = [];
+let itemEnableList = [];
 
 function loadProgramFolder() {
     folderList = [];
-    folderList = folderList;
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading(); 
     let axiosInstance = getAxiosInstance();
@@ -54,11 +55,39 @@ function loadProgramFolder() {
         Swal.hideLoading();
         Swal.close();        
         alert(e);        
-    });         
+    });
 }
 
 function programFolderChange() {
-    
+    itemAllList = [];
+    itemEnableList = [];    
+    if (import.meta.env.VITE_PLEASE_SELECT_ID == queryParam.folderOid) {
+        return;
+    }
+    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    Swal.showLoading(); 
+    let axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadProgramEnableAndAllList/' + queryParam.folderOid)
+    .then(response => {
+        Swal.hideLoading();
+        Swal.close();
+        if (null != response.data) {
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.push(response.data.message, getToastWarningTheme());
+                push( getProgItem(PageConstants.QueryId).url );
+                return;
+            }
+            itemAllList = response.data.value.all;
+            itemEnableList = response.data.value.enable;
+        } else {
+            toast.push('error, null', getToastErrorTheme());            
+        }
+    })
+    .catch(e => {
+        Swal.hideLoading();
+        Swal.close();        
+        alert(e);        
+    });
 }
 
 onMount(()=>{

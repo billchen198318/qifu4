@@ -33,6 +33,7 @@ import org.qifu.base.model.SortType;
 import org.qifu.core.entity.TbSys;
 import org.qifu.core.entity.TbSysMenu;
 import org.qifu.core.entity.TbSysProg;
+import org.qifu.core.logic.ISystemMenuLogicService;
 import org.qifu.core.model.MenuItemType;
 import org.qifu.core.service.ISysMenuService;
 import org.qifu.core.service.ISysProgService;
@@ -42,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +70,8 @@ public class PROG001D0003Controller extends CoreApiSupport {
 	ISysProgService<TbSysProg, String> sysProgService;	
 	
 	@Autowired
-	ISysMenuService<TbSysMenu, String> sysMenuService;	
+	ISystemMenuLogicService systemMenuLogicService;
+	
 	
 	@ApiOperation(value="CORE_PROG001D0003 - load folder program", notes="讀取TB_SYS_PROG ITEM_TYPE 是 FOLDER 資料", authorizations={ @Authorization(value="Bearer") })
 	@ResponseBody
@@ -86,6 +89,26 @@ public class PROG001D0003Controller extends CoreApiSupport {
 			this.exceptionResult(result, e);
 		}
 		return ResponseEntity.ok().body(result);
+	}	
+	
+	@ApiOperation(value="CORE_PROG001D0003 - load folder program", notes="讀取TB_SYS_PROG ITEM_TYPE 是 FOLDER 資料", authorizations={ @Authorization(value="Bearer") })
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "oid", value = "oid編號", required = true, dataType = "string")
+	})	
+	@ResponseBody
+	@PostMapping(value = "/loadProgramEnableAndAllList/{oid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public DefaultControllerJsonResultObj< Map<String, List<TbSysProg>> > queryProgramListByFolderOid(@PathVariable String oid) {
+		DefaultControllerJsonResultObj< Map<String, List<TbSysProg>> > result = this.initDefaultJsonResult();
+		try {			
+			Map<String, List<TbSysProg>> searchDataMap = this.systemMenuLogicService.findForMenuSettingsEnableAndAll(oid);
+			result.setValue( searchDataMap );
+			result.setSuccess( YES );
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}	
+		return result;
 	}	
 	
 }
