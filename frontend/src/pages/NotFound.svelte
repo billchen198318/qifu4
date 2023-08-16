@@ -6,7 +6,8 @@ import {
     CardFooter,
     CardHeader,
     CardText,
-    CardTitle
+    CardTitle,
+    Icon
 } from 'sveltestrap';
 
 let currLocHash = '';
@@ -24,7 +25,7 @@ onDestroy(()=>{
 	<div class="col-xs-12 col-md-12 col-lg-12">
         <Card class="mb-3">
             <CardHeader>
-                <CardTitle>Not found resources.</CardTitle>
+                <CardTitle><Icon name="cone-striped" />&nbsp;Not found resources.</CardTitle>
             </CardHeader>
             <CardBody>
                 <CardText>

@@ -183,6 +183,7 @@ onDestroy(()=>{
             <thead>
                 <tr>
                     <th style="background-color: #575757; color: whitesmoke;">#</th>
+                    <th style="background-color: #575757; color: whitesmoke;">頁面程式代號</th>
                     <th style="background-color: #575757; color: whitesmoke;">頁面程式名稱</th>
                 </tr>
             </thead>
@@ -196,7 +197,8 @@ onDestroy(()=>{
                             </div>
                         </FormGroup>
                     </td>
-                    <td><Icon name={item.fontIconClassId} />&nbsp;&nbsp;{item.progId}&nbsp;-&nbsp;{item.name}</td>
+                    <td>{item.progId}</td>
+                    <td><Icon name={item.fontIconClassId} />&nbsp;{item.name}</td>
                 </tr>
                 {/each}
             </tbody>

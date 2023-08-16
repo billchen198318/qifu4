@@ -5,7 +5,8 @@ import {
     CardFooter,
     CardHeader,
     CardText,
-    CardTitle
+    CardTitle,
+    Icon
 } from 'sveltestrap';
 </script>
 
@@ -13,7 +14,7 @@ import {
 	<div class="col-xs-12 col-md-12 col-lg-12">
         <Card class="mb-3">
             <CardHeader>
-                <CardTitle>About</CardTitle>
+                <CardTitle><Icon name="info-circle-fill" />&nbsp;About</CardTitle>
             </CardHeader>
             <CardBody>
                 <CardText>
