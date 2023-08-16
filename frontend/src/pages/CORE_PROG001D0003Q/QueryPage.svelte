@@ -11,9 +11,6 @@ import {
     getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme
 } from "../../components/BaseHelper.svelte";
 import Toolbar from "../../components/Toolbar.svelte";
-import Grid, { getGridConfig, setConfigRow, setConfigPage, setConfigTotal } from "../../components/Grid.svelte";
-import GridPagination from '../../components/GridPagination.svelte';
-import { _gridConfig, _queryParam } from './QueryStateStore';
 import { PageConstants } from './config';
 
 let toolbarParam = {
@@ -21,13 +18,51 @@ let toolbarParam = {
     description : '選單配置.',
     methods     : {
         "refresh"    :   function() {
-            //btnClear();
+            loadProgramFolder();
         }
     }
 }
 
+let queryParam = {
+    'folderOid'      :      'all'
+};
+
+let folderList = [];
+
+function loadProgramFolder() {
+    folderList = [];
+    folderList = folderList;
+    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    Swal.showLoading(); 
+    let axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadProgramFolder')
+    .then(response => {
+        Swal.hideLoading();
+        Swal.close();
+        if (null != response.data) {
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.push(response.data.message, getToastWarningTheme());
+                push( getProgItem(PageConstants.QueryId).url );
+                return;
+            }
+            folderList = response.data.value;            
+        } else {
+            toast.push('error, null', getToastErrorTheme());            
+        }
+    })
+    .catch(e => {
+        Swal.hideLoading();
+        Swal.close();        
+        alert(e);        
+    });         
+}
+
+function programFolderChange() {
+    
+}
+
 onMount(()=>{
-	//btnQuery();
+	loadProgramFolder();
 });
 
 onDestroy(()=>{
@@ -41,5 +76,18 @@ onDestroy(()=>{
 		<Toolbar args={toolbarParam}></Toolbar>
 	</div>  
 </div>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <FormGroup>            
+            <Input type="select" bind:value={queryParam.folderOid} on:change={programFolderChange}>
+                <option value={import.meta.env.VITE_PLEASE_SELECT_ID}>{import.meta.env.VITE_PLEASE_SELECT_LABEL}</option>
+                {#each folderList as item}
+                <option value={item.oid}>{item.progId} - {item.name}</option>
+                {/each}
+            </Input>
+        </FormGroup>         
+    </div>
+</div>
+
 
 <SvelteToast/>
