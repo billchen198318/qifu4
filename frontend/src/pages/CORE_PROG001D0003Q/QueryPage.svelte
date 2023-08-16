@@ -196,7 +196,7 @@ onDestroy(()=>{
                             </div>
                         </FormGroup>
                     </td>
-                    <td>{item.progId}&nbsp;-&nbsp;{item.name}</td>
+                    <td><Icon name={item.fontIconClassId} />&nbsp;&nbsp;{item.progId}&nbsp;-&nbsp;{item.name}</td>
                 </tr>
                 {/each}
             </tbody>
