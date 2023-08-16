@@ -43,7 +43,6 @@ function loadProgramFolder() {
         if (null != response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.push(response.data.message, getToastWarningTheme());
-                push( getProgItem(PageConstants.QueryId).url );
                 return;
             }
             folderList = response.data.value;            
@@ -74,7 +73,6 @@ function programFolderChange(e) {
         if (null != response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.push(response.data.message, getToastWarningTheme());
-                push( getProgItem(PageConstants.QueryId).url );
                 return;
             }
             itemAllList = response.data.value.all;
@@ -92,7 +90,36 @@ function programFolderChange(e) {
 
 function programItemEnableChange(e, itemOid) {
     var checked = e.target.checked;
-    
+    var appendOid = '';
+    for (var n in itemEnableList) {        
+        appendOid += itemEnableList[n].oid + ',';
+    }
+    if (checked) {
+        appendOid += itemOid + ',';
+    } else {
+        appendOid = appendOid.replaceAll(itemOid+',', '');
+    }
+    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    Swal.showLoading(); 
+    let axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/updateMenu/' + queryParam.folderOid + '/' + appendOid)
+    .then(response => {
+        Swal.hideLoading();
+        Swal.close();
+        if (null != response.data) {
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.push(response.data.message, getToastWarningTheme());
+            }            
+        } else {
+            toast.push('error, null', getToastErrorTheme());            
+        }
+        loadProgramFolder();
+    })
+    .catch(e => {
+        Swal.hideLoading();
+        Swal.close();        
+        alert(e);        
+    });
 }
 
 function checkItemDisable(itemOid) {

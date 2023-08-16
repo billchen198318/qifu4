@@ -21,8 +21,12 @@
  */
 package org.qifu.core.util;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.qifu.base.Constants;
 import org.qifu.base.model.CheckControllerFieldHandler;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
@@ -206,5 +210,23 @@ public class CoreApiSupport extends BaseApiSupport {
 	protected <T> CheckControllerFieldHandler<T> getCheckControllerFieldHandler(DefaultControllerJsonResultObj<T> result) {
 		return CheckControllerFieldHandler.build(result);
 	}	
+	
+	protected List<String> transformAppendKeyStringToList(String appendOid) {
+		List<String> list = new LinkedList<String>();
+		if (StringUtils.isBlank(appendOid)) {
+			return list;
+		}
+		String tmp[] = appendOid.split(Constants.DEFAULT_SPLIT_DELIMITER);
+		for (int i=0; tmp != null && i < tmp.length; i++) {
+			if (StringUtils.isBlank(tmp[i])) {
+				continue;
+			}
+			if (list.contains(tmp[i])) {
+				continue;
+			}
+			list.add(tmp[i]);
+		}
+		return list;
+	}		
 	
 }

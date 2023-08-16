@@ -31,11 +31,9 @@ import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.SortType;
 import org.qifu.core.entity.TbSys;
-import org.qifu.core.entity.TbSysMenu;
 import org.qifu.core.entity.TbSysProg;
 import org.qifu.core.logic.ISystemMenuLogicService;
 import org.qifu.core.model.MenuItemType;
-import org.qifu.core.service.ISysMenuService;
 import org.qifu.core.service.ISysProgService;
 import org.qifu.core.service.ISysService;
 import org.qifu.core.util.CoreApiSupport;
@@ -45,7 +43,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -108,6 +105,29 @@ public class PROG001D0003Controller extends CoreApiSupport {
 		} catch (Exception e) {
 			this.exceptionResult(result, e);
 		}	
+		return result;
+	}	
+	
+	@ApiOperation(value="CORE_PROG001D0003 - update program page of menu.", notes="更新選單資料", authorizations={ @Authorization(value="Bearer") })
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "folderProgramOid", value = "目錄oid編號", required = true, dataType = "string"),
+		@ApiImplicitParam(name = "appendOid", value = "頁面項目oid組成編號", required = true, dataType = "string")
+	})	
+	@ResponseBody
+	@RequestMapping(value = "/updateMenu/{folderProgramOid}/{appendOid}", produces = MediaType.APPLICATION_JSON_VALUE)		
+	public DefaultControllerJsonResultObj<Boolean> updateMenu(@PathVariable String folderProgramOid, @PathVariable String appendOid) {
+		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<Boolean> updateResult = this.systemMenuLogicService.createOrUpdate(folderProgramOid, this.transformAppendKeyStringToList(appendOid));
+			if (updateResult.getValue() != null && updateResult.getValue()) {
+				result.setSuccess(YES);
+			}
+			result.setMessage( updateResult.getMessage() );
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
 		return result;
 	}	
 	
