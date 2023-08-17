@@ -238,14 +238,19 @@ export function getMainProgUrlPrefix(mainPageProgId) {
 	return url;
 }
 
-export function getNestedRoutesMap(mainPage, createPage, editPage) {
+export function getNestedRoutesMap(mainPage, createPage, editPage, customizePageList) {
 	var nestedRoutersMap = new Map();
 	nestedRoutersMap.set("/", mainPage);
 	if (createPage != null) {
 		nestedRoutersMap.set("/create", createPage);
 	}
 	if (editPage != null) {
-		nestedRoutersMap.set("/edit/:oid", editPage)
+		nestedRoutersMap.set("/edit/:oid", editPage);
+	}
+	if (customizePageList != null) {
+		for (var n in customizePageList) {
+			nestedRoutersMap.set(customizePageList[n].url, customizePageList[n].page);
+		}
 	}
 	nestedRoutersMap.set(/^\/(.*?)(\/(.*?))?/, mainPage);
 	return nestedRoutersMap;

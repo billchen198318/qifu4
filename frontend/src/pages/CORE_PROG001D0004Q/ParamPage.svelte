@@ -1,4 +1,66 @@
 <script>
+import { onMount } from 'svelte';    
+import { push } from 'svelte-spa-router';
+import { 
+    FormGroup, Input, Label, Button, Icon
+} from 'sveltestrap';
+import { toast, SvelteToast } from '@zerodevx/svelte-toast';
+import Swal from 'sweetalert2';
+import { 
+    getProgItem, getAxiosInstance, 
+    getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme,
+    invalidFeedback, checkInvalid
+} from "../../components/BaseHelper.svelte";
+import Toolbar from "../../components/Toolbar.svelte";
+import { PageConstants } from './config';
+
+let toolbarParam = {
+    id          : PageConstants.SetParamId,
+    description : 'Freemarker 樣板管理，配置參數作業.',
+    methods     : {
+        "back"      :   function() {
+            push( getProgItem(PageConstants.QueryId).url );
+        }
+        ,
+        "refresh"   :   function() {
+            loadData();
+        }
+        ,
+        "save"      :   function() {
+            btnUpdate();
+        } 
+    }
+}
+
+export let params = {};
+
+var formParam = {
+    'templateOid'   :   params.oid
+}
+
+
+onMount(()=>{
+    loadData();
+});
+
+function loadData() {
+
+}
+
+function btnUpdate() {
+
+}
+
+function btnClear() {
+
+}
 
 </script>
-<h1>TEST</h1>
+
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <Toolbar args={toolbarParam}></Toolbar>
+    </div>
+</div>
+
+<SvelteToast></SvelteToast>

@@ -56,16 +56,16 @@ function loadProgramFolder() {
     });
 }
 
-function programFolderChange(e) {
+const programFolderChange = (event) => {
     itemAllList = [];
     itemEnableList = [];    
-    if (import.meta.env.VITE_PLEASE_SELECT_ID == e.target.value) {
+    if (import.meta.env.VITE_PLEASE_SELECT_ID == event.target.value) {
         return;
     }
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading(); 
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadProgramEnableAndAllList/' + e.target.value)
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadProgramEnableAndAllList/' + event.target.value)
     .then(response => {
         Swal.hideLoading();
         Swal.close();

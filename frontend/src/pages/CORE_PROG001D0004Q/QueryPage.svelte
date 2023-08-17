@@ -82,6 +82,16 @@ function initQueryGridConfig() {
 			,
 			{
 				'method'  : function(val) { 
+					var url = getProgItem(PageConstants.SetParamId).url + '/' + val;
+					push( url );
+				},
+				'icon'    : 'gear-fill',
+				'type'    : 'customize',
+				'memo'    : 'Set parameter.'
+			}
+			,			
+			{
+				'method'  : function(val) { 
 					Swal.fire({
 						title: '刪除?',
 						icon: 'question',
