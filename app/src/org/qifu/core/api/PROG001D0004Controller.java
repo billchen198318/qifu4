@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.CheckControllerFieldHandler;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
@@ -108,5 +109,89 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		}
 		return ResponseEntity.ok().body(result);
 	}	
+	
+	private void handlerCheck(DefaultControllerJsonResultObj<TbSysTemplate> result, TbSysTemplate sysTemplate) throws ControllerException, ServiceException, Exception {
+		CheckControllerFieldHandler<TbSysTemplate> chk = this.getCheckControllerFieldHandler(result);
+		chk
+		.testField("templateId", sysTemplate, "@org.apache.commons.lang3.StringUtils@isBlank(templateId)", "請輸入樣板編號")
+		.testField("title", sysTemplate, "@org.apache.commons.lang3.StringUtils@isBlank(title)", "請輸入樣板標題")		
+		.testField("message", sysTemplate, "@org.apache.commons.lang3.StringUtils@isBlank(message)", "請輸入樣板內容")		
+		.throwHtmlMessage();
+		
+		chk.testField("templateId", sysTemplate, "!@org.qifu.util.SimpleUtils@checkBeTrueOf_azAZ09Id(templateId)", "樣板編號只允許輸入0-9,a-z,A-Z正常字元");		
+	}	
+	
+	private void save(DefaultControllerJsonResultObj<TbSysTemplate> result, TbSysTemplate sysTemplate) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, sysTemplate);
+		DefaultResult<TbSysTemplate> cResult = this.systemTemplateLogicService.create(sysTemplate);
+		this.setDefaultResponseJsonResult(cResult, result);
+	}	
+	
+	private void update(DefaultControllerJsonResultObj<TbSysTemplate> result, TbSysTemplate sysTemplate) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, sysTemplate);
+		DefaultResult<TbSysTemplate> uResult = this.systemTemplateLogicService.update(sysTemplate);
+		this.setDefaultResponseJsonResult(uResult, result);		
+	}	
+	
+	@ApiOperation(value="CORE_PROG001D0004 - save", notes="新增TB_SYS_TEMPLATE資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "templateId", value = ""),
+    	@ApiImplicitParam(name = "title", value = ""),
+    	@ApiImplicitParam(name = "message", value = ""),
+    	@ApiImplicitParam(name = "description", value = "")
+    })
+	@ResponseBody
+	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysTemplate>> doSave(@RequestBody TbSysTemplate sysTemplate) {
+		DefaultControllerJsonResultObj<TbSysTemplate> result = this.initDefaultJsonResult();
+		try {
+			this.save(result, sysTemplate);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}		
+	
+	@ApiOperation(value="CORE_PROG001D0004 - load", notes="讀取TB_SYS_TEMPLATE資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "oid", value = "TB_SYS_TEMPLATE.OID")
+    })
+	@ResponseBody
+	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysTemplate>> doLoad(@RequestBody TbSysTemplate sysTemplate) {
+		DefaultControllerJsonResultObj<TbSysTemplate> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<TbSysTemplate> lResult = this.sysTemplateService.selectByEntityPrimaryKey(sysTemplate);
+			this.setDefaultResponseJsonResult(lResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
+	
+	@ApiOperation(value="CORE_PROG001D0004 - update", notes="更新TB_SYS_TEMPLATE資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "templateId", value = ""),
+    	@ApiImplicitParam(name = "title", value = ""),
+    	@ApiImplicitParam(name = "message", value = ""),
+    	@ApiImplicitParam(name = "description", value = "")
+    })
+	@ResponseBody
+	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysTemplate>> doUpdate(@RequestBody TbSysTemplate sysTemplate) {
+		DefaultControllerJsonResultObj<TbSysTemplate> result = this.initDefaultJsonResult();
+		try {
+			this.update(result, sysTemplate);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}		
 	
 }
