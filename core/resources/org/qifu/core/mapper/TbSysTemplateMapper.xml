@@ -27,6 +27,12 @@
 	<if test="templateId != null and templateId != ''.toString() ">
 		AND TEMPLATE_ID = #{templateId,jdbcType=VARCHAR}
 	</if>	
+	<if test="title != null and title != ''.toString() ">
+		AND TITLE LIKE #{title,jdbcType=VARCHAR}
+	</if>	
+	<if test="titleLike != null and titleLike != ''.toString() ">
+		AND TITLE like #{titleLike,jdbcType=VARCHAR}
+	</if>
 	<if test="orderBy != null and orderBy != ''.toString() and sortType != null and sortType != ''.toString() ">
 		ORDER BY  ${orderBy} ${sortType}
 	</if>	
@@ -44,6 +50,9 @@
 	<if test="title != null and title != ''.toString() ">
 		AND TITLE LIKE #{title,jdbcType=VARCHAR}
 	</if>	
+	<if test="titleLike != null and titleLike != ''.toString() ">
+		AND TITLE like #{titleLike,jdbcType=VARCHAR}
+	</if>
 			
 	<include refid="org.qifu.core.mapper.DB1Config.sql2"/>
   </select>  
@@ -56,7 +65,10 @@
 	</if>	
 	<if test="title != null and title != ''.toString() ">
 		AND TITLE LIKE #{title,jdbcType=VARCHAR}
-	</if>		
+	</if>	
+	<if test="titleLike != null and titleLike != ''.toString() ">
+		AND TITLE like #{titleLike,jdbcType=VARCHAR}
+	</if>	
   </select>  
   
   <insert id="insert" parameterType="org.qifu.core.entity.TbSysTemplate"> 
