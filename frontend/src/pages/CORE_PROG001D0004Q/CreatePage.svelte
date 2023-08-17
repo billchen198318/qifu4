@@ -33,19 +33,10 @@ let toolbarParam = {
 }
 
 var formParam = {
-    'progId'            :   '',
-    'name'              :   '',
-    'url'               :   '',
-    'editModeVar'       :   false,
-    'isDialogVar'       :   false,
-    'editMode'          :   'N',
-    'isDialog'          :   'N',    
-    'dialogW'           :   '0',
-    'dialogH'           :   '0',
-    'progSystem'        :   'CORE',
-    'itemType'          :   'ITEM',
-    'fontIconClassId'   :   'globe2',
-    'icon'              :   'SYSTEM'
+    'templateId'    :   '',
+    'title'         :   '',
+    'message'       :   '',
+    'description'   :   ''
 }
 
 var checkFields = new Object();
@@ -84,33 +75,10 @@ function btnSave() {
 
 function btnClear() {
     checkFields = new Object();
-    formParam.progId = '';
-    formParam.name = '';
-    formParam.url = '';
-    formParam.editModeVar = false;
-    formParam.isDialogVar = false;
-    formParam.editMode = 'N';
-    formParam.isDialog = 'N';
-    formParam.dialogW = '0';
-    formParam.dialogH = '0';
-    formParam.progSystem = 'CORE';
-    formParam.itemType = 'ITEM';
-    formParam.fontIconClassId = 'globe2';
-    formParam.icon = 'SYSTEM';
-}
-
-$ : {
-    if (formParam.editModeVar) {
-        formParam.editMode = 'Y';
-    } else {
-        formParam.editMode = 'N';
-    }
-
-    if (formParam.isDialogVar) {
-        formParam.isDialog = 'Y';
-    } else {
-        formParam.isDialog = 'N';
-    }
+    formParam.templateId = '';
+    formParam.title = '';
+    formParam.message = '';
+    formParam.description = '';
 }
 
 </script>
@@ -123,70 +91,32 @@ $ : {
 <div class="row">
     <div class="col-xs-6 col-md-6 col-lg-6">
         <FormGroup>
-            <Label for="progId">程式編號</Label>
-            <Input type="text" id="progId" placeholder="輸入程式編號" feedback={invalidFeedback('progId', checkFields)} invalid={checkInvalid('progId', checkFields)} bind:value={formParam.progId} />
+            <Label for="templateId">樣板編號</Label>
+            <Input type="text" id="templateId" placeholder="輸入樣板編號" feedback={invalidFeedback('templateId', checkFields)} invalid={checkInvalid('templateId', checkFields)} bind:value={formParam.templateId} />
         </FormGroup>         
     </div>
     <div class="col-xs-6 col-md-6 col-lg-6">
         <FormGroup>
-            <Label for="name">程式名稱</Label>
-            <Input type="text" id="name" placeholder="輸入名稱" feedback={invalidFeedback('name', checkFields)} invalid={checkInvalid('name', checkFields)} bind:value={formParam.name} />
+            <Label for="title">樣板標題</Label>
+            <Input type="text" id="title" placeholder="輸入樣板標題" feedback={invalidFeedback('title', checkFields)} invalid={checkInvalid('title', checkFields)} bind:value={formParam.title} />
         </FormGroup> 
     </div>    
 </div>
 <div class="row">
     <div class="col-xs-12 col-md-12 col-lg-12">
         <FormGroup>
-            <Label for="url">Url</Label>
-            <Input type="text" id="url" placeholder="輸入Url" feedback={invalidFeedback('url', checkFields)} invalid={checkInvalid('url', checkFields)} bind:value={formParam.url} />            
+            &nbsp;
         </FormGroup>
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-6 col-md-6 col-lg-6">
+    <div class="col-xs-12 col-md-12 col-lg-12">
         <FormGroup>
-            <Input id="editMode" type="switch" label="編輯頁" bind:checked={formParam.editModeVar} />            
-        </FormGroup>         
+            <Label for="description">說明</Label>
+            <Input type="textarea" id="description" row="3" col="25" bind:value={formParam.description} />            
+        </FormGroup>
     </div>
-    <div class="col-xs-6 col-md-6 col-lg-6">
-        <FormGroup>
-            <Input id="isDialog" type="switch" label="Dialog模式" bind:checked={formParam.isDialogVar} />
-        </FormGroup> 
-    </div>    
 </div>
-<div class="row">
-    <div class="col-xs-6 col-md-6 col-lg-6">
-        <FormGroup>
-            <Label for="dialogW">Dialog寬</Label>
-            <Input type="number" id="dialogW" placeholder="Dialog width" feedback={invalidFeedback('dialogW', checkFields)} invalid={checkInvalid('dialogW', checkFields)} bind:value={formParam.dialogW} />
-        </FormGroup>         
-    </div>
-    <div class="col-xs-6 col-md-6 col-lg-6">
-        <FormGroup>
-            <Label for="dialogH">Dialog高</Label>
-            <Input type="number" id="dialogH" placeholder="Dialog height" feedback={invalidFeedback('dialogH', checkFields)} invalid={checkInvalid('dialogH', checkFields)} bind:value={formParam.dialogH} />
-        </FormGroup> 
-    </div>    
-</div>
-<div class="row">
-    <div class="col-xs-6 col-md-6 col-lg-6">
-        <FormGroup>
-            <FormGroup floating label="類別">
-                <Input type="select" placeholder="請選取類別" bind:value={formParam.itemType}>
-                    <option value="ITEM">ITEM-頁面</option>
-                    <option value="FOLDER">FOLDER-目錄</option>
-                </Input>
-              </FormGroup>
-        </FormGroup>         
-    </div>
-    <div class="col-xs-6 col-md-6 col-lg-6">
-        <FormGroup>
-            <Label for="fontIconClassId">Icon class</Label>
-            <Input type="text" id="fontIconClassId" placeholder="Icon class" feedback={invalidFeedback('fontIconClassId', checkFields)} invalid={checkInvalid('fontIconClassId', checkFields)} bind:value={formParam.fontIconClassId} />
-        </FormGroup> 
-    </div>    
-</div>
-
 <div class="row">
     <div class="col-xs-12 col-md-12 col-lg-12">
         <Button color="primary" on:click={btnSave}><Icon name="save"/>&nbsp;儲存</Button>
