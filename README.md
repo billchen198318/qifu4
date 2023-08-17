@@ -1,13 +1,30 @@
-# qifu4
+# qífū-4
 Backend Admin WEB base on JAVA &amp; Spring / Spring-boot &amp; Sevlte frontend
 
 
-# qifu4 backend , build of JAVA / Springboot
+# qífū-4 backend , build of JAVA / Springboot
 
-This backend build of java with springboot , please use Eclipse import project folder `app` and `base`, `core`.
+This backend build of java with springboot 
 
+## Installation
+please use Eclipse import project folder `app` and `base`, `core`.
 
-# qifu4 frontend , build of svelte
+<br>mariadb import
+```bash
+mysql> create database qifu4;
+
+cd doc
+mysql qifu4 -u root -p < qifu4.sql
+```
+
+<br>database connection config file modify , `/app/resources/db1-config.properties`
+```text
+db1.datasource.jdbcUrl=jdbc:mariadb://localhost/qifu4?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+```
+
+<br><br><br>
+
+# qífū-4 frontend , build of svelte
 
 This frontend build of svelte.
 
