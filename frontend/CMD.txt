@@ -9,6 +9,7 @@ pnpm i
 #pnpm i axios
 #pnpm i bytemd
 #pnpm i @bytemd/plugin-gfm
+#pnpm i @bytemd/plugin-import-html
 #npm run build
 
 # pnpm up --latest

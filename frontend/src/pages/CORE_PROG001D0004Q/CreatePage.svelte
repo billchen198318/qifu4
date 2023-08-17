@@ -8,7 +8,7 @@ import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
 import { Editor, Viewer } from 'bytemd';
 import 'bytemd/dist/index.css';
-import gfm from '@bytemd/plugin-gfm';
+import importHtml from '@bytemd/plugin-import-html';
 import { 
     getProgItem, getAxiosInstance, 
     getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme,
@@ -44,7 +44,7 @@ var formParam = {
 
 var checkFields = new Object();
 
-const plugins = [ gfm() ];
+const plugins = [ importHtml() ];
 
 function handleChange(e) {
     formParam.message = e.detail.value;
