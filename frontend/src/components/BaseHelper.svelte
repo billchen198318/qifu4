@@ -238,16 +238,16 @@ export function getMainProgUrlPrefix(mainPageProgId) {
 	return url;
 }
 
-export function getNestedRoutesMap(queryPage, createPage, editPage) {
+export function getNestedRoutesMap(mainPage, createPage, editPage) {
 	var nestedRoutersMap = new Map();
-	nestedRoutersMap.set("/", queryPage);
+	nestedRoutersMap.set("/", mainPage);
 	if (createPage != null) {
 		nestedRoutersMap.set("/create", createPage);
 	}
 	if (editPage != null) {
 		nestedRoutersMap.set("/edit/:oid", editPage)
 	}
-	nestedRoutersMap.set(/^\/(.*?)(\/(.*?))?/, queryPage);
+	nestedRoutersMap.set(/^\/(.*?)(\/(.*?))?/, mainPage);
 	return nestedRoutersMap;
 }
 
