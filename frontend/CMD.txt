@@ -7,6 +7,8 @@ pnpm i
 #pnpm i bootstrap
 #pnpm i bootstrap-icons
 #pnpm i axios
+#pnpm i bytemd
+#pnpm i @bytemd/plugin-gfm
 #npm run build
 
 # pnpm up --latest

@@ -6,6 +6,9 @@ import {
 } from 'sveltestrap';
 import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
+import { Editor, Viewer } from 'bytemd';
+import 'bytemd/dist/index.css';
+import gfm from '@bytemd/plugin-gfm';
 import { 
     getProgItem, getAxiosInstance, 
     getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme,
@@ -40,6 +43,12 @@ var formParam = {
 }
 
 var checkFields = new Object();
+
+const plugins = [ gfm() ];
+
+function handleChange(e) {
+    formParam.message = e.detail.value;
+}
 
 onMount(()=>{
 
@@ -104,9 +113,7 @@ function btnClear() {
 </div>
 <div class="row">
     <div class="col-xs-12 col-md-12 col-lg-12">
-        <FormGroup>
-            &nbsp;
-        </FormGroup>
+        <Editor value={formParam.message} {plugins} on:change={handleChange} />        
     </div>
 </div>
 <div class="row">
