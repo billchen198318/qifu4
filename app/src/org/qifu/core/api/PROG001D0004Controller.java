@@ -31,7 +31,9 @@ import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbSysTemplate;
+import org.qifu.core.entity.TbSysTemplateParam;
 import org.qifu.core.logic.ISystemTemplateLogicService;
+import org.qifu.core.service.ISysTemplateParamService;
 import org.qifu.core.service.ISysTemplateService;
 import org.qifu.core.util.CoreApiSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,9 @@ public class PROG001D0004Controller extends CoreApiSupport {
 	
 	@Autowired
 	ISysTemplateService<TbSysTemplate, String> sysTemplateService;
+	
+	@Autowired
+	ISysTemplateParamService<TbSysTemplateParam, String> sysTemplateParamService;
 	
 	@Autowired
 	ISystemTemplateLogicService systemTemplateLogicService;
@@ -193,5 +198,32 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		}
 		return ResponseEntity.ok().body(result);
 	}		
+	
+	@ApiOperation(
+			value="CORE_PROG001D0004 - findSetParamPage", 
+			notes="查詢TB_SYS_TEMPLATE_PARAM資料", 
+			authorizations={ @Authorization(value="Bearer") }
+	)
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "field.templateId", value = "樣板Id"),
+    	@ApiImplicitParam(name = "pageOf.select", value = "換頁代碼-頁"),
+    	@ApiImplicitParam(name = "pageOf.showRow", value = "換頁代碼-row")
+    })		
+	@ResponseBody
+	@PostMapping(value = "/findSetParamPage", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<QueryResult<List<TbSysTemplateParam>>> findSetParamPage(@RequestBody SearchBody searchBody) {
+		QueryResult<List<TbSysTemplateParam>> result = this.initResult();
+		try {
+			QueryResult<List<TbSysTemplateParam>> queryResult = this.sysTemplateParamService.findPage(
+					this.queryParameter(searchBody).fullEquals("templateId").value(), 
+					searchBody.getPageOf().orderBy("TEMPLATE_VAR").sortTypeAsc());
+			this.setQueryResponseJsonResult(queryResult, result, searchBody.getPageOf());
+		} catch (ServiceException | ControllerException e) {
+			this.noSuccessResult(result, e);
+		} catch (Exception e) {
+			this.noSuccessResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
 	
 }

@@ -2,7 +2,7 @@
 import { onMount } from 'svelte';    
 import { push } from 'svelte-spa-router';
 import { 
-    FormGroup, Input, Label, Button, Icon
+    FormGroup, Input, Label, Button, Icon, Table
 } from 'sveltestrap';
 import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
@@ -27,7 +27,7 @@ let toolbarParam = {
         }
         ,
         "save"      :   function() {
-            btnUpdate();
+            btnSave();
         } 
     }
 }
@@ -88,11 +88,45 @@ function loadData() {
 
 function queryParamList() {
     paramList = [];
-    
+	var axiosInstance = getAxiosInstance();
+	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findSetParamPage', {
+		"field": {
+			"templateId"	: masterParam.templateId
+		}
+		,
+		"pageOf": {
+			"select"  : 1,
+			"showRow" : 100
+		}
+	})
+	.then(response => {
+		if (null != response.data) {
+			if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+				return;
+			}
+			paramList = response.data.value;   
+		} else {
+			toast.push('error, null', getToastErrorTheme());
+		}
+	})
+	.catch(e => {
+		alert(e);
+	});
 }
 
-function btnUpdate() {
+function btnSave() {
+    // queryParamList
+}
 
+function btnClear() {
+    formParam.isTitle = '';
+    formParam.isTitleVar = false;
+    formParam.templateVar = '';
+    formParam.objectVar = '';
+}
+
+function delParam(oid) {
+    alert('oid>>>' + oid);
 }
 
 $ : {
@@ -137,5 +171,39 @@ $ : {
         <Input id="isTitle" type="switch" label="是否標題用" bind:checked={formParam.isTitleVar} />
     </div>
 </div>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <Button color="primary" on:click={btnSave}><Icon name="save"/>&nbsp;儲存</Button>
+        &nbsp;
+        <Button color="primary" on:click={btnClear}><Icon name="eraser"/>&nbsp;清除</Button>
+    </div>
+</div> 
+
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <Table bordered hover>
+            <thead>
+                <tr>
+                    <th style="background-color: #575757; color: whitesmoke;">#</th>
+                    <th style="background-color: #575757; color: whitesmoke;">樣板變數</th>
+                    <th style="background-color: #575757; color: whitesmoke;">物件變數</th>
+                    <th style="background-color: #575757; color: whitesmoke;">是否標題用</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each paramList as item}
+                <tr>
+                    <td>
+                        <Button class="btn btn-light btn-sm" on:click={delParam(item.oid)}><Icon name="trash"></Icon></Button>
+                    </td>
+                    <td>{item.templateVar}</td>
+                    <td>{item.objectVar}</td>
+                    <td>{item.isTitle}</td>
+                </tr>
+                {/each}
+            </tbody>
+        </Table>
+    </div>
+</div>    
 
 <SvelteToast></SvelteToast>
