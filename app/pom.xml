@@ -4,7 +4,7 @@
   
   <groupId>org.qifu</groupId>
   <artifactId>core-app</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>core-app</name>
@@ -339,13 +339,13 @@
 		<dependency>
 		    <groupId>org.qifu</groupId>
 		    <artifactId>core-base</artifactId>
-		    <version>0.0.1-SNAPSHOT</version>
+		    <version>0.0.4-SNAPSHOT</version>
 		</dependency>	
 		
 		<dependency>
 		    <groupId>org.qifu</groupId>
 		    <artifactId>core-std</artifactId>
-		    <version>0.0.1-SNAPSHOT</version>
+		    <version>0.0.4-SNAPSHOT</version>
 		</dependency>			
 		
 										        
