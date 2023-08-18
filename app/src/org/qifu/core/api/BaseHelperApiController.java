@@ -47,11 +47,12 @@ public class BaseHelperApiController extends CoreApiSupport {
 		try {
 			if (UserUtils.isAdmin()) {
 				r.setMenuList( this.sysMenuService.getMemuItemListForFrontend("") );
-				r.setProgramList( this.sysProgService.findForInThePermRoleOfUserId("") );				
+				//r.setProgramList( this.sysProgService.findForInThePermRoleOfUserId("") );				
 			} else {
 				r.setMenuList( this.sysMenuService.getMemuItemListForFrontend(UserUtils.getCurrentUser().getUserId()) );
-				r.setProgramList( this.sysProgService.findForInThePermRoleOfUserId(UserUtils.getCurrentUser().getUserId()) );
+				//r.setProgramList( this.sysProgService.findForInThePermRoleOfUserId(UserUtils.getCurrentUser().getUserId()) );
 			}			
+			r.setProgramList( this.sysProgService.findForInThePermRoleOfUserId("") );
 			result.setSuccess( YES );
 		} catch (ServiceException | AuthorityException e) {
 			e.printStackTrace();
