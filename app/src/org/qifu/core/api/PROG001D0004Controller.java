@@ -226,4 +226,62 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	private void handlerCheckParam(DefaultControllerJsonResultObj<TbSysTemplateParam> result, TbSysTemplateParam param) throws ControllerException, ServiceException, Exception {
+		CheckControllerFieldHandler<TbSysTemplateParam> chk = this.getCheckControllerFieldHandler(result);
+		chk
+		.testField("templateId", param, "@org.apache.commons.lang3.StringUtils@isBlank(templateId)", "請輸入樣板編號")
+		.testField("isTitle", param, "@org.apache.commons.lang3.StringUtils@isBlank(isTitle)", "請輸入樣板是否標題")
+		.testField("templateVar", param, "@org.apache.commons.lang3.StringUtils@isBlank(templateVar)", "請輸入樣板變數")
+		.testField("objectVar", param, "@org.apache.commons.lang3.StringUtils@isBlank(objectVar)", "請輸入物件變數")		
+		.throwHtmlMessage();
+		
+		chk.testField("templateId", param, "!@org.qifu.util.SimpleUtils@checkBeTrueOf_azAZ09Id(templateId)", "樣板編號只允許輸入0-9,a-z,A-Z正常字元");		
+	}	
+	
+	private void saveParam(DefaultControllerJsonResultObj<TbSysTemplateParam> result, TbSysTemplateParam param) throws ControllerException, ServiceException, Exception {
+		this.handlerCheckParam(result, param);
+		DefaultResult<TbSysTemplateParam> cResult = this.sysTemplateParamService.insert(param);
+		this.setDefaultResponseJsonResult(cResult, result);
+	}		
+	
+	@ApiOperation(value="CORE_PROG001D0004 - saveSetParam", notes="新增TB_SYS_TEMPLATE_PARAM資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "templateId", value = ""),
+    	@ApiImplicitParam(name = "isTitle", value = ""),
+    	@ApiImplicitParam(name = "templateVar", value = ""),
+    	@ApiImplicitParam(name = "objectVar", value = "")
+    })
+	@ResponseBody
+	@PostMapping(value = "/saveSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysTemplateParam>> doSaveSetParam(@RequestBody TbSysTemplateParam param) {
+		DefaultControllerJsonResultObj<TbSysTemplateParam> result = this.initDefaultJsonResult();
+		try {			
+			this.saveParam(result, param);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
+	
+	@ApiOperation(value="CORE_PROG001D0004 - deleteSetParam", notes="刪除TB_SYS_TEMPLATE_PARAM資料", authorizations={ @Authorization(value="Bearer") })
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "oid", value = "TB_SYS_TEMPLATE_PARAM.OID")
+    })
+	@ResponseBody
+	@PostMapping(value = "/deleteSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDeleteSetParam(@RequestBody TbSysTemplateParam param) {
+		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<Boolean> delResult = this.systemTemplateLogicService.deleteParam(param);
+			this.setDefaultResponseJsonResult(delResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
+	
 }

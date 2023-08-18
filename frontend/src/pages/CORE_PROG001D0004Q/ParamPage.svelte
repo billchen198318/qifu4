@@ -115,18 +115,84 @@ function queryParamList() {
 }
 
 function btnSave() {
-    // queryParamList
+    checkFields = new Object();
+    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    Swal.showLoading();      
+    let axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/saveSetParam', formParam)
+    .then(response => {
+        Swal.hideLoading();
+        Swal.close();
+        if (null != response.data) {
+            checkFields = response.data.checkFields;
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.push(response.data.message, getToastWarningTheme());
+            } else {
+                toast.push(response.data.message, getToastSuccessTheme());
+                btnClear();
+            }            
+        } else {
+            toast.push('error, null', getToastErrorTheme());
+        }
+        queryParamList();        
+    })
+    .catch(e => {
+        Swal.hideLoading();
+        Swal.close();        
+        alert(e);
+    }); 
 }
 
 function btnClear() {
+    checkFields = new Object();
     formParam.isTitle = '';
     formParam.isTitleVar = false;
     formParam.templateVar = '';
     formParam.objectVar = '';
 }
 
+function delParamConfirm(oid) {
+    Swal.fire({
+        title: '刪除?',
+        icon: 'question',
+        iconHtml: '?',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        showCancelButton: true,
+        showCloseButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            delParam(oid);
+        }
+    });      
+}
+
 function delParam(oid) {
-    alert('oid>>>' + oid);
+	Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+	Swal.showLoading();  
+	var axiosInstance = getAxiosInstance();  
+	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/deleteSetParam', {"oid": oid})
+	.then(response => {
+		Swal.hideLoading();
+		Swal.close();
+		if (null != response.data) {
+			if (import.meta.env.VITE_SUCCESS_FLAG == response.data.success) {
+				toast.push(response.data.message, getToastSuccessTheme());
+			} else {        
+				toast.push(response.data.message, getToastWarningTheme());
+			}      
+			queryParamList();
+		} else {
+			toast.push('error, null', getToastErrorTheme());
+			queryParamList();
+		}
+	})
+	.catch(e => {
+		Swal.hideLoading();
+		Swal.close();    
+		queryParamList();
+		alert(e);
+	}); 
 }
 
 $ : {
@@ -194,7 +260,7 @@ $ : {
                 {#each paramList as item}
                 <tr>
                     <td>
-                        <Button class="btn btn-light btn-sm" on:click={delParam(item.oid)}><Icon name="trash"></Icon></Button>
+                        <Button class="btn btn-light btn-sm" on:click={delParamConfirm(item.oid)}><Icon name="trash"></Icon></Button>
                     </td>
                     <td>{item.templateVar}</td>
                     <td>{item.objectVar}</td>

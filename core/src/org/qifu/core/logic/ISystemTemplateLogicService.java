@@ -34,6 +34,7 @@ public interface ISystemTemplateLogicService {
 	
 	public DefaultResult<Boolean> delete(TbSysTemplate sysTemplate) throws ServiceException, Exception;
 	
+	@Deprecated
 	public DefaultResult<TbSysTemplateParam> createParam(TbSysTemplateParam sysTemplateParam, String templateOid) throws ServiceException, Exception;
 	
 	public DefaultResult<Boolean> deleteParam(TbSysTemplateParam sysTemplateParam) throws ServiceException, Exception;	

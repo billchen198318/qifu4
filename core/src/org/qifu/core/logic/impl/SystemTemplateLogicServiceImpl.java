@@ -127,6 +127,7 @@ public class SystemTemplateLogicServiceImpl extends BaseLogicService implements 
 		return this.sysTemplateService.delete(sysTemplate);
 	}
 	
+	@Deprecated
 	@ServiceMethodAuthority(type = ServiceMethodType.INSERT)
 	@Transactional(
 			propagation=Propagation.REQUIRED, 
