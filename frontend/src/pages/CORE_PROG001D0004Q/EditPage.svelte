@@ -1,5 +1,5 @@
 <script>
-import { onMount } from 'svelte';    
+import { onMount, onDestroy } from 'svelte';    
 import { push } from 'svelte-spa-router';
 import { 
     FormGroup, Input, Label, Button, Icon
@@ -55,6 +55,10 @@ function handleChange(e) {
 
 onMount(()=>{
     loadData();
+});
+
+onDestroy(()=>{
+	toast.pop(0);
 });
 
 function loadData() {

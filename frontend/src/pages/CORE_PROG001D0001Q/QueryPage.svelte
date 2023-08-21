@@ -242,7 +242,7 @@ onMount(()=>{
 });
 
 onDestroy(()=>{
-
+	toast.pop(0);
 });
 
 </script>

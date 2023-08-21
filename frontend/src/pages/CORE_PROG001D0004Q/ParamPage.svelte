@@ -1,5 +1,5 @@
 <script>
-import { onMount } from 'svelte';    
+import { onMount, onDestroy } from 'svelte';    
 import { push } from 'svelte-spa-router';
 import { 
     FormGroup, Input, Label, Button, Icon, Table
@@ -54,6 +54,10 @@ var checkFields = new Object();
 
 onMount(()=>{
     loadData();
+});
+
+onDestroy(()=>{
+	toast.pop(0);
 });
 
 function loadData() {
