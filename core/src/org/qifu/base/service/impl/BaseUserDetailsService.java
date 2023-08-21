@@ -28,7 +28,6 @@ import org.qifu.base.Constants;
 import org.qifu.base.message.BaseSystemMessage;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.YesNo;
-import org.qifu.base.model.ZeroKeyProvide;
 import org.qifu.base.properties.LdapLoginConfigProperties;
 import org.qifu.core.entity.TbAccount;
 import org.qifu.core.model.User;

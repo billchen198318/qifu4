@@ -21,6 +21,7 @@
  */
 package org.qifu.core.config;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.qifu.base.CoreAppConstants;
@@ -56,11 +57,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
     BaseInfoConfigProperties baseInfoConfigProperties;
-
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+    
+    @Autowired
+    PasswordEncoder passwordEncoder;    
     
     @Bean
     @Override
@@ -73,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         
         authProvider.setUserDetailsService(this.baseUserDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(this.passwordEncoder);
         
         return authProvider;
     }    
