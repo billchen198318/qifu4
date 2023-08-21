@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019-2021 qifu of copyright Chen Xin Nien
+ * Copyright 2019-2023 qifu of copyright Chen Xin Nien
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
  */
 package org.qifu.core.config;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.qifu.base.CoreAppConstants;
@@ -33,18 +32,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 	
     @Autowired
     BaseUserDetailsService baseUserDetailsService;
@@ -62,9 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     PasswordEncoder passwordEncoder;    
     
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    	return authenticationConfiguration.getAuthenticationManager();
     }    
     
     @Bean
@@ -77,8 +75,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authProvider;
     }    
     
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {    	
+    @Bean
+    protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {    	
     	http.headers().frameOptions().sameOrigin();
     	http.cors().and().csrf().disable()
     		.exceptionHandling().authenticationEntryPoint(this.unauthorizedHandler).and()
@@ -87,6 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers( CoreAppConstants.getWebConfiginterceptorExcludePathPatterns() ).permitAll()
             .anyRequest().authenticated();
     	http.authenticationProvider(authenticationProvider());
+    	return http.build();
     }
     
 }
