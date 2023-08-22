@@ -44,13 +44,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = {"CORE_PROG001D0002"}, value = "Program page management.")
+@Tag(name = "CORE_PROG001D0002", description = "Program page management.")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/PROG001D0002")
@@ -63,18 +60,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 	@Autowired
 	ISystemProgramLogicService systemProgramLogicService;
 	
-	
-	@ApiOperation(
-			value="CORE_PROG001D0002 - findPage", 
-			notes="查詢TB_SYS_PROG資料", 
-			authorizations={ @Authorization(value="Bearer") }
-	)
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "field.progId", value = "程式Id"),
-    	@ApiImplicitParam(name = "field.name", value = "程式名稱"),
-    	@ApiImplicitParam(name = "pageOf.select", value = "換頁代碼-頁"),
-    	@ApiImplicitParam(name = "pageOf.showRow", value = "換頁代碼-row")
-    })		
+	@Operation(summary = "CORE_PROG001D0002 - findPage", description = "查詢TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<QueryResult<List<TbSysProg>>> findPage(@RequestBody SearchBody searchBody) {
@@ -92,10 +78,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
-	@ApiOperation(value="CORE_PROG001D0002 - delete", notes="刪除TB_SYS_PROG資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "oid", value = "TB_SYS_PROG.OID")
-    })
+	@Operation(summary = "CORE_PROG001D0002 - delete", description = "刪除TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDelete(@RequestBody TbSysProg sysProg) {
@@ -142,20 +125,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(cResult, result);
 	}	
 	
-	@ApiOperation(value="CORE_PROG001D0002 - save", notes="新增TB_SYS_PROG資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "progId", value = ""),
-    	@ApiImplicitParam(name = "name", value = ""),
-    	@ApiImplicitParam(name = "url", value = ""),
-    	@ApiImplicitParam(name = "editMode", value = ""),
-    	@ApiImplicitParam(name = "isDialog", value = ""),
-    	@ApiImplicitParam(name = "dialogW", value = ""),
-    	@ApiImplicitParam(name = "dialogH", value = ""),
-    	@ApiImplicitParam(name = "progSystem", value = ""),
-    	@ApiImplicitParam(name = "itemType", value = ""),
-    	@ApiImplicitParam(name = "icon", value = ""),
-    	@ApiImplicitParam(name = "fontIconClassId", value = "")
-    })
+	@Operation(summary = "CORE_PROG001D0002 - save", description = "新增TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSysProg>> doSave(@RequestBody TbSysProg sysProg) {
@@ -170,10 +140,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
-	@ApiOperation(value="CORE_PROG001D0002 - load", notes="讀取TB_SYS_PROG資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "oid", value = "TB_SYS_PROG.OID")
-    })
+	@Operation(summary = "CORE_PROG001D0002 - load", description = "讀取TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSysProg>> doLoad(@RequestBody TbSysProg sysProg) {
@@ -189,21 +156,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
-	@ApiOperation(value="CORE_PROG001D0002 - update", notes="更新TB_SYS_PROG資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "oid", value = ""),
-    	@ApiImplicitParam(name = "progId", value = ""),
-    	@ApiImplicitParam(name = "name", value = ""),
-    	@ApiImplicitParam(name = "url", value = ""),
-    	@ApiImplicitParam(name = "editMode", value = ""),
-    	@ApiImplicitParam(name = "isDialog", value = ""),
-    	@ApiImplicitParam(name = "dialogW", value = ""),
-    	@ApiImplicitParam(name = "dialogH", value = ""),
-    	@ApiImplicitParam(name = "progSystem", value = ""),
-    	@ApiImplicitParam(name = "itemType", value = ""),
-    	@ApiImplicitParam(name = "icon", value = ""),
-    	@ApiImplicitParam(name = "fontIconClassId", value = "")
-    })
+	@Operation(summary = "CORE_PROG001D0002 - update", description = "更新TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSysProg>> doUpdate(@RequestBody TbSysProg sysProg) {

@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +49,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 //import com.auth0.jwt.impl.PublicClaims;
 import com.auth0.jwt.interfaces.Claim;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class UserBuilderInterceptor implements HandlerInterceptor {
 	

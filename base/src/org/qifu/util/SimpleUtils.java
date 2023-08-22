@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.DecoderException;
@@ -64,6 +63,8 @@ import org.joda.time.Months;
 import org.joda.time.Years;
 
 import com.fasterxml.uuid.Generators;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class SimpleUtils {
 	public static final int IS_YEAR=1;

@@ -32,17 +32,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 	
     @Autowired
@@ -75,16 +77,32 @@ public class WebSecurityConfig {
         return authProvider;
     }    
     
+    /*
     @Bean
-    protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {    	
-    	http.headers().frameOptions().sameOrigin();
-    	http.cors().and().csrf().disable()
-    		.exceptionHandling().authenticationEntryPoint(this.unauthorizedHandler).and()
-    		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-            .antMatchers( CoreAppConstants.getWebConfiginterceptorExcludePathPatterns() ).permitAll()
-            .anyRequest().authenticated();
-    	http.authenticationProvider(authenticationProvider());
+    public WebSecurityCustomizer webSecurityCustomizer() {
+    	return (web) -> web.ignoring()
+    			.requestMatchers("/api/auth/**")
+    			.requestMatchers(CoreAppConstants.getWebConfiginterceptorExcludePathPatterns());
+    }    
+    */
+    
+    @Bean
+    protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {   
+    	http.cors().and().csrf(csrf -> csrf.disable())
+    		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    		.and()
+    		.authorizeHttpRequests(auth -> {
+    			auth.requestMatchers(antMatcher("/api/auth/**")).permitAll();
+    			for (String par : CoreAppConstants.getWebConfiginterceptorExcludePathPatterns()) {
+    				auth.requestMatchers(antMatcher(par)).permitAll();
+    			}
+    			try {
+    				auth.anyRequest().authenticated()
+    				.and().exceptionHandling().authenticationEntryPoint(this.unauthorizedHandler);
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    			}
+    		});
     	return http.build();
     }
     

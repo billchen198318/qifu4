@@ -30,8 +30,6 @@ import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.YesNo;
 import org.qifu.core.util.CoreApiSupport;
 import org.qifu.core.vo.TestModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,13 +42,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = {"TEST."}, description = "Test hello world.")
+@Tag(name = "TEST.", description = "Test hello world.")
 @RestController
 @RequestMapping(value = "/api/hello")
 public class HelloApiController extends CoreApiSupport {
@@ -60,10 +55,7 @@ public class HelloApiController extends CoreApiSupport {
 //	@Autowired
 //	RedisTemplate<String, String> redisTemplate;
 	
-	@ApiOperation(value="測試del", notes="測試用的接口del", authorizations={ @Authorization(value="Bearer") })
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "key", value = "編號", required = true, dataType = "string")
-	})
+	@Operation(summary = "測試del", description = "測試用的接口del")
 	//@ResponseBody
 	@DeleteMapping("/delPlay")
 	public String delPlay(String key) {
@@ -77,7 +69,7 @@ public class HelloApiController extends CoreApiSupport {
 		return flag;
 	}
 	
-	@ApiOperation(value="測試", notes="測試用的接口", authorizations={ @Authorization(value="Bearer") })
+	@Operation(summary = "測試", description = "測試用的接口")
 	//@ResponseBody
 	@PostMapping(value = "/play", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public QueryResult<String> play(@RequestBody TestModel data) {
@@ -108,10 +100,7 @@ public class HelloApiController extends CoreApiSupport {
 		return result;
 	}
 	
-	@ApiOperation(value="測試2", notes="測試用的接口2", authorizations={ @Authorization(value="Bearer") })
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "id", value = "編號", required = true, dataType = "string")
-	})
+	@Operation(summary = "測試2", description = "測試用的接口2")
 	//@ResponseBody
 	@GetMapping(value = "/testPV/{id}")
 	public QueryResult<String> testPV(@PathVariable String id) {

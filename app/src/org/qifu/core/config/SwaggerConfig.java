@@ -21,73 +21,30 @@
  */
 package org.qifu.core.config;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.qifu.base.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.swagger.annotations.Api;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.SecurityReference;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 
 /**
  * http://127.0.0.1:8088/swagger-ui/
  * http://127.0.0.1:8088/swagger-ui/index.html
  */
 @Configuration
-@EnableOpenApi // for swagger3
+@OpenAPIDefinition
 public class SwaggerConfig {
-
-    @Bean
-    public Docket createRestApi() {
-        return new Docket(DocumentationType.OAS_30)
-        		.apiInfo(apiInfo())       		
-                .select()
-                //.apis(RequestHandlerSelectors.basePackage("org.qifu.core.api"))
-                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
-                .paths(PathSelectors.any())
-                .build()
-        		.securityContexts(Arrays.asList(securityContext()))
-        		.securitySchemes(Arrays.asList(apiKey()));
-    }
-    
-    private ApiKey apiKey() {
-    	//return new ApiKey(Constants.TOKEN_PREFIX, Constants.TOKEN_Authorization, "header");
-    	return new ApiKey("Authorization", Constants.TOKEN_Authorization, "header");
-    }    
-    
-    private SecurityContext securityContext() {
-    	return SecurityContext.builder().securityReferences(defaultAuth()).build();
-    }
-    
-    private List<SecurityReference> defaultAuth() {
-    	AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-    	AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-    	authorizationScopes[0] = authorizationScope;
-    	//return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
-    	return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
-    }
-    
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("qifu4")
-                .description("qifu WEB API.")
-                .termsOfServiceUrl("http://api.qifu.org/")
-                .contact(new Contact("Bill", "https://github.com/billchen198318/qifu4", "chen.xin.nien@gmail.com"))
-                .version("1.0")
-                .build();
-    }
+	
+	@Bean
+	public OpenAPI customOpenAPI() {
+		Contact contact = new Contact().name("Bill Chen").email("chen.xin.nien@gmail.com");
+		License license = new License().name("Apache 2.0").url("http://www.apache.org/licenses/LICENSE-2.0");
+		Info info = new Info().title("QiFu4").description("backend interface.").version("0.4").contact(contact).license(license);
+		
+		return new OpenAPI().info(info);
+	}
 	
 }

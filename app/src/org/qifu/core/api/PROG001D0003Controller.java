@@ -47,13 +47,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = {"CORE_PROG001D0003"}, value = "Program menu management.")
+@Tag(name = "CORE_PROG001D0003", description = "Program menu management.")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/PROG001D0003")
@@ -69,8 +66,7 @@ public class PROG001D0003Controller extends CoreApiSupport {
 	@Autowired
 	ISystemMenuLogicService systemMenuLogicService;
 	
-	
-	@ApiOperation(value="CORE_PROG001D0003 - load folder program", notes="讀取TB_SYS_PROG ITEM_TYPE 是 FOLDER 資料", authorizations={ @Authorization(value="Bearer") })
+	@Operation(summary = "CORE_PROG001D0003 - load folder program", description = "讀取TB_SYS_PROG ITEM_TYPE 是 FOLDER 資料")
 	@ResponseBody
 	@PostMapping(value = "/loadProgramFolder", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<List<TbSysProg>>> doLoadProgramFolder() {
@@ -88,10 +84,7 @@ public class PROG001D0003Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
-	@ApiOperation(value="CORE_PROG001D0003 - load folder program", notes="讀取TB_SYS_PROG ITEM_TYPE 是 FOLDER 資料", authorizations={ @Authorization(value="Bearer") })
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "oid", value = "oid編號", required = true, dataType = "string")
-	})	
+	@Operation(summary = "CORE_PROG001D0003 - load folder program", description = "讀取TB_SYS_PROG ITEM_TYPE 是 FOLDER 資料")
 	@ResponseBody
 	@PostMapping(value = "/loadProgramEnableAndAllList/{oid}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public DefaultControllerJsonResultObj< Map<String, List<TbSysProg>> > queryProgramListByFolderOid(@PathVariable String oid) {
@@ -108,11 +101,7 @@ public class PROG001D0003Controller extends CoreApiSupport {
 		return result;
 	}	
 	
-	@ApiOperation(value="CORE_PROG001D0003 - update program page of menu.", notes="更新選單資料", authorizations={ @Authorization(value="Bearer") })
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "folderProgramOid", value = "目錄oid編號", required = true, dataType = "string"),
-		@ApiImplicitParam(name = "appendOid", value = "頁面項目oid組成編號", required = true, dataType = "string")
-	})	
+	@Operation(summary = "CORE_PROG001D0003 - update program page of menu.", description = "更新選單資料")
 	@ResponseBody
 	@RequestMapping(value = "/updateMenu/{folderProgramOid}/{appendOid}", produces = MediaType.APPLICATION_JSON_VALUE)		
 	public DefaultControllerJsonResultObj<Boolean> updateMenu(@PathVariable String folderProgramOid, @PathVariable String appendOid) {

@@ -46,13 +46,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = {"CORE_PROG001D0004"}, value = "Freemarker樣板 management.")
+@Tag(name = "CORE_PROG001D0004", description = "Freemarker樣板 management.")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/PROG001D0004")
@@ -68,17 +65,7 @@ public class PROG001D0004Controller extends CoreApiSupport {
 	@Autowired
 	ISystemTemplateLogicService systemTemplateLogicService;
 	
-	@ApiOperation(
-			value="CORE_PROG001D0004 - findPage", 
-			notes="查詢TB_SYS_TEMPLATE資料", 
-			authorizations={ @Authorization(value="Bearer") }
-	)
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "field.templateId", value = "樣板Id"),
-    	@ApiImplicitParam(name = "field.title", value = "Title"),
-    	@ApiImplicitParam(name = "pageOf.select", value = "換頁代碼-頁"),
-    	@ApiImplicitParam(name = "pageOf.showRow", value = "換頁代碼-row")
-    })		
+	@Operation(summary = "CORE_PROG001D0004 - findPage", description = "查詢TB_SYS_TEMPLATE資料")
 	@ResponseBody
 	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<QueryResult<List<TbSysTemplate>>> findPage(@RequestBody SearchBody searchBody) {
@@ -96,10 +83,7 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
-	@ApiOperation(value="CORE_PROG001D0004 - delete", notes="刪除TB_SYS_TEMPLATE資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "oid", value = "TB_SYS_TEMPLATE.OID")
-    })
+	@Operation(summary = "CORE_PROG001D0004 - delete", description = "刪除TB_SYS_TEMPLATE資料")
 	@ResponseBody
 	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDelete(@RequestBody TbSysTemplate sysTemplate) {
@@ -138,13 +122,7 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(uResult, result);		
 	}	
 	
-	@ApiOperation(value="CORE_PROG001D0004 - save", notes="新增TB_SYS_TEMPLATE資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "templateId", value = ""),
-    	@ApiImplicitParam(name = "title", value = ""),
-    	@ApiImplicitParam(name = "message", value = ""),
-    	@ApiImplicitParam(name = "description", value = "")
-    })
+	@Operation(summary = "CORE_PROG001D0004 - save", description = "新增TB_SYS_TEMPLATE資料")
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSysTemplate>> doSave(@RequestBody TbSysTemplate sysTemplate) {
@@ -159,10 +137,7 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
-	@ApiOperation(value="CORE_PROG001D0004 - load", notes="讀取TB_SYS_TEMPLATE資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "oid", value = "TB_SYS_TEMPLATE.OID")
-    })
+	@Operation(summary = "CORE_PROG001D0004 - load", description = "讀取TB_SYS_TEMPLATE資料")
 	@ResponseBody
 	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSysTemplate>> doLoad(@RequestBody TbSysTemplate sysTemplate) {
@@ -178,13 +153,7 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
-	@ApiOperation(value="CORE_PROG001D0004 - update", notes="更新TB_SYS_TEMPLATE資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "templateId", value = ""),
-    	@ApiImplicitParam(name = "title", value = ""),
-    	@ApiImplicitParam(name = "message", value = ""),
-    	@ApiImplicitParam(name = "description", value = "")
-    })
+	@Operation(summary = "CORE_PROG001D0004 - update", description = "更新TB_SYS_TEMPLATE資料")
 	@ResponseBody
 	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSysTemplate>> doUpdate(@RequestBody TbSysTemplate sysTemplate) {
@@ -199,16 +168,7 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
-	@ApiOperation(
-			value="CORE_PROG001D0004 - findSetParamPage", 
-			notes="查詢TB_SYS_TEMPLATE_PARAM資料", 
-			authorizations={ @Authorization(value="Bearer") }
-	)
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "field.templateId", value = "樣板Id"),
-    	@ApiImplicitParam(name = "pageOf.select", value = "換頁代碼-頁"),
-    	@ApiImplicitParam(name = "pageOf.showRow", value = "換頁代碼-row")
-    })		
+	@Operation(summary = "CORE_PROG001D0004 - findSetParamPage", description = "查詢TB_SYS_TEMPLATE_PARAM資料")
 	@ResponseBody
 	@PostMapping(value = "/findSetParamPage", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<QueryResult<List<TbSysTemplateParam>>> findSetParamPage(@RequestBody SearchBody searchBody) {
@@ -244,13 +204,7 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(cResult, result);
 	}		
 	
-	@ApiOperation(value="CORE_PROG001D0004 - saveSetParam", notes="新增TB_SYS_TEMPLATE_PARAM資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "templateId", value = ""),
-    	@ApiImplicitParam(name = "isTitle", value = ""),
-    	@ApiImplicitParam(name = "templateVar", value = ""),
-    	@ApiImplicitParam(name = "objectVar", value = "")
-    })
+	@Operation(summary = "CORE_PROG001D0004 - saveSetParam", description = "新增TB_SYS_TEMPLATE_PARAM資料")
 	@ResponseBody
 	@PostMapping(value = "/saveSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSysTemplateParam>> doSaveSetParam(@RequestBody TbSysTemplateParam param) {
@@ -265,10 +219,7 @@ public class PROG001D0004Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
-	@ApiOperation(value="CORE_PROG001D0004 - deleteSetParam", notes="刪除TB_SYS_TEMPLATE_PARAM資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "oid", value = "TB_SYS_TEMPLATE_PARAM.OID")
-    })
+	@Operation(summary = "CORE_PROG001D0004 - deleteSetParam", description = "刪除TB_SYS_TEMPLATE_PARAM資料")
 	@ResponseBody
 	@PostMapping(value = "/deleteSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDeleteSetParam(@RequestBody TbSysTemplateParam param) {

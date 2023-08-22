@@ -21,11 +21,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = {"MENU"}, value = "選單資料.")
+@Tag(name = "MENU", description = "選單資料.")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/menu")
@@ -38,7 +37,7 @@ public class BaseHelperApiController extends CoreApiSupport {
 	@Autowired
 	ISysProgService<TbSysProg, String> sysProgService;
 	
-	@ApiOperation(value="選單與程式清單", notes="左邊選單項目與程式清單", authorizations={ @Authorization(value="Bearer") })
+	@Operation(summary = "選單與程式清單", description = "左邊選單項目與程式清單")
 	@PostMapping(value = "/getMemuItemAndProgList", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public QueryResult<ProgramAndMenuResult> getMemuItem() {
 		QueryResult<ProgramAndMenuResult> result = this.initResult();

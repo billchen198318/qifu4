@@ -3,17 +3,16 @@
  */
 package org.qifu.core.vo;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "TestModel", description = "測試模組")
+@Schema(name = "TestModel", description = "測試模組")
 public class TestModel implements java.io.Serializable {
 	private static final long serialVersionUID = -5289888544046385634L;
 	
-	@ApiModelProperty(name = "key", value = "編號", required = true, dataType = "string", position = 1)
+	@Schema(name = "key", description = "編號")
 	private String key;
 	
-	@ApiModelProperty(name = "msg", value = "訊息資料", required = true, dataType = "string", position = 2)
+	@Schema(name = "msg", description = "訊息資料")
 	private String msg;
 	
 	public String getKey() {

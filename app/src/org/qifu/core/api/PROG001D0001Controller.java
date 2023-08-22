@@ -44,13 +44,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = {"CORE_PROG001D0001"}, value = "Application site.")
+@Tag(name = "CORE_PROG001D0001", description = "Application site.")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/PROG001D0001")
@@ -63,18 +60,7 @@ public class PROG001D0001Controller extends CoreApiSupport {
 	@Autowired
 	IApplicationSystemLogicService applicationSystemLogicService;
 	
-	
-	@ApiOperation(
-			value="CORE_PROG001D0001 - findPage", 
-			notes="查核TB_SYS資料", 
-			authorizations={ @Authorization(value="Bearer") }
-	)
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "field.sysId", value = "系統Id"),
-    	@ApiImplicitParam(name = "field.name", value = "名稱"),
-    	@ApiImplicitParam(name = "pageOf.select", value = "換頁代碼-頁"),
-    	@ApiImplicitParam(name = "pageOf.showRow", value = "換頁代碼-row")
-    })		
+	@Operation(summary = "CORE_PROG001D0001 - findPage", description = "查核TB_SYS資料")
 	@ResponseBody
 	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<QueryResult<List<TbSys>>> findPage(@RequestBody SearchBody searchBody) {
@@ -92,10 +78,7 @@ public class PROG001D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
-	@ApiOperation(value="CORE_PROG001D0001 - delete", notes="刪除TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "oid", value = "TB_SYS.OID")
-    })
+	@Operation(summary = "CORE_PROG001D0001 - delete", description = "刪除TB_SYS資料")
 	@ResponseBody
 	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDelete(@RequestBody TbSys sys) {
@@ -136,15 +119,7 @@ public class PROG001D0001Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(uResult, result);
 	}
 	
-	@ApiOperation(value="CORE_PROG001D0001 - save", notes="新增TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "sysId", value = ""),
-    	@ApiImplicitParam(name = "name", value = ""),
-    	@ApiImplicitParam(name = "host", value = ""),
-    	@ApiImplicitParam(name = "contextPath", value = ""),
-    	@ApiImplicitParam(name = "icon", value = ""),
-    	@ApiImplicitParam(name = "isLocal", value = "")
-    })
+	@Operation(summary = "CORE_PROG001D0001 - save", description = "新增TB_SYS資料")
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSys>> doSave(@RequestBody TbSys sys) {
@@ -159,10 +134,7 @@ public class PROG001D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
-	@ApiOperation(value="CORE_PROG001D0001 - load", notes="讀取TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "oid", value = "TB_SYS.OID")
-    })
+	@Operation(summary = "CORE_PROG001D0001 - load", description = "讀取TB_SYS資料")
 	@ResponseBody
 	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSys>> doLoad(@RequestBody TbSys sys) {
@@ -178,15 +150,7 @@ public class PROG001D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
-	@ApiOperation(value="CORE_PROG001D0001 - update", notes="更新TB_SYS資料", authorizations={ @Authorization(value="Bearer") })
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "sysId", value = ""),
-    	@ApiImplicitParam(name = "name", value = ""),
-    	@ApiImplicitParam(name = "host", value = ""),
-    	@ApiImplicitParam(name = "contextPath", value = ""),
-    	@ApiImplicitParam(name = "icon", value = ""),
-    	@ApiImplicitParam(name = "isLocal", value = "")
-    })
+	@Operation(summary = "CORE_PROG001D0001 - update", description = "更新TB_SYS資料")
 	@ResponseBody
 	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbSys>> doUpdate(@RequestBody TbSys sys) {
