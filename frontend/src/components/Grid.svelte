@@ -54,10 +54,10 @@ export function setConfigTotal(gridConfig, total) {
                         {#each config.keyFieldFormatter.item as keyFieldFormatItem}                            
                             {#if typeof keyFieldFormatItem.method === 'function' }
                                 {#if config.keyFieldFormatter.showTooltip }
-                                <Button id={'_' + keyFieldFormatItem.type + '_' + row[col.field]} class="btn btn-light btn-sm" on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
+                                <Button id={'_' + keyFieldFormatItem.type + '_' + row[col.field]} class={keyFieldFormatItem.class} on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
                                 <Tooltip target={'_' + keyFieldFormatItem.type + '_' + row[col.field]} placement="bottom">{keyFieldFormatItem.memo}</Tooltip>
                                 {:else}
-                                <Button class="btn btn-light btn-sm" on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
+                                <Button class={keyFieldFormatItem.class} on:click={keyFieldFormatItem.method(row[col.field])}><Icon name={keyFieldFormatItem.icon}></Icon></Button>
                                 {/if}
                                 &nbsp;
                             {:else}

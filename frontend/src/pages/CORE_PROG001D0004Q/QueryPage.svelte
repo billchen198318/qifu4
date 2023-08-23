@@ -77,7 +77,8 @@ function initQueryGridConfig() {
 				},
 				'icon'    : 'pen',
 				'type'    : 'edit',
-				'memo'    : 'Edit current item.'
+				'memo'    : 'Edit current item.',
+				'class'	  : 'btn btn-info btn-sm'
 			}
 			,
 			{
@@ -87,7 +88,8 @@ function initQueryGridConfig() {
 				},
 				'icon'    : 'gear-fill',
 				'type'    : 'customize',
-				'memo'    : 'Set parameter.'
+				'memo'    : 'Set parameter.',
+				'class'	  : 'btn btn-secondary btn-sm'
 			}
 			,			
 			{
@@ -108,7 +110,8 @@ function initQueryGridConfig() {
 				},
 				'icon'    : 'trash',
 				'type'    : 'delete',
-				'memo'    : 'Delete current item.'
+				'memo'    : 'Delete current item.',
+				'class'	  : 'btn btn-danger btn-sm'
 			}     
 		]
 		,
