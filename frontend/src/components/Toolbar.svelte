@@ -26,25 +26,25 @@ onMount(()=>{
 		<div>		
 
 		{#if null != args.methods && (typeof args.methods.back === 'function') }	
-			<Icon name="arrow-left-square" class="btn btn-light btn-sm" id="tb_back" onclick={args.methods.back} />
+			<Icon name="arrow-left-square" class="btn btn-secondary btn-sm" id="tb_back" onclick={args.methods.back} />
 			<Tooltip target="tb_back" placement="bottom">上一頁</Tooltip>
 			&nbsp;
 		{/if}				
 
 		{#if null != args.methods && (typeof args.methods.refresh === 'function') }	
-			<Icon name="repeat" class="btn btn-light btn-sm" id="tb_repeat" onclick={args.methods.refresh} />
+			<Icon name="repeat" class="btn btn-secondary btn-sm" id="tb_repeat" onclick={args.methods.refresh} />
 			<Tooltip target="tb_repeat" placement="bottom">刷新</Tooltip>
 			&nbsp;
 		{/if}	
 
 		{#if null != args.methods && (typeof args.methods.create === 'function') }
-			<Icon name="plus-circle" class="btn btn-light btn-sm" id="tb_plus" onclick={args.methods.create} />
+			<Icon name="plus-circle" class="btn btn-secondary btn-sm" id="tb_plus" onclick={args.methods.create} />
 			<Tooltip target="tb_plus" placement="bottom">新增頁</Tooltip>
 			&nbsp;
 		{/if}	
 
 		{#if null != args.methods && (typeof args.methods.save === 'function') }
-            <Icon name="save" class="btn btn-light btn-sm" id="tb_save" onclick={args.methods.save} />
+            <Icon name="save" class="btn btn-secondary btn-sm" id="tb_save" onclick={args.methods.save} />
 			<Tooltip target="tb_save" placement="bottom">儲存/更新</Tooltip>
 			&nbsp;
 		{/if}	
@@ -55,3 +55,5 @@ onMount(()=>{
 
         		
 </div> 
+
+<p style="margin-bottom: 10px"></p>
