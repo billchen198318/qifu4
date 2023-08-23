@@ -36,7 +36,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -77,32 +76,20 @@ public class WebSecurityConfig {
         return authProvider;
     }    
     
-    /*
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-    	return (web) -> web.ignoring()
-    			.requestMatchers("/api/auth/**")
-    			.requestMatchers(CoreAppConstants.getWebConfiginterceptorExcludePathPatterns());
-    }    
-    */
-    
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {   
-    	http.cors().and().csrf(csrf -> csrf.disable())
-    		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    		.and()
+    	http.cors(Customizer.withDefaults()).csrf(csrf -> csrf.disable())
+    		.sessionManagement( sessMgr -> sessMgr.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
     		.authorizeHttpRequests(auth -> {
     			auth.requestMatchers(antMatcher("/api/auth/**")).permitAll();
     			for (String par : CoreAppConstants.getWebConfiginterceptorExcludePathPatterns()) {
     				auth.requestMatchers(antMatcher(par)).permitAll();
     			}
-    			try {
-    				auth.anyRequest().authenticated()
-    				.and().exceptionHandling().authenticationEntryPoint(this.unauthorizedHandler);
-    			} catch (Exception e) {
-    				e.printStackTrace();
-    			}
+    			auth.anyRequest().authenticated();
     		});
+		http.exceptionHandling(exeConfig -> {
+		    exeConfig.authenticationEntryPoint(this.unauthorizedHandler);
+		});
     	return http.build();
     }
     
