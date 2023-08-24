@@ -22,7 +22,8 @@
   	getAccessTokenCookie,
   	userLogoutClearCookie,
   	checkUserHasLogined,
-  	getAxiosInstance
+  	getAxiosInstance,
+	checkHasPermission
   }
   from "./components/BaseHelper.svelte";
 
@@ -162,31 +163,13 @@
 
 
   function routeLoading(event) {
-  	console.log('-----------------------------------------');
-  	console.log('routeLoading event')
-  	console.log('Route', event.detail.route)
-  	console.log('Location', event.detail.location)
-  	console.log('Querystring', event.detail.querystring)
-  	console.log('User data', event.detail.userData)
-  	if ('/prog01/c2/:oid' == event.detail.route && event.detail.location.indexOf('0000') > -1) {
-  		alert('test replace!');
-  		replace('/prog01c1');
-  	}
-
+	if (!checkHasPermission(event.detail.location,true)) {
+		replace('/nopermission');
+	}
   }
 
   function routeLoaded(event) {
-  	console.log('-----------------------------------------');
-  	console.log('routeLoaded event')
-  	// The first 5 properties are the same as for the routeLoading event
-  	console.log('Route', event.detail.route)
-  	console.log('Location', event.detail.location)
-  	console.log('Querystring', event.detail.querystring)
-  	console.log('Params', event.detail.params)
-  	console.log('User data', event.detail.userData)
-  	// The last two properties are unique to routeLoaded
-  	console.log('Component', event.detail.component) // This is a Svelte component, so a function
-  	console.log('Name', event.detail.name)
+
   }
 
   function userLogout() {

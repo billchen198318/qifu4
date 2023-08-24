@@ -98,7 +98,7 @@ export function checkHasRole(roleId) {
 	return hasRole;
 }
 
-export function checkHasPermission(perm) {
+export function checkHasPermission(perm, urlCheck) {
 	var hasPerm = false;
 	if (null == userData) {
 		return hasPerm;
@@ -107,9 +107,17 @@ export function checkHasPermission(perm) {
 		return true;
 	}      
 	for (var r in userData.roles) {
+		if ('admin' == r.role || '*' == r.role) {
+			hasPerm = true;
+		}
 		for (var p in r.rolePermission) {
 			if (perm == r.permission) {
 				hasPerm = true;
+			}
+			if (urlCheck) {
+				if (('#'+perm).startsWith(r.rolePermission)) {
+					hasPerm = true;
+				}
 			}
 		}
 	}
