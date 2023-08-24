@@ -1,12 +1,9 @@
 # qífū-4
-Backend Admin WEB base on JAVA &amp; Spring / Spring-boot &amp; Sevlte frontend
+一個簡單的Springboot 3 後端, 與 Svelte前端的 Admin WEB, base on JAVA & Spring / Spring-boot & Sevlte frontend
 
 
-# qífū-4 backend , build of JAVA / Springboot
 
-This backend build of java with springboot 
-
-## Installation
+## Installation backend, 後端安裝配置
 please use Eclipse import project folder `app` and `base`, `core`.
 
 <br>mariadb import
@@ -41,7 +38,7 @@ pnpm i
 Update your backend API value in `.env`:
 
 ```text
-API_ENDPOINT=http://127.0.0.1:8088/api
+VITE_API_URL="http://127.0.0.1:8088/api"
 ```
 
 ## Start a local server
