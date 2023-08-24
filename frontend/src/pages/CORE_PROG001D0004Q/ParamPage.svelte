@@ -264,7 +264,7 @@ $ : {
                 {#each paramList as item}
                 <tr>
                     <td>
-                        <Button class="btn btn-light btn-sm" on:click={delParamConfirm(item.oid)}><Icon name="trash"></Icon></Button>
+                        <Button class="btn btn-warning btn-sm" on:click={delParamConfirm(item.oid)}><Icon name="trash"></Icon></Button>
                     </td>
                     <td>{item.templateVar}</td>
                     <td>{item.objectVar}</td>
