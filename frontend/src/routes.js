@@ -24,6 +24,15 @@ export const routes = {
 	"/prog001d0004/*"	: wrap({
 		asyncComponent: () => import('./pages/CORE_PROG001D0004Q/IndexPage.svelte')
 	}),		
+	"/prog001d0005"		: wrap({
+		asyncComponent: () => import('./pages/CORE_PROG001D0005Q/IndexPage.svelte')
+	}),			
+	"/prog001d0005/*"	: wrap({
+		asyncComponent: () => import('./pages/CORE_PROG001D0005Q/IndexPage.svelte')
+	}),			
+	"/nopermission"		: wrap({
+		asyncComponent: () => import('./pages/NoPermission.svelte')
+	}),	
 	"/about"			: wrap({
 		asyncComponent: () => import('./pages/About.svelte')
 	}),
