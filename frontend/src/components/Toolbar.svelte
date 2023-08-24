@@ -57,5 +57,5 @@ onMount(()=>{
 </div> 
 
 {#if (undefined === args.marginBottom) || null == args.marginBottom || args.marginBottom }
-<p style="margin-bottom: 10px"></p>
+<p style="margin-bottom: 5px"></p>
 {/if}
