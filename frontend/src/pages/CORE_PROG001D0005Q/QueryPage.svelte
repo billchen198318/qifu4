@@ -157,7 +157,7 @@ function btnQuery() {
 	var axiosInstance = getAxiosInstance();
 	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findPage', {
 		"field": {
-			"reportId"	: queryParam.templateId
+			"reportId"	: queryParam.reportId
 		}
 		,
 		"pageOf": {
@@ -200,8 +200,7 @@ function clearGridConfig() {
 
 function btnClear() {
 	clearGridConfig();  
-	queryParam.templateId = '';
-	queryParam.title = '';
+	queryParam.reportId = '';
 	dsList = [];
 }
 
@@ -251,7 +250,7 @@ onDestroy(()=>{
 <div class="row">
     <div class="col-xs-12 col-md-12 col-lg-12">
 		<FormGroup>
-			<Label for="templateId">報表編號</Label>
+			<Label for="reportId">報表編號</Label>
 			<Input type="text" id="reportId" placeholder="輸入報表編號" bind:value={queryParam.reportId} />
 		</FormGroup>
     </div>
