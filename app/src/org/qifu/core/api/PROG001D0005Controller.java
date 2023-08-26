@@ -32,7 +32,6 @@ import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbSysJreport;
-import org.qifu.core.entity.TbSysTemplate;
 import org.qifu.core.logic.ISystemJreportLogicService;
 import org.qifu.core.service.ISysJreportService;
 import org.qifu.core.util.CoreApiSupport;
