@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qifu.base.exception.ServiceException;
@@ -74,6 +75,9 @@ public class SystemJreportLogicServiceImpl extends BaseLogicService implements I
 	public DefaultResult<TbSysJreport> create(TbSysJreport report) throws ServiceException, Exception {
 		if (report==null) {
 			throw new ServiceException(BaseSystemMessage.parameterBlank());
+		}
+		if (!this.isBlank(report.getUploadBase64())) {
+			report.setContent( Base64.decodeBase64(report.getUploadBase64()) );
 		}
 		this.setStringValueMaxLength(report, "description", MAX_DESCRIPTION_LENGTH);
 		if (YesNo.YES.equals(report.getIsCompile())) {

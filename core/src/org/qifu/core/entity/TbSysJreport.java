@@ -23,6 +23,8 @@ public class TbSysJreport implements java.io.Serializable {
 	private String uuserid;
 	private Date udate;
 	
+	private String uploadBase64;
+	
 	@EntityPK(name = "oid", autoUUID = true)
 	public String getOid() {
 		return oid;
@@ -107,6 +109,14 @@ public class TbSysJreport implements java.io.Serializable {
 	
 	public void setUdate(Date udate) {
 		this.udate = udate;
+	}
+
+	public String getUploadBase64() {
+		return uploadBase64;
+	}
+
+	public void setUploadBase64(String uploadBase64) {
+		this.uploadBase64 = uploadBase64;
 	}
 	
 }

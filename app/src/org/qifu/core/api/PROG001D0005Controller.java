@@ -23,12 +23,16 @@ package org.qifu.core.api;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.CheckControllerFieldHandler;
+import org.qifu.base.model.DefaultControllerJsonResultObj;
+import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbSysJreport;
-import org.qifu.core.entity.TbSysTemplate;
+import org.qifu.core.logic.ISystemJreportLogicService;
 import org.qifu.core.service.ISysJreportService;
 import org.qifu.core.util.CoreApiSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +58,10 @@ public class PROG001D0005Controller extends CoreApiSupport {
 	@Autowired
 	ISysJreportService<TbSysJreport, String> sysJreportService;
 	
+	@Autowired
+	ISystemJreportLogicService systemJreportLogicService;
+	
+	
 	@Operation(summary = "CORE_PROG001D0005 - findPage", description = "查詢TB_SYS_JREPORT資料")
 	@ResponseBody
 	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -61,6 +69,8 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		QueryResult<List<TbSysJreport>> result = this.initResult();
 		try {
 			QueryResult<List<TbSysJreport>> queryResult = this.sysJreportService.findPage(
+					"count", 
+					"findPageSimple",
 					this.queryParameter(searchBody).fullEquals("reportId").value(),
 					searchBody.getPageOf().orderBy("REPORT_ID").sortTypeAsc());
 			this.setQueryResponseJsonResult(queryResult, result, searchBody.getPageOf());
@@ -72,6 +82,54 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@Operation(summary = "CORE_PROG001D0005 - delete", description = "刪除TB_SYS_JREPORT資料")
+	@ResponseBody
+	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDelete(@RequestBody TbSysJreport sysJreport) {
+		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<Boolean> delResult = this.systemJreportLogicService.delete(sysJreport);
+			this.setDefaultResponseJsonResult(delResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}
+	
+	private void handlerCheck(DefaultControllerJsonResultObj<TbSysJreport> result, TbSysJreport sysJreport, boolean createMode) throws ControllerException, ServiceException, Exception {
+		CheckControllerFieldHandler<TbSysJreport> chk = this.getCheckControllerFieldHandler(result);
+		chk.testField("reportId", sysJreport, "@org.apache.commons.lang3.StringUtils@isBlank(reportId)", "請輸入報表編號").throwHtmlMessage();
+		chk.testField("reportId", sysJreport, "!@org.qifu.util.SimpleUtils@checkBeTrueOf_azAZ09Id(reportId)", "報表編號只允許輸入0-9,a-z,A-Z正常字元").throwHtmlMessage();
+		if (createMode) {
+			chk.testField("file", sysJreport, "@org.apache.commons.lang3.StringUtils@isBlank(file)", "請輸入檔案").throwHtmlMessage();
+			if (StringUtils.isBlank(sysJreport.getUploadBase64())) {
+				chk.throwHtmlMessage("file", "請輸入檔案");
+			}
+		}
+	}
+	
+	private void save(DefaultControllerJsonResultObj<TbSysJreport> result, TbSysJreport sysJreport) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, sysJreport, true);
+		DefaultResult<TbSysJreport> cResult = this.systemJreportLogicService.create(sysJreport);
+		this.setDefaultResponseJsonResult(result, cResult);
+	}
+	
+	@Operation(summary = "CORE_PROG001D0005 - save", description = "新增TB_SYS_JREPORT資料")
+	@ResponseBody
+	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysJreport>> doSave(@RequestBody TbSysJreport sysJreport) {
+		DefaultControllerJsonResultObj<TbSysJreport> result = this.initDefaultJsonResult();
+		try {
+			this.save(result, sysJreport);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}		
 	
 	
 }

@@ -126,7 +126,7 @@ function initQueryGridConfig() {
 			}
 			,
 			{
-				'label' : 'Description',
+				'label' : '說明',
 				'field' : 'description'
 			}          
 		]    
