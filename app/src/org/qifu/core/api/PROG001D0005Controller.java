@@ -32,7 +32,9 @@ import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbSysJreport;
+import org.qifu.core.entity.TbSysJreportParam;
 import org.qifu.core.logic.ISystemJreportLogicService;
+import org.qifu.core.service.ISysJreportParamService;
 import org.qifu.core.service.ISysJreportService;
 import org.qifu.core.util.CoreApiSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,9 @@ public class PROG001D0005Controller extends CoreApiSupport {
 	
 	@Autowired
 	ISysJreportService<TbSysJreport, String> sysJreportService;
+	
+	@Autowired
+	ISysJreportParamService<TbSysJreportParam, String> sysJreportParamService;
 	
 	@Autowired
 	ISystemJreportLogicService systemJreportLogicService;
@@ -168,5 +173,71 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@Operation(summary = "CORE_PROG001D0005 - findSetParamPage", description = "查詢TB_SYS_JREPORT_PARAM資料")
+	@ResponseBody
+	@PostMapping(value = "/findSetParamPage", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<QueryResult<List<TbSysJreportParam>>> findSetParamPage(@RequestBody SearchBody searchBody) {
+		QueryResult<List<TbSysJreportParam>> result = this.initResult();
+		try {
+			QueryResult<List<TbSysJreportParam>> queryResult = this.sysJreportParamService.findPage(
+					this.queryParameter(searchBody).fullEquals("reportId").value(), 
+					searchBody.getPageOf().orderBy("RPT_PARAM").sortTypeAsc());					
+			this.setQueryResponseJsonResult(queryResult, result, searchBody.getPageOf());
+		} catch (ServiceException | ControllerException e) {
+			this.noSuccessResult(result, e);
+		} catch (Exception e) {
+			this.noSuccessResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}
+	
+	private void handlerCheckParam(DefaultControllerJsonResultObj<TbSysJreportParam> result, TbSysJreportParam param) throws ControllerException, ServiceException, Exception {
+		CheckControllerFieldHandler<TbSysJreportParam> chk = this.getCheckControllerFieldHandler(result);
+		chk
+		.testField("reportId", param, "@org.apache.commons.lang3.StringUtils@isBlank(reportId)", "請輸入Jasper報表編號")
+		.testField("urlParam", param, "@org.apache.commons.lang3.StringUtils@isBlank(urlParam)", "請輸入Url參數")
+		.testField("rptParam", param, "@org.apache.commons.lang3.StringUtils@isBlank(rptParam)", "請輸入報表參數")	
+		.throwHtmlMessage();
+		
+		chk.testField("urlParam", param, "!@org.qifu.util.SimpleUtils@checkBeTrueOf_azAZ09Id(urlParam)", "Url參數只允許輸入0-9,a-z,A-Z正常字元");		
+		chk.testField("rptParam", param, "!@org.qifu.util.SimpleUtils@checkBeTrueOf_azAZ09Id(rptParam)", "報表參數只允許輸入0-9,a-z,A-Z正常字元");	
+	}	
+	
+	private void saveParam(DefaultControllerJsonResultObj<TbSysJreportParam> result, TbSysJreportParam param) throws ControllerException, ServiceException, Exception {
+		this.handlerCheckParam(result, param);
+		DefaultResult<TbSysJreportParam> cResult = this.sysJreportParamService.insert(param);
+		this.setDefaultResponseJsonResult(cResult, result);
+	}		
+	
+	@Operation(summary = "CORE_PROG001D0005 - saveSetParam", description = "新增TB_SYS_TEMPLATE_PARAM資料")
+	@ResponseBody
+	@PostMapping(value = "/saveSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysJreportParam>> doSaveSetParam(@RequestBody TbSysJreportParam param) {
+		DefaultControllerJsonResultObj<TbSysJreportParam> result = this.initDefaultJsonResult();
+		try {			
+			this.saveParam(result, param);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
+	
+	@Operation(summary = "CORE_PROG001D0005 - deleteSetParam", description = "刪除TB_SYS_TEMPLATE_PARAM資料")
+	@ResponseBody
+	@PostMapping(value = "/deleteSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDeleteSetParam(@RequestBody TbSysJreportParam param) {
+		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<Boolean> delResult = this.systemJreportLogicService.deleteParam(param);
+			this.setDefaultResponseJsonResult(delResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}
 	
 }
