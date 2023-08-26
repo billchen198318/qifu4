@@ -32,6 +32,7 @@ import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbSysJreport;
+import org.qifu.core.entity.TbSysTemplate;
 import org.qifu.core.logic.ISystemJreportLogicService;
 import org.qifu.core.service.ISysJreportService;
 import org.qifu.core.util.CoreApiSupport;
@@ -116,6 +117,12 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(result, cResult);
 	}
 	
+	private void update(DefaultControllerJsonResultObj<TbSysJreport> result, TbSysJreport sysJreport) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, sysJreport, false);
+		DefaultResult<TbSysJreport> uResult = this.systemJreportLogicService.update(sysJreport);
+		this.setDefaultResponseJsonResult(uResult, result);		
+	}
+	
 	@Operation(summary = "CORE_PROG001D0005 - save", description = "新增TB_SYS_JREPORT資料")
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -130,6 +137,37 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		}
 		return ResponseEntity.ok().body(result);
 	}		
+	
+	@Operation(summary = "CORE_PROG001D0005 - load", description = "讀取TB_SYS_JREPORT資料")
+	@ResponseBody
+	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysJreport>> doLoad(@RequestBody TbSysJreport sysJreport) {
+		DefaultControllerJsonResultObj<TbSysJreport> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<TbSysJreport> lResult = this.sysJreportService.selectByPrimaryKeySimple(sysJreport.getOid());
+			this.setDefaultResponseJsonResult(lResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
+	
+	@Operation(summary = "CORE_PROG001D0005 - update", description = "更新TB_SYS_JREPORT資料")
+	@ResponseBody
+	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysJreport>> doUpdate(@RequestBody TbSysJreport sysJreport) {
+		DefaultControllerJsonResultObj<TbSysJreport> result = this.initDefaultJsonResult();
+		try {
+			this.update(result, sysJreport);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}
 	
 	
 }

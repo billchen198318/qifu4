@@ -58,7 +58,6 @@ $ : {
             currFileBase64Content = ''; 
         });
     }
-
 }
 
 var checkFields = new Object();
@@ -133,6 +132,13 @@ function btnClear() {
             <Label for="jasperZipFile">jasperreport資源zip壓縮檔</Label>
             <input type="file" class="form-control" id="jasperZipFile" bind:files bind:this={input} feedback={invalidFeedback('file', checkFields)} invalid={checkInvalid('file', checkFields)} />
         </FormGroup>
+    </div>    
+</div>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <FormGroup>
+            <Input id="compile" type="switch" label="編譯jrxml" bind:checked={formParam.compile} />            
+        </FormGroup>         
     </div>    
 </div>
 <div class="row">

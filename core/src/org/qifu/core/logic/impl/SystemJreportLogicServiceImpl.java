@@ -105,6 +105,9 @@ public class SystemJreportLogicServiceImpl extends BaseLogicService implements I
 		report.setReportId( oldResult.getValue().getReportId() );		
 		byte[] content = oldResult.getValue().getContent();
 		this.setStringValueMaxLength(report, "description", MAX_DESCRIPTION_LENGTH);
+		if (!this.isBlank(report.getUploadBase64())) {
+			report.setContent( Base64.decodeBase64(report.getUploadBase64()) );
+		}		
 		if (report.getContent()==null) { // 沒有上傳新的jasper,jrxml檔案
 			report.setContent( content );			
 		}		
