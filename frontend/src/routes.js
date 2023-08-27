@@ -4,32 +4,38 @@ import {
 
 export const routes = {
 	"/prog001d0001"		: wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D0001Q/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0001/IndexPage.svelte')
 	}),
 	"/prog001d0001/*"	: wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D0001Q/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0001/IndexPage.svelte')
 	}),
 	"/prog001d0002"		: wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D0002Q/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0002/IndexPage.svelte')
 	}),
 	"/prog001d0002/*"	: wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D0002Q/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0002/IndexPage.svelte')
 	}),	
 	"/prog001d0003"		: wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D0003Q/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0003/IndexPage.svelte')
 	}),	
 	"/prog001d0004"		: wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D0004Q/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0004/IndexPage.svelte')
 	}),
 	"/prog001d0004/*"	: wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D0004Q/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0004/IndexPage.svelte')
 	}),		
 	"/prog001d0005"		: wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D0005Q/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0005/IndexPage.svelte')
 	}),			
 	"/prog001d0005/*"	: wrap({
-		asyncComponent: () => import('./pages/CORE_PROG001D0005Q/IndexPage.svelte')
+		asyncComponent: () => import('./pages/CORE_PROG001D0005/IndexPage.svelte')
+	}),
+	"/prog002d0001"		: wrap({
+		asyncComponent: () => import('./pages/CORE_PROG002D0001/IndexPage.svelte')
 	}),			
+	"/prog002d0001/*"	: wrap({
+		asyncComponent: () => import('./pages/CORE_PROG002D0001/IndexPage.svelte')
+	}),						
 	"/nopermission"		: wrap({
 		asyncComponent: () => import('./pages/NoPermission.svelte')
 	}),	
