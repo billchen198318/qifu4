@@ -189,6 +189,7 @@ onDestroy(()=>{
             </thead>
             <tbody>
                 {#each itemAllList as item}
+                    {#if item.itemType != 'FOLDER'}
                 <tr>
                     <td>
                         <FormGroup>
@@ -200,6 +201,7 @@ onDestroy(()=>{
                     <td>{item.progId}</td>
                     <td><Icon name={item.fontIconClassId} />&nbsp;{item.name}</td>
                 </tr>
+                    {/if}
                 {/each}
             </tbody>
         </Table>

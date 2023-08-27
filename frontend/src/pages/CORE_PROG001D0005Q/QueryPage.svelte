@@ -2,10 +2,11 @@
 import { onMount, onDestroy } from 'svelte';    
 import { push } from 'svelte-spa-router';
 import { 
-	FormGroup, Input, Label, Button, Icon
+	FormGroup, Input, Label, Button, Icon, Table
 } from 'sveltestrap';
 import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import { 
     getProgItem, getAxiosInstance, 
     getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme
@@ -64,6 +65,7 @@ function setQueryPageState(gridConfig, queryParam) {
 	_queryParam.update((value) => { return queryParam;});
 }
 
+let myModal;
 function initQueryGridConfig() {
     return getGridConfig(
 		'oid'
@@ -91,6 +93,48 @@ function initQueryGridConfig() {
 				'class'	  : 'btn btn-secondary btn-sm'
 			}
 			,			
+			{
+				'method'  : function(val) { 
+					for (var n in dsList) {
+						if (dsList[n].oid == val) {
+							previewReportId = dsList[n].reportId;
+						}
+					}		
+					var axiosInstance = getAxiosInstance();
+					axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findSetParamPage', {
+						"field": {
+							"reportId"	: previewReportId
+						}
+						,
+						"pageOf": {
+							"select"  : 1,
+							"showRow" : 100
+						}
+					})
+					.then(response => {
+						if (null != response.data) {
+							if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+								return;
+							}
+							previewParamList = response.data.value;  
+							// sveltestrap Modal 無法正常運作顯示, 改用 bootstrap
+							myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+							myModal.show();							 
+						} else {
+							previewParamList = [];
+							previewReportId = '';
+						}
+					})
+					.catch(e => {
+						alert(e);
+					});
+				},
+				'icon'    : 'file-pdf-fill',
+				'type'    : 'customize',
+				'memo'    : 'Preview test jasperreport.',
+				'class'	  : 'btn btn-secondary btn-sm'
+			}
+			,				
 			{
 				'method'  : function(val) { 
 					Swal.fire({
@@ -232,6 +276,21 @@ function delItem(oid) {
 	});  
 }
 
+let previewParamList = [];
+let previewReportId = '';
+function previewPdf() {
+	var urlArgs = '?jreportId=' + previewReportId;
+	var inputs = document.getElementsByTagName('input');
+	for (var i = 0; i < inputs.length; ++i) {
+		if (inputs[i].id.indexOf('urlParam_') > -1) {
+			var pname = inputs[i].id.replaceAll('urlParam_','');
+			urlArgs += '&' + pname + '=' + inputs[i].value;
+		}
+	}	
+	myModal.hide();
+	window.open(import.meta.env.VITE_JASPERREPORT_COMMON_URL + urlArgs, "_blank");
+}
+
 onMount(()=>{
 	btnQuery();
 });
@@ -269,6 +328,39 @@ onDestroy(()=>{
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<GridPagination changeGridConfigRowMethod={changeQueryGridRow} changePageSelectMethod={changePageSelect} gridConfig={gridConfig} />
 		<Grid config={gridConfig} bind:dataSource={dsList} />  
+	</div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">預覽測試jasperreport產出</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<Table bordered hover>
+					<thead>
+						<tr>
+							<th style="background-color: #575757; color: whitesmoke;">Url參數</th>
+							<th style="background-color: #575757; color: whitesmoke;">參數值</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each previewParamList as item}
+						<tr>
+							<td>{item.urlParam}</td>
+							<td><input type='text' id={'urlParam_' + item.urlParam} /></td>
+						</tr>
+						{/each}
+					</tbody>
+				</Table>				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" on:click={previewPdf}>OK</button>
+			</div>
+		</div>
 	</div>
 </div>
 
