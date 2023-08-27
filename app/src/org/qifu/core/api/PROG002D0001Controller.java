@@ -30,6 +30,7 @@ import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbRole;
+import org.qifu.core.entity.TbSysProg;
 import org.qifu.core.logic.IRoleLogicService;
 import org.qifu.core.service.IRoleService;
 import org.qifu.core.util.CoreApiSupport;
@@ -92,5 +93,21 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		}
 		return ResponseEntity.ok().body(result);
 	}	
+	
+	@Operation(summary = "CORE_PROG002D0001 - save", description = "新增TB_ROLE資料")
+	@ResponseBody
+	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbSysProg>> doSave(@RequestBody TbSysProg sysProg) {
+		DefaultControllerJsonResultObj<TbSysProg> result = this.initDefaultJsonResult();
+		try {
+			//this.save(result, sysProg);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}		
+	
 	
 }
