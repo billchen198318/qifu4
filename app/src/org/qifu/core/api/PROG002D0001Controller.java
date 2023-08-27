@@ -106,6 +106,12 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(result, cResult);
 	}	
 	
+	private void update(DefaultControllerJsonResultObj<TbRole> result, TbRole role) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, role);
+		DefaultResult<TbRole> uResult = this.roleLogicService.update(role);
+		this.setDefaultResponseJsonResult(result, uResult);
+	}		
+	
 	@Operation(summary = "CORE_PROG002D0001 - save", description = "新增TB_ROLE資料")
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -121,5 +127,35 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@Operation(summary = "CORE_PROG002D0001 - load", description = "讀取TB_ROLE資料")
+	@ResponseBody
+	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbRole>> doLoad(@RequestBody TbRole role) {
+		DefaultControllerJsonResultObj<TbRole> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<TbRole> lResult = this.roleService.selectByEntityPrimaryKey(role);
+			this.setDefaultResponseJsonResult(lResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}		
+	
+	@Operation(summary = "CORE_PROG002D0001 - update", description = "更新TB_ROLE資料")
+	@ResponseBody
+	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbRole>> doUpdate(@RequestBody TbRole role) {
+		DefaultControllerJsonResultObj<TbRole> result = this.initDefaultJsonResult();
+		try {
+			this.update(result, role);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
 	
 }
