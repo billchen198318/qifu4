@@ -25,12 +25,12 @@ import java.util.List;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.CheckControllerFieldHandler;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbRole;
-import org.qifu.core.entity.TbSysProg;
 import org.qifu.core.logic.IRoleLogicService;
 import org.qifu.core.service.IRoleService;
 import org.qifu.core.util.CoreApiSupport;
@@ -94,20 +94,32 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	private void handlerCheck(DefaultControllerJsonResultObj<TbRole> result, TbRole role) throws ControllerException, ServiceException, Exception {
+		CheckControllerFieldHandler<TbRole> chk = this.getCheckControllerFieldHandler(result);
+		chk.testField("role", role, "@org.apache.commons.lang3.StringUtils@isBlank(role)", "請輸入Role編號").throwHtmlMessage();
+		chk.testField("role", role, "!@org.qifu.util.SimpleUtils@checkBeTrueOf_azAZ09Id(role)", "Role編號只允許輸入0-9,a-z,A-Z正常字元").throwHtmlMessage();
+	}	
+	
+	private void save(DefaultControllerJsonResultObj<TbRole> result, TbRole role) throws ControllerException, ServiceException, Exception {
+		this.handlerCheck(result, role);
+		DefaultResult<TbRole> cResult = this.roleLogicService.create(role);
+		this.setDefaultResponseJsonResult(result, cResult);
+	}	
+	
 	@Operation(summary = "CORE_PROG002D0001 - save", description = "新增TB_ROLE資料")
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
-	public ResponseEntity<DefaultControllerJsonResultObj<TbSysProg>> doSave(@RequestBody TbSysProg sysProg) {
-		DefaultControllerJsonResultObj<TbSysProg> result = this.initDefaultJsonResult();
+	public ResponseEntity<DefaultControllerJsonResultObj<TbRole>> doSave(@RequestBody TbRole role) {
+		DefaultControllerJsonResultObj<TbRole> result = this.initDefaultJsonResult();
 		try {
-			//this.save(result, sysProg);
+			this.save(result, role);
 		} catch (ServiceException | ControllerException e) {
 			this.exceptionResult(result, e);
 		} catch (Exception e) {
 			this.exceptionResult(result, e);
 		}
 		return ResponseEntity.ok().body(result);
-	}		
+	}
 	
 	
 }
