@@ -4,6 +4,12 @@ import { wrap } from 'svelte-spa-router/wrap';
 import { getMainProgUrlPrefix, getNestedRoutesMap } from "../../components/BaseHelper.svelte";
 import { PageConstants } from "./config";
 
+let _setParamUrl = getProgItem(PageConstants.SetParamId).url;
+if (_setParamUrl.indexOf('/') > -1 && _setParamUrl.startsWith('#')) {
+    let _setParamUrlNs = _setParamUrl.split('/');
+    _setParamUrl = '/' + _setParamUrlNs[_setParamUrlNs.length-1] + '/:oid';
+}
+
 const prefix = getMainProgUrlPrefix(PageConstants.QueryId);
 const routes = getNestedRoutesMap(
     wrap({ asyncComponent: () => import('./QueryPage.svelte') }), 
