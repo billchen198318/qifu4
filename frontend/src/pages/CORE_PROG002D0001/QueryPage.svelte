@@ -6,6 +6,7 @@ import {
 } from 'sveltestrap';
 import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 import Swal from 'sweetalert2';
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import { 
     getProgItem, getAxiosInstance, 
     getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme
@@ -89,7 +90,24 @@ function initQueryGridConfig() {
 				'type'    : 'customize',
 				'memo'    : 'Set Permission.',
 				'class'	  : 'btn btn-secondary btn-sm'
-			}			
+			}
+			,			
+			{
+				'method'  : function(val) { 
+					refRoleId = '';
+					for (var n in dsList) {
+						if (dsList[n].oid == val) {
+							refRoleId = dsList[n].role;
+						}
+					}		
+					myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+					myModal.show();	
+				},
+				'icon'    : 'layers',
+				'type'    : 'customize',
+				'memo'    : 'Preview test jasperreport.',
+				'class'	  : 'btn btn-secondary btn-sm'
+			}						
 			,
 			{
 				'method'  : function(val) { 
@@ -240,6 +258,17 @@ onDestroy(()=>{
 	toast.pop(0);
 });
 
+
+/* -------------------- Copy role -------------------- */
+let myModal = null;
+let refRoleId = '';
+let copyRoleId = '';
+function copyRole() {
+
+
+}
+
+
 </script>
 
 <div class="row">
@@ -271,5 +300,28 @@ onDestroy(()=>{
 		<Grid config={gridConfig} bind:dataSource={dsList} />  
 	</div>
 </div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">複製Role</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<FormGroup>
+					<Label for="copyRoleId">Role編號，複製來源:&nbsp;{refRoleId}</Label>
+					<Input id="copyRoleId" bind:value={copyRoleId} />
+				</FormGroup>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" on:click={copyRole}>OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 <SvelteToast/>
