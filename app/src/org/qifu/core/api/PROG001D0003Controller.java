@@ -101,7 +101,26 @@ public class PROG001D0003Controller extends CoreApiSupport {
 		return result;
 	}	
 	
-	@Operation(summary = "CORE_PROG001D0003 - update program page of menu.", description = "更新選單資料")
+	@Operation(summary = "CORE_PROG001D0003 - update program page of menu - 1.", description = "更新選單資料 - 1")
+	@ResponseBody
+	@RequestMapping(value = "/updateMenu/{folderProgramOid}", produces = MediaType.APPLICATION_JSON_VALUE)		
+	public DefaultControllerJsonResultObj<Boolean> updateMenu(@PathVariable String folderProgramOid) {
+		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<Boolean> updateResult = this.systemMenuLogicService.createOrUpdate(folderProgramOid, this.transformAppendKeyStringToList(""));
+			if (updateResult.getValue() != null && updateResult.getValue()) {
+				result.setSuccess(YES);
+			}
+			result.setMessage( updateResult.getMessage() );
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return result;
+	}	
+	
+	@Operation(summary = "CORE_PROG001D0003 - update program page of menu - 2.", description = "更新選單資料 - 2")
 	@ResponseBody
 	@RequestMapping(value = "/updateMenu/{folderProgramOid}/{appendOid}", produces = MediaType.APPLICATION_JSON_VALUE)		
 	public DefaultControllerJsonResultObj<Boolean> updateMenu(@PathVariable String folderProgramOid, @PathVariable String appendOid) {

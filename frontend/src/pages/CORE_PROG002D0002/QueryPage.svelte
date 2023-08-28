@@ -1,5 +1,6 @@
 <script>
 import { onMount, onDestroy } from 'svelte';    
+import { push } from 'svelte-spa-router';
 import { 
 	FormGroup, Input, Label, Button, Icon, Table
 } from 'sveltestrap';
@@ -14,7 +15,7 @@ import { PageConstants } from './config';
 
 let toolbarParam = {
     id          : PageConstants.QueryId,
-    description : '選單配置.',
+    description : '帳戶角色Role管理配置.',
     methods     : {
         "refresh"    :   function() {
             clearPage();
@@ -22,20 +23,20 @@ let toolbarParam = {
     }
 }
 
-let queryParam = {
-    'folderOid' :   import.meta.env.VITE_PLEASE_SELECT_ID
+let formParam = {
+	'oid'	:	''
 };
 
-let folderList = [];
-let itemAllList = [];
-let itemEnableList = [];
+let userList = [];
+let userRoleList = [];
+let userRoleEnableList = [];
 
-function loadProgramFolder() {
-    folderList = [];
+function loadUserList() {
+	userList = [];
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading(); 
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadProgramFolder')
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadUserList')
     .then(response => {
         Swal.hideLoading();
         Swal.close();
@@ -44,7 +45,7 @@ function loadProgramFolder() {
                 toast.push(response.data.message, getToastWarningTheme());
                 return;
             }
-            folderList = response.data.value;            
+            userList = response.data.value;            
         } else {
             toast.push('error, null', getToastErrorTheme());            
         }
@@ -53,19 +54,20 @@ function loadProgramFolder() {
         Swal.hideLoading();
         Swal.close();        
         alert(e);        
-    });
+    });	
 }
 
-const programFolderChange = (event) => {
-    itemAllList = [];
-    itemEnableList = [];    
+function userChange(event) {
+	userRoleList = [];
+	userRoleEnableList = [];
     if (import.meta.env.VITE_PLEASE_SELECT_ID == event.target.value) {
         return;
     }
+	formParam.oid = event.target.value;
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading(); 
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadProgramEnableAndAllList/' + event.target.value)
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findUserRoleListByAccountOid', formParam)
     .then(response => {
         Swal.hideLoading();
         Swal.close();
@@ -74,8 +76,8 @@ const programFolderChange = (event) => {
                 toast.push(response.data.message, getToastWarningTheme());
                 return;
             }
-            itemAllList = response.data.value.all;
-            itemEnableList = response.data.value.enable;
+            userRoleList = response.data.value.all;      
+			userRoleEnableList = response.data.value.enable;      
         } else {
             toast.push('error, null', getToastErrorTheme());            
         }
@@ -84,14 +86,14 @@ const programFolderChange = (event) => {
         Swal.hideLoading();
         Swal.close();        
         alert(e);        
-    });
+    });		
 }
 
-function programItemEnableChange(e, itemOid) {
-    var checked = e.target.checked;
+function userRoleEnableChange(e, itemOid) {
+	var checked = e.target.checked;
     var appendOid = '';
-    for (var n in itemEnableList) {        
-        appendOid += itemEnableList[n].oid + ',';
+    for (var n in userRoleEnableList) {        
+        appendOid += userRoleEnableList[n].oid + ',';
     }
     if (checked) {
         appendOid += itemOid + ',';
@@ -100,11 +102,11 @@ function programItemEnableChange(e, itemOid) {
     }
 	if ('' == appendOid) {
 		appendOid = ',';
-	}    
+	}
     Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
     Swal.showLoading(); 
     let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/updateMenu/' + queryParam.folderOid + '/' + appendOid)
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/updateUserRole/' + formParam.oid + '/' + appendOid)
     .then(response => {
         Swal.hideLoading();
         Swal.close();
@@ -123,41 +125,31 @@ function programItemEnableChange(e, itemOid) {
         Swal.close();        
         alert(e);        
         clearPage();
-    });
-}
-
-function checkItemDisable(itemOid) {
-    var f = false;
-    for (var n in itemAllList) {
-        if (itemAllList[n].oid == itemOid && itemAllList[n].itemType == 'FOLDER') {
-            f = true;
-        }
-    }
-    return f;    
+    });	
 }
 
 function checkItemChecked(itemOid) {
-    var f = false;
-    for (var n in itemEnableList) {
-        if (itemEnableList[n].oid == itemOid) {
-            f = true;
-        }
-    }
-    return f;
+	var f = false;
+	for (var n in userRoleEnableList) {
+		if (userRoleEnableList[n].oid == itemOid) {
+			f = true;
+		}
+	}
+	return f;
 }
 
 function clearPage() {
-    itemAllList = [];
-    itemEnableList = [];    
-    queryParam.folderOid = import.meta.env.VITE_PLEASE_SELECT_ID;
+    userRoleList = [];
+	userRoleEnableList = [];    
+    formParam.oid = import.meta.env.VITE_PLEASE_SELECT_ID;
 }
 
 onMount(()=>{
-	loadProgramFolder();
+	loadUserList();
 });
 
 onDestroy(()=>{
-    toast.pop(0);
+	toast.pop(0);
 });
 
 </script>
@@ -170,13 +162,13 @@ onDestroy(()=>{
 <div class="row">
     <div class="col-xs-12 col-md-12 col-lg-12">
         <FormGroup>            
-            <Input type="select" bind:value={queryParam.folderOid} on:change={programFolderChange} >
+            <Input type="select" bind:value={formParam.oid} on:change={userChange} >
                 <option value={import.meta.env.VITE_PLEASE_SELECT_ID}>{import.meta.env.VITE_PLEASE_SELECT_LABEL}</option>
-                {#each folderList as item}
-                <option value={item.oid}>{item.progId} - {item.name}</option>
+                {#each userList as item}
+                <option value={item.oid}>{item.account}</option>
                 {/each}
             </Input>
-        </FormGroup>         
+        </FormGroup>  
     </div>
 </div>
 <div class="row">
@@ -186,25 +178,21 @@ onDestroy(()=>{
             <thead>
                 <tr>
                     <th style="background-color: #575757; color: whitesmoke;">#</th>
-                    <th style="background-color: #575757; color: whitesmoke;">頁面程式代號</th>
-                    <th style="background-color: #575757; color: whitesmoke;">頁面程式名稱</th>
+                    <th style="background-color: #575757; color: whitesmoke;">Role代號</th>
                 </tr>
             </thead>
             <tbody>
-                {#each itemAllList as item}
-                    {#if item.itemType != 'FOLDER'}
+                {#each userRoleList as item}
                 <tr>
                     <td>
                         <FormGroup>
                             <div class="form-check">
-                            <Input type="checkbox" on:change={programItemEnableChange(event, item.oid)} checked={checkItemChecked(item.oid)} disabled={checkItemDisable(item.oid)} />
+                            <Input type="checkbox" on:change={userRoleEnableChange(event, item.oid)} checked={checkItemChecked(item.oid)} />
                             </div>
                         </FormGroup>
                     </td>
-                    <td>{item.progId}</td>
-                    <td><Icon name={item.fontIconClassId} />&nbsp;{item.name}</td>
+                    <td>{item.role}</td>
                 </tr>
-                    {/if}
                 {/each}
             </tbody>
         </Table>
