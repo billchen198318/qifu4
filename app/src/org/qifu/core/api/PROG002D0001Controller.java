@@ -31,7 +31,9 @@ import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.core.entity.TbRole;
+import org.qifu.core.entity.TbRolePermission;
 import org.qifu.core.logic.IRoleLogicService;
+import org.qifu.core.service.IRolePermissionService;
 import org.qifu.core.service.IRoleService;
 import org.qifu.core.util.CoreApiSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,9 @@ public class PROG002D0001Controller extends CoreApiSupport {
 	
 	@Autowired
 	IRoleService<TbRole, String> roleService;
+	
+	@Autowired
+	IRolePermissionService<TbRolePermission, String> rolePermissionService;
 	
 	@Autowired
 	IRoleLogicService roleLogicService;
@@ -158,10 +163,67 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
-	/*
-findSetParamPage
-saveSetParam
-deleteSetParam
-	 */
+	@Operation(summary = "CORE_PROG002D0001 - findSetParamPage", description = "查詢TB_ROLE_Permission資料")
+	@ResponseBody
+	@PostMapping(value = "/findSetParamPage", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<QueryResult<List<TbRolePermission>>> findSetParamPage(@RequestBody SearchBody searchBody) {
+		QueryResult<List<TbRolePermission>> result = this.initResult();
+		try {
+			QueryResult<List<TbRolePermission>> queryResult = this.rolePermissionService.findPage(
+					this.queryParameter(searchBody).fullEquals("role").value(), 
+					searchBody.getPageOf().orderBy("PERM_TYPE,PERMISSION").sortTypeAsc());					
+			this.setQueryResponseJsonResult(queryResult, result, searchBody.getPageOf());
+		} catch (ServiceException | ControllerException e) {
+			this.noSuccessResult(result, e);
+		} catch (Exception e) {
+			this.noSuccessResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
+	
+	private void handlerCheckParam(DefaultControllerJsonResultObj<TbRolePermission> result, TbRolePermission perm) throws ControllerException, ServiceException, Exception {
+		CheckControllerFieldHandler<TbRolePermission> chk = this.getCheckControllerFieldHandler(result);
+		chk
+		.testField("permission", perm, "@org.apache.commons.lang3.StringUtils@isBlank(permission)", "請輸入permission字串")
+		.testField("permType", perm, "@org.apache.commons.lang3.StringUtils@isBlank(permType)", "請輸入類別")
+		.throwHtmlMessage();
+	}	
+	
+	private void saveParam(DefaultControllerJsonResultObj<TbRolePermission> result, TbRolePermission perm) throws ControllerException, ServiceException, Exception {
+		this.handlerCheckParam(result, perm);
+		DefaultResult<TbRolePermission> cResult = this.rolePermissionService.insert(perm);
+		this.setDefaultResponseJsonResult(cResult, result);
+	}		
+	
+	@Operation(summary = "CORE_PROG001D0005 - saveSetParam", description = "新增TB_ROLE_Permission資料")
+	@ResponseBody
+	@PostMapping(value = "/saveSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<TbRolePermission>> doSaveSetParam(@RequestBody TbRolePermission perm) {
+		DefaultControllerJsonResultObj<TbRolePermission> result = this.initDefaultJsonResult();
+		try {			
+			this.saveParam(result, perm);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}		
+	
+	@Operation(summary = "CORE_PROG001D0005 - deleteSetParam", description = "刪除TB_ROLE_Permission資料")
+	@ResponseBody
+	@PostMapping(value = "/deleteSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
+	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDeleteSetParam(@RequestBody TbRolePermission perm) {
+		DefaultControllerJsonResultObj<Boolean> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<Boolean> delResult = this.roleLogicService.deletePermission(perm);
+			this.setDefaultResponseJsonResult(delResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
 	
 }
