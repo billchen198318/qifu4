@@ -43,7 +43,7 @@ var masterParam = {
 var formParam = {
     'role'          :   '',
     'permission'    :   '',
-    'permType'      :   '',
+    'permType'      :   'CONTROLLER',
     'description'   :   ''
 }
 
@@ -217,7 +217,7 @@ function delParam(oid) {
         </FormGroup>         
     </div>
     <div class="col-xs-6 col-md-6 col-lg-6">
-        <FormGroup>
+        <FormGroup floating label="類別">
             <Input type="select" placeholder="請選取類別" bind:value={formParam.permType}>
                 <option value="CONTROLLER">Controller / url</option>
                 <option value="SERVICE">Service</option>
