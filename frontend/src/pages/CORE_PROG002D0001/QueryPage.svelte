@@ -286,6 +286,9 @@ function copyRole() {
             toast.push(response.data.message, getToastSuccessTheme());   
             myModal.hide();
 			btnQuery();
+			refRoleOid = '';
+			refRoleId = '';
+			copyRoleId = '';
         } else {
             toast.push('error, null', getToastErrorTheme());
         }
