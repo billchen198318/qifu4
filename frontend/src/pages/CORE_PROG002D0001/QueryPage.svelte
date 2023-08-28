@@ -95,8 +95,10 @@ function initQueryGridConfig() {
 			{
 				'method'  : function(val) { 
 					refRoleId = '';
+					refRoleOid = '';
 					for (var n in dsList) {
 						if (dsList[n].oid == val) {
+							refRoleOid = val;
 							refRoleId = dsList[n].role;
 						}
 					}		
@@ -259,13 +261,40 @@ onDestroy(()=>{
 });
 
 
-/* -------------------- Copy role -------------------- */
+/* ---------------------------------------- Copy role ---------------------------------------- */
 let myModal = null;
+let refRoleOid = '';
 let refRoleId = '';
 let copyRoleId = '';
 function copyRole() {
-
-
+    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    Swal.showLoading();      
+    let axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/roleCopySaveJson', {
+		'fromRoleOid'	: refRoleOid,
+		'role' 			: copyRoleId,
+		'description'	: 'copy of ' + refRoleId
+	})
+    .then(response => {
+        Swal.hideLoading();
+        Swal.close();
+        if (null != response.data) {
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.push(response.data.message, getToastWarningTheme());
+                return;
+            }            
+            toast.push(response.data.message, getToastSuccessTheme());   
+            myModal.hide();
+			btnQuery();
+        } else {
+            toast.push('error, null', getToastErrorTheme());
+        }
+    })
+    .catch(e => {
+        Swal.hideLoading();
+        Swal.close();        
+        alert(e);
+    }); 
 }
 
 

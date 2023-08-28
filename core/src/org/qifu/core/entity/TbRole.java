@@ -20,6 +20,8 @@ public class TbRole implements java.io.Serializable {
 	private String uuserid;
 	private Date udate;
 	
+	private String fromRoleOid; // copy role 功能, 當傳參數值用
+	
 	@EntityPK(name = "oid", autoUUID = true)
 	public String getOid() {
 		return oid;
@@ -80,6 +82,14 @@ public class TbRole implements java.io.Serializable {
 	
 	public void setUdate(Date udate) {
 		this.udate = udate;
+	}
+
+	public String getFromRoleOid() {
+		return fromRoleOid;
+	}
+
+	public void setFromRoleOid(String fromRoleOid) {
+		this.fromRoleOid = fromRoleOid;
 	}
 	
 }

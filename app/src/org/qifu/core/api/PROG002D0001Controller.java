@@ -226,4 +226,20 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@Operation(summary = "CORE_PROG001D0005 - saveCopyAsNew", description = "複製TB_ROLE資料")
+	@ResponseBody
+	@PostMapping(value = "/roleCopySaveJson", produces = {MediaType.APPLICATION_JSON_VALUE})		
+	public ResponseEntity<DefaultControllerJsonResultObj<TbRole>> doSaveCopyAsNew(@RequestBody TbRole role) {
+		DefaultControllerJsonResultObj<TbRole> result = this.initDefaultJsonResult();
+		try {
+			DefaultResult<TbRole> cResult = this.roleLogicService.copyAsNew(role.getFromRoleOid(), role);
+			this.setDefaultResponseJsonResult(cResult, result);
+		} catch (ServiceException | ControllerException e) {
+			this.exceptionResult(result, e);
+		} catch (Exception e) {
+			this.exceptionResult(result, e);
+		}
+		return ResponseEntity.ok().body(result);
+	}	
+	
 }
