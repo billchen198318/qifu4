@@ -97,6 +97,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(UserBuilderInterceptor())
         	.addPathPatterns("/api/*", "/api/**")
         	.excludePathPatterns( new String[]{ "/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined", "/api/auth/refreshNewToken" } );
+        
+        registry.addInterceptor(ControllerAuthorityCheckInterceptor())
+    	.addPathPatterns("/api/*", "/api/**")
+    	.excludePathPatterns( new String[]{ "/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined", "/api/auth/refreshNewToken" } );
     }
     
     @Override
