@@ -163,8 +163,10 @@
 
 
   function routeLoading(event) {
-	if (!checkHasPermission(event.detail.location,true)) {
-		replace('/nopermission');
+	if (event.detail.location.indexOf('/nopermission') == -1 && event.detail.location.indexOf('/about') == -1) {
+		if (!checkHasPermission(event.detail.location,true)) {
+			replace('/nopermission');
+		}
 	}
   }
 
@@ -184,6 +186,7 @@
   	}).then((result) => {
   		if (result.isConfirmed) {
   			clearUserLoginData();
+			replace('/about');
   		}
   	});
   }
