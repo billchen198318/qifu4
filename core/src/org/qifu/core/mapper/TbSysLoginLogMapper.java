@@ -27,6 +27,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.qifu.base.mapper.IBaseMapper;
 import org.qifu.core.entity.TbSysLoginLog;
 
+@Deprecated
 @Mapper
 public interface TbSysLoginLogMapper extends IBaseMapper<TbSysLoginLog, String> {
 	

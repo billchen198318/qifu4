@@ -38,6 +38,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+// change use SysTokenServiceImpl
+@Deprecated
 @Component
 @Service
 @Transactional(propagation=Propagation.REQUIRED, timeout=300, readOnly=true)

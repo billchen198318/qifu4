@@ -25,6 +25,8 @@ import org.qifu.base.exception.ServiceException;
 import org.qifu.base.service.IBaseService;
 import org.qifu.core.entity.TbSysLoginLog;
 
+// change use ISysTokenService
+@Deprecated
 public interface ISysLoginLogService<T, E> extends IBaseService<TbSysLoginLog, String> {
 	
 	public Boolean deleteAll() throws ServiceException, Exception;

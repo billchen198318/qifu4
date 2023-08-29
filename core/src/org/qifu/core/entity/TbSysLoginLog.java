@@ -9,6 +9,7 @@ import org.qifu.base.model.UpdateDateField;
 import org.qifu.base.model.UpdateUserField;
 import org.qifu.util.SimpleUtils;
 
+@Deprecated
 public class TbSysLoginLog implements java.io.Serializable {
 	private static final long serialVersionUID = -4553084549906639411L;
 	
