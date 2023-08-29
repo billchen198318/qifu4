@@ -53,7 +53,13 @@ export const routes = {
 	}),
 	"/prog004d0001/*"	: wrap({
 		asyncComponent: () => import('./pages/CORE_PROG004D0001/IndexPage.svelte')
-	}),				
+	}),	
+	"/prog004d0002"		: wrap({
+		asyncComponent: () => import('./pages/CORE_PROG004D0002/IndexPage.svelte')
+	}),
+	"/prog004d0002/*"	: wrap({
+		asyncComponent: () => import('./pages/CORE_PROG004D0002/IndexPage.svelte')
+	}),						
 	"/nopermission"		: wrap({
 		asyncComponent: () => import('./pages/NoPermission.svelte')
 	}),	

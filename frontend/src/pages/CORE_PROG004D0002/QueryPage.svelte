@@ -18,7 +18,7 @@ import { PageConstants } from './config';
 
 let toolbarParam = {
     id          : PageConstants.QueryId,
-    description : '操作紀錄檢視.',
+    description : 'Token紀錄檢視.',
     methods     : {
         "refresh"    :   function() {
             btnClear();
@@ -39,7 +39,7 @@ _gridConfig.subscribe(value => {
 
 if (Object.keys(queryParam).length == 0) {
 	queryParam = {
-		'user' : '',
+		'userId' : '',
 	}
 }
 if (Object.keys(gridConfig).length == 0) {
@@ -95,28 +95,18 @@ function initQueryGridConfig() {
 			}
 			,
 			{
-				'label' : '系統代號',
-				'field' : 'sysId'
-			}
-			,
-			{
 				'label' : '帳戶',
-				'field' : 'user'
-			}
-			,			
-			{
-				'label' : 'Event',
-				'field' : 'executeEvent'
+				'field' : 'userId'
 			}
 			,
 			{
-				'label' : '允許否',
-				'field' : 'isPermit'
+				'label' : 'Token',
+				'field' : 'tokenShort'
 			}
 			,
 			{
-				'label' : '時間',
-				'field' : 'cdateString'
+				'label' : '到期時間',
+				'field' : 'expiresDateString'
 			}
 		]    
 	);
@@ -146,7 +136,7 @@ function btnQuery() {
 	var axiosInstance = getAxiosInstance();
 	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findPage', {
 		"field": {
-			"user"    : queryParam.user,
+			"userId"	:	queryParam.userId,
 		}
 		,
 		"pageOf": {
@@ -189,7 +179,7 @@ function clearGridConfig() {
 
 function btnClear() {
 	clearGridConfig();  
-	queryParam.user = '';
+	queryParam.userId = '';
 	dsList = [];
 }
 
@@ -221,50 +211,6 @@ function delItem(oid) {
 	});  
 }
 
-function btnDeleteAll() {
-	Swal.fire({
-		title: '刪除全部紀錄?',
-		icon: 'question',
-		iconHtml: '?',
-		confirmButtonText: 'Yes',
-		cancelButtonText: 'No',
-		showCancelButton: true,
-		showCloseButton: true
-	}).then((result) => {
-		if (result.isConfirmed) {
-			deleteAllLog();
-		}
-	});
-}
-
-function deleteAllLog() {
-	Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
-	Swal.showLoading();  
-	var axiosInstance = getAxiosInstance();  
-	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/deleteAll')
-	.then(response => {
-		Swal.hideLoading();
-		Swal.close();
-		if (null != response.data) {
-			if (import.meta.env.VITE_SUCCESS_FLAG == response.data.success) {
-				toast.push(response.data.message, getToastSuccessTheme());
-			} else {        
-				toast.push(response.data.message, getToastWarningTheme());
-			}      
-			btnQuery();
-		} else {
-			toast.push('error, null', getToastErrorTheme());
-			clearGridConfig();
-		}
-	})
-	.catch(e => {
-		Swal.hideLoading();
-		Swal.close();    
-		btnQuery();
-		alert(e);
-	});  		
-}
-
 onMount(()=>{
 	btnQuery();
 });
@@ -283,8 +229,8 @@ onDestroy(()=>{
 <div class="row">
     <div class="col-xs-12 col-md-12 col-lg-12">
 		<FormGroup>
-			<Label for="user">帳戶</Label>
-			<Input type="text" id="user" placeholder="輸入帳戶" bind:value={queryParam.user} />
+			<Label for="userId">帳戶</Label>
+			<Input type="text" id="userId" placeholder="輸入帳戶" bind:value={queryParam.userId} />
 		</FormGroup>
     </div>
 </div>
@@ -293,9 +239,6 @@ onDestroy(()=>{
 		<Button color="primary" on:click={btnQuery}><Icon name="search"/>&nbsp;查詢</Button>
 		&nbsp;
 		<Button color="primary" on:click={btnClear}><Icon name="eraser"/>&nbsp;清除</Button>
-		&nbsp;
-		&nbsp;
-		<Button color="warning" on:click={btnDeleteAll}><Icon name="eraser"/>&nbsp;刪除全部紀錄</Button>
 	</div>  
 </div>
 <div class="row">
