@@ -2,6 +2,7 @@
 /.idea/
 /frontend/dist/assets/
 /frontend/node_modules/
+/myBatisGenerator
 
 
 # Compiled class file
