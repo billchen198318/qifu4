@@ -106,18 +106,23 @@ export function checkHasPermission(perm, urlCheck) {
 	if (userData.admin) {
 		return true;
 	}      
-	for (var r in userData.roles) {
+	for (var i in userData.roles) {
+		var r = userData.roles[i];
 		if ('admin' == r.role || '*' == r.role) {
 			hasPerm = true;
 		}
 		for (var p in r.rolePermission) {
-			if (perm == r.permission) {
+			var currItemObj = r.rolePermission[p];
+			if ('SERVICE' == currItemObj.permType) {
+				continue;
+			}
+			if (perm == currItemObj.permission) {
 				hasPerm = true;
 			}
 			if (urlCheck) {
-				if (('#'+perm).startsWith(r.rolePermission)) {
+				if (perm.startsWith(currItemObj.permission)) {
 					hasPerm = true;
-				}
+				} 
 			}
 		}
 	}
