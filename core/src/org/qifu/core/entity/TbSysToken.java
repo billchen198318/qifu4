@@ -7,12 +7,14 @@ import org.qifu.base.model.CreateDateField;
 import org.qifu.base.model.EntityPK;
 import org.qifu.util.SimpleUtils;
 
+import io.swagger.v3.oas.annotations.Parameter;
+
 public class TbSysToken implements java.io.Serializable {
 	private static final long serialVersionUID = 6649078428128443821L;
 	
 	private String oid;
     private String userId;
-    private String token;
+    @Parameter(hidden = true) private String token;
     private Date expiresDate;
     private Date rfExpiresDate;
     private Date cdate;
@@ -27,8 +29,8 @@ public class TbSysToken implements java.io.Serializable {
 		return SimpleUtils.getDateFormat_yyyyMMddHHmmss(this.cdate);
 	}	    
 	public String getTokenShort() {
-		if (StringUtils.defaultString(this.token).length() > 15) {
-			return this.token.substring(0, 15) + "...";
+		if (StringUtils.defaultString(this.token).length() >= 30) {
+			return this.token.substring(0, 20) + "..." + this.token.substring(this.token.length()-5, this.token.length());
 		}
 		return token;
 	}
@@ -50,6 +52,7 @@ public class TbSysToken implements java.io.Serializable {
         this.userId = userId;
     }
     
+    @Parameter(hidden = true)
     public String getToken() {
         return token;
     }
