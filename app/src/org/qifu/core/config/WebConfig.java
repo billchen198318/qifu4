@@ -41,6 +41,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 	
+	private static final String[] authPath = new String[] { 
+			"/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined", "/api/auth/refreshNewToken" 
+	};
+	
 	/*
 	@Autowired
 	FreeMarkerConfigurer freeMarkerConfigurer;
@@ -90,17 +94,13 @@ public class WebConfig implements WebMvcConfigurer {
         	.addPathPatterns("/*", "/**")
         	.excludePathPatterns( CoreAppConstants.getWebConfiginterceptorExcludePathPatterns() );
         
-        registry.addInterceptor(ControllerAuthorityCheckInterceptor())
-        	.addPathPatterns("/*", "/**")
-        	.excludePathPatterns( CoreAppConstants.getWebConfiginterceptorExcludePathPatterns() );
-        
         registry.addInterceptor(UserBuilderInterceptor())
         	.addPathPatterns("/api/*", "/api/**")
-        	.excludePathPatterns( new String[]{ "/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined", "/api/auth/refreshNewToken" } );
+        	.excludePathPatterns( authPath );
         
         registry.addInterceptor(ControllerAuthorityCheckInterceptor())
-    	.addPathPatterns("/api/*", "/api/**")
-    	.excludePathPatterns( new String[]{ "/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined", "/api/auth/refreshNewToken" } );
+        	.addPathPatterns("/api/*", "/api/**")
+        	.excludePathPatterns( authPath ).excludePathPatterns( "/api/PROG004D0001/**" );
     }
     
     @Override
