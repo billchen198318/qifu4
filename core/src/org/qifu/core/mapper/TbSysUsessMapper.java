@@ -25,6 +25,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.qifu.base.mapper.IBaseMapper;
 import org.qifu.core.entity.TbSysUsess;
 
+@Deprecated
 @Mapper
 public interface TbSysUsessMapper extends IBaseMapper<TbSysUsess, String> {
 	

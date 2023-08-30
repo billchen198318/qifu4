@@ -24,6 +24,8 @@ package org.qifu.core.service;
 import org.qifu.base.service.IBaseService;
 import org.qifu.core.entity.TbSysUsess;
 
+//change use ISysTokenService
+@Deprecated
 public interface ISysUsessService<T, E> extends IBaseService<TbSysUsess, String> {
 	
 }
