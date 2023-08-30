@@ -7,6 +7,8 @@ import org.qifu.base.model.CreateDateField;
 import org.qifu.base.model.EntityPK;
 import org.qifu.util.SimpleUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.Parameter;
 
 public class TbSysToken implements java.io.Serializable {
@@ -14,6 +16,8 @@ public class TbSysToken implements java.io.Serializable {
 	
 	private String oid;
     private String userId;
+    
+    @JsonIgnore
     @Parameter(hidden = true) private String token;
     private Date expiresDate;
     private Date rfExpiresDate;
