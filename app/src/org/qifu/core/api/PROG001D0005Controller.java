@@ -37,6 +37,7 @@ import org.qifu.core.logic.ISystemJreportLogicService;
 import org.qifu.core.service.ISysJreportParamService;
 import org.qifu.core.service.ISysJreportService;
 import org.qifu.core.util.CoreApiSupport;
+import org.qifu.core.util.JReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -115,15 +116,24 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		}
 	}
 	
+	private void deployReport(DefaultResult<TbSysJreport> result) throws ControllerException, ServiceException, Exception {
+		if (YES.equals(result.getSuccess())) {
+			TbSysJreport sysJRpt = result.getValue();
+			JReportUtils.deployReport(sysJRpt);			
+		}		
+	}
+	
 	private void save(DefaultControllerJsonResultObj<TbSysJreport> result, TbSysJreport sysJreport) throws ControllerException, ServiceException, Exception {
 		this.handlerCheck(result, sysJreport, true);
 		DefaultResult<TbSysJreport> cResult = this.systemJreportLogicService.create(sysJreport);
+		this.deployReport(cResult);
 		this.setDefaultResponseJsonResult(result, cResult);
 	}
 	
 	private void update(DefaultControllerJsonResultObj<TbSysJreport> result, TbSysJreport sysJreport) throws ControllerException, ServiceException, Exception {
 		this.handlerCheck(result, sysJreport, false);
 		DefaultResult<TbSysJreport> uResult = this.systemJreportLogicService.update(sysJreport);
+		this.deployReport(uResult);
 		this.setDefaultResponseJsonResult(uResult, result);		
 	}
 	
