@@ -184,7 +184,7 @@ onDestroy(()=>{
             <tbody>
                 {#each userRoleList as item}
                 <tr>
-                    <td>
+                    <td style="background-color: #BCC6CC;">
                         <FormGroup>
                             <div class="form-check">
                             <Input type="checkbox" on:change={userRoleEnableChange(event, item.oid)} checked={checkItemChecked(item.oid)} />

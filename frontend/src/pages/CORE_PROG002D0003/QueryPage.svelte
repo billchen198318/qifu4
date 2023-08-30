@@ -185,7 +185,7 @@ onDestroy(()=>{
             <tbody>
                 {#each progRoleList as item}
                 <tr>
-                    <td>
+                    <td style="background-color: #BCC6CC;">
                         <FormGroup>
                             <div class="form-check">
                             <Input type="checkbox" on:change={progRoleEnableChange(event, item.oid)} checked={checkItemChecked(item.oid)} />

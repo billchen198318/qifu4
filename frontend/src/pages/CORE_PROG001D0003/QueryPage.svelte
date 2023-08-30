@@ -194,7 +194,7 @@ onDestroy(()=>{
                 {#each itemAllList as item}
                     {#if item.itemType != 'FOLDER'}
                 <tr>
-                    <td>
+                    <td style="background-color: #BCC6CC;">
                         <FormGroup>
                             <div class="form-check">
                             <Input type="checkbox" on:change={programItemEnableChange(event, item.oid)} checked={checkItemChecked(item.oid)} disabled={checkItemDisable(item.oid)} />
