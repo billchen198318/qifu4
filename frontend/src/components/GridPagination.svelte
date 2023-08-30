@@ -118,7 +118,7 @@ $ : {
 	              		<td align="left">
 	                		<h6>
 	                  			Total
-	                  			<Badge>{gridConfig.total}</Badge>
+	                  			<Badge color="info">{gridConfig.total}</Badge>
 	                		</h6>
 	              		</td>
 	            	</tr>
