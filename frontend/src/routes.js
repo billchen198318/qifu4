@@ -63,6 +63,9 @@ export const routes = {
 	"/nopermission"		: wrap({
 		asyncComponent: () => import('./pages/NoPermission.svelte')
 	}),	
+	"/dashboard"		: wrap({
+		asyncComponent: () => import('./pages/DashboardDemo.svelte')
+	}),	
 	"/about"			: wrap({
 		asyncComponent: () => import('./pages/About.svelte')
 	}),

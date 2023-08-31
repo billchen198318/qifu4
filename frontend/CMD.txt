@@ -10,6 +10,8 @@ pnpm i
 #pnpm i bytemd
 #pnpm i @bytemd/plugin-gfm
 #pnpm i @bytemd/plugin-import-html
+#pnpm i echarts
+#pnpm i svelte-echarts
 #npm run build
 
 # pnpm up --latest

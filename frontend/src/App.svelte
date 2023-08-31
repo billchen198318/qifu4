@@ -23,7 +23,8 @@
   	userLogoutClearCookie,
   	checkUserHasLogined,
   	getAxiosInstance,
-	checkHasPermission
+	checkHasPermission,
+    checkHasRole
   }
   from "./components/BaseHelper.svelte";
 
@@ -163,9 +164,14 @@
 
 
   function routeLoading(event) {
-	if (event.detail.location.indexOf('/nopermission') == -1 && event.detail.location.indexOf('/about') == -1) {
+	if (event.detail.location != '/nopermission' && event.detail.location != '/about' && event.detail.location != '/') {
 		if (!checkHasPermission(event.detail.location,true)) {
 			replace('/nopermission');
+		}
+	}
+	if (checkHasRole('admin') || checkHasRole('*')) {
+		if (event.detail.location == '/') {
+			replace('/dashboard');
 		}
 	}
   }
@@ -186,7 +192,7 @@
   	}).then((result) => {
   		if (result.isConfirmed) {
   			clearUserLoginData();
-			replace('/about');
+			replace('/');
   		}
   	});
   }
