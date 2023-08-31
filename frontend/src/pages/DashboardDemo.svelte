@@ -8,13 +8,18 @@ let barOption = { };
 let pieOption = { };
 let lineOption = { };
 
+let updateBoardInterval = setInterval(() => {
+	loadBarAndPieChart();
+	loadLineChart();
+}, 40000);
+
 onMount(()=>{
 	loadBarAndPieChart();
 	loadLineChart();
 });
 
 onDestroy(()=>{
-
+	clearInterval(updateBoardInterval);
 });
 
 function loadBarAndPieChart() {
