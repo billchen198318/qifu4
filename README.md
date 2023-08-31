@@ -1,6 +1,7 @@
 # qífū-4
 一個簡單的Springboot 3 後端, 與 Svelte前端的 Admin WEB, base on JAVA & Spring / Spring-boot & Sevlte frontend
 
+<img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/doc/0002.png">
 <img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/doc/0001.png">
 
 
