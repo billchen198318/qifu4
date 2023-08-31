@@ -1,72 +1,71 @@
 <script>
 import { onMount, onDestroy } from 'svelte';    
+import { Badge } from 'sveltestrap';
 import { Chart } from 'svelte-echarts';
-import { 
-    getProgItem, getAxiosInstance, 
-    getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme
-} from "../components/BaseHelper.svelte";
+import { getAxiosInstance } from "../components/BaseHelper.svelte";
 
 let barOption = { };
 let pieOption = { };
 let lineOption = { };
 
 onMount(()=>{
+	loadBarAndPieChart();
+	loadLineChart();
+});
 
-  loadBarAndPieChart();
-  loadLineChart();
+onDestroy(()=>{
 
 });
 
 function loadBarAndPieChart() {
 	var axiosInstance = getAxiosInstance();
 	axiosInstance.post(import.meta.env.VITE_API_URL + '/DashboardDemo/findBoardDemo')
-		.then(response => {
-			if (null != response.data) {
-				let dsList = response.data.value;
-        let labList = [];
-        let dataList = [];
-        let pieDataList = [];
-				for (var i in dsList) {
-          labList.push(dsList[i].userId);
-          dataList.push(dsList[i].countSize);
-          pieDataList.push({
-            'name' : dsList[i].userId,
-            'value' : dsList[i].countSize
-          });
-        }
-        initBarChart(labList, dataList);
-        initPieChart(pieDataList);
-			} else {
-				alert('error, null');
-			}
-		})
-		.catch(e => {
-			alert(e);
-		});
+	.then(response => {
+		if (null != response.data) {
+			let dsList = response.data.value;
+       		let labList = [];
+       		let dataList = [];
+       		let pieDataList = [];
+			for (var i in dsList) {
+      			labList.push(dsList[i].userId);
+    			dataList.push(dsList[i].countSize);
+				pieDataList.push({
+					'name' : dsList[i].userId,
+					'value' : dsList[i].countSize
+				});
+       		}
+       		initBarChart(labList, dataList);
+       		initPieChart(pieDataList);
+		} else {
+			alert('error, null');
+		}
+	})
+	.catch(e => {
+		alert(e);
+	});
 }
 
 function loadLineChart() {
 	var axiosInstance = getAxiosInstance();
 	axiosInstance.post(import.meta.env.VITE_API_URL + '/DashboardDemo/findSize')
-		.then(response => {
-			if (null != response.data) {
-				let dsList = response.data.value;
-        let labList = [];
-        let dataList = [];
-				for (var i in dsList) {
-          labList.push(dsList[i].date);
-          dataList.push(dsList[i].countSize);
-        }
-        initLineChart(labList, dataList);
-			} else {
-				alert('error, null');
-			}
-		})
-		.catch(e => {
-			alert(e);
-		});
+	.then(response => {
+		if (null != response.data) {
+			let dsList = response.data.value;
+       		let labList = [];
+       		let dataList = [];
+			for (var i in dsList) {
+				labList.push(dsList[i].date);
+				dataList.push(dsList[i].countSize);
+    		}
+        	initLineChart(labList, dataList);
+		} else {
+			alert('error, null');
+		}
+	})
+	.catch(e => {
+		alert(e);
+	});
 }
-
 
 function initBarChart(labList, dataList) {
 	barOption = {
@@ -93,7 +92,7 @@ function initBarChart(labList, dataList) {
 			type: 'value'
 		}],
 		series: [{
-			name: 'Direct',
+			name: 'usage count',
 			type: 'bar',
 			barWidth: '60%',
 			data: dataList
@@ -136,6 +135,12 @@ function initPieChart(pieDataList) {
 
 function initLineChart(labList, dateList) {
 	lineOption = {
+		title: {
+			text: 'Usage count per day'
+		},
+		tooltip: {
+			trigger: 'axis'
+		},		
 		xAxis: {
 			type: 'category',
 			data: labList
@@ -146,7 +151,8 @@ function initLineChart(labList, dateList) {
 		series: [{
 			data: dateList,
 			type: 'line',
-			smooth: true
+			smooth: true,
+			areaStyle: {}
 		}]
 	};
 }
@@ -166,15 +172,22 @@ function initLineChart(labList, dateList) {
 </style>
 
 <div class="row">
-  <div class="col-xs-6 col-md-6 col-lg-6 chartSmall">
-    <Chart options={barOption} />
-  </div>
-  <div class="col-xs-6 col-md-6 col-lg-6 chartSmall">
-    <Chart options={pieOption} />
-  </div>
+	<div class="col-xs-12 col-md-12 col-lg-12">
+		<h2>
+			<Badge pill color="info">User usage count</Badge>
+		</h2>
+	</div>
 </div>
 <div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12 chartAll">
-    <Chart options={lineOption} />
-  </div>
+	<div class="col-xs-6 col-md-6 col-lg-6 chartSmall">
+		<Chart options={barOption} />
+	</div>
+	<div class="col-xs-6 col-md-6 col-lg-6 chartSmall">
+		<Chart options={pieOption} />
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12 col-md-12 col-lg-12 chartAll">
+		<Chart options={lineOption} />
+	</div>
 </div>

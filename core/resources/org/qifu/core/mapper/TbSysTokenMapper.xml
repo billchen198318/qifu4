@@ -143,7 +143,7 @@
 	WHERE CDATE <![CDATA[ >= ]]> #{date1,jdbcType=TIMESTAMP}
 	AND CDATE <![CDATA[ <= ]]> #{date2,jdbcType=TIMESTAMP}
 	GROUP BY USER_ID ORDER BY COUNT_SIZE desc
-	LIMIT 10
+	LIMIT 7
   </select>    
   
   <select id="countSizeByDate" parameterType="java.util.HashMap" resultType="java.lang.Long">
