@@ -1,189 +1,156 @@
 <script>
 import { onMount, onDestroy } from 'svelte';    
-import { push } from 'svelte-spa-router';
-import { 
-	FormGroup, Input, Label, Button, Icon
-} from 'sveltestrap';
-import { toast, SvelteToast } from '@zerodevx/svelte-toast';
-import Swal from 'sweetalert2';
 import { Chart } from 'svelte-echarts';
 import { 
     getProgItem, getAxiosInstance, 
     getToastDefaultTheme, getToastErrorTheme, getToastWarningTheme, getToastSuccessTheme
 } from "../components/BaseHelper.svelte";
 
-const barOption = {
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'shadow'
-    }
-  },
-  grid: {
-    left: '3%',
-    right: '4%',
-    bottom: '3%',
-    containLabel: true
-  },
-  xAxis: [
-    {
-      type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      axisTick: {
-        alignWithLabel: true
-      }
-    }
-  ],
-  yAxis: [
-    {
-      type: 'value'
-    }
-  ],
-  series: [
-    {
-      name: 'Direct',
-      type: 'bar',
-      barWidth: '60%',
-      data: [10, 52, 200, 334, 390, 330, 220]
-    }
-  ]
-};
+let barOption = { };
+let pieOption = { };
+let lineOption = { };
 
-const pieOption = {
-  tooltip: {
-    trigger: 'item'
-  },
-  legend: {
-    top: '5%',
-    left: 'center'
-  },
-  series: [
-    {
-      name: 'Access From',
-      type: 'pie',
-      radius: ['40%', '70%'],
-      avoidLabelOverlap: false,
-      label: {
-        show: false,
-        position: 'center'
-      },
-      emphasis: {
-        label: {
-          show: true,
-          fontSize: 40,
-          fontWeight: 'bold'
+onMount(()=>{
+
+  loadBarAndPieChart();
+  loadLineChart();
+
+});
+
+function loadBarAndPieChart() {
+	var axiosInstance = getAxiosInstance();
+	axiosInstance.post(import.meta.env.VITE_API_URL + '/DashboardDemo/findBoardDemo')
+		.then(response => {
+			if (null != response.data) {
+				let dsList = response.data.value;
+        let labList = [];
+        let dataList = [];
+        let pieDataList = [];
+				for (var i in dsList) {
+          labList.push(dsList[i].userId);
+          dataList.push(dsList[i].countSize);
+          pieDataList.push({
+            'name' : dsList[i].userId,
+            'value' : dsList[i].countSize
+          });
         }
-      },
-      labelLine: {
-        show: false
-      },
-      data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
-        { value: 484, name: 'Union Ads' },
-        { value: 300, name: 'Video Ads' }
-      ]
-    }
-  ]
-};
+        initBarChart(labList, dataList);
+        initPieChart(pieDataList);
+			} else {
+				alert('error, null');
+			}
+		})
+		.catch(e => {
+			alert(e);
+		});
+}
 
-const lineAreaOption = {
-  title: {
-    text: 'Stacked Area Chart'
-  },
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'cross',
-      label: {
-        backgroundColor: '#6a7985'
-      }
-    }
-  },
-  legend: {
-    data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
-  },
-  toolbox: {
-    feature: {
-      saveAsImage: {}
-    }
-  },
-  grid: {
-    left: '3%',
-    right: '4%',
-    bottom: '3%',
-    containLabel: true
-  },
-  xAxis: [
-    {
-      type: 'category',
-      boundaryGap: false,
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    }
-  ],
-  yAxis: [
-    {
-      type: 'value'
-    }
-  ],
-  series: [
-    {
-      name: 'Email',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series'
-      },
-      data: [120, 132, 101, 134, 90, 230, 210]
-    },
-    {
-      name: 'Union Ads',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series'
-      },
-      data: [220, 182, 191, 234, 290, 330, 310]
-    },
-    {
-      name: 'Video Ads',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series'
-      },
-      data: [150, 232, 201, 154, 190, 330, 410]
-    },
-    {
-      name: 'Direct',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series'
-      },
-      data: [320, 332, 301, 334, 390, 330, 320]
-    },
-    {
-      name: 'Search Engine',
-      type: 'line',
-      stack: 'Total',
-      label: {
-        show: true,
-        position: 'top'
-      },
-      areaStyle: {},
-      emphasis: {
-        focus: 'series'
-      },
-      data: [820, 932, 901, 934, 1290, 1330, 1320]
-    }
-  ]
-};
+function loadLineChart() {
+	var axiosInstance = getAxiosInstance();
+	axiosInstance.post(import.meta.env.VITE_API_URL + '/DashboardDemo/findSize')
+		.then(response => {
+			if (null != response.data) {
+				let dsList = response.data.value;
+        let labList = [];
+        let dataList = [];
+				for (var i in dsList) {
+          labList.push(dsList[i].date);
+          dataList.push(dsList[i].countSize);
+        }
+        initLineChart(labList, dataList);
+			} else {
+				alert('error, null');
+			}
+		})
+		.catch(e => {
+			alert(e);
+		});
+}
+
+
+function initBarChart(labList, dataList) {
+	barOption = {
+		tooltip: {
+			trigger: 'axis',
+			axisPointer: {
+				type: 'shadow'
+			}
+		},
+		grid: {
+			left: '3%',
+			right: '4%',
+			bottom: '3%',
+			containLabel: true
+		},
+		xAxis: [{
+			type: 'category',
+			data: labList,
+			axisTick: {
+				alignWithLabel: true
+			}
+		}],
+		yAxis: [{
+			type: 'value'
+		}],
+		series: [{
+			name: 'Direct',
+			type: 'bar',
+			barWidth: '60%',
+			data: dataList
+		}]
+	};
+}
+
+function initPieChart(pieDataList) {
+	pieOption = {
+		tooltip: {
+			trigger: 'item'
+		},
+		legend: {
+			top: '5%',
+			left: 'center'
+		},
+		series: [{
+			name: 'User',
+			type: 'pie',
+			radius: ['40%', '70%'],
+			avoidLabelOverlap: false,
+			label: {
+				show: false,
+				position: 'center'
+			},
+			emphasis: {
+				label: {
+					show: true,
+					fontSize: 40,
+					fontWeight: 'bold'
+				}
+			},
+			labelLine: {
+				show: false
+			},
+			data: pieDataList
+		}]
+	};
+}
+
+function initLineChart(labList, dateList) {
+	lineOption = {
+		xAxis: {
+			type: 'category',
+			data: labList
+		},
+		yAxis: {
+			type: 'value'
+		},
+		series: [{
+			data: dateList,
+			type: 'line',
+			smooth: true
+		}]
+	};
+}
+
 
 </script>
 
@@ -208,6 +175,6 @@ const lineAreaOption = {
 </div>
 <div class="row">
   <div class="col-xs-12 col-md-12 col-lg-12 chartAll">
-    <Chart options={lineAreaOption} />
+    <Chart options={lineOption} />
   </div>
 </div>

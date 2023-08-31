@@ -11,6 +11,11 @@
     <result column="CDATE" jdbcType="TIMESTAMP" property="cdate" />
   </resultMap>
   
+  <resultMap id="BoardDemoResultMap" type="org.qifu.core.vo.BoardDemo">
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="COUNT_SIZE" jdbcType="INTEGER" property="countSize" />
+  </resultMap>  
+  
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select *
     from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_token
@@ -131,5 +136,21 @@
     delete from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_token
     where OID = #{oid,jdbcType=CHAR}
   </delete>  
+
+  <select id="findCountSizeByDatePerUser" parameterType="java.util.HashMap" resultMap="BoardDemoResultMap">
+	SELECT USER_ID, COUNT(*) AS COUNT_SIZE 
+	FROM <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_token 
+	WHERE CDATE <![CDATA[ >= ]]> #{date1,jdbcType=TIMESTAMP}
+	AND CDATE <![CDATA[ <= ]]> #{date2,jdbcType=TIMESTAMP}
+	GROUP BY USER_ID ORDER BY COUNT_SIZE desc
+	LIMIT 10
+  </select>    
+  
+  <select id="countSizeByDate" parameterType="java.util.HashMap" resultType="java.lang.Long">
+	SELECT COUNT(*) AS COUNT_SIZE 
+	FROM <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_token 
+	WHERE CDATE <![CDATA[ >= ]]> #{date1,jdbcType=TIMESTAMP}
+	AND CDATE <![CDATA[ <= ]]> #{date2,jdbcType=TIMESTAMP}
+  </select>    
   
 </mapper>
