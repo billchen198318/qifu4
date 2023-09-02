@@ -355,6 +355,9 @@ export function getUrlNoStartSign(url) {
 	if (url.length < 2) {
 		return '/';
 	}
+	if (!checkHasPermission(url,true)) {
+		return '/nopermission';
+	}
 	return url.startsWith('#') ? url.substring(1,url.length) : url;
 }
 

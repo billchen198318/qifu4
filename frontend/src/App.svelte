@@ -9,7 +9,7 @@
   	DropdownMenu,
   	DropdownToggle
   } from 'sveltestrap';
-  import { onMount } from 'svelte';
+  import { onMount, beforeUpdate } from 'svelte';
   
   import LoginPage from './pages/LoginPage.svelte';
 
@@ -47,8 +47,12 @@
 
   onMount(() => {
 
-  	loadUserLoginedFromClient();
+  	//loadUserLoginedFromClient();
 
+  });
+
+  beforeUpdate(() => {
+	loadUserLoginedFromClient();
   });
 
   // 驗證之前是否登入 refresh token , access token            
