@@ -1,7 +1,7 @@
 <script>
 import { onMount, onDestroy } from 'svelte';
 import { goto } from '$app/navigation';
-import { checkUserHasLogined } from '../components/BaseHelper.svelte';
+import { checkUserHasLogined, checkHasRole } from '../components/BaseHelper.svelte';
 import { _user } from '../store/userStore.js';
 
 let userData;
@@ -11,9 +11,13 @@ let userData;
 
 onMount(()=>{
     if (!checkUserHasLogined(userData)) {
-        goto('/login');
+        window.location.href = '/login';
     } else {
-        goto('/about');
+        if (checkHasRole('admin') || checkHasRole('*')) {
+            window.location.href = '/dashboard_demo';
+        } else {
+            window.location.href = '/about';
+        }
     }
 });
 

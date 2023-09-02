@@ -10,7 +10,7 @@ import {
 import { goto } from '$app/navigation';
 import Swal from 'sweetalert2';
 import { _user } from '../../store/userStore.js';
-import { setRefreshAndAccessTokenCookie } from '../../components/BaseHelper.svelte';
+import { setRefreshAndAccessTokenCookie, checkHasRole } from '../../components/BaseHelper.svelte';
 
 let userData;
 _user.subscribe(value => {
@@ -63,7 +63,11 @@ function loginClick() {
 			});
 		}
 		setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
-		goto('/about');
+		if (checkHasRole('admin') || checkHasRole('*')) {
+			goto('/dashboard_demo');
+		} else {
+			goto('/about');
+		}
 	})
 	.catch((error) => {
 		console.log(error);
