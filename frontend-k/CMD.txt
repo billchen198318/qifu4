@@ -1,0 +1,11 @@
+npm install axios
+npm install bootstrap
+npm install bootstrap-icons
+npm install sveltestrap
+npm install sweetalert2
+npm install @zerodevx/svelte-toast
+npm install bytemd
+npm install @bytemd/plugin-gfm
+npm install @bytemd/plugin-import-html
+npm install echarts
+npm install svelte-echarts
