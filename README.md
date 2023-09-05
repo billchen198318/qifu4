@@ -1,5 +1,5 @@
 # qífū-4
-一個簡單的Springboot 3 後端, 與 Svelte/SvelteKit前端的 Admin WEB, base on JAVA & Spring / Spring-boot & Sevlte frontend
+一個簡單的Springboot 3 後端, 與 Svelte / SvelteKit前端的範例. A simple sample Admin WEB, base on JAVA & Springboot & Sevlte (SevlteKit) frontend
 
 <img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/doc/0002.png">
 <img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/doc/0001.png">
@@ -20,6 +20,8 @@ mysql qifu4 -u root -p < qifu4.sql
 <br>database connection config file modify , `/app/resources/db1-config.properties`
 ```text
 db1.datasource.jdbcUrl=jdbc:mariadb://localhost/qifu4?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+db1.datasource.username=mariadb-account
+db1.datasource.password=mariadb-password
 ```
 
 <br><br><br>
