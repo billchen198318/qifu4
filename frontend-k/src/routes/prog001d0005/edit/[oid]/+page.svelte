@@ -54,11 +54,13 @@ $ : {
     }
 
     if (files != null && files.length > 0) {
-        getFile2Base64(files[0]).then(c => { 
-            currFileBase64Content = c;
-        }).catch(e => { 
-            currFileBase64Content = ''; 
-        });
+        if (files[0].size > 1 && files[0].size <= import.meta.env.VITE_UPLOAD_MAX_SIZE ) {
+            getFile2Base64(files[0]).then(c => { 
+                currFileBase64Content = c;
+            }).catch(e => { 
+                currFileBase64Content = ''; 
+            });            
+        }
     }
 }
 
@@ -111,8 +113,20 @@ function btnUpdate() {
     Swal.showLoading();      
     formParam.uploadBase64 = currFileBase64Content;
     if (files != null && files.length > 0) {
+        if (files[0].size < 1 || files[0].size > import.meta.env.VITE_UPLOAD_MAX_SIZE ) {
+            Swal.hideLoading();
+            Swal.close();           
+            toast.push('檔案大小超過規範', getToastWarningTheme());    
+            return;
+        }
+        if (!files[0].name.toLowerCase().endsWith('.zip')) {
+            Swal.hideLoading();
+            Swal.close();           
+            toast.push('只允許上傳zip檔案', getToastWarningTheme());               
+            return;
+        }
         formParam.file = files[0].name;
-    }    
+    } 
     let axiosInstance = getAxiosInstance();
     axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/update', formParam)
     .then(response => {
