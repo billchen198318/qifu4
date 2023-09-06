@@ -1,6 +1,9 @@
 {
 	"excludePathPatterns" : [
-		"/helloApi**",
-		"/user/gradeList"
+		"/favicon.ico",
+		"/services**",
+		"/services/**",		
+		"/api**",
+		"/api/**"
 	]
 }

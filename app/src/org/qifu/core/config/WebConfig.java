@@ -22,39 +22,26 @@
 package org.qifu.core.config;
 
 import org.qifu.base.CoreAppConstants;
-import org.qifu.base.interceptor.MDCInterceptor;
-//import org.qifu.core.directive.CoreUiDirectiveSimpleHash;
 import org.qifu.core.interceptor.ControllerAuthorityCheckInterceptor;
+import org.qifu.core.interceptor.MDC4UserBuildInterceptor;
 import org.qifu.core.interceptor.UserBuilderInterceptor;
-//import org.qifu.core.model.LocaleMessageTemplateMethodModel;
-//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-//import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 	
-	private static final String[] authPath = new String[] { 
+	private static final String[] _authPath = new String[] { 
 			"/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined", "/api/auth/refreshNewToken" 
 	};
 	
-	/*
-	@Autowired
-	FreeMarkerConfigurer freeMarkerConfigurer;
+	private static final String _eventLogPath = "/api/PROG004D0001/**";
 	
-	@PostConstruct
-	public void freeMarkerConfigurer() {
-		freeMarkerConfigurer.getConfiguration().setSharedVariable("getText", new LocaleMessageTemplateMethodModel());
-        freeMarkerConfigurer.getConfiguration().setSharedVariable("qifu", new CoreUiDirectiveSimpleHash(freeMarkerConfigurer.getConfiguration().getObjectWrapper()));
-    }
-	*/
 	
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -63,19 +50,14 @@ public class WebConfig implements WebMvcConfigurer {
         .addResourceLocations( CoreAppConstants.WebConfig_resourceLocations );
     }
     
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("forward:/index");
-    }    
-    
     @Bean 
     public RequestContextListener requestContextListener(){
         return new RequestContextListener();
     }     
     
     @Bean
-    MDCInterceptor MDCInterceptor() {
-    	return new MDCInterceptor();
+    MDC4UserBuildInterceptor MDCInterceptor() {
+    	return new MDC4UserBuildInterceptor();
     }
     
     @Bean
@@ -90,17 +72,17 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(MDCInterceptor())
-        	.addPathPatterns("/*", "/**")
-        	.excludePathPatterns( CoreAppConstants.getWebConfiginterceptorExcludePathPatterns() );
-        
         registry.addInterceptor(UserBuilderInterceptor())
         	.addPathPatterns("/api/*", "/api/**")
-        	.excludePathPatterns( authPath );
+        	.excludePathPatterns( _authPath );
+        
+        registry.addInterceptor(MDCInterceptor())
+    		.addPathPatterns("/*", "/**")
+    		.excludePathPatterns( _authPath );        
         
         registry.addInterceptor(ControllerAuthorityCheckInterceptor())
         	.addPathPatterns("/api/*", "/api/**")
-        	.excludePathPatterns( authPath ).excludePathPatterns( "/api/PROG004D0001/**" );
+        	.excludePathPatterns( _authPath ).excludePathPatterns( _eventLogPath );
     }
     
     @Override
