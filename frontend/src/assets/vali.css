@@ -841,6 +841,9 @@ be a descendant of the grid when it is being dragged.
   background-color: #006ad5; /* #009688 2021-09-08 */
   z-index: 1030;
   padding-right: 15px;
+  /* --- 2023-09-07 ---- */
+  -webkit-filter: drop-shadow(6px 6px 18px rgba(10, 10, 10, 0.7));
+  filter: drop-shadow(6px 6px 18px rgba(10, 10, 10, 0.7));  
 }
 
 @media (min-width: 768px) {
