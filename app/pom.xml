@@ -385,7 +385,9 @@
 				<configuration>
 					<includeSystemScope>true</includeSystemScope>
 					<!-- export full jar file, remark this option -->
+					<!--
 					<skip>true</skip>
+					-->
 				</configuration>
                 <executions>
                     <execution>
