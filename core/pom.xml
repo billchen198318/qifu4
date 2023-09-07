@@ -363,14 +363,6 @@
 	            <directory>src/main/resources</directory>
 	        </resource>
 	        
-	        <!-- package init SQL dump file to classpath -->
-	        <resource>
-	            <directory>${workspaceDir}/doc</directory>
-	            <includes>                      
-	                <include>**/*.sql</include>
-	            </includes>
-	        </resource>	        
-	        
 	    </resources>
 		<plugins>
 			<plugin>
