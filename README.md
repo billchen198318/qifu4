@@ -1,19 +1,18 @@
 # qífū-4
 一個簡單的Springboot 3 後端, 與 Svelte / SvelteKit前端的範例. A simple sample Admin WEB, base on JAVA & Springboot & Sevlte (SevlteKit) frontend
 
-<img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/doc/0002.png">
-<img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/doc/0001.png">
+<img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/backend/doc/0002.png">
 
 
 
 ## Installation backend, 後端安裝配置
-please use Eclipse import project folder `app` and `base`, `core`.
+please use Eclipse import project folder `backend/app` and `backend/base`, `backend/core`.
 
 <br>mariadb import
 ```bash
 mysql> create database qifu4;
 
-cd doc
+cd backend\doc
 mysql qifu4 -u root -p < qifu4.sql
 ```
 
