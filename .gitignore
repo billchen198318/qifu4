@@ -3,7 +3,7 @@
 /frontend/dist/assets/
 /frontend/node_modules/
 /myBatisGenerator
-
+/backend/myBatisGenerator
 
 # Compiled class file
 *.class
