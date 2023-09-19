@@ -1,6 +1,6 @@
 <script>
 import { beforeUpdate, onMount, onDestroy } from 'svelte';
-import { goto, invalidateAll } from '$app/navigation';
+import { goto, beforeNavigate } from '$app/navigation';
 import { page } from '$app/stores';
 import { Icon } from 'sveltestrap';
 import {
@@ -186,20 +186,29 @@ function clearUserLoginData() {
 
 function linkToPage(mdi) {
 	var pageUrl = getUrlNoStartSign(mdi.url);
-	if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/') {
-		if (!checkHasPermission(pageUrl,true)) {
-			goto('/nopermission');
-		}
-	}	
 	goto(pageUrl);
 }
 
 onMount(()=>{
-	//loadUserLoginedFromClient();
+	var pageUrl = window.location.pathname;
+	if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
+		if (!checkHasPermission(pageUrl,true)) {
+			goto('/nopermission');
+		}
+	}
 });
 
 beforeUpdate(()=>{
 	loadUserLoginedFromClient();
+});
+
+beforeNavigate(async ({ to, cancel }) => {
+	var pageUrl = to.route.id;
+	if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
+		if (!checkHasPermission(pageUrl,true)) {
+			goto('/nopermission');
+		}
+	}
 });
 
 </script>
