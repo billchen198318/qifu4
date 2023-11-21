@@ -70,7 +70,7 @@ public class UploadSupportUtils {
 		baseInfoConfigProperties = AppContext.context.getBean( BaseInfoConfigProperties.class );
 		sysUploadService = (ISysUploadService<TbSysUpload, String>) AppContext.context.getBean( ISysUploadService.class );
 		try {
-			props.load(UploadSupportUtils.class.getClassLoader().getResource("META-INF/upload-support-utils.properties").openStream());
+			props.load(UploadSupportUtils.class.getClassLoader().getResource("upload-support-utils.properties").openStream());
 			VIEW_MODE_FILE_EXTENSION = SimpleUtils.getStr(props.getProperty("FILE_EXTENSION")).trim().split(",");
 			UPLOAD_MAX_SIZE = NumberUtils.toLong(props.getProperty("UPLOAD_MAX_SIZE"), 0);
 			if (UPLOAD_MAX_SIZE < 1048576) { // 1MB binary byte = 1048576

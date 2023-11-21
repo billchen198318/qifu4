@@ -57,7 +57,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class BaseAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 	
-	private static final String CREATE_USER_DATA_LDAP_MODE_SCRIPT = "META-INF/resource/create-user-data-ldap-mode.groovy";
+	private static final String CREATE_USER_DATA_LDAP_MODE_SCRIPT = "resource/create-user-data-ldap-mode.groovy";
 	
 	private static String createUserDataLdapModeScript = "";
 	

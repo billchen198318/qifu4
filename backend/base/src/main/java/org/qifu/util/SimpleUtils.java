@@ -501,7 +501,7 @@ public class SimpleUtils {
     public static String getPNGBase64Content(String imgStr) throws Exception {
     	if (!isPNGBase64Content(imgStr)) {
     		//imgStr = IOUtils.toString(SimpleUtils.class.getClassLoader().getResource("META-INF/resource/nofound-icon.html").openStream());
-    		imgStr = new String( IOUtils.toByteArray(SimpleUtils.class.getClassLoader().getResource("META-INF/resource/nofound-icon.html").openStream()) );
+    		imgStr = new String( IOUtils.toByteArray(SimpleUtils.class.getClassLoader().getResource("resource/nofound-icon.html").openStream()) );
     	}
     	imgStr = org.apache.commons.lang3.StringUtils.replaceOnce(imgStr, "<img src=\"data:image/png;base64,", "");
     	imgStr = org.apache.commons.lang3.StringUtils.replaceOnce(imgStr, "\">", "");

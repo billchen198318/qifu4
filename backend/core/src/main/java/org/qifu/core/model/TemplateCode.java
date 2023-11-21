@@ -35,7 +35,7 @@ public class TemplateCode {
 	
 	static {
 		try {
-			props.load(TemplateCode.class.getClassLoader().getResource("META-INF/template-code-use.properties").openStream());
+			props.load(TemplateCode.class.getClassLoader().getResource("template-code-use.properties").openStream());
 			_USE_CODE = SimpleUtils.getStr(props.getProperty("CODE")).trim().split(",");
 		} catch (IOException e) {
 			e.printStackTrace();
