@@ -83,6 +83,10 @@
   				_user.update((val) => {
   					return responseJson;
   				});
+				if ('' == responseJson.accessToken || '' == responseJson.refreshToken) {
+					clearUserLoginData();
+					return;
+				}
   				setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
   				initTreeMenu();
   			} else {

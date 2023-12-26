@@ -72,6 +72,10 @@ function loadUserLoginedFromClient() {
   				_user.update((val) => {
   					return responseJson;
   				});
+				if ('' == responseJson.accessToken || '' == responseJson.refreshToken) {
+					clearUserLoginData();
+					return;
+				}
   				setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
   			} else {
   				_user.update((val) => {
