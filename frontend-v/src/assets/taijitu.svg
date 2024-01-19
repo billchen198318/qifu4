@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180">
+  <defs><clipPath id="clc">
+     <rect y="90" width="180" height="90"/> 	
+  </clipPath></defs>
+    <circle cx="90" cy="90" r="86" fill="#FFF" stroke="#000" stroke-width="4"/> 
+    <circle cx="90" cy="90" r="88" clip-path="url(#clc)"/> 
+    <circle cx="47" cy="90" r="27" fill="#FFF" stroke="#000" stroke-width="32"/> 
+    <circle cx="132" cy="90" r="27" fill="#000" stroke="#FFF" stroke-width="30"/> 
+</svg>
