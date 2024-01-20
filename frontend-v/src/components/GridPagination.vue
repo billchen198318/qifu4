@@ -23,28 +23,7 @@ export default {
         }
     },
     methods: {
-    },
-    created() {
-        this.pageProg = getProgItem(this.progId);
-        if (null == this.pageProg) {
-            alert('Please close this page, GridPagination load fail!');
-            window.location = "/";
-        }
-        
-        if (10 == this.gridConfig.row) { 
-            this.gBtnChangeRow1st = ' active ';
-        }
-        if (30 == this.gridConfig.row) {
-            this.gBtnChangeRow2st = ' active ';
-        }
-        if (50 == this.gridConfig.row) {
-            this.gBtnChangeRow3st = ' active ';
-        }
-        if (100 == this.gridConfig.row) {
-            this.gBtnChangeRow4st = ' active ';
-        }
-
-        watch(() => this.gridConfig.row, (newVal, oldVal) => {
+        refreshRowActiveFn : function() {
             if (10 == this.gridConfig.row) {
                 this.gBtnChangeRow1st = ' active ';
                 this.gBtnChangeRow2st = ' ';
@@ -68,10 +47,9 @@ export default {
                 this.gBtnChangeRow2st = ' ';
                 this.gBtnChangeRow3st = ' ';
                 this.gBtnChangeRow4st = ' active ';
-            }
-        });
-
-        watch(() => this.gridConfig.total, (newVal, oldVal) => {
+            }            
+        },
+        refreshPageNumFn : function() {
             this.pItem = [];
             if (this.gridConfig.total > 0) {
                 this.prevPage = this.gridConfig.page - 1;
@@ -107,10 +85,26 @@ export default {
                 for (let i = this.pStart; i <= this.pEnd; i++) {
                     this.pItem.push(i);
                 }
-            }
-            
+            }            
+        }
+    },
+    created() {
+        this.pageProg = getProgItem(this.progId);
+        if (null == this.pageProg) {
+            alert('Please close this page, GridPagination load fail!');
+            window.location = "/";
+        }
+        this.refreshRowActiveFn();
+        this.refreshPageNumFn();
+        watch(() => this.gridConfig.row, (newVal, oldVal) => {
+            this.refreshRowActiveFn();
         });
-
+        watch(() => this.gridConfig.page, (newVal, oldVal) => {
+            this.refreshPageNumFn();
+        });
+        watch(() => this.gridConfig.total, (newVal, oldVal) => {
+            this.refreshPageNumFn();
+        });
     },
     mounted() {
     }
@@ -135,7 +129,7 @@ export default {
                                     <span aria-hidden="true">&lsaquo;</span>
                                 </a>
                             </li>
-                            <li v-for="pNum in pItem" class="page-item" @click="this.changePageSelectMethod(pNum)"><a class="page-link" href="#">{{pNum}}</a></li>
+                            <li v-for="pNum in pItem" v-bind:class="'page-item' + (pNum == this.gridConfig.page ? ' active ' : ' ')" @click="this.changePageSelectMethod(pNum)"><a class="page-link" href="#">{{pNum}}</a></li>
                             <li class="page-item" @click="this.changePageSelectMethod(this.nexPage)">
                                 <a class="page-link" href="#">
                                     <span aria-hidden="true">&rsaquo;</span>

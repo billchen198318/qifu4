@@ -26,13 +26,13 @@ export function getGridConfig(keyFieldName, formatterItems, columnItems) {
 }
 
 export function setConfigRow(gridConfig, row) {
-    gridConfig.row = row;
+    gridConfig.row = parseInt(row,10);
 }
 export function setConfigPage(gridConfig, page) {
-    gridConfig.page = page;
+    gridConfig.page = parseInt(page,10);
 }
 export function setConfigTotal(gridConfig, total) {
-    gridConfig.total = total;
+    gridConfig.total = parseInt(total,10);
 }
 
 export function resetConfigByOld(newGridConfig, oldGridConfig) {
