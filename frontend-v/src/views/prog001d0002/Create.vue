@@ -1,4 +1,5 @@
 <script>
+import { ref, watch } from 'vue';
 import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -23,11 +24,18 @@ export default {
 			pageProgramId : PageConstants.CreateId,
 			checkFields,
 			formParam : {
-				sysId : '',
+				progId : '',
 				name : '',
-				host : '',
-				contextPath : '',
-				isLocal : 'N',
+				url : '',
+				editModeVar : false,
+				isDialogVar : false,
+				editMode : 'N',
+				isDialog : 'N',    
+				dialogW : '0',
+				dialogH : '0',
+				progSystem : 'CORE',
+				itemType : 'ITEM',
+				fontIconClassId : 'globe2',
 				icon : 'SYSTEM'
 			}
 		}
@@ -41,13 +49,40 @@ export default {
 		btnSave : _btnSave,
 		btnClear : function() {
 			this.checkFields = new Object();
-			this.formParam.sysId = '';
+			this.formParam.progId = '';
 			this.formParam.name = '';
-			this.formParam.host = '';
-			this.formParam.contextPath = '';
+			this.formParam.url = '';
+			this.formParam.editModeVar = false;
+			this.formParam.isDialogVar = false;
+			this.formParam.editMode = 'N';
+			this.formParam.isDialog = 'N';
+			this.formParam.dialogW = '0';
+			this.formParam.dialogH = '0';
+			this.formParam.progSystem = 'CORE';
+			this.formParam.itemType = 'ITEM';
+			this.formParam.fontIconClassId = 'globe2';
+			this.formParam.icon = 'SYSTEM';
+		},
+		refreshSwitchItemVariableFn : function() {
+			if (this.formParam.editModeVar) {
+				this.formParam.editMode = 'Y';
+			} else {
+				this.formParam.editMode = 'N';
+			}
+			if (this.formParam.isDialogVar) {
+				this.formParam.isDialog = 'Y';
+			} else {
+				this.formParam.isDialog = 'N';
+			}
 		}
 	},
 	created() { 
+        watch(() => this.formParam.editModeVar, (newVal, oldVal) => {
+            this.refreshSwitchItemVariableFn();
+        });
+        watch(() => this.formParam.isDialogVar, (newVal, oldVal) => {
+            this.refreshSwitchItemVariableFn();
+        });
 	},
 	mounted() { 
 	}
@@ -88,7 +123,7 @@ function _btnSave() {
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<Toolbar 
 			:progId="this.pageProgramId" 
-        	description="站台測試用，新增資料作業." 
+        	description="程式管理，新增資料作業." 
         	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="btnClear"
@@ -103,26 +138,61 @@ function _btnSave() {
 </div>
 <div class="row">
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="sysId" class="form-label">編號</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('sysId', checkFields) ? 'is-invalid' : ' ')" id="sysId" placeholder="輸入編號" v-model="this.formParam.sysId">
-		<div v-if="fieldCheckInvalid('sysId', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('sysId', checkFields) }}</div>
+		<label for="progId" class="form-label">程式編號</label>
+		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('progId', checkFields) ? 'is-invalid' : ' ')" id="progId" placeholder="輸入程式編號" v-model="this.formParam.progId">
+		<div v-if="fieldCheckInvalid('progId', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('progId', checkFields) }}</div>
 	</div>
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="name" class="form-label">名稱</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('name', checkFields) ? 'is-invalid' : ' ')" id="name" placeholder="輸入名稱" v-model="this.formParam.name">
+		<label for="name" class="form-label">程式名稱</label>
+		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('name', checkFields) ? 'is-invalid' : ' ')" id="name" placeholder="輸入程式名稱" v-model="this.formParam.name">
 		<div v-if="fieldCheckInvalid('name', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('name', checkFields) }}</div>
 	</div>
 </div>
 <div class="row">
+	<div class="col-xs-12 col-md-12 col-lg-12">
+		<label for="url" class="form-label">Url</label>
+		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('url', checkFields) ? 'is-invalid' : ' ')" id="url" placeholder="輸入Url" v-model="this.formParam.url">
+		<div v-if="fieldCheckInvalid('url', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('url', checkFields) }}</div>
+	</div>
+</div>
+<div class="row">
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="host" class="form-label">Host</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('host', checkFields) ? 'is-invalid' : ' ')" id="host" placeholder="輸入Host" v-model="this.formParam.host">
-		<div v-if="fieldCheckInvalid('host', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('host', checkFields) }}</div>
+		<div class="form-check form-switch">
+			<input class="form-check-input" type="checkbox" role="switch" id="editMode" v-model="this.formParam.editModeVar">
+			<label class="form-check-label" for="editMode">編輯頁</label>
+		</div>
 	</div>
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="contextPath" class="form-label">Context path</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('contextPath', checkFields) ? 'is-invalid' : ' ')" id="contextPath" placeholder="輸入Context path" v-model="this.formParam.contextPath">
-		<div v-if="fieldCheckInvalid('contextPath', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('contextPath', checkFields) }}</div>
+		<div class="form-check form-switch">
+			<input class="form-check-input" type="checkbox" role="switch" id="isDialog" v-model="this.formParam.isDialogVar">
+			<label class="form-check-label" for="isDialog">Dialog模式</label>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-6 col-md-6 col-lg-6">
+		<label for="dialogW" class="form-label">Dialog寬</label>
+		<input type="number" v-bind:class="'form-control ' + ( fieldCheckInvalid('dialogW', checkFields) ? 'is-invalid' : ' ')" id="dialogW" v-model="this.formParam.dialogW">
+		<div v-if="fieldCheckInvalid('dialogW', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('dialogW', checkFields) }}</div>
+	</div>
+	<div class="col-xs-6 col-md-6 col-lg-6">
+		<label for="dialogH" class="form-label">Dialog高</label>
+		<input type="number" v-bind:class="'form-control ' + ( fieldCheckInvalid('dialogH', checkFields) ? 'is-invalid' : ' ')" id="dialogH" v-model="this.formParam.dialogH">
+		<div v-if="fieldCheckInvalid('dialogH', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('dialogH', checkFields) }}</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-6 col-md-6 col-lg-6">
+		<label for="dialogH" class="form-label">類別</label>
+		<select class="form-select" aria-label="請選取類別" v-model="this.formParam.itemType">
+			<option value="ITEM">ITEM-頁面</option>
+			<option value="FOLDER">FOLDER-目錄</option>
+		</select>
+	</div>
+	<div class="col-xs-6 col-md-6 col-lg-6">
+		<label for="fontIconClassId" class="form-label">Icon class</label>
+		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('fontIconClassId', checkFields) ? 'is-invalid' : ' ')" id="fontIconClassId" placeholder="Icon class" v-model="this.formParam.fontIconClassId">
+		<div v-if="fieldCheckInvalid('fontIconClassId', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('fontIconClassId', checkFields) }}</div>
 	</div>
 </div>
 <div class="row">
