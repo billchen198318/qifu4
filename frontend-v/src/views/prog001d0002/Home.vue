@@ -8,7 +8,7 @@ import Grid from '@/components/Grid.vue';
 import GridPagination from '@/components/GridPagination.vue';
 import { PageConstants } from './config';
 import { getGridConfig, setConfigRow, setConfigPage, setConfigTotal, resetConfigByOld } from '../../components/GridHelper';
-import { useProg001d0001Store } from './QueryPageStore'; 
+import { useProg001d0002Store } from './QueryPageStore'; 
 import { 
 	getAxiosInstance, 
 	getProgItem, 
@@ -18,7 +18,7 @@ import {
 export default {
 	components: { Toolbar, Grid, GridPagination },
 	setup() { 
-		const queryPageStore = useProg001d0001Store();
+		const queryPageStore = useProg001d0002Store();
 		return {
 			queryPageStore
 		}
@@ -40,7 +40,7 @@ export default {
 		btnQuery : _btnQuery,
 		btnClear : function() {
 			this.queryPageStore.queryParam.name = '';
-			this.queryPageStore.queryParam.sysId = '';
+			this.queryPageStore.queryParam.progId = '';
 			this.dsList = [];
 			this.clearGridConfig();
 		},
@@ -123,30 +123,45 @@ function _initQueryGridConfig() {
 			}
 			,
 			{
-				'label' : 'Id',
-				'field' : 'sysId'
+				'label' : '程式編號',
+				'field' : 'progId'
 			}
 			,
 			{
-				'label' : 'Name',
+				'label' : '程式名稱',
 				'field' : 'name'
 			}
 			,
 			{
-				'label' : 'Host',
-				'field' : 'host'
+				'label' : 'Url',
+				'field' : 'url'
 			}
 			,
 			{
-				'label' : 'Context Path',
-				'field' : 'contextPath'
+				'label' : '主系統',
+				'field' : 'progSystem'
 			}
 			,
 			{
-				'label' : 'Local',
-				'field' : 'isLocal'
+				'label' : '類別',
+				'field' : 'itemType'
+			}            
+            ,            
+			{
+				'label' : '編輯頁',
+				'field' : 'editMode'
 			}
-		]    
+            ,            
+			{
+				'label' : 'Icon',
+				'field' : 'fontIconClassId'
+			}            
+			,
+			{
+				'label' : 'Dialog',
+				'field' : 'isDialog'
+			}            
+		] 
 	);
 }
 
@@ -157,7 +172,7 @@ function _btnQuery() {
 	var axiosInstance = getAxiosInstance();
 	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findPage', {
 		"field": {
-			"sysId"     : this.queryPageStore.queryParam.sysId,
+			"progId"    : this.queryPageStore.queryParam.progId,
 			"nameLike"  : this.queryPageStore.queryParam.name
 		}
 		,
@@ -226,7 +241,7 @@ function _delItem(oid) {
   <div class="col-xs-12 col-md-12 col-lg-12">
     <Toolbar 
         :progId="this.pageProgramId" 
-        description="站台測試用." 
+        description="程式管理." 
         marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
@@ -243,14 +258,14 @@ function _delItem(oid) {
 <div class="row">
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<div class="form-group">
-			<label for="sysId">編號</label>
-			<input type="text" class="form-control" id="sysId" placeholder="輸入編號" v-model="this.queryPageStore.queryParam.sysId">
+			<label for="progId">程式編號</label>
+			<input type="text" class="form-control" id="progId" placeholder="輸入程式編號" v-model="this.queryPageStore.queryParam.progId">
     	</div>
   	</div>
   	<div class="col-xs-6 col-md-6 col-lg-6">
     	<div class="form-group">
-			<label for="name">名稱</label>
-			<input type="text" class="form-control" id="name" placeholder="輸入名稱" v-model="this.queryPageStore.queryParam.name">
+			<label for="name">程式名稱</label>
+			<input type="text" class="form-control" id="name" placeholder="輸入程式名稱" v-model="this.queryPageStore.queryParam.name">
     	</div>
   	</div>
 </div>

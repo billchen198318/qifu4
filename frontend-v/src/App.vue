@@ -8,7 +8,8 @@ import {
   getRefreshTokenCookie, 
   setRefreshAndAccessTokenCookie, 
   checkUserHasLogined, 
-  userLogoutClearCookie } from './components/BaseHelper'
+  userLogoutClearCookie, 
+  checkHasPermission } from './components/BaseHelper'
 
 import { Tooltip } from 'bootstrap/dist/js/bootstrap'
 
@@ -32,6 +33,18 @@ export default {
   mounted() {
     this.loadUserLoginedFromClient();
 
+    this.$router.beforeEach((to, from, next) => {
+      let pageUrl = to.path;
+      if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
+        if (checkHasPermission(to.path, true)) {
+          next();
+        }
+      } else {
+        next();
+      }
+      next('/nopermission');
+    });
+    
     let bsToolTip = new Tooltip(document.body, {
       selector: "[data-bs-toggle='tooltip']",
       trigger : 'hover'
