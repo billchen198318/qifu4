@@ -3,6 +3,7 @@ import { routerAddItem } from './support';
 import { PageAbout, PageNoPermission } from './various';
 import { PROG001D0001 } from './prog001d0001';
 import { PROG001D0002 } from './prog001d0002';
+import { PROG001D0003 } from './prog001d0003';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,5 +14,6 @@ routerAddItem(router, PageAbout);
 routerAddItem(router, PageNoPermission);
 routerAddItem(router, PROG001D0001); 
 routerAddItem(router, PROG001D0002);
+routerAddItem(router, PROG001D0003);
 
 export default router

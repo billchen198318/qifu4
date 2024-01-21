@@ -252,7 +252,7 @@ export function getAxiosInstance() {
 
 						// 依據 refresh_token 刷新 access_token 並重發 request
 						return axios.post(refreshTokeUrl, JSON.stringify({
-							username : userData.username,
+							username : getBaseStore().user.username,
 							accessToken : getAccessTokenCookie(),
 							refreshToken : getRefreshTokenCookie()
 						})) // refresh_toke is attached in cookie
