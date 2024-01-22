@@ -5,3 +5,7 @@ npm install --save pinia
 npm install --save sweetalert2
 npm install --save vue3-toastify
 npm install --save axios
+npm install --save bytemd
+npm install --save @bytemd/vue-next
+npm install --save @bytemd/plugin-gfm
+npm install --save @bytemd/plugin-import-html

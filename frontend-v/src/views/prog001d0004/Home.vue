@@ -8,7 +8,7 @@ import Grid from '@/components/Grid.vue';
 import GridPagination from '@/components/GridPagination.vue';
 import { PageConstants } from './config';
 import { getGridConfig, setConfigRow, setConfigPage, setConfigTotal, resetConfigByOld } from '../../components/GridHelper';
-import { useProg001d0001Store } from './QueryPageStore'; 
+import { useProg001d0004Store } from './QueryPageStore'; 
 import { 
 	getAxiosInstance, 
 	getProgItem, 
@@ -18,7 +18,7 @@ import {
 export default {
 	components: { Toolbar, Grid, GridPagination },
 	setup() { 
-		const queryPageStore = useProg001d0001Store();
+		const queryPageStore = useProg001d0004Store();
 		return {
 			queryPageStore
 		}
@@ -34,13 +34,13 @@ export default {
 			this.btnClear();
 		},
 		tbCreate : function() {
-			this.$router.push( PageConstants.frontendNamespace + '/create' );
+			this.$router.push(PageConstants.frontendNamespace + '/create');
 		},
 		initQueryGridConfig : _initQueryGridConfig,
 		btnQuery : _btnQuery,
 		btnClear : function() {
-			this.queryPageStore.queryParam.name = '';
-			this.queryPageStore.queryParam.sysId = '';
+			this.queryPageStore.queryParam.templateId = '';
+			this.queryPageStore.queryParam.titleLike = '';
 			this.dsList = [];
 			this.clearGridConfig();
 		},
@@ -95,6 +95,17 @@ function _initQueryGridConfig() {
 			,
 			{
 				'method'  : function(val) { 
+					var url = getUrlPrefixFromProgItem( getProgItem(PageConstants.SetParamId) ) + '/' + val;
+					thatRouter.push( url );
+				},
+				'icon'    : 'gear-fill',
+				'type'    : 'customize',
+				'memo'    : 'Set parameter.',
+				'class'	  : 'btn btn-secondary btn-sm'
+			}			
+			,
+			{
+				'method'  : function(val) { 
 					Swal.fire({
 						title: '刪除?',
 						icon: 'question',
@@ -123,30 +134,15 @@ function _initQueryGridConfig() {
 			}
 			,
 			{
-				'label' : 'Id',
-				'field' : 'sysId'
+				'label' : '樣板編號',
+				'field' : 'templateId'
 			}
 			,
 			{
-				'label' : 'Name',
-				'field' : 'name'
-			}
-			,
-			{
-				'label' : 'Host',
-				'field' : 'host'
-			}
-			,
-			{
-				'label' : 'Context Path',
-				'field' : 'contextPath'
-			}
-			,
-			{
-				'label' : 'Local',
-				'field' : 'isLocal'
-			}
-		]    
+				'label' : 'Title標題',
+				'field' : 'title'
+			}          
+		]
 	);
 }
 
@@ -157,8 +153,8 @@ function _btnQuery() {
 	var axiosInstance = getAxiosInstance();
 	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findPage', {
 		"field": {
-			"sysId"     : this.queryPageStore.queryParam.sysId,
-			"nameLike"  : this.queryPageStore.queryParam.name
+			"sysId"     : this.queryPageStore.queryParam.templateId,
+			"nameLike"  : this.queryPageStore.queryParam.titleLike
 		}
 		,
 		"pageOf": {
@@ -226,7 +222,7 @@ function _delItem(oid) {
   <div class="col-xs-12 col-md-12 col-lg-12">
     <Toolbar 
         :progId="this.pageProgramId" 
-        description="站台測試用." 
+        description="Freemarker 樣板管理." 
         marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
@@ -243,14 +239,14 @@ function _delItem(oid) {
 <div class="row">
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<div class="form-group">
-			<label for="sysId">編號</label>
-			<input type="text" class="form-control" id="sysId" placeholder="輸入編號" v-model="this.queryPageStore.queryParam.sysId">
+			<label for="templateId">樣板編號</label>
+			<input type="text" class="form-control" id="templateId" placeholder="輸入樣板編號" v-model="this.queryPageStore.queryParam.templateId">
     	</div>
   	</div>
   	<div class="col-xs-6 col-md-6 col-lg-6">
     	<div class="form-group">
-			<label for="name">名稱</label>
-			<input type="text" class="form-control" id="name" placeholder="輸入名稱" v-model="this.queryPageStore.queryParam.name">
+			<label for="title">樣板標題</label>
+			<input type="text" class="form-control" id="title" placeholder="輸入樣板標題" v-model="this.queryPageStore.queryParam.title">
     	</div>
   	</div>
 </div>

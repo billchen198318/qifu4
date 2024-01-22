@@ -10,7 +10,9 @@ import {
 	getAxiosInstance, 
 	invalidFeedback,
 	checkInvalid,
-	escapeQifuHtmlMsg
+	escapeQifuHtmlMsg,
+	getProgItem, 
+	getUrlPrefixFromProgItem 	
 } from '../../components/BaseHelper';
 
 let checkFields = new Object();
@@ -102,7 +104,7 @@ function _loadData() {
         if (null != response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
-                this.$router.push( getProgItem(PageConstants.QueryId).url );
+                this.$router.push( getUrlPrefixFromProgItem( getProgItem(PageConstants.QueryId) ) );
                 return;
             }
             this.formParam = response.data.value;
@@ -116,14 +118,14 @@ function _loadData() {
             }			
         } else {
             toast.error('error, null');
-            this.$router.push( getProgItem(PageConstants.QueryId).url );
+            this.$router.push( getUrlPrefixFromProgItem( getProgItem(PageConstants.QueryId) ) );
         }
     })
     .catch(e => {
         Swal.hideLoading();
         Swal.close();        
         alert(e);
-        this.$router.push( getProgItem(PageConstants.QueryId).url );
+        this.$router.push( getUrlPrefixFromProgItem( getProgItem(PageConstants.QueryId) ) );
     });         
 }
 

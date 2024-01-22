@@ -34,7 +34,7 @@ export default {
 			this.btnClear();
 		},
 		tbCreate : function() {
-			this.$router.push('/prog001d0002/create');
+			this.$router.push(PageConstants.frontendNamespace + '/create');
 		},
 		initQueryGridConfig : _initQueryGridConfig,
 		btnQuery : _btnQuery,

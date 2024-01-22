@@ -3,6 +3,11 @@ import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
+import '../../../node_modules/bytemd/dist/index.css';
+import gfm from '@bytemd/plugin-gfm';
+import { Editor, Viewer } from '@bytemd/vue-next';
+import importHtml from '@bytemd/plugin-import-html';
+
 import Toolbar from '@/components/Toolbar.vue';
 import { PageConstants } from './config';
 import { 
@@ -10,14 +15,16 @@ import {
 	invalidFeedback,
 	checkInvalid,
 	escapeQifuHtmlMsg,
-	getProgItem,
-	getUrlPrefixFromProgItem
+	getProgItem, 
+	getUrlPrefixFromProgItem 	
 } from '../../components/BaseHelper';
 
 let checkFields = new Object();
 
+const plugins = [ importHtml() ];
+
 export default {
-	components: { Toolbar },
+	components: { Toolbar, Editor },
 	setup() { 
 	},
 	data() {
@@ -26,12 +33,10 @@ export default {
 			checkFields,
 			formParam : {
 				oid : this.$route.params.id,
-				sysId : '',
-				name : '',
-				host : '',
-				contextPath : '',
-				isLocal : 'N',
-				icon : 'SYSTEM'
+				templateId : '',
+				title : '',
+				message : '',
+				description : ''
 			}
 		}
 	},
@@ -44,12 +49,15 @@ export default {
 		btnUpdate : _btnUpdate,
 		btnClear : function() {
 			this.checkFields = new Object();
-			//this.formParam.sysId = '';
-			this.formParam.name = '';
-			this.formParam.host = '';
-			this.formParam.contextPath = '';
+			//this.formParam.templateId = '';
+			this.formParam.title = '';
+			this.formParam.message = '';
+			this.formParam.description = '';
 		},
-		loadData : _loadData
+		loadData : _loadData,
+		handleChange : function(v) {
+			this.formParam.message = v;
+		}		
 	},
 	created() { 
 	},
@@ -120,7 +128,7 @@ function _btnUpdate() {
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<Toolbar 
 			:progId="this.pageProgramId" 
-        	description="站台測試用，修改資料作業." 
+        	description="Freemarker 樣板管理，修改資料作業." 
         	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="loadData"
@@ -135,27 +143,32 @@ function _btnUpdate() {
 </div>
 <div class="row">
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="sysId" class="form-label">編號</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('sysId', checkFields) ? 'is-invalid' : ' ')" id="sysId" placeholder="輸入編號" v-model="this.formParam.sysId" readonly="true">
-		<div v-if="fieldCheckInvalid('sysId', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('sysId', checkFields) }}</div>
+		<label for="templateId" class="form-label">樣板編號</label>
+		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('templateId', checkFields) ? 'is-invalid' : ' ')" id="templateId" placeholder="輸入樣板編號" v-model="this.formParam.templateId" readonly="true">
+		<div v-if="fieldCheckInvalid('templateId', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('templateId', checkFields) }}</div>
 	</div>
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="name" class="form-label">名稱</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('name', checkFields) ? 'is-invalid' : ' ')" id="name" placeholder="輸入名稱" v-model="this.formParam.name">
-		<div v-if="fieldCheckInvalid('name', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('name', checkFields) }}</div>
+		<label for="title" class="form-label">樣板標題</label>
+		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('title', checkFields) ? 'is-invalid' : ' ')" id="title" placeholder="輸入樣板標題" v-model="this.formParam.title">
+		<div v-if="fieldCheckInvalid('title', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('title', checkFields) }}</div>
 	</div>
 </div>
 <div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="host" class="form-label">Host</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('host', checkFields) ? 'is-invalid' : ' ')" id="host" placeholder="輸入Host" v-model="this.formParam.host">
-		<div v-if="fieldCheckInvalid('host', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('host', checkFields) }}</div>
+	&nbsp;
+</div>
+<div class="row">
+	<div class="col-xs-12 col-md-12 col-lg-12">
+		<Editor :value="this.formParam.message" :plugins="plugins" @change="handleChange" />
 	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="contextPath" class="form-label">Context path</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('contextPath', checkFields) ? 'is-invalid' : ' ')" id="contextPath" placeholder="輸入Context path" v-model="this.formParam.contextPath">
-		<div v-if="fieldCheckInvalid('contextPath', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('contextPath', checkFields) }}</div>
+</div>
+<div class="row">
+	<div class="col-xs-12 col-md-12 col-lg-12">
+		<label for="description" class="form-label">說明</label>
+		<textarea class="form-control" id="description" row="3" col="25" v-model="this.formParam.description"></textarea>		
 	</div>
+</div>
+<div class="row">
+	&nbsp;
 </div>
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
