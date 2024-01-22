@@ -75,6 +75,10 @@ export default {
         }
     },
     mounted() {
+        let locPathname = window.location.pathname;
+        if ('/' != locPathname) {
+            window.location = '/';
+        }
     }
 }
 </script>

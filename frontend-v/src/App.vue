@@ -12,6 +12,8 @@ import {
   checkHasPermission } from './components/BaseHelper'
 
 import { Tooltip } from 'bootstrap/dist/js/bootstrap'
+import { createPopper } from '@popperjs/core';
+import Swal from 'sweetalert2';
 
 export default {
   components: { LoginView },
@@ -28,7 +30,8 @@ export default {
     initTreeMenu              : _initTreeMenu,
     jsTreeMenuInit            : _jsTreeMenuInit,
     loadUserLoginedFromClient : _loadUserLoginedFromClient,
-    clearUserLoginData        : _clearUserLoginData
+    clearUserLoginData        : _clearUserLoginData,
+    userLogout                : _userLogout
   },
   mounted() {
     this.loadUserLoginedFromClient();
@@ -64,6 +67,12 @@ export default {
           }
         }
       }
+    });
+
+    this.$nextTick(() => {
+      const button = document.querySelector('#button');
+      const tooltip = document.querySelector('#tooltip');
+      createPopper(button, tooltip);
     });
 
   },
@@ -180,6 +189,23 @@ function _jsTreeMenuInit() {
   }
 }
 
+function _userLogout() {
+  	Swal.fire({
+  		title: '確定登出?',
+  		icon: 'question',
+  		iconHtml: '?',
+  		confirmButtonText: 'Yes',
+  		cancelButtonText: 'No',
+  		showCancelButton: true,
+  		showCloseButton: true
+  	}).then((result) => {
+  		if (result.isConfirmed) {
+  			this.clearUserLoginData();
+        window.location.href = '/';
+  		}
+  	});
+}
+
 function _clearUserLoginData() {
   userLogoutClearCookie();
   this.baseStore.clearUserData();  
@@ -194,14 +220,20 @@ function _clearUserLoginData() {
 <template>  
 
 <div v-if=" 'Y' == this.baseStore.user.login ">
+
     <!-- Navbar-->
     <header class="app-header"><a class="app-header__logo" href="#">qífū</a>
-		<!-- Sidebar toggle button-->
-		<a class="app-sidebar__toggle" href="javascript:window.location.reload();" data-toggle="sidebar" aria-label="Hide Sidebar"><h4 style="margin-top: 10px;"><i class="bi bi-list"></i></h4></a>
-		<!-- Navbar Right Menu-->
-
-    <!-- nav logout ....   -->
-    
+      <!-- Sidebar toggle button-->
+      <a class="app-sidebar__toggle" href="javascript:window.location.reload();" data-toggle="sidebar" aria-label="Hide Sidebar"><h4 style="margin-top: 10px;"><i class="bi bi-list"></i></h4></a>
+      <!-- Navbar Right Menu-->
+      <ul class="app-nav">
+        <!-- User Menu-->
+        <li class="dropdown"><a class="app-nav__item" href="#" data-bs-toggle="dropdown" aria-label="Open Profile Menu"><i class="bi bi-person fs-4"></i></a>
+          <ul class="dropdown-menu settings-menu dropdown-menu-right">
+            <li><a class="dropdown-item" href="#" @click="this.userLogout"><i class="bi bi-box-arrow-right me-2 fs-5"></i> Logout</a></li>
+          </ul>
+        </li>
+      </ul>
     </header>
     
     <!-- Sidebar menu-->
@@ -224,7 +256,7 @@ function _clearUserLoginData() {
       
 			<li><router-link to="/about" class="app-menu__item"><i class="bi bi-info-circle"></i>&nbsp;<span class="app-menu__label">About</span></router-link></li>
 
-      <li><a class="app-menu__item" href="javascript:false;" ><i class="bi bi-door-open"></i>&nbsp;<span class="app-menu__label">Logout</span></a></li>
+      <li><a class="app-menu__item" href="#" @click="this.userLogout()" ><i class="bi bi-door-open"></i>&nbsp;<span class="app-menu__label">Logout</span></a></li>
 		</ul>
 	</aside>
 

@@ -3,8 +3,8 @@ import router from './router'
 import pinia from './store/index';
 import App from './App.vue'
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap";
+import 'bootstrap/dist/js/bootstrap';
+import 'bootstrap/dist/css/bootstrap.css';
 import "./assets/vali.css";
 import "./assets/m.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
