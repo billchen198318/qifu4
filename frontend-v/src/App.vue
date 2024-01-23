@@ -41,11 +41,13 @@ export default {
       if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
         if (checkHasPermission(to.path, true)) {
           next();
+          return;
         }
       } else {
         next();
+        return;
       }
-      next('/nopermission');
+      next({path : '/nopermission', replace : true});
     });
     
     let bsToolTip = new Tooltip(document.body, {

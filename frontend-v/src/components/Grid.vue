@@ -48,6 +48,7 @@ export default {
                             <template v-if="   typeof keyFieldFormatItem.method === 'function'  ">
                                 <button v-if="  config.keyFieldFormatter.showTooltip " v-bind:id="'_' + keyFieldFormatItem.type + '_' + row[col.field]" v-bind:class="keyFieldFormatItem.class" @click="keyFieldFormatItem.method(row[col.field])" data-bs-toggle="tooltip" data-bs-placement="bottom" v-bind:data-bs-title="keyFieldFormatItem.memo" data-trigger="hover"><i v-bind:class="'bi bi-' + keyFieldFormatItem.icon "></i></button>
                                 <button v-if=" !config.keyFieldFormatter.showTooltip " v-bind:id="'_' + keyFieldFormatItem.type + '_' + row[col.field]" v-bind:class="keyFieldFormatItem.class" @click="keyFieldFormatItem.method(row[col.field])"><i v-bind:class="'bi bi-' + keyFieldFormatItem.icon "></i></button>
+                                &nbsp;
                             </template>
                             <template v-if=" !(typeof keyFieldFormatItem.method === 'function') ">{{row[col.field]}}</template>
                         </template>
