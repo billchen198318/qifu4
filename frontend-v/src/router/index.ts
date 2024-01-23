@@ -9,6 +9,7 @@ import { PROG001D0005 } from './prog001d0005';
 import { PROG002D0001 } from './prog002d0001';
 import { PROG002D0002 } from './prog002d0002';
 import { PROG002D0003 } from './prog002d0003';
+import { PROG004D0001 } from './prog004d0001';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,5 +26,6 @@ routerAddItem(router, PROG001D0005);
 routerAddItem(router, PROG002D0001);
 routerAddItem(router, PROG002D0002);
 routerAddItem(router, PROG002D0003);
+routerAddItem(router, PROG004D0001);
 
 export default router

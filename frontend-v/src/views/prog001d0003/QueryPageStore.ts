@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { getInitGridConfigVariable } from '@/components/GridHelper';
 
 export const getProg001d0003Store = function() {
     return useProg001d0003Store();
