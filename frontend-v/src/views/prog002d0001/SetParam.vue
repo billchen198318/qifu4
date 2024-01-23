@@ -27,12 +27,13 @@ export default {
 			checkFields,
 			masterParam : {
 				oid : this.$route.params.id,
-				reportId : '',
+				role : '',
 			},
 			formParam : {
-				reportId : '',
-				urlParam : '',
-				rptParam : ''
+				role : '',
+				permission : '',
+				permType : 'CONTROLLER',
+				description : ''
 			},
 			paramList : []
 		}
@@ -47,8 +48,9 @@ export default {
 		btnSave : _btnSave,
 		btnClear : function() {
 			this.checkFields = new Object();
-			this.formParam.urlParam = '';
-			this.formParam.rptParam = '';
+			this.formParam.permType = 'CONTROLLER';
+			this.formParam.permission = '';
+			this.formParam.description = '';
 		},
 		loadData : _loadData,
 		tbRefresh : function() {
@@ -73,13 +75,6 @@ export default {
 		}
 	},
 	created() { 
-        watch(() => this.formParam.isTitleVar, (newVal, oldVal) => {
-			if (this.formParam.isTitleVar) {
-				this.formParam.isTitle = 'Y';
-			} else {
-				this.formParam.isTitle = 'N';
-			}
-        });
 	},
 	mounted() { 
 		this.loadData();
@@ -102,7 +97,7 @@ function _loadData() {
             }
 			this.masterParam = response.data.value;
 			this.masterParam.oid = this.$route.params.id;
-			this.formParam.reportId = this.masterParam.reportId;
+			this.formParam.role = this.masterParam.role;
 			this.queryParamList();
         } else {
             toast.error('error, null');
@@ -122,7 +117,7 @@ function _queryParamList() {
 	var axiosInstance = getAxiosInstance();
 	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findSetParamPage', {
 		"field": {
-			"reportId"	: this.masterParam.reportId
+			"role"	: this.masterParam.role
 		}
 		,
 		"pageOf": {
@@ -209,7 +204,7 @@ function _delParam(oid) {
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<Toolbar 
 			:progId="this.pageProgramId" 
-        	description="Jasperreport resources管理，參數配置作業." 
+        	description="Role管理，Permission配置作業." 
         	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="tbRefresh"
@@ -224,19 +219,21 @@ function _delParam(oid) {
 </div>
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
-		Jasperreport報表編號:&nbsp;{{this.masterParam.templateId}}
+		Role編號:&nbsp;{{this.masterParam.role}}
 	</div>   
 </div>
 <div class="row">
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="urlParam" class="form-label">Url參數</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('urlParam', checkFields) ? 'is-invalid' : ' ')" id="urlParam" placeholder="輸入Url參數" v-model="this.formParam.urlParam">
-		<div v-if="fieldCheckInvalid('urlParam', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('urlParam', checkFields) }}</div>
+		<label for="permission" class="form-label">Permission字串</label>
+		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('permission', checkFields) ? 'is-invalid' : ' ')" id="permission" placeholder="輸入Permission字串" v-model="this.formParam.permission">
+		<div v-if="fieldCheckInvalid('permission', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('permission', checkFields) }}</div>
 	</div>
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="rptParam" class="form-label">Jasperreport參數</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('rptParam', checkFields) ? 'is-invalid' : ' ')" id="rptParam" placeholder="輸入物件變數" v-model="this.formParam.rptParam">
-		<div v-if="fieldCheckInvalid('rptParam', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('rptParam', checkFields) }}</div>
+		<label for="permType" class="form-label">類別</label>
+		<select class="form-select" id="permType" placeholder="請選取類別" aria-label="請選取類別" v-model="this.formParam.permType">
+			<option value="CONTROLLER">Controller / url</option>
+            <option value="SERVICE">Service</option>
+		</select>
 	</div>
 </div>
 <div class="row">
@@ -258,8 +255,8 @@ function _delParam(oid) {
             <thead>
                 <tr>
                     <th style="background-color: #575757; color: whitesmoke;">#</th>
-                    <th style="background-color: #575757; color: whitesmoke;">Url參數</th>
-                    <th style="background-color: #575757; color: whitesmoke;">Jasperreport參數</th>
+                    <th style="background-color: #575757; color: whitesmoke;">Permission字串</th>
+                    <th style="background-color: #575757; color: whitesmoke;">類別</th>
                 </tr>
             </thead>
 			<tbody>
@@ -267,8 +264,8 @@ function _delParam(oid) {
                     <td>
                         <button class="btn btn-warning btn-sm" @click="delParamConfirm(item.oid)"><i class="bi bi-trash"></i></button>
                     </td>
-                    <td>{{item.urlParam}}</td>
-                    <td>{{item.rptParam}}</td>
+                    <td>{{item.permission}}</td>
+                    <td>{{item.permType}}</td>
 				</tr>	
 			</tbody>
 		</table>		
