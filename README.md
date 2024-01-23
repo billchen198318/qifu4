@@ -1,5 +1,5 @@
 # qífū-4
-一個簡單的Springboot 3 後端, 與 Svelte / SvelteKit前端的範例. A simple sample Admin WEB, base on JAVA & Springboot & Sevlte (SevlteKit) frontend
+一個簡單的Springboot 3 後端, 與 Svelte / SvelteKit / VUE 前端的範例. A simple sample Admin WEB, base on JAVA & Springboot & Sevlte (SevlteKit) , VUE frontend example
 
 <img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/backend/doc/0002.png">
 
@@ -81,3 +81,32 @@ npm run dev
 ```
 
 
+<br><br><br>
+
+
+# qífū-4 frontend ( VUE version )
+
+This frontend build of VUE. (folder is `frontend-v`)
+
+## Installation
+
+```bash
+cd frontend-v
+npm install
+
+```
+
+## Backend API env value
+
+Update your backend API value in `.env`:
+
+```text
+VITE_API_URL="http://127.0.0.1:8088/api"
+```
+
+## Start a local server
+
+```bash
+npm run build
+npm run dev
+```
