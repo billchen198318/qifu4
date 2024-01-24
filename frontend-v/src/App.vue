@@ -1,4 +1,5 @@
 <script>
+import { watch } from "vue";
 import { RouterLink, RouterView } from 'vue-router'
 import LoginView from './views/LoginView.vue'
 import { useBaseStore } from './store/baseStore'
@@ -49,6 +50,13 @@ export default {
       });     
     }
   },
+  created() {
+    watch(() => this.baseStore.user.login, (newVal, oldVal) => {
+      if ('Y' == newVal) {
+        this.initTreeMenu();
+      }
+    });
+  },  
   mounted() {
     this.loadUserLoginedFromClient();
 
@@ -130,7 +138,7 @@ function _loadUserLoginedFromClient() {
         }
         this.baseStore.setUserData(responseJson);
         setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
-        this.initTreeMenu();
+        //this.initTreeMenu(); effect change in watch
       } else {
         this.clearUserLoginData();
   		}

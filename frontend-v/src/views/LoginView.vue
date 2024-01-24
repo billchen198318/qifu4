@@ -55,9 +55,11 @@ export default {
 		        if (null != responseJson) {
                     this.baseStore.setUserData(responseJson);
                     setRefreshAndAccessTokenCookie(responseJson.refreshToken, responseJson.accessToken);
+                    /*
                     setTimeout(function(){ 
                         that.$parent.initTreeMenu(); 
                     }, 250);
+                    */
 		        } else {
                     this.baseStore.clearUserData();
                     userLogoutClearCookie();
