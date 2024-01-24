@@ -1,5 +1,5 @@
 # qífū-4
-一個簡單的Springboot 3 後端, 與 Svelte / SvelteKit / VUE 前端的範例. A simple sample Admin WEB, base on JAVA & Springboot & Sevlte (SevlteKit) , VUE frontend example
+一個簡單的 springboot 後端, 與 Svelte / SvelteKit / Vue 前端的範例. A simple Admin WEB, based on Java with springboot backend, Svelte (SvelteKit) and Vue frontend example.
 
 <img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/backend/doc/0002.png">
 
