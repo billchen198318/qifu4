@@ -84,7 +84,7 @@ npm run dev
 <br><br><br>
 
 
-# qífū-4 frontend ( VUE version )
+# qífū-4 frontend ( Vue version )
 
 This frontend build of VUE. (folder is `frontend-v`)
 
