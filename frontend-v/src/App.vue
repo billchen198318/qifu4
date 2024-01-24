@@ -31,7 +31,10 @@ export default {
     jsTreeMenuInit            : _jsTreeMenuInit,
     loadUserLoginedFromClient : _loadUserLoginedFromClient,
     clearUserLoginData        : _clearUserLoginData,
-    userLogout                : _userLogout
+    userLogout                : _userLogout,
+    reloadPageLogoClick       : function() {
+      window.location = '/';
+    } 
   },
   mounted() {
     this.loadUserLoginedFromClient();
@@ -224,9 +227,9 @@ function _clearUserLoginData() {
 <div v-if=" 'Y' == this.baseStore.user.login ">
 
     <!-- Navbar-->
-    <header class="app-header"><a class="app-header__logo" href="#">qífū</a>
+    <header class="app-header"><a class="app-header__logo" href="#" v-on:click="this.reloadPageLogoClick">qífū</a>
       <!-- Sidebar toggle button-->
-      <a class="app-sidebar__toggle" href="javascript:window.location.reload();" data-toggle="sidebar" aria-label="Hide Sidebar"><h4 style="margin-top: 10px;"><i class="bi bi-list"></i></h4></a>
+      <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"><h4 style="margin-top: 10px;"><i class="bi bi-list"></i></h4></a>
       <!-- Navbar Right Menu-->
       <ul class="app-nav">
         <!-- User Menu-->

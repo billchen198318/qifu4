@@ -8,7 +8,7 @@
           </div>
           <div class="card-body">
             <p class="card-text">
-                <h5>{{ $route.fullPath }}</h5>
+                <h5>{{ $router.options.history.state.back }}</h5>
                 <br>
                 Permission denied，沒有操作權限。
                 <br>          

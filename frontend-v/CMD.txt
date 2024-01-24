@@ -9,3 +9,5 @@ npm install --save bytemd
 npm install --save @bytemd/vue-next
 npm install --save @bytemd/plugin-gfm
 npm install --save @bytemd/plugin-import-html
+npm install --save echarts
+npm install --save vue-echarts

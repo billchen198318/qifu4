@@ -73,7 +73,7 @@ export function checkHasRole(roleId) {
 	if (null == userData) {
 		return hasRole;
 	}
-	if (userData.admin) {
+	if ('Y' == userData.admin) {
 		return true;
 	}
 	for (var r in userData.roleList) {
@@ -90,7 +90,7 @@ export function checkHasPermission(perm, urlCheck) {
 	if (null == userData) {
 		return hasPerm;
 	}
-	if (userData.admin) {
+	if ('Y' == userData.admin) {
 		return true;
 	}      
 	for (var i in userData.roleList) {
