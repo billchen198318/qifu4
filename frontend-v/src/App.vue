@@ -34,7 +34,20 @@ export default {
     userLogout                : _userLogout,
     reloadPageLogoClick       : function() {
       window.location = '/';
-    } 
+    },
+    showUserProfile           : function() {
+      var str = 'User Id: ' + this.baseStore.user.id + '<br>Administrator: ' + this.baseStore.user.admin;
+      str += '<br>Role: [ ';
+      for (var r in this.baseStore.user.roleList) {
+        str += this.baseStore.user.roleList[r].role + ',';
+      }
+      str += ' ]';
+      Swal.fire({
+        title: "User info",
+        html: str,
+        icon: "info"
+      });     
+    }
   },
   mounted() {
     this.loadUserLoginedFromClient();
@@ -235,6 +248,7 @@ function _clearUserLoginData() {
         <!-- User Menu-->
         <li class="dropdown"><a class="app-nav__item" href="#" data-bs-toggle="dropdown" aria-label="Open Profile Menu"><i class="bi bi-person fs-4"></i></a>
           <ul class="dropdown-menu settings-menu dropdown-menu-right">
+            <li><a class="dropdown-item" href="#" @click="this.showUserProfile"><i class="bi bi-person-badge me-2 fs-5"></i> Profile</a></li>
             <li><a class="dropdown-item" href="#" @click="this.userLogout"><i class="bi bi-box-arrow-right me-2 fs-5"></i> Logout</a></li>
           </ul>
         </li>

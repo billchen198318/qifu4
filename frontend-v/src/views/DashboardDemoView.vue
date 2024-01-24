@@ -32,7 +32,7 @@ import {
   GridComponent
 } from 'echarts/components';
 import VChart, { THEME_KEY } from 'vue-echarts';
-import { ref, reactive, provide, onMounted, onBeforeMount } from 'vue';
+import { ref, reactive, provide, onMounted, onUnmounted } from 'vue';
 
 import { 
 	getAxiosInstance, 
@@ -57,10 +57,21 @@ let pieOption = { };
 let barOption = { };
 let lineOption = { };
 
+let refreshChart;
+
 onMounted(()=>{
-	loadPieAndBarChart();
-	loadLineChart();
+	loadChart();
+	refreshChart = setInterval(function(){ loadChart(); }, 30000);
 });
+
+onUnmounted(()=>{
+	clearInterval(refreshChart);
+});
+
+function loadChart() {
+	loadPieAndBarChart();
+	loadLineChart();	
+}
 
 function loadPieAndBarChart() {
 	pieOption.series[0].data = [];
