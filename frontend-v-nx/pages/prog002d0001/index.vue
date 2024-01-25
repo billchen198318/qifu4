@@ -18,6 +18,8 @@ import {
 	getUrlPrefixFromProgItem 
 } from '../../components/BaseHelper';
 
+definePageMeta({ middleware : ['auth'] });
+
 let myModal;
 
 export default {

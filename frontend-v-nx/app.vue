@@ -35,7 +35,7 @@ export default {
     clearUserLoginData        : _clearUserLoginData,
     userLogout                : _userLogout,
     reloadPageLogoClick       : function() {
-      window.location = '/';
+      navigateTo('/');
     },
     showUserProfile           : function() {
       var str = 'User Id: ' + this.baseStore.user.id + '<br>Administrator: ' + this.baseStore.user.admin;

@@ -13,6 +13,8 @@ import {
 	getUrlPrefixFromProgItem 
 } from '../../components/BaseHelper';
 
+definePageMeta({ middleware : ['auth'] });
+
 export default {
 	components: { Toolbar },
 	setup() { 

@@ -17,6 +17,8 @@ import {
 	escapeQifuHtmlMsg
 } from '../../components/BaseHelper';
 
+definePageMeta({ middleware : ['auth'] });
+
 let checkFields = new Object();
 
 const plugins = [ importHtml() ];

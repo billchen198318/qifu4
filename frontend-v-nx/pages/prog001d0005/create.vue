@@ -14,6 +14,8 @@ import {
 	getFile2Base64
 } from '../../components/BaseHelper';
 
+definePageMeta({ middleware : ['auth'] });
+
 let checkFields = new Object();
 
 export default {

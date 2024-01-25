@@ -14,6 +14,8 @@ import {
 	getUrlPrefixFromProgItem
 } from '../../../components/BaseHelper';
 
+definePageMeta({ middleware : ['auth'] });
+
 let checkFields = new Object();
 
 export default {

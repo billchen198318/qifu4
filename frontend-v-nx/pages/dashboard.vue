@@ -40,6 +40,8 @@ import {
 	getUrlPrefixFromProgItem 
 } from '../components/BaseHelper';
 
+definePageMeta({ middleware : ['auth'] });
+
 use([
   CanvasRenderer,
   PieChart,
