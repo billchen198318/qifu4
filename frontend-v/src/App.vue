@@ -51,6 +51,7 @@ export default {
     }
   },
   created() {
+    this.loadUserLoginedFromClient();
     this.$router.beforeEach((to, from, next) => {
       let pageUrl = to.path;
       if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
@@ -71,8 +72,6 @@ export default {
     });
   },  
   mounted() {
-    this.loadUserLoginedFromClient();
-
     let bsToolTip = new Tooltip(document.body, {
       selector: "[data-bs-toggle='tooltip']",
       trigger : 'hover'
