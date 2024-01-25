@@ -35,8 +35,9 @@ export default {
     created() {
         this.pageProg = getProgItem(this.progId);
         if (null == this.pageProg) {
-            alert('Please close this page, toolbar load fail!');
-            window.location = "/";
+            //alert('Please close this page, toolbar load fail!');
+            //window.location = "/";
+            console.log('error, pageProg null');
         }
         //console.log(this.pageProg);
     },

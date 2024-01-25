@@ -91,8 +91,9 @@ export default {
     created() {
         this.pageProg = getProgItem(this.progId);
         if (null == this.pageProg) {
-            alert('Please close this page, GridPagination load fail!');
-            window.location = "/";
+            //alert('Please close this page, GridPagination load fail!');
+            //window.location = "/";
+            console.log('error, pageProg null');
         }
         this.refreshRowActiveFn();
         this.refreshPageNumFn();
