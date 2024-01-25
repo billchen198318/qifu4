@@ -111,11 +111,13 @@ function _loadUserLoginedFromClient() {
   var ck_user_refresh_token = getRefreshTokenCookie();
   var ck_user_access_token = getAccessTokenCookie();
   let userData = this.baseStore.user;
+  // move check event to middleware/auth.global.ts
+  /*
   if (null == ck_user_refresh_token || '' == ck_user_refresh_token || null == ck_user_access_token || '' == ck_user_access_token) {
-    //this.$router.push('/login');
-    navigateTo('/login');
+    this.$router.push('/login');
     return;
   }
+  */
   if (!checkUserHasLogined(userData) && (null != ck_user_refresh_token && '' != ck_user_refresh_token) && (null != ck_user_access_token && '' != ck_user_access_token)) {
     fetch(import.meta.env.VITE_API_URL + '/auth/validLogined', {
   			method: "POST",
@@ -234,7 +236,7 @@ function _userLogout() {
   	}).then((result) => {
   		if (result.isConfirmed) {
   			this.clearUserLoginData();
-        window.location.href = '/';
+        window.location.href = '/login';
   		}
   	});
 }
