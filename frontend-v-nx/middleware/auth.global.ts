@@ -1,8 +1,10 @@
-import { checkHasPermission, checkHasRole, checkUserHasLogined } from '../components/BaseHelper';
+import { getAccessTokenCookie, getRefreshTokenCookie, checkUserHasLogined } from '../components/BaseHelper';
 
 export default defineNuxtRouteMiddleware((to, from) => {
     addRouteMiddleware('auth', (to, from) => {
-        if (!checkUserHasLogined(null)) {
+        let ac = getAccessTokenCookie();
+        let rc = getRefreshTokenCookie();
+        if (null == ac || '' == ac || null == rc || '' == rc) {
             console.log('navigateTo login...');
             return navigateTo('/login');
         }

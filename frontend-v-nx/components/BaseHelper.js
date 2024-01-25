@@ -6,6 +6,7 @@ let _q4uat_var = import.meta.env.VITE_CK_HEAD_NAME + '_qifu4_uat';
 
 // GET COOKIE
 export function getCookie(name) {
+	/*
 	let cookieName = name + "=";
 	let decodedCookie = decodeURIComponent(document.cookie);
 	let ca = decodedCookie.split(';');
@@ -19,12 +20,14 @@ export function getCookie(name) {
 		}
 	}
 	return "";
+	*/
+	return useCookie(name).value;
 }
 
 // SET COOKIE
-export function setCookie(name, value, hour, secure) {
+export function setCookie(name, value, hour, _secure) {
+	/*
 	const d = new Date();
-	//d.setTime(d.getTime() + (exdays*24*60*60*1000));
 	d.setTime(d.getTime() + (hour*60*60*1000));
 	let expires = "expires="+ d.toUTCString();
 	if (secure) {
@@ -32,11 +35,17 @@ export function setCookie(name, value, hour, secure) {
 	} else {
 		document.cookie = name + "=" + value + ";" + expires + ";path=/";
 	}
+	*/
+	let s = hour*60*60*1000;
+	const c = useCookie(name, { maxAge : s, secure : _secure});
+	c.value = value;
 }
 
 // DELETE COOKIE
 export function deleteCookie(name) {
-	document.cookie = name+'=; Max-Age=-99999999;'; 
+	//document.cookie = name+'=; Max-Age=-99999999;'; 
+	const c = useCookie(name);
+	c.value = null;
 }
 
 export function setRefreshAndAccessTokenCookie(rfToken, accessToken) {

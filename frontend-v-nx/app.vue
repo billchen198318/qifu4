@@ -51,8 +51,6 @@ export default {
       });     
     }
   },
-  beforeCreate() {
-  },
   created() {
     this.loadUserLoginedFromClient();
     this.$router.beforeEach((to, from, next) => {
@@ -114,7 +112,8 @@ function _loadUserLoginedFromClient() {
   var ck_user_access_token = getAccessTokenCookie();
   let userData = this.baseStore.user;
   if (null == ck_user_refresh_token || '' == ck_user_refresh_token || null == ck_user_access_token || '' == ck_user_access_token) {
-    this.$router.push('/login');
+    //this.$router.push('/login');
+    navigateTo('/login');
     return;
   }
   if (!checkUserHasLogined(userData) && (null != ck_user_refresh_token && '' != ck_user_refresh_token) && (null != ck_user_access_token && '' != ck_user_access_token)) {
@@ -127,7 +126,7 @@ function _loadUserLoginedFromClient() {
   				accessToken: ck_user_access_token,
   				refreshToken: ck_user_refresh_token
   			}),
-  			signal: AbortSignal.timeout(import.meta.env.VITE_FETCH_TIMEOUT)
+  			signal: AbortSignal.timeout(parseInt(import.meta.env.VITE_FETCH_TIMEOUT,10))
   	})
   	.then(response => {
   			if (response.ok) {
@@ -147,7 +146,8 @@ function _loadUserLoginedFromClient() {
         //this.initTreeMenu(); effect change in watch
       } else {
         this.clearUserLoginData();
-        this.$router.push('/login');
+        //this.$router.push('/login');
+        navigateTo('/login');
   		}
   	})
   	.catch((error) => {
