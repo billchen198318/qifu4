@@ -193,13 +193,24 @@ function linkToPage(mdi) {
 	goto(pageUrl);
 }
 
-onMount(()=>{
+function logoClick() {
+	goto('/');
+}
+
+function initPageUrl(to) {
 	var pageUrl = window.location.pathname;
+	if (to != null) {
+		pageUrl = to.route.id;
+	}
 	if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
 		if (!checkHasPermission(pageUrl,true)) {
 			goto('/nopermission');
 		}
-	}
+	}	
+}
+
+onMount(()=>{
+	//initPageUrl(null);
 });
 
 beforeUpdate(()=>{
@@ -207,12 +218,7 @@ beforeUpdate(()=>{
 });
 
 beforeNavigate(async ({ to, cancel }) => {
-	var pageUrl = to.route.id;
-	if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
-		if (!checkHasPermission(pageUrl,true)) {
-			goto('/nopermission');
-		}
-	}
+	initPageUrl(to);
 });
 
 </script>
@@ -228,9 +234,9 @@ beforeNavigate(async ({ to, cancel }) => {
 <div id="app">
 
     <!-- Navbar-->
-    <header class="app-header"><a class="app-header__logo" href="/">qífū</a>
+    <header class="app-header"><a class="app-header__logo" href="#" on:click={logoClick} >qífū</a>
 		<!-- Sidebar toggle button-->
-		<a class="app-sidebar__toggle" href="javascript:window.location.reload();" data-toggle="sidebar" aria-label="Hide Sidebar"><h4 style="margin-top: 10px;"><Icon name="list"/></h4></a>
+		<a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"><h4 style="margin-top: 10px;"><Icon name="list"/></h4></a>
 		<!-- Navbar Right Menu-->
 		<ul class="app-nav">
 			<Dropdown>
