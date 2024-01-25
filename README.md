@@ -110,3 +110,33 @@ VITE_API_URL="http://127.0.0.1:8088/api"
 npm run build
 npm run dev
 ```
+
+<br><br><br>
+
+
+# qífū-4 frontend ( Vue with Nuxt3 version )
+
+This frontend build of VUE. (folder is `frontend-v-nx`)
+
+## Installation
+
+```bash
+cd frontend-v-nx
+npm install
+
+```
+
+## Backend API env value
+
+Update your backend API value in `.env`:
+
+```text
+VITE_API_URL="http://127.0.0.1:8088/api"
+```
+
+## Start a local server
+
+```bash
+npm run build
+npm run dev
+```
