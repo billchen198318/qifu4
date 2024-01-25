@@ -51,15 +51,6 @@ export default {
     }
   },
   created() {
-    watch(() => this.baseStore.user.login, (newVal, oldVal) => {
-      if ('Y' == newVal) {
-        this.initTreeMenu();
-      }
-    });
-  },  
-  mounted() {
-    this.loadUserLoginedFromClient();
-
     this.$router.beforeEach((to, from, next) => {
       let pageUrl = to.path;
       if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
@@ -72,8 +63,16 @@ export default {
         return;
       }
       next({path : '/nopermission', replace : true});
+    });  
+    watch(() => this.baseStore.user.login, (newVal, oldVal) => {
+      if ('Y' == newVal) {
+        this.initTreeMenu();
+      }
     });
-    
+  },  
+  mounted() {
+    this.loadUserLoginedFromClient();
+
     let bsToolTip = new Tooltip(document.body, {
       selector: "[data-bs-toggle='tooltip']",
       trigger : 'hover'
