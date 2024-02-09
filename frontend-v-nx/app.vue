@@ -165,7 +165,12 @@ function _initTreeMenu() {
   let menuData = this.baseStore.menuList;
   if (menuData != null && menuData.length > 0) {
     setTimeout(() => {
-      that.jsTreeMenuInit();
+      try {
+        that.jsTreeMenuInit();
+      } catch (ex) {
+        console.log(ex);
+        window.location.href = '/';
+      }
     }, 250);
     return;
   }

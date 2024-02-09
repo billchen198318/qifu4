@@ -1,4 +1,4 @@
-import { getAccessTokenCookie, getRefreshTokenCookie, checkUserHasLogined } from '../components/BaseHelper';
+import { getAccessTokenCookie, getRefreshTokenCookie, checkUserHasLogined, checkHasPermission } from '../components/BaseHelper';
 
 export default defineNuxtRouteMiddleware((to, from) => {
     addRouteMiddleware('auth', (to, from) => {
@@ -6,8 +6,15 @@ export default defineNuxtRouteMiddleware((to, from) => {
         let rc = getRefreshTokenCookie();
         if ('/login' != to.path) {
             if (null == ac || '' == ac || null == rc || '' == rc) {
-                console.log('navigateTo login...');
                 return navigateTo('/login');
+            }
+            if ('/' != to.path && '' != to.path) {
+                if (!checkUserHasLogined(null)) {
+                    return navigateTo('/error'); // 請用正常方式操作選單.
+                }
+                if (!checkHasPermission(to.path,true)) {
+                    return navigateTo('/nopermission');
+                }
             }
         }
     });

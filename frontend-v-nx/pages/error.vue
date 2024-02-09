@@ -8,7 +8,7 @@ export default {
       }
     },
     mounted() {
-      this.currLocHash = window.location.hash;
+      this.currLoc = window.location.href;
     }
 }
 
@@ -24,13 +24,13 @@ export default {
       </div>
       <div class="card-body">
         <p class="card-text">
-          無法存取:&nbsp;{{this.currLocHash}}
+          無法存取:&nbsp;{{this.currLoc}}
           <br>
           請利用網站選單，來進行操作。      
         </p>
       </div>
       <div class="card-footer text-muted">
-        無效資源:&nbsp;{{this.currLocHash}}
+        無效資源:&nbsp;{{this.currLoc}}
       </div>
     </div>
 	</div>  

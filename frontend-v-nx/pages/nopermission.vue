@@ -1,3 +1,4 @@
+
 <template>
     <div class="row">
         <div class="col-xs-12 col-md-12 col-lg-12">
@@ -8,7 +9,7 @@
           </div>
           <div class="card-body">
             <p class="card-text">
-                <h5>{{ $router.options.history.state.back }}</h5>
+                <h5>{{ $route.redirectedFrom?.path }}</h5>
                 <br>
                 Permission denied，沒有操作權限。
                 <br>          
