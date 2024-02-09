@@ -65,12 +65,17 @@ export default {
         return;
       }
       next({path : '/nopermission', replace : true});
-    });    
+    });
     watch(() => this.baseStore.user.login, (newVal, oldVal) => {
       if ('Y' == newVal) {
         this.initTreeMenu();
       }
     });
+    watch(() => this.baseStore.user.progList, (newVal, oldVal) => {
+      if (oldVal.length != newVal.length && newVal.length > 0) {
+        this.initTreeMenu();
+      }
+    });   
   },
   mounted() {
     const nuxtApp = useNuxtApp();
@@ -101,6 +106,7 @@ export default {
       createPopper(button, tooltip);
     });
 
+    this.initTreeMenu();
   },
   unmounted() {
     document.removeEventListener("mousedown");
@@ -169,7 +175,7 @@ function _initTreeMenu() {
         that.jsTreeMenuInit();
       } catch (ex) {
         console.log(ex);
-        window.location.href = '/';
+        //window.location.href = '/';
       }
     }, 250);
     return;
@@ -178,26 +184,28 @@ function _initTreeMenu() {
   if (!checkUserHasLogined(userData)) {
     return;
   }
-  
-  const axiosInstance = getAxiosInstance();
-  axiosInstance.post(import.meta.env.VITE_API_URL + '/menu/getMemuItemAndProgList')
-  .then(response => {
-    if (null != response.data.value) {
-      this.baseStore.menuList = response.data.value.menuList;
-      this.baseStore.progList = response.data.value.programList;
-      setTimeout(() => {
-        that.jsTreeMenuInit();
-      }, 250);
-    }
-  })
-  .catch(e => {
-    alert(e);
-    this.clearUserLoginData();
-  });
+
+  // for no need auth page , etc : about, error, nopermission page...
+  if (this.baseStore.programList == null || this.baseStore.programList.length < 1) {
+    const axiosInstance = getAxiosInstance();
+    axiosInstance.post(import.meta.env.VITE_API_URL + '/menu/getMemuItemAndProgList')
+    .then(response => {
+      if (null != response.data.value) {
+        this.baseStore.menuList = response.data.value.menuList;
+        this.baseStore.progList = response.data.value.programList;
+        setTimeout(() => { that.jsTreeMenuInit(); }, 250);
+      }
+    })
+    .catch(e => {
+      alert(e);
+      //this.clearUserLoginData();
+    });
+  }
+
 }
 
 function _jsTreeMenuInit() {
-  
+
   var treeviewMenu = document.querySelector('.app-menu');
 
   // Toggle Sidebar
