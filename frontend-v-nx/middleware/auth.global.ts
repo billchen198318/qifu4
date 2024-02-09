@@ -57,14 +57,14 @@ export default defineNuxtRouteMiddleware((to, from) => {
                     });
                 }
             }
+            if ('Y' != userData.login) {
+                return navigateTo('/login');
+            }             
             if ('/' != to.path && '' != to.path) {
-                if ('Y' != userData.login) {
-                    return navigateTo('/login');
-                }
                 if (!checkHasPermission(to.path,true)) {
                     return navigateTo('/nopermission');
                 }
-            }
+            }           
         }
     });
 });
