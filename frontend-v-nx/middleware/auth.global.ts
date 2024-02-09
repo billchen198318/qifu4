@@ -59,7 +59,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
             }
             if ('/' != to.path && '' != to.path) {
                 if ('Y' != userData.login) {
-                    return navigateTo('/error'); // 請用正常方式操作選單.
+                    return navigateTo('/login');
                 }
                 if (!checkHasPermission(to.path,true)) {
                     return navigateTo('/nopermission');
