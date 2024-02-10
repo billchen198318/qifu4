@@ -123,8 +123,8 @@ public class Constants {
 	public static final int MAX_SYS_DESCRIPTION_LENGTH = 500;
 	
 	// JWT config
-	public static final int TOKEN_ACCESS_EXPIRED_INTERVAL = 30; // 30 minute
-	public static final int TOKEN_REFRESH_EXPIRED_INTERVAL = 1440; // 1440 minute
+	public static final int TOKEN_ACCESS_EXPIRED_INTERVAL = 1440; // 1440 minute
+	public static final int TOKEN_REFRESH_EXPIRED_INTERVAL = 1460; // 1460 minute
 	public static final String TOKEN_USER_PARAM_NAME = "USER_ID";
 	public static final String TOKEN_ISSUER = "QIFU4Application";
 	public static final String TOKEN_SECRET = "QIFU4@" + UUID.randomUUID().toString();
