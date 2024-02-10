@@ -6,6 +6,8 @@ import 'vue3-toastify/dist/index.css';
 
 import { setRefreshAndAccessTokenCookie, userLogoutClearCookie } from '../components/BaseHelper';
 
+definePageMeta({ layout : 'blank' });
+
 export default {
     setup(props) {
         const baseStore = useBaseStore();
