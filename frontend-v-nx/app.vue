@@ -29,11 +29,13 @@ export default {
 		return { }
 	},
 	methods: {
-		loadUserLoginedFromClient : _loadUserLoginedFromClient,
+		//loadUserLoginedFromClient : _loadUserLoginedFromClient,
 		clearUserLoginData        : _clearUserLoginData
 	},
 	created() {
-		this.loadUserLoginedFromClient();
+		// move to auth.global.ts
+		//this.loadUserLoginedFromClient();
+		
 		// move to auth.global.ts
 		/*
 		this.$router.beforeEach((to, from, next) => {
@@ -85,6 +87,8 @@ export default {
 	}
 };
 
+// move to auth.global.ts
+/*
 function _loadUserLoginedFromClient() {
 	var ck_user_refresh_token = getRefreshTokenCookie();
 	var ck_user_access_token = getAccessTokenCookie();
@@ -127,6 +131,7 @@ function _loadUserLoginedFromClient() {
 		});
 	}
 }
+*/
 
 function _clearUserLoginData() {
 	userLogoutClearCookie();

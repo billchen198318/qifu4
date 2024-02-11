@@ -60,7 +60,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
             if ('Y' != userData.login) {
                 return navigateTo('/login');
             }             
-            if ('/' != to.path && '' != to.path) {
+            if ('/' != to.path && '' != to.path && '/nopermission' != to.path) {
                 if (!checkHasPermission(to.path,true)) {
                     return navigateTo('/nopermission');
                 }
