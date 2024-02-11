@@ -34,6 +34,8 @@ export default {
 	},
 	created() {
 		this.loadUserLoginedFromClient();
+		// move to auth.global.ts
+		/*
 		this.$router.beforeEach((to, from, next) => {
 			let pageUrl = to.path;
 			if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
@@ -46,7 +48,8 @@ export default {
 				return;
 			}
 			next({path : '/nopermission', replace : true});
-		});   
+		});
+		*/   
 	},
 	mounted() {
 		const nuxtApp = useNuxtApp();
