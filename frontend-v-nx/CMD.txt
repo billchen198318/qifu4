@@ -17,3 +17,15 @@ npm install --save @bytemd/plugin-gfm
 npm install --save @bytemd/plugin-import-html
 npm install --save echarts
 npm install --save vue-echarts
+
+
+# build & test
+npm run build
+npm run dev
+npm run preview
+
+# command will then output an .output/public/index.html entrypoint
+nuxi generate
+
+# This will launch your production Nuxt server that listens on port 3000 by default.
+node .output/server/index.mjs
