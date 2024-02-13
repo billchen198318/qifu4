@@ -99,6 +99,7 @@ export default {
         this.refreshPageNumFn();
         watch(() => this.gridConfig.row, (newVal, oldVal) => {
             this.refreshRowActiveFn();
+            this.refreshPageNumFn();
         });
         watch(() => this.gridConfig.page, (newVal, oldVal) => {
             this.refreshPageNumFn();
