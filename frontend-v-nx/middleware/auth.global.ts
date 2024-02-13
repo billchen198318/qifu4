@@ -7,14 +7,18 @@ import {
     setRefreshAndAccessTokenCookie } from '../components/BaseHelper';
 import { useBaseStore } from '../store/baseStore';
 
+const _loginPageUrl = '/login';
+const _noPermissionUrl = '/nopermission';
+const _notCheckPermUrlArr = [ '', '/', '/nopermission', '/login', '/about', '/error' ];
+
 export default defineNuxtRouteMiddleware((to, from) => {
     const baseStore = useBaseStore();
     addRouteMiddleware('auth', async (to, from) => {
         let ac = getAccessTokenCookie();
         let rc = getRefreshTokenCookie();
-        if ('/login' != to.path) {
+        if (_loginPageUrl != to.path) {
             if (null == ac || '' == ac || null == rc || '' == rc) {
-                return navigateTo('/login');
+                return navigateTo(_loginPageUrl);
             }
             let userData = baseStore.user;
             if (!checkUserHasLogined(userData)) { // try login from client token
@@ -27,7 +31,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
                     onRequestError({ request, options, error }) {
                         userLogoutClearCookie();
                         baseStore.clearUserData();
-                        return navigateTo('/login');
+                        return navigateTo(_loginPageUrl);
                     },
                     onResponse({ request, response, options }) {
                         let uData = response._data;
@@ -37,7 +41,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
                     onResponseError({ request, response, options }) {
                         userLogoutClearCookie();
                         baseStore.clearUserData();
-                        return navigateTo('/login');                        
+                        return navigateTo(_loginPageUrl);                        
                     }
                 });
                 if (checkUserHasLogined(userData)) {
@@ -58,13 +62,17 @@ export default defineNuxtRouteMiddleware((to, from) => {
                 }
             }
             if ('Y' != userData.login) {
-                return navigateTo('/login');
+                return navigateTo(_loginPageUrl);
             }             
-            if ('/' != to.path && '' != to.path && '/nopermission' != to.path) {
-                if (!checkHasPermission(to.path,true)) {
-                    return navigateTo('/nopermission');
+            let needChkPerm = true;
+            for (var u in _notCheckPermUrlArr) {
+                if (_notCheckPermUrlArr[u] == to.path) {
+                    needChkPerm = false;
                 }
-            }           
+            }
+            if (needChkPerm && !checkHasPermission(to.path,true)) {
+                return navigateTo(_noPermissionUrl);
+            }
         }
     });
 });

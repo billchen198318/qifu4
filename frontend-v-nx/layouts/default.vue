@@ -49,6 +49,8 @@ export default {
 		watch(() => this.baseStore.user.login, (newVal, oldVal) => {
 			if ('Y' == newVal) {
 				this.initTreeMenu();
+			} else {
+				window.location.href = '/login';
 			}
 		});
 		watch(() => this.baseStore.user.progList, (newVal, oldVal) => {
@@ -147,7 +149,7 @@ function _userLogout() {
   	}).then((result) => {
   		if (result.isConfirmed) {
   			this.clearUserLoginData();
-			window.location.href = '/login';
+			//window.location.href = '/login'; // move to watch
   		}
   	});
 }
