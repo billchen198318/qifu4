@@ -38,10 +38,7 @@
     where OID = #{oid,jdbcType=CHAR}
   </select>  
   
-  <select id="selectListByParams" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select *
-    from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_upload
-    WHERE 1=1
+  <sql id="baseConditions">
 	<if test="oid != null and oid != ''.toString() ">
 		AND OID = #{oid,jdbcType=CHAR}
 	</if>        
@@ -56,7 +53,16 @@
 	</if>			
 	<if test="isFile != null and isFile != ''.toString() ">
 		AND IS_FILE = #{isFile,jdbcType=VARCHAR}
-	</if>		
+	</if>	  
+  </sql>
+  
+  <select id="selectListByParams" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select *
+    from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_upload
+    WHERE 1=1
+	
+	<include refid="baseConditions"/>
+		
 	<if test="orderBy != null and orderBy != ''.toString() and sortType != null and sortType != ''.toString() ">
 		ORDER BY  ${orderBy} ${sortType}
 	</if>	
@@ -68,21 +74,8 @@
     select *
     from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_upload
     WHERE 1=1
-	<if test="oid != null and oid != ''.toString() ">
-		AND OID = #{oid,jdbcType=CHAR}
-	</if>        
-	<if test="system != null and system != ''.toString() ">
-		AND SYSTEM = #{system,jdbcType=VARCHAR}
-	</if>
-	<if test="subDir != null and subDir != ''.toString() ">
-		AND SUB_DIR = #{subDir,jdbcType=VARCHAR}
-	</if>	
-	<if test="type != null and type != ''.toString() ">
-		AND TYPE = #{type,jdbcType=VARCHAR}
-	</if>		
-	<if test="isFile != null and isFile != ''.toString() ">
-		AND IS_FILE = #{isFile,jdbcType=VARCHAR}
-	</if>		
+	
+	<include refid="baseConditions"/>	
 			
 	<include refid="org.qifu.core.mapper.DB1Config.sql2"/>
   </select>  
@@ -90,21 +83,9 @@
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Long">
     select count(*) from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_upload
     WHERE 1=1
-	<if test="oid != null and oid != ''.toString() ">
-		AND OID = #{oid,jdbcType=CHAR}
-	</if>    
-	<if test="system != null and system != ''.toString() ">
-		AND SYSTEM = #{system,jdbcType=VARCHAR}
-	</if>
-	<if test="subDir != null and subDir != ''.toString() ">
-		AND SUB_DIR = #{subDir,jdbcType=VARCHAR}
-	</if>	
-	<if test="type != null and type != ''.toString() ">
-		AND TYPE = #{type,jdbcType=VARCHAR}
-	</if>		
-	<if test="isFile != null and isFile != ''.toString() ">
-		AND IS_FILE = #{isFile,jdbcType=VARCHAR}
-	</if>			
+	
+	<include refid="baseConditions"/>
+			
   </select>  
   
   <insert id="insert" parameterType="org.qifu.core.entity.TbSysUpload"> 

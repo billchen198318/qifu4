@@ -20,10 +20,7 @@
     where OID = #{oid,jdbcType=CHAR}
   </select>  
   
-  <select id="selectListByParams" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select *
-    from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_template_param
-    WHERE 1=1
+  <sql id="baseConditions">
 	<if test="templateId != null and templateId != ''.toString() ">
 		AND TEMPLATE_ID = #{templateId,jdbcType=VARCHAR}
 	</if>	
@@ -32,7 +29,16 @@
 	</if>
 	<if test="templateVar != null and templateVar != ''.toString() ">
 		AND TEMPLATE_VAR = #{templateVar,jdbcType=VARCHAR}
-	</if>		
+	</if>	  
+  </sql>
+  
+  <select id="selectListByParams" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select *
+    from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_template_param
+    WHERE 1=1
+	
+	<include refid="baseConditions"/>
+		
 	<if test="orderBy != null and orderBy != ''.toString() and sortType != null and sortType != ''.toString() ">
 		ORDER BY  ${orderBy} ${sortType}
 	</if>	
@@ -44,15 +50,8 @@
     select *
     from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_template_param
     WHERE 1=1
-	<if test="templateId != null and templateId != ''.toString() ">
-		AND TEMPLATE_ID = #{templateId,jdbcType=VARCHAR}
-	</if>	
-	<if test="isTitle != null and isTitle != ''.toString() ">
-		AND IS_TITLE = #{isTitle,jdbcType=VARCHAR}
-	</if>
-	<if test="templateVar != null and templateVar != ''.toString() ">
-		AND TEMPLATE_VAR = #{templateVar,jdbcType=VARCHAR}
-	</if>
+	
+	<include refid="baseConditions"/>
 	
 	<include refid="org.qifu.core.mapper.DB1Config.sql2"/>
   </select>  
@@ -60,15 +59,9 @@
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Long">
     select count(*) from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_template_param
     WHERE 1=1
-	<if test="templateId != null and templateId != ''.toString() ">
-		AND TEMPLATE_ID = #{templateId,jdbcType=VARCHAR}
-	</if>	
-	<if test="isTitle != null and isTitle != ''.toString() ">
-		AND IS_TITLE = #{isTitle,jdbcType=VARCHAR}
-	</if>
-	<if test="templateVar != null and templateVar != ''.toString() ">
-		AND TEMPLATE_VAR = #{templateVar,jdbcType=VARCHAR}
-	</if>	
+	
+	<include refid="baseConditions"/>
+	
   </select>  
   
   <insert id="insert" parameterType="org.qifu.core.entity.TbSysTemplateParam"> 

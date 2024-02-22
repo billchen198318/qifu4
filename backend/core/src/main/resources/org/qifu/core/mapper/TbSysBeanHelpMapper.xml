@@ -21,10 +21,7 @@
     where OID = #{oid,jdbcType=CHAR}
   </select>  
   
-  <select id="selectListByParams" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select *
-    from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_bean_help
-    WHERE 1=1
+  <sql id="baseConditions">
 	<if test="beanId != null and beanId != ''.toString() ">
 		AND BEAN_ID = #{beanId,jdbcType=VARCHAR}
 	</if>
@@ -36,7 +33,16 @@
 	</if>
 	<if test="enableFlag != null and enableFlag != ''.toString() ">
 		AND ENABLE_FLAG = #{enableFlag,jdbcType=VARCHAR}
-	</if>			
+	</if>	  
+  </sql>
+  
+  <select id="selectListByParams" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select *
+    from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_bean_help
+    WHERE 1=1
+	
+	<include refid="baseConditions"/>
+				
 	<if test="orderBy != null and orderBy != ''.toString() and sortType != null and sortType != ''.toString() ">
 		ORDER BY  ${orderBy} ${sortType}
 	</if>		
@@ -48,18 +54,8 @@
     select *
     from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_bean_help
     WHERE 1=1
-	<if test="beanId != null and beanId != ''.toString() ">
-		AND BEAN_ID = #{beanId,jdbcType=VARCHAR}
-	</if>
-	<if test="method != null and method != ''.toString() ">
-		AND METHOD = #{method,jdbcType=VARCHAR}
-	</if>
-	<if test="system != null and system != ''.toString() ">
-		AND SYSTEM = #{system,jdbcType=VARCHAR}
-	</if>
-	<if test="enableFlag != null and enableFlag != ''.toString() ">
-		AND ENABLE_FLAG = #{enableFlag,jdbcType=VARCHAR}
-	</if>
+	
+	<include refid="baseConditions"/>
 		
 	<include refid="org.qifu.core.mapper.DB1Config.sql2"/>
   </select>  
@@ -67,18 +63,9 @@
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Long">
     select count(*) from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_bean_help
     WHERE 1=1
-	<if test="beanId != null and beanId != ''.toString() ">
-		AND BEAN_ID = #{beanId,jdbcType=VARCHAR}
-	</if>
-	<if test="method != null and method != ''.toString() ">
-		AND METHOD = #{method,jdbcType=VARCHAR}
-	</if>
-	<if test="system != null and system != ''.toString() ">
-		AND SYSTEM = #{system,jdbcType=VARCHAR}
-	</if>
-	<if test="enableFlag != null and enableFlag != ''.toString() ">
-		AND ENABLE_FLAG = #{enableFlag,jdbcType=VARCHAR}
-	</if>	
+	
+	<include refid="baseConditions"/>
+		
   </select>  
   
   <insert id="insert" parameterType="org.qifu.core.entity.TbSysBeanHelp"> 

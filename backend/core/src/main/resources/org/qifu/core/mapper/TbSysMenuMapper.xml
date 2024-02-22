@@ -33,10 +33,7 @@
     where OID = #{oid,jdbcType=CHAR}
   </select>  
   
-  <select id="selectListByParams" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select *
-    from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_menu
-    WHERE 1=1
+  <sql id="baseConditions">
 	<if test="progId != null and progId != ''.toString() ">
 		AND PROG_ID = #{progId,jdbcType=VARCHAR}
 	</if>
@@ -45,7 +42,16 @@
 	</if>	
 	<if test="enableFlag != null and enableFlag != ''.toString() ">
 		AND ENABLE_FLAG = #{enableFlag,jdbcType=VARCHAR}
-	</if>			
+	</if>			  
+  </sql>
+  
+  <select id="selectListByParams" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select *
+    from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_menu
+    WHERE 1=1
+	
+	<include refid="baseConditions"/>
+			
 	<if test="orderBy != null and orderBy != ''.toString() and sortType != null and sortType != ''.toString() ">
 		ORDER BY  ${orderBy} ${sortType}
 	</if>	
@@ -57,15 +63,8 @@
     select *
     from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_menu
     WHERE 1=1
-	<if test="progId != null and progId != ''.toString() ">
-		AND PROG_ID = #{progId,jdbcType=VARCHAR}
-	</if>
-	<if test="parentOid != null and parentOid != ''.toString() ">
-		AND PARENT_OID = #{parentOid,jdbcType=VARCHAR}
-	</if>	
-	<if test="enableFlag != null and enableFlag != ''.toString() ">
-		AND ENABLE_FLAG = #{enableFlag,jdbcType=VARCHAR}
-	</if>	
+	
+	<include refid="baseConditions"/>
 		
 	<include refid="org.qifu.core.mapper.DB1Config.sql2"/>
   </select>  
@@ -73,15 +72,9 @@
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Long">
     select count(*) from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_menu
     WHERE 1=1
-	<if test="progId != null and progId != ''.toString() ">
-		AND PROG_ID = #{progId,jdbcType=VARCHAR}
-	</if>
-	<if test="parentOid != null and parentOid != ''.toString() ">
-		AND PARENT_OID = #{parentOid,jdbcType=VARCHAR}
-	</if>	
-	<if test="enableFlag != null and enableFlag != ''.toString() ">
-		AND ENABLE_FLAG = #{enableFlag,jdbcType=VARCHAR}
-	</if>
+	
+	<include refid="baseConditions"/>
+	
   </select>  
   
   <insert id="insert" parameterType="org.qifu.core.entity.TbSysMenu"> 
