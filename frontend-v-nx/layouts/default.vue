@@ -85,8 +85,7 @@ function _initTreeMenu() {
 	if (!checkUserHasLogined(userData)) {
 		return;
 	}
-
-	// for no need auth page , etc : about, error, nopermission page...
+	
 	if (this.baseStore.programList == null || this.baseStore.programList.length < 1) {
 		const axiosInstance = getAxiosInstance();
 		axiosInstance.post(import.meta.env.VITE_API_URL + '/menu/getMemuItemAndProgList')
