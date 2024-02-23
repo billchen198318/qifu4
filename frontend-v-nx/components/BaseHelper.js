@@ -1,8 +1,8 @@
 import axios from "axios";
 import { getBaseStore } from '../store/baseStore';
 
-let _q4urt_var = import.meta.env.VITE_CK_HEAD_NAME + '_qifu4_urt';
-let _q4uat_var = import.meta.env.VITE_CK_HEAD_NAME + '_qifu4_uat';
+let _q4urt_var = import.meta.env.VITE_CK_HEAD_NAME + '__urt';
+let _q4uat_var = import.meta.env.VITE_CK_HEAD_NAME + '__uat';
 
 // GET COOKIE
 export function getCookie(name) {
@@ -21,7 +21,11 @@ export function getCookie(name) {
 	}
 	return "";
 	*/
-	return useCookie(name).value;
+	let v = useCookie(name).value;
+	if (undefined == v || null == v) {
+		v = '';
+	}
+	return v;
 }
 
 // SET COOKIE

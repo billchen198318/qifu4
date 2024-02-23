@@ -17,7 +17,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
         let ac = getAccessTokenCookie();
         let rc = getRefreshTokenCookie();
         if (_loginPageUrl != to.path) {
-            if (null == ac || '' == ac || null == rc || '' == rc) {
+            if ('' == ac || '' == rc) {
                 return navigateTo(_loginPageUrl);
             }
             let userData = baseStore.user;
@@ -61,7 +61,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
                     });
                 }
             }
-            if ('Y' != userData.login) {
+            if ('Y' != userData.login || getAccessTokenCookie() == '' || getRefreshTokenCookie() == '') {
                 return navigateTo(_loginPageUrl);
             }             
             let needChkPerm = true;
