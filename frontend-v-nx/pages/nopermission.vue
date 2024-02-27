@@ -1,28 +1,15 @@
-
 <script>
 definePageMeta({ middleware : ['auth'] });
 </script>
+
 <template>
-    <div class="row">
-        <div class="col-xs-12 col-md-12 col-lg-12">
-    
-        <div class="card text-center">
-          <div class="card-header">
-            <i class="bi bi-cone-striped"></i>&nbsp;Permission denied.
-          </div>
-          <div class="card-body">
-            <p class="card-text">
-                <h5>{{ $route.redirectedFrom?.path }}</h5>
-                <br>
-                Permission denied，沒有操作權限。
-                <br>          
-            </p>
-          </div>
-          <div class="card-footer text-muted">
-            &nbsp;
-          </div>
-        </div>
-        </div>  
-    </div>
+	<div class="callout callout-warning">
+		<h4><i class="bi bi-cone-striped"></i>&nbsp;Permission denied.</h4>
+		<br>
+		<h5>{{ $route.redirectedFrom?.path }}</h5>
+		<br>
+		Permission denied，沒有操作權限。
+		<br>    
+	</div>
 </template>
     

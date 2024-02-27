@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import './assets/vali.css';
 import './assets/m.css';
+import './assets/callout.scss';
 
 import { watch } from "vue";
 import { useBaseStore } from './store/baseStore';
