@@ -73,5 +73,5 @@ export default {
 		</div>
 	</div>    
 </div> 
-<p v-if=" 'Y' != this.marginBottom " style="margin-bottom: 5px"></p>
+<p v-if=" 'Y' == this.marginBottom " style="margin-bottom: 5px"></p>
 </template>

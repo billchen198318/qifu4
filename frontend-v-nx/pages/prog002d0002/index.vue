@@ -190,7 +190,6 @@ function _checkItemChecked(itemOid) {
     ></Toolbar>
   </div>
 </div>
-<div class="row">&nbsp;</div>
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<select class="form-select" aria-label="請選取" v-model="this.queryPageStore.queryParam.oid" @change="this.userChange">
