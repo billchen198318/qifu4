@@ -29,13 +29,17 @@ export default {
 	data() {
 		return {         
 			pageProgramId : PageConstants.QueryId,
-            dsList : []
+            dsList : [],
+			qFieldShow : true
 		}
 	},
 	methods: { 
 		tbRefresh : function() {
 			this.btnClear();
 		},
+		tbQueryFieldShow : function() {
+			this.qFieldShow = !this.qFieldShow;
+		},			
 		initQueryGridConfig : _initQueryGridConfig,
 		btnQuery : _btnQuery,        
 		btnClear : function() {
@@ -228,10 +232,12 @@ function _delItem(oid) {
         @createMethod="null"
         saveFlag="N"
         @saveMethod="null"
+		queryFieldShowSwitchFlag="Y"
+		@queryFieldShowSwitcMethod="tbQueryFieldShow"		
     ></Toolbar>
   </div>
 </div>
-<div class="row">
+<div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<div class="form-group">
 			<label for="userId">帳戶</label>
@@ -239,14 +245,14 @@ function _delItem(oid) {
     	</div>	
 	</div>
 </div>
-<div class="row">
+<div class="row" v-show=" qFieldShow ">
   	<div class="col-xs-12 col-md-12 col-lg-12">
     	<button type="button" class="btn btn-primary" v-on:click="btnQuery"><i class="'bi bi-search"></i>&nbsp;查詢</button>
     	&nbsp;
     	<button type="button" class="btn btn-primary" v-on:click="btnClear"><i class="'bi bi-eraser"></i>&nbsp;清除</button>
   	</div>
 </div>  
-<div class="row">
+<div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
 </div>
 <div class="row">

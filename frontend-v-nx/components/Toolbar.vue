@@ -8,14 +8,16 @@ export default {
         'refreshFlag', 'refreshMethod', 
         'backFlag', 'backMethod', 
         'createFlag', 'createMethod',
-        'saveFlag', 'saveMethod'
+        'saveFlag', 'saveMethod',
+        'queryFieldShowSwitchFlag', 'queryFieldShowSwitcMethod'
     ],
-    emits: ["refreshMethod", "backMethod", "createMethod", "saveMethod"],
+    emits: ["refreshMethod", "backMethod", "createMethod", "saveMethod", "queryFieldShowSwitcMethod"],
     setup(props) {
     },    
     data() {
         return { 
-            pageProg : null
+            pageProg : null,
+            switchEye : true
         }
     },
     methods: {
@@ -30,6 +32,10 @@ export default {
         },
         fnSave : function() {
             this.$emit('saveMethod');
+        },
+        fnQueryFieldShowSwitch : function() {
+            this.switchEye = !this.switchEye;
+            this.$emit('queryFieldShowSwitcMethod');
         }
     },
     created() {
@@ -70,6 +76,11 @@ export default {
 
             <i v-if=" 'Y' == this.saveFlag " id="tb_save" class="bi bi-save btn btn-secondary btn-sm" @click="this.fnSave" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="儲存/更新" data-trigger="hover"></i>
             {{ 'Y' == this.saveFlag ? '&nbsp;' : '' }}
+
+            <i class="bi bi-three-dots-vertical text-muted" v-if=" 'Y' == this.queryFieldShowSwitchFlag " ></i>
+
+            <i v-if=" 'Y' == this.queryFieldShowSwitchFlag " id="tb_queryFieldShowSwitch" v-bind:class="'bi bi-' + (this.switchEye ? 'arrow-up-circle' : 'arrow-down-circle') + ' btn btn-secondary btn-sm'" @click="this.fnQueryFieldShowSwitch" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="顯示/隱藏查詢區塊" data-trigger="hover"></i>
+            {{ 'Y' == this.queryFieldShowSwitchFlag ? '&nbsp;' : '' }}            
 		</div>
 	</div>    
 </div> 

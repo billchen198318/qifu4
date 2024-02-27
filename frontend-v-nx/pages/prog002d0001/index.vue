@@ -34,6 +34,7 @@ export default {
 		return {
 			pageProgramId : PageConstants.QueryId,
 			dsList : [],
+			qFieldShow : true,
 			refRoleId : '',
 			refRoleOid : '',
 			copyRoleId : ''
@@ -46,6 +47,9 @@ export default {
 		tbCreate : function() {
 			this.$router.push(PageConstants.frontendNamespace + '/create');
 		},
+		tbQueryFieldShow : function() {
+			this.qFieldShow = !this.qFieldShow;
+		},			
 		initQueryGridConfig : _initQueryGridConfig,
 		btnQuery : _btnQuery,
 		btnClear : function() {
@@ -297,11 +301,13 @@ function _copyRole() {
         @createMethod="tbCreate"
         saveFlag="N"
         @saveMethod="null"
+		queryFieldShowSwitchFlag="Y"
+		@queryFieldShowSwitcMethod="tbQueryFieldShow"			
     ></Toolbar>
   </div>
 </div>
 
-<div class="row">
+<div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<div class="form-group">
 			<label for="role">Role編號</label>
@@ -309,14 +315,14 @@ function _copyRole() {
     	</div>
   	</div>
 </div>
-<div class="row">
+<div class="row" v-show=" qFieldShow ">
   	<div class="col-xs-12 col-md-12 col-lg-12">
     	<button type="button" class="btn btn-primary" v-on:click="btnQuery"><i class="'bi bi-search"></i>&nbsp;查詢</button>
     	&nbsp;
     	<button type="button" class="btn btn-primary" v-on:click="btnClear"><i class="'bi bi-eraser"></i>&nbsp;清除</button>
   	</div>
 </div>  
-<div class="row">
+<div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
 </div>
 <div class="row">
