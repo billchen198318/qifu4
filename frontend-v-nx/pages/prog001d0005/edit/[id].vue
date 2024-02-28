@@ -48,7 +48,7 @@ export default {
 		btnUpdate : _btnUpdate,
 		btnClear : function() {
 			this.checkFields = new Object();
-			this.formParam.reportId = '';
+			//this.formParam.reportId = '';
 			this.formParam.description = '';
 			this.formParam.isCompile = 'N';
 			this.formParam.compile = false;
@@ -211,6 +211,7 @@ function _btnUpdate() {
 		<textarea class="form-control" id="description" row="3" col="25" v-model="this.formParam.description"></textarea>			
 	</div>
 </div>
+<p style="margin-bottom: 5px"></p>
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
     	<button type="button" class="btn btn-primary" v-on:click="btnUpdate"><i class="'bi bi-save"></i>&nbsp;儲存</button>

@@ -197,6 +197,7 @@ function _btnSave() {
 		<div v-if="fieldCheckInvalid('fontIconClassId', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('fontIconClassId', checkFields) }}</div>
 	</div>
 </div>
+<p style="margin-bottom: 5px"></p>
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
     	<button type="button" class="btn btn-primary" v-on:click="btnSave"><i class="'bi bi-save"></i>&nbsp;儲存</button>

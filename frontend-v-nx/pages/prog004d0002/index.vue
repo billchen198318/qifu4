@@ -245,6 +245,7 @@ function _delItem(oid) {
     	</div>	
 	</div>
 </div>
+<p style="margin-bottom: 5px" v-show=" qFieldShow "></p>
 <div class="row" v-show=" qFieldShow ">
   	<div class="col-xs-12 col-md-12 col-lg-12">
     	<button type="button" class="btn btn-primary" v-on:click="btnQuery"><i class="'bi bi-search"></i>&nbsp;查詢</button>

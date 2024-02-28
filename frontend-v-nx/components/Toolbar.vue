@@ -74,10 +74,10 @@ export default {
             <i v-if=" 'Y' == this.createFlag " id="tb_plus" class="bi bi-plus-circle btn btn-secondary btn-sm" @click="this.fnCreate" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="新增頁" data-trigger="hover"></i>
             {{ 'Y' == this.createFlag ? '&nbsp;' : '' }}
 
+            <i class="bi bi-three-dots-vertical text-muted" v-if=" 'Y' == this.queryFieldShowSwitchFlag || 'Y' == this.saveFlag " ></i>
+
             <i v-if=" 'Y' == this.saveFlag " id="tb_save" class="bi bi-save btn btn-secondary btn-sm" @click="this.fnSave" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="儲存/更新" data-trigger="hover"></i>
             {{ 'Y' == this.saveFlag ? '&nbsp;' : '' }}
-
-            <i class="bi bi-three-dots-vertical text-muted" v-if=" 'Y' == this.queryFieldShowSwitchFlag " ></i>
 
             <i v-if=" 'Y' == this.queryFieldShowSwitchFlag " id="tb_queryFieldShowSwitch" v-bind:class="'bi bi-' + (this.switchEye ? 'arrow-up-circle' : 'arrow-down-circle') + ' btn btn-secondary btn-sm'" @click="this.fnQueryFieldShowSwitch" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="顯示/隱藏查詢區塊" data-trigger="hover"></i>
             {{ 'Y' == this.queryFieldShowSwitchFlag ? '&nbsp;' : '' }}            
