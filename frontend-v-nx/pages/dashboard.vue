@@ -1,24 +1,25 @@
 <template>
-<div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12">
-    <h2>
-      <span class="badge text-bg-info">User usage count</span>
-    </h2>
-  </div>
-</div>
-<div class="row">
-  <div class="col-xs-6 col-md-6 col-lg-6 chartSmall">
-    <v-chart :option="barOption" autoresize />
-  </div>
-  <div class="col-xs-6 col-md-6 col-lg-6 chartSmall">
-    <v-chart :option="pieOption" autoresize />
-  </div>
-</div>
-<div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12 chartAll">
-    <v-chart :option="lineOption" autoresize />
-  </div>
-</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-12 col-lg-12">
+			<div class="callout callout-info">
+				<h4><i class="bi bi-bar-chart"></i>&nbsp;Demo dashboard</h4>
+				User usage count
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-6 col-md-6 col-lg-6 chartSmall">
+			<v-chart :option="barOption" autoresize />
+		</div>
+		<div class="col-xs-6 col-md-6 col-lg-6 chartSmall">
+			<v-chart :option="pieOption" autoresize />
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-12 col-lg-12 chartAll">
+			<v-chart :option="lineOption" autoresize />
+		</div>
+	</div>
 </template>
 
 <script setup>
