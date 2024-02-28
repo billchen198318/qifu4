@@ -309,9 +309,9 @@ function _previewPdf() {
 
 <div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-12 col-md-12 col-lg-12">
-		<div class="form-group">
-			<label for="reportId">報表編號</label>
+		<div class="form-group form-floating">
 			<input type="text" class="form-control" id="reportId" placeholder="輸入報表編號" v-model="this.queryPageStore.queryParam.reportId">
+			<label for="reportId">報表編號</label>
     	</div>
   	</div>
 </div>

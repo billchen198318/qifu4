@@ -309,9 +309,9 @@ function _copyRole() {
 
 <div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-12 col-md-12 col-lg-12">
-		<div class="form-group">
-			<label for="role">Role編號</label>
+		<div class="form-group form-floating">
 			<input type="text" class="form-control" id="role" placeholder="輸入Role編號" v-model="this.queryPageStore.queryParam.role">
+			<label for="role">Role編號</label>
     	</div>
   	</div>
 </div>

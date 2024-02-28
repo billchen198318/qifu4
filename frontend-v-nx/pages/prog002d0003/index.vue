@@ -192,11 +192,12 @@ function _checkItemChecked(itemOid) {
   </div>
 </div>
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<select class="form-select" aria-label="請選取" v-model="this.queryPageStore.queryParam.oid" @change="this.progChange">
+	<div class="col-xs-12 col-md-12 col-lg-12 form-floating">
+		<select id="progOid" class="form-select" aria-label="請選取" v-model="this.queryPageStore.queryParam.oid" @change="this.progChange">
 			<option :value="this.pleaseSelectId">{{this.pleaseSelectText}}</option>
 			<option v-for=" item in this.progList " :value="item.oid">{{item.name}}</option>
 		</select>		
+        <label for="progOid">程式</label>
 	</div>
 </div>
 <div class="row">

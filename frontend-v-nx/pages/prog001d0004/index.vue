@@ -159,8 +159,8 @@ function _btnQuery() {
 	var axiosInstance = getAxiosInstance();
 	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findPage', {
 		"field": {
-			"sysId"     : this.queryPageStore.queryParam.templateId,
-			"nameLike"  : this.queryPageStore.queryParam.titleLike
+			"templateId"	: this.queryPageStore.queryParam.templateId,
+			"titleLike"		: this.queryPageStore.queryParam.titleLike
 		}
 		,
 		"pageOf": {
@@ -246,15 +246,15 @@ function _delItem(oid) {
 
 <div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<div class="form-group">
-			<label for="templateId">樣板編號</label>
+		<div class="form-group form-floating">
 			<input type="text" class="form-control" id="templateId" placeholder="輸入樣板編號" v-model="this.queryPageStore.queryParam.templateId">
+			<label for="templateId">樣板編號</label>
     	</div>
   	</div>
   	<div class="col-xs-6 col-md-6 col-lg-6">
-    	<div class="form-group">
+    	<div class="form-group form-floating">
+			<input type="text" class="form-control" id="title" placeholder="輸入樣板標題" v-model="this.queryPageStore.queryParam.titleLike">
 			<label for="title">樣板標題</label>
-			<input type="text" class="form-control" id="title" placeholder="輸入樣板標題" v-model="this.queryPageStore.queryParam.title">
     	</div>
   	</div>
 </div>

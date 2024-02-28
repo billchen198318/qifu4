@@ -279,9 +279,9 @@ function _deleteAllLog() {
 </div>
 <div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-12 col-md-12 col-lg-12">
-		<div class="form-group">
-			<label for="user">帳戶</label>
+		<div class="form-group form-floating">
 			<input type="text" class="form-control" id="user" placeholder="輸入帳戶" v-model="this.queryPageStore.queryParam.user">
+			<label for="user">帳戶</label>
     	</div>	
 	</div>
 </div>

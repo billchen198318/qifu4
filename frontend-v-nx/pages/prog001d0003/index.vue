@@ -198,11 +198,12 @@ function _checkItemChecked(itemOid) {
   </div>
 </div>
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<select class="form-select" aria-label="請選取" v-model="this.queryPageStore.queryParam.folderOid" @change="this.programFolderChange">
+	<div class="col-xs-12 col-md-12 col-lg-12 form-floating">
+		<select id="folderOid" class="form-select" aria-label="請選取" v-model="this.queryPageStore.queryParam.folderOid" @change="this.programFolderChange">
 			<option :value="this.pleaseSelectId">{{this.pleaseSelectText}}</option>
 			<option v-for=" item in this.folderList " :value="item.oid">{{item.progId}} - {{item.name}}</option>
 		</select>		
+        <label for="folderOid">程式目錄</label>
 	</div>
 </div>
 <div class="row">

@@ -265,15 +265,15 @@ function _delItem(oid) {
 
 <div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-6 col-md-6 col-lg-6">
-		<div class="form-group">
-			<label for="progId">程式編號</label>
+		<div class="form-group form-floating">
 			<input type="text" class="form-control" id="progId" placeholder="輸入程式編號" v-model="this.queryPageStore.queryParam.progId">
+			<label for="progId">程式編號</label>
     	</div>
   	</div>
   	<div class="col-xs-6 col-md-6 col-lg-6">
-    	<div class="form-group">
-			<label for="name">程式名稱</label>
+    	<div class="form-group form-floating">
 			<input type="text" class="form-control" id="name" placeholder="輸入程式名稱" v-model="this.queryPageStore.queryParam.name">
+			<label for="name">程式名稱</label>
     	</div>
   	</div>
 </div>
