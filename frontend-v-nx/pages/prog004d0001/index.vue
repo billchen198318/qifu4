@@ -293,7 +293,7 @@ function _deleteAllLog() {
     	<button type="button" class="btn btn-primary" v-on:click="btnClear"><i class="'bi bi-eraser"></i>&nbsp;清除</button>
         &nbsp;
         &nbsp;
-        <button type="button" class="btn btn-warning" v-on:click="btnDeleteAll"><i class="'bi bi-eraser"></i>&nbsp;刪除全部紀錄</button>
+        <button type="button" class="btn btn-warning" v-on:click="btnDeleteAll"><i class="'bi bi-trash"></i>&nbsp;刪除全部紀錄</button>
   	</div>
 </div>  
 <div class="row" v-show=" qFieldShow ">
