@@ -88,18 +88,20 @@ export default {
 					<i class="bi bi-person-circle"></i>
 					qífū - frontend
 				</h3>
-                <div class="form-group">
-                    <label for="username">帳戶</label>
+                <div class="form-group form-floating">
                     <input type="text" class="form-control" id="username" placeholder="Account" v-model="this.userId">
+                    <label for="username">請輸入帳戶</label>
                 </div>
-                <div class="form-group">
-					<label for="password">密碼</label>
+                <p style="margin-bottom: 5px"></p>
+                <div class="form-group form-floating">
 					<input class="form-control" type="password" name="password" id="password" placeholder="Password" v-model="this.passwd" />
+                    <label for="password">請輸入密碼</label>
                 </div>
+                <p style="margin-bottom: 10px"></p>
                 <div class="form-group">
-                    <p></p>
                     <button type="button" class="btn btn-primary col-12" v-on:click="loginBtnClick"><i class="bi bi-box-arrow-in-right"></i>&nbsp;登入</button>
                 </div>
+                <p style="margin-bottom: 5px"></p>
                 <div v-if=" this.message != null && '' != this.message ">
                     <h6><span class="badge bg-danger">{{this.message}}</span></h6>
                 </div>
