@@ -26,6 +26,7 @@ import java.util.List;
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.CheckControllerFieldHandler;
+import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
@@ -65,6 +66,7 @@ public class PROG002D0001Controller extends CoreApiSupport {
 	@Autowired
 	IRoleLogicService roleLogicService;
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0001Q", check = true)
 	@Operation(summary = "CORE_PROG002D0001 - findPage", description = "查詢TB_ROLE資料")
 	@ResponseBody
 	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -83,6 +85,7 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0001D", check = true)
 	@Operation(summary = "CORE_PROG002D0001 - delete", description = "刪除TB_ROLE資料")
 	@ResponseBody
 	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -117,6 +120,7 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(result, uResult);
 	}		
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0001C", check = true)
 	@Operation(summary = "CORE_PROG002D0001 - save", description = "新增TB_ROLE資料")
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -132,6 +136,7 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0001E", check = true)
 	@Operation(summary = "CORE_PROG002D0001 - load", description = "讀取TB_ROLE資料")
 	@ResponseBody
 	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -148,6 +153,7 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0001U", check = true)
 	@Operation(summary = "CORE_PROG002D0001 - update", description = "更新TB_ROLE資料")
 	@ResponseBody
 	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -163,6 +169,7 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0001Q", check = true)
 	@Operation(summary = "CORE_PROG002D0001 - findSetParamPage", description = "查詢TB_ROLE_Permission資料")
 	@ResponseBody
 	@PostMapping(value = "/findSetParamPage", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -195,7 +202,8 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(cResult, result);
 	}		
 	
-	@Operation(summary = "CORE_PROG001D0005 - saveSetParam", description = "新增TB_ROLE_Permission資料")
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0001C", check = true)
+	@Operation(summary = "CORE_PROG002D0001 - saveSetParam", description = "新增TB_ROLE_Permission資料")
 	@ResponseBody
 	@PostMapping(value = "/saveSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<TbRolePermission>> doSaveSetParam(@RequestBody TbRolePermission perm) {
@@ -210,7 +218,8 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
-	@Operation(summary = "CORE_PROG001D0005 - deleteSetParam", description = "刪除TB_ROLE_Permission資料")
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0001D", check = true)
+	@Operation(summary = "CORE_PROG002D0001 - deleteSetParam", description = "刪除TB_ROLE_Permission資料")
 	@ResponseBody
 	@PostMapping(value = "/deleteSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDeleteSetParam(@RequestBody TbRolePermission perm) {
@@ -226,7 +235,8 @@ public class PROG002D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
-	@Operation(summary = "CORE_PROG001D0005 - saveCopyAsNew", description = "複製TB_ROLE資料")
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0001C", check = true)
+	@Operation(summary = "CORE_PROG002D0001 - saveCopyAsNew", description = "複製TB_ROLE資料")
 	@ResponseBody
 	@PostMapping(value = "/roleCopySaveJson", produces = {MediaType.APPLICATION_JSON_VALUE})		
 	public ResponseEntity<DefaultControllerJsonResultObj<TbRole>> doSaveCopyAsNew(@RequestBody TbRole role) {

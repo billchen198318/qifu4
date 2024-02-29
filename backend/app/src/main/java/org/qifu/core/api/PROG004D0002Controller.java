@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
@@ -34,7 +35,8 @@ public class PROG004D0002Controller extends CoreApiSupport {
 	@Autowired
 	ISysTokenService<TbSysToken, String> sysTokenService;
 	
-	@Operation(summary = "CORE_PROG004D0001 - findPage", description = "查詢TB_SYS_EVENT_LOG資料")
+	@ControllerMethodAuthority(programId = "CORE_PROG004D0002Q", check = true)
+	@Operation(summary = "CORE_PROG004D0002 - findPage", description = "查詢TB_SYS_EVENT_LOG資料")
 	@ResponseBody
 	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<QueryResult<List<TbSysToken>>> findPage(@RequestBody SearchBody searchBody) {
@@ -52,7 +54,8 @@ public class PROG004D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
-	@Operation(summary = "CORE_PROG004D0001 - delete", description = "刪除TB_SYS_EVENT_LOG資料")
+	@ControllerMethodAuthority(programId = "CORE_PROG004D0002D", check = true)
+	@Operation(summary = "CORE_PROG004D0002 - delete", description = "刪除TB_SYS_EVENT_LOG資料")
 	@ResponseBody
 	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
 	public ResponseEntity<DefaultControllerJsonResultObj<Boolean>> doDelete(@RequestBody TbSysToken log) {

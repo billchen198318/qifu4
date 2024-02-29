@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.core.entity.TbAccount;
@@ -60,6 +61,7 @@ public class PROG002D0002Controller extends CoreApiSupport {
 	@Autowired
 	IRoleLogicService roleLogicService;
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0002Q", check = true)
 	@Operation(summary = "CORE_PROG002D0002 - loadUserList", description = "讀取TC_ACCOUNT資料")
 	@ResponseBody
 	@PostMapping(value = "/loadUserList", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -76,6 +78,7 @@ public class PROG002D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0002Q", check = true)
 	@Operation(summary = "CORE_PROG002D0002 - findUserRoleListByAccountOid", description = "讀取使用者TB_ROLE資料")
 	@ResponseBody
 	@PostMapping(value = "/findUserRoleListByAccountOid", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -93,6 +96,7 @@ public class PROG002D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0002U", check = true)
 	@Operation(summary = "CORE_PROG002D0002 - update user role - 1.", description = "更新使用者ROLE資料 - 1")
 	@ResponseBody
 	@RequestMapping(value = "/updateUserRole/{accountOid}", produces = MediaType.APPLICATION_JSON_VALUE)		
@@ -109,6 +113,7 @@ public class PROG002D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0002U", check = true)
 	@Operation(summary = "CORE_PROG002D0002 - update user role - 2.", description = "更新使用者ROLE資料 - 2")
 	@ResponseBody
 	@RequestMapping(value = "/updateUserRole/{accountOid}/{roleAppendOid}", produces = MediaType.APPLICATION_JSON_VALUE)		

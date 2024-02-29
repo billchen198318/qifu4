@@ -80,8 +80,9 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 				response.sendRedirect( CoreAppConstants.SYS_PAGE_TAB_LOGIN_AGAIN );
 				return false;
 			}		
-			String header = request.getHeader("X-Requested-With");
-			if ("XMLHttpRequest".equalsIgnoreCase(header)) {
+			String header = request.getHeader("X-Requested-With"); // qifu3, qifu2... bambooBSC old
+			String contentType = request.getContentType().toLowerCase(); // qifu4
+			if ("XMLHttpRequest".equalsIgnoreCase(header) || StringUtils.indexOf(contentType, "json") >-1) {
 				response.getWriter().print(Constants.NO_AUTHZ_JSON_DATA);
 				response.getWriter().flush();
 				response.getWriter().close();
@@ -113,8 +114,9 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 			response.sendRedirect( CoreAppConstants.SYS_PAGE_NO_AUTH );
 			return false;
 		}		
-		String header = request.getHeader("X-Requested-With");
-		if ("XMLHttpRequest".equalsIgnoreCase(header)) {
+		String header = request.getHeader("X-Requested-With"); // qifu3, qifu2... bambooBSC old
+		String contentType = request.getContentType().toLowerCase(); // qifu4
+		if ("XMLHttpRequest".equalsIgnoreCase(header) || StringUtils.indexOf(contentType, "json") >-1) {
 			response.getWriter().print(Constants.NO_AUTHZ_JSON_DATA);
 			response.getWriter().flush();
 			response.getWriter().close();

@@ -26,6 +26,7 @@ import java.util.List;
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.CheckControllerFieldHandler;
+import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
@@ -60,6 +61,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 	@Autowired
 	ISystemProgramLogicService systemProgramLogicService;
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0002Q", check = true)
 	@Operation(summary = "CORE_PROG001D0002 - findPage", description = "查詢TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -78,6 +80,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0002D", check = true)
 	@Operation(summary = "CORE_PROG001D0002 - delete", description = "刪除TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -125,6 +128,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(cResult, result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0002C", check = true)
 	@Operation(summary = "CORE_PROG001D0002 - save", description = "新增TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -140,6 +144,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0002E", check = true)
 	@Operation(summary = "CORE_PROG001D0002 - load", description = "讀取TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -156,6 +161,7 @@ public class PROG001D0002Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0002U", check = true)
 	@Operation(summary = "CORE_PROG001D0002 - update", description = "更新TB_SYS_PROG資料")
 	@ResponseBody
 	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	

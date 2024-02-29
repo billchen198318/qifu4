@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.core.entity.TbRole;
@@ -65,7 +66,7 @@ public class PROG002D0003Controller extends CoreApiSupport {
 	@Autowired
 	IRoleLogicService roleLogicService;
 	
-	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0003Q", check = true)
 	@Operation(summary = "CORE_PROG002D0003 - findProgramFolderMenuItem", description = "讀取程式清單TB_SYS_PROG List資料")
 	@ResponseBody
 	@PostMapping(value = "/findProgramFolderMenuItem/{sysId}", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -83,6 +84,7 @@ public class PROG002D0003Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0003Q", check = true)
 	@Operation(summary = "CORE_PROG002D0003 - findMenuProgramRoleList", description = "讀取程式Role List資料")
 	@ResponseBody
 	@PostMapping(value = "/findMenuProgramRoleList", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -100,6 +102,7 @@ public class PROG002D0003Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG002D0003U", check = true)
 	@Operation(summary = "CORE_PROG002D0003 - update menu role - 1.", description = "更新選單ROLE資料 - 1")
 	@ResponseBody
 	@RequestMapping(value = "/updateMenuRole/{progOid}/{appendOid}", produces = MediaType.APPLICATION_JSON_VALUE)		

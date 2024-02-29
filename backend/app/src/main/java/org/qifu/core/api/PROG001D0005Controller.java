@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.CheckControllerFieldHandler;
+import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
@@ -67,7 +68,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 	@Autowired
 	ISystemJreportLogicService systemJreportLogicService;
 	
-	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0005Q", check = true)
 	@Operation(summary = "CORE_PROG001D0005 - findPage", description = "查詢TB_SYS_JREPORT資料")
 	@ResponseBody
 	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -88,6 +89,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0005D", check = true)
 	@Operation(summary = "CORE_PROG001D0005 - delete", description = "刪除TB_SYS_JREPORT資料")
 	@ResponseBody
 	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -137,6 +139,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(uResult, result);		
 	}
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0005C", check = true)
 	@Operation(summary = "CORE_PROG001D0005 - save", description = "新增TB_SYS_JREPORT資料")
 	@ResponseBody
 	@PostMapping(value = "/save", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -152,6 +155,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0005E", check = true)
 	@Operation(summary = "CORE_PROG001D0005 - load", description = "讀取TB_SYS_JREPORT資料")
 	@ResponseBody
 	@PostMapping(value = "/load", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -168,6 +172,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0005U", check = true)
 	@Operation(summary = "CORE_PROG001D0005 - update", description = "更新TB_SYS_JREPORT資料")
 	@ResponseBody
 	@PostMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -183,6 +188,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0005Q", check = true)
 	@Operation(summary = "CORE_PROG001D0005 - findSetParamPage", description = "查詢TB_SYS_JREPORT_PARAM資料")
 	@ResponseBody
 	@PostMapping(value = "/findSetParamPage", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -219,6 +225,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		this.setDefaultResponseJsonResult(cResult, result);
 	}		
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0005C", check = true)
 	@Operation(summary = "CORE_PROG001D0005 - saveSetParam", description = "新增TB_SYS_TEMPLATE_PARAM資料")
 	@ResponseBody
 	@PostMapping(value = "/saveSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -234,6 +241,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0005D", check = true)
 	@Operation(summary = "CORE_PROG001D0005 - deleteSetParam", description = "刪除TB_SYS_TEMPLATE_PARAM資料")
 	@ResponseBody
 	@PostMapping(value = "/deleteSetParam", produces = {MediaType.APPLICATION_JSON_VALUE})	

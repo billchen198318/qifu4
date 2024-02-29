@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
+import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.SortType;
@@ -66,6 +67,7 @@ public class PROG001D0003Controller extends CoreApiSupport {
 	@Autowired
 	ISystemMenuLogicService systemMenuLogicService;
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0003Q", check = true)
 	@Operation(summary = "CORE_PROG001D0003 - load folder program", description = "讀取TB_SYS_PROG ITEM_TYPE 是 FOLDER 資料")
 	@ResponseBody
 	@PostMapping(value = "/loadProgramFolder", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -84,6 +86,7 @@ public class PROG001D0003Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0003Q", check = true)
 	@Operation(summary = "CORE_PROG001D0003 - load folder program", description = "讀取TB_SYS_PROG ITEM_TYPE 是 FOLDER 資料")
 	@ResponseBody
 	@PostMapping(value = "/loadProgramEnableAndAllList/{oid}", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -101,6 +104,7 @@ public class PROG001D0003Controller extends CoreApiSupport {
 		return result;
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0003U", check = true)
 	@Operation(summary = "CORE_PROG001D0003 - update program page of menu - 1.", description = "更新選單資料 - 1")
 	@ResponseBody
 	@RequestMapping(value = "/updateMenu/{folderProgramOid}", produces = MediaType.APPLICATION_JSON_VALUE)		
@@ -120,6 +124,7 @@ public class PROG001D0003Controller extends CoreApiSupport {
 		return result;
 	}	
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG001D0003U", check = true)
 	@Operation(summary = "CORE_PROG001D0003 - update program page of menu - 2.", description = "更新選單資料 - 2")
 	@ResponseBody
 	@RequestMapping(value = "/updateMenu/{folderProgramOid}/{appendOid}", produces = MediaType.APPLICATION_JSON_VALUE)		

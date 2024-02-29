@@ -26,6 +26,7 @@ import java.util.List;
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.message.BaseSystemMessage;
+import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.DefaultControllerJsonResultObj;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.QueryResult;
@@ -56,6 +57,7 @@ public class PROG004D0001Controller extends CoreApiSupport {
 	@Autowired
 	ISysEventLogService<TbSysEventLog, String> sysEventLogService;
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG004D0001Q", check = true)
 	@Operation(summary = "CORE_PROG004D0001 - findPage", description = "查詢TB_SYS_EVENT_LOG資料")
 	@ResponseBody
 	@PostMapping(value = "/findPage", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -74,6 +76,7 @@ public class PROG004D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}		
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG004D0001D", check = true)
 	@Operation(summary = "CORE_PROG004D0001 - delete", description = "刪除TB_SYS_EVENT_LOG資料")
 	@ResponseBody
 	@PostMapping(value = "/delete", produces = {MediaType.APPLICATION_JSON_VALUE})	
@@ -90,6 +93,7 @@ public class PROG004D0001Controller extends CoreApiSupport {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@ControllerMethodAuthority(programId = "CORE_PROG004D0001D", check = true)
 	@Operation(summary = "CORE_PROG004D0001 - deleteAll", description = "刪除TB_SYS_EVENT_LOG所有資料")
 	@ResponseBody
 	@PostMapping(value = "/deleteAll", produces = {MediaType.APPLICATION_JSON_VALUE})	

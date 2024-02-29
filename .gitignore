@@ -2,6 +2,14 @@
 /.idea/
 /frontend/dist/assets/
 /frontend/node_modules/
+/frontend-various/frontend/dist/assets/
+/frontend-various/frontend/node_modules/
+/frontend-various/frontend-k/dist/assets/
+/frontend-various/frontend-k/node_modules/
+/frontend-various/frontend-v/dist/assets/
+/frontend-various/frontend-v/node_modules/
+/frontend-v-nx/dist/assets/
+/frontend-v-nx/node_modules/
 /myBatisGenerator
 /backend/myBatisGenerator
 
