@@ -26,6 +26,36 @@ db1.datasource.password=mariadb-password
 <br><br><br>
 
 
+# qífū-4 frontend ( Vue with Nuxt3 version )
+
+This frontend build of VUE. (folder is `frontend-v-nx`)
+
+## Installation
+
+```bash
+cd frontend-v-nx
+npm install
+
+```
+
+## Backend API env value
+
+Update your backend API value in `.env`:
+
+```text
+VITE_API_URL="http://127.0.0.1:8088/api"
+```
+
+## Start a local server
+
+```bash
+npm run build
+npm run dev
+```
+
+
+<br><br><br>
+
 # qífū-4 frontend ( SvelteKit version )
 
 This frontend build of SvelteKit. (folder is `frontend-k`)
@@ -33,7 +63,7 @@ This frontend build of SvelteKit. (folder is `frontend-k`)
 ## Installation
 
 ```bash
-cd frontend-k
+cd frontend-various/frontend-k
 npm install
 
 ```
@@ -61,7 +91,7 @@ This frontend build of svelte & svelte-spa-router. (folder is `frontend`)
 ## Installation
 
 ```bash
-cd frontend
+cd frontend-various/frontend
 pnpm i
 
 ```
@@ -91,7 +121,7 @@ This frontend build of VUE. (folder is `frontend-v`)
 ## Installation
 
 ```bash
-cd frontend-v
+cd frontend-various/frontend-v
 npm install
 
 ```
@@ -111,32 +141,3 @@ npm run build
 npm run dev
 ```
 
-<br><br><br>
-
-
-# qífū-4 frontend ( Vue with Nuxt3 version )
-
-This frontend build of VUE. (folder is `frontend-v-nx`)
-
-## Installation
-
-```bash
-cd frontend-v-nx
-npm install
-
-```
-
-## Backend API env value
-
-Update your backend API value in `.env`:
-
-```text
-VITE_API_URL="http://127.0.0.1:8088/api"
-```
-
-## Start a local server
-
-```bash
-npm run build
-npm run dev
-```
