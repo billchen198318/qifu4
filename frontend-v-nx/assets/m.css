@@ -12,6 +12,7 @@ body {
 	margin-left: -25px;
 	margin-right: -23px; /* margin-right: -25px; */
 	overflow:auto;
+	padding: 4px; /* 2024-03-01 add */
 }
 
 .nav-tabs {
