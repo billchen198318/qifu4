@@ -160,7 +160,11 @@ function _initQueryGridConfig() {
             ,            
 			{
 				'label' : 'Icon',
-				'field' : 'fontIconClassId'
+				'field' : 'fontIconClassId',
+				'html'	: true,
+				'method': function(val) {
+					return '<i class="bi bi-' + val + '"></i>';
+				}
 			}            
 			,
 			{

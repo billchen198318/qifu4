@@ -54,7 +54,13 @@ export default {
                             <template v-if=" !(typeof keyFieldFormatItem.method === 'function') ">{{row[col.field]}}</template>
                         </template>
                     </template>
-                    <template v-if="config.keyFieldFormatter.field != col.field">{{row[col.field]}}</template>
+                    <template v-if="config.keyFieldFormatter.field != col.field">
+                        <template v-if=" !(undefined === col.method) && typeof col.method === 'function' ">
+                            <template v-if=" !(undefined === col.html) && col.html "><p v-html="col.method(row[col.field])"></p></template>
+                            <template v-if=" undefined === col.html || !col.html ">{{col.method(row[col.field])}}</template>
+                        </template>
+                        <template v-if=" undefined === col.method || !(typeof col.method === 'function') ">{{row[col.field]}}</template>
+                    </template>
                 </td>
             </tr>
         </tbody>
