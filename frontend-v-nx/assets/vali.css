@@ -1558,7 +1558,7 @@ be a descendant of the grid when it is being dragged.
   padding: 8px 20px;
   clear: both;
   font-weight: 400;
-  color: #212529;
+  color: #FFFFFF;
   text-align: inherit;
   white-space: nowrap;
   background-color: transparent;
@@ -1576,15 +1576,15 @@ be a descendant of the grid when it is being dragged.
 }
 
 .dropdown-item:hover, .dropdown-item:focus {
-  color: #16181b;
+  color: #ffffff;
   text-decoration: none;
-  background-color: #e9ecef;
+  background-color: #0D1214;
 }
 
 .dropdown-item.active, .dropdown-item:active {
-  color: #FFF;
+  color: #ffffff;
   text-decoration: none;
-  background-color: #006bac; /* #009688; */
+  background-color: #0D1214; /* #009688; */
 }
 
 .dropdown-item.disabled, .dropdown-item:disabled {
@@ -1595,7 +1595,7 @@ be a descendant of the grid when it is being dragged.
 
 .dropdown-menu.show {
   display: block;
-  background-color: #a7a7a7;
+  background-color: #2A383E;
 }
 
 .dropdown-header {
