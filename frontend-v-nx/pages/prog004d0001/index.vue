@@ -126,11 +126,6 @@ function _initQueryGridConfig() {
 		,
 		[
 			{
-				'label' : '#',
-				'field' : 'oid'
-			}
-			,
-			{
 				'label' : '系統代號',
 				'field' : 'sysId'
 			}
@@ -154,6 +149,11 @@ function _initQueryGridConfig() {
 				'label' : '時間',
 				'field' : 'cdateString'
 			}
+			,
+			{
+				'label' : '#',
+				'field' : 'oid'
+			}			
 		]  
 	);
 }

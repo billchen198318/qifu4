@@ -125,11 +125,6 @@ function _initQueryGridConfig() {
 		,
 		[
 			{
-				'label' : '#',
-				'field' : 'oid'
-			}
-			,
-			{
 				'label' : '帳戶',
 				'field' : 'userId'
 			}
@@ -143,6 +138,11 @@ function _initQueryGridConfig() {
 				'label' : '到期時間',
 				'field' : 'expiresDateString'
 			}
+			,
+			{
+				'label' : '#',
+				'field' : 'oid'
+			}			
 		]
 	);
 }
