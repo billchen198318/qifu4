@@ -19,8 +19,6 @@ import {
 
 let checkFields = new Object();
 
-const plugins = [ importHtml() ];
-
 export default {
 	components: { Toolbar, Editor },
 	setup() { 
@@ -36,7 +34,7 @@ export default {
 				message : '',
 				description : ''
 			},
-			plugins
+			plugins : null
 		}
 	},
 	methods: { 
@@ -58,6 +56,7 @@ export default {
 		}
 	},
 	created() { 
+		this.plugins = [ importHtml() ];
 	},
 	mounted() { 
 	}
