@@ -11,11 +11,17 @@ export function getGridConfig(keyFieldName, formatterItems, columnItems) {
         if (undefined === columnItems[i].labHtml) {
             columnItems[i].labHtml = false;
         }
-        if (undefined === columnItems[i].html) {
-            columnItems[i].html = false;
+        if (undefined === columnItems[i].colHtml) {
+            columnItems[i].colHtml = false;
         }
         if (undefined === columnItems[i].method) {
             columnItems[i].method = null;
+        }
+        if (undefined === columnItems[i].textAlign) {
+            columnItems[i].textAlign = 'left';
+        }
+        if (undefined === columnItems[i].labTextAlign) {
+            columnItems[i].labTextAlign = 'left';
         }
     }
     var gridConfig = {

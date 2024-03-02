@@ -125,7 +125,8 @@ function _initQueryGridConfig() {
 			{
 				'label' 	: '<i class="bi bi-hand-index-thumb"></i>',
 				'field' 	: 'oid',
-				'labHtml'	: true			
+				'labHtml'	: true,
+				'labTextAlign' : 'center'
 			}
 			,
 			{
@@ -150,26 +151,33 @@ function _initQueryGridConfig() {
 			,
 			{
 				'label' : '類別',
-				'field' : 'itemType'
+				'field' : 'itemType',
+				'colHtml'	: true,
+				'method'	: function(val) {
+					return 'FOLDER' == val ? '<b>' + val + '</b>' : val;
+				}				
 			}            
             ,            
 			{
 				'label' : '編輯頁',
-				'field' : 'editMode'
+				'field' : 'editMode',
+				'textAlign' : 'center'
 			}
             ,            
 			{
 				'label' : 'Icon',
 				'field' : 'fontIconClassId',
-				'html'	: true,
-				'method': function(val) {
+				'colHtml'	: true,
+				'method'	: function(val) {
 					return '<i class="bi bi-' + val + '"></i>';
-				}
+				},
+				'textAlign' : 'center'
 			}            
 			,
 			{
 				'label' : 'Dialog',
-				'field' : 'isDialog'
+				'field' : 'isDialog',
+				'textAlign' : 'center'
 			}            
 		] 
 	);

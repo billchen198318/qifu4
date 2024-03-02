@@ -38,7 +38,7 @@ export default {
     <table class="table table-hover table-bordered" v-if="this.dataSource != null && this.dataSource.length > 0">
         <thead>
             <tr>
-                <th v-for="col in config.column" v-bind:style="'background-color:' + config.theadColor.backgroundColor + '; color:' + config.theadColor.color + ';'">
+                <th v-for="col in config.column" v-bind:style="'background-color:' + config.theadColor.backgroundColor + '; color:' + config.theadColor.color + '; text-align:' + col.labTextAlign ">
                     <template v-if=" undefined === col.labHtml || !col.labHtml ">{{col.label}}</template>
                     <template v-if=" !(undefined === col.labHtml) && col.labHtml "><span v-html="col.label"></span></template>
                 </th>
@@ -46,7 +46,7 @@ export default {
         </thead>
         <tbody>
             <tr v-for="row in dataSource">
-                <td v-for="col in config.column">
+                <td v-for="col in config.column" v-bind:style="'text-align:' + col.textAlign + ';'">
                     <template v-if="config.keyFieldFormatter.field == col.field">
                         <template v-for="keyFieldFormatItem in config.keyFieldFormatter.item">
                             <template v-if="   typeof keyFieldFormatItem.method === 'function'  ">
@@ -59,8 +59,8 @@ export default {
                     </template>
                     <template v-if="config.keyFieldFormatter.field != col.field">
                         <template v-if=" !(undefined === col.method) && typeof col.method === 'function' ">
-                            <template v-if=" !(undefined === col.html) && col.html "><span v-html="col.method(row[col.field])"></span></template>
-                            <template v-if=" undefined === col.html || !col.html ">{{col.method(row[col.field])}}</template>
+                            <template v-if=" !(undefined === col.colHtml) && col.colHtml "><span v-html="col.method(row[col.field])"></span></template>
+                            <template v-if=" undefined === col.colHtml || !col.colHtml ">{{col.method(row[col.field])}}</template>
                         </template>
                         <template v-if=" undefined === col.method || !(typeof col.method === 'function') ">{{row[col.field]}}</template>
                     </template>
