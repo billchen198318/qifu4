@@ -1,10 +1,9 @@
 <script>
 import { checkHasRole } from '../components/BaseHelper';
 
-definePageMeta({ middleware : ['auth'] });
-
 export default {
     setup() {
+		definePageMeta({ middleware : ['auth'] });
     },
     data() {
 		return {

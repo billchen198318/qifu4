@@ -16,11 +16,10 @@ import {
 	getUrlPrefixFromProgItem 
 } from '../../components/BaseHelper';
 
-definePageMeta({ middleware : ['auth'] });
-
 export default {
 	components: { Toolbar, Grid, GridPagination },
 	setup() { 
+		definePageMeta({ middleware : ['auth'] });
 		const queryPageStore = useProg004d0002Store();
 		return {
 			queryPageStore

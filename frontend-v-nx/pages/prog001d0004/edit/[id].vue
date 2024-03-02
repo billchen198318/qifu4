@@ -19,8 +19,6 @@ import {
 	getUrlPrefixFromProgItem 	
 } from '../../../components/BaseHelper';
 
-definePageMeta({ middleware : ['auth'] });
-
 let checkFields = new Object();
 
 const plugins = [ importHtml() ];
@@ -28,6 +26,7 @@ const plugins = [ importHtml() ];
 export default {
 	components: { Toolbar, Editor },
 	setup() { 
+		definePageMeta({ middleware : ['auth'] });
 	},
 	data() {
 		return {

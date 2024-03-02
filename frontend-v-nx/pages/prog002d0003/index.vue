@@ -13,11 +13,10 @@ import {
 	getUrlPrefixFromProgItem 
 } from '../../components/BaseHelper';
 
-definePageMeta({ middleware : ['auth'] });
-
 export default {
 	components: { Toolbar },
 	setup() { 
+        definePageMeta({ middleware : ['auth'] });
 		const queryPageStore = useProg002d0003Store();
 		return {
 			queryPageStore

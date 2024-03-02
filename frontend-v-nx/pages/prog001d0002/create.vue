@@ -13,13 +13,12 @@ import {
 	escapeQifuHtmlMsg
 } from '../../components/BaseHelper';
 
-definePageMeta({ middleware : ['auth'] });
-
 let checkFields = new Object();
 
 export default {
 	components: { Toolbar },
 	setup() { 
+		definePageMeta({ middleware : ['auth'] });
 	},
 	data() {
 		return {
