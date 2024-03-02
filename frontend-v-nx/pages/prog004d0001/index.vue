@@ -151,9 +151,10 @@ function _initQueryGridConfig() {
 			}
 			,
 			{
-				'label' : '#',
-				'field' : 'oid'
-			}			
+				'label' 	: '<i class="bi bi-hand-index"></i>',
+				'field' 	: 'oid',
+				'labHtml'	: true			
+			}		
 		]  
 	);
 }
