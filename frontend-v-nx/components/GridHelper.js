@@ -7,6 +7,17 @@ export function getInitGridConfigVariable() {
 }
 
 export function getGridConfig(keyFieldName, formatterItems, columnItems) {
+    for (var i in columnItems) {
+        if (undefined === columnItems[i].labHtml) {
+            columnItems[i].labHtml = false;
+        }
+        if (undefined === columnItems[i].html) {
+            columnItems[i].html = false;
+        }
+        if (undefined === columnItems[i].method) {
+            columnItems[i].method = null;
+        }
+    }
     var gridConfig = {
         row : 10,
         page : 1,
