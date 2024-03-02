@@ -211,7 +211,7 @@ function _checkItemChecked(itemOid) {
 		<table class="table table-hover table-bordered">
             <thead>
                 <tr>
-                    <th style="background-color: #575757; color: whitesmoke;">#</th>
+                    <th style="background-color: #575757; color: whitesmoke;"><i class="bi bi-hand-index-thumb"></i></th>
                     <th style="background-color: #575757; color: whitesmoke;">頁面程式代號</th>
                     <th style="background-color: #575757; color: whitesmoke;">頁面程式名稱</th>
                 </tr>

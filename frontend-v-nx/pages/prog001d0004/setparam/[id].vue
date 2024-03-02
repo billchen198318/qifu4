@@ -269,7 +269,7 @@ function _delParam(oid) {
 		<table class="table table-hover table-bordered">
             <thead>
                 <tr>
-                    <th style="background-color: #575757; color: whitesmoke;">#</th>
+                    <th style="background-color: #575757; color: whitesmoke;"><i class="bi bi-hand-index-thumb"></i></th>
                     <th style="background-color: #575757; color: whitesmoke;">樣板變數</th>
                     <th style="background-color: #575757; color: whitesmoke;">物件變數</th>
                     <th style="background-color: #575757; color: whitesmoke;">是否標題用</th>

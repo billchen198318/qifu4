@@ -257,7 +257,7 @@ function _delParam(oid) {
 		<table class="table table-hover table-bordered">
             <thead>
                 <tr>
-                    <th style="background-color: #575757; color: whitesmoke;">#</th>
+                    <th style="background-color: #575757; color: whitesmoke;"><i class="bi bi-hand-index-thumb"></i></th>
                     <th style="background-color: #575757; color: whitesmoke;">Url參數</th>
                     <th style="background-color: #575757; color: whitesmoke;">Jasperreport參數</th>
                 </tr>

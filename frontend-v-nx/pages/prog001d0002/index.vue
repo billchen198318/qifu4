@@ -124,7 +124,7 @@ function _initQueryGridConfig() {
 		,
 		[
 			{
-				'label' 	: '<i class="bi bi-hand-index"></i>',
+				'label' 	: '<i class="bi bi-hand-index-thumb"></i>',
 				'field' 	: 'oid',
 				'labHtml'	: true			
 			}
