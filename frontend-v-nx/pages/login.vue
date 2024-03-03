@@ -23,6 +23,10 @@ export default {
     },
     methods: {
         loginBtnClick : function() {
+            if (this.userId.replace(/\s/g, '') == '' || this.passwd.replace(/\s/g, '') == '') {
+                toast.warn('請輸入帳戶與密碼!');
+                return;
+            }
             Swal.fire({
                 title: "Loading...",
                 html: "請等待",
@@ -64,7 +68,7 @@ export default {
 	        })
 	        .catch((error) => {
                 userLogoutClearCookie();
-		        console.log(error);
+		        //console.log(error);
                 this.message = error;
 	        	this.userId = '';
                 this.passwd = '';
