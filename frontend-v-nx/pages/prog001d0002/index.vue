@@ -153,7 +153,7 @@ function _initQueryGridConfig() {
 				'label' : '類別',
 				'field' : 'itemType',
 				'colHtml'	: true,
-				'method'	: function(val) {
+				'colMethod'	: function(val) {
 					return 'FOLDER' == val ? '<b>' + val + '</b>' : val;
 				}				
 			}            
@@ -168,7 +168,7 @@ function _initQueryGridConfig() {
 				'label' : 'Icon',
 				'field' : 'fontIconClassId',
 				'colHtml'	: true,
-				'method'	: function(val) {
+				'colMethod'	: function(val) {
 					return '<i class="bi bi-' + val + '"></i>';
 				},
 				'textAlign' : 'center'

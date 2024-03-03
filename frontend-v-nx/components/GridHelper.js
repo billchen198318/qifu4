@@ -14,8 +14,8 @@ export function getGridConfig(keyFieldName, formatterItems, columnItems) {
         if (undefined === columnItems[i].colHtml) {
             columnItems[i].colHtml = false;
         }
-        if (undefined === columnItems[i].method) {
-            columnItems[i].method = null;
+        if (undefined === columnItems[i].colMethod) {
+            columnItems[i].colMethod = null;
         }
         if (undefined === columnItems[i].textAlign) {
             columnItems[i].textAlign = 'left';
