@@ -4,8 +4,6 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
 import Toolbar from '@/components/Toolbar.vue';
-import Grid from '@/components/Grid.vue';
-import GridPagination from '@/components/GridPagination.vue';
 import { PageConstants } from './config';
 import { useProg001d0003Store } from './QueryPageStore'; 
 import { 
@@ -16,7 +14,7 @@ import {
 } from '../../components/BaseHelper';
 
 export default {
-	components: { Toolbar, Grid, GridPagination },
+	components: { Toolbar },
 	setup() { 
         definePageMeta({ middleware : ['auth'] });
 		const queryPageStore = useProg001d0003Store();

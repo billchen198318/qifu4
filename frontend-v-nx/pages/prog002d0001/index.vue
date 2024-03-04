@@ -8,6 +8,7 @@ import bootstrap from 'bootstrap/dist/js/bootstrap';
 import Toolbar from '@/components/Toolbar.vue';
 import Grid from '@/components/Grid.vue';
 import GridPagination from '@/components/GridPagination.vue';
+import HiddenQueryFieldAlertInfo from '@/components/HiddenQueryFieldAlertInfo.vue';
 import { PageConstants } from './config';
 import { getGridConfig, setConfigRow, setConfigPage, setConfigTotal, resetConfigByOld } from '../../components/GridHelper';
 import { useProg002d0001Store } from './QueryPageStore'; 
@@ -21,7 +22,7 @@ import {
 let myModal;
 
 export default {
-	components: { Toolbar, Grid, GridPagination },
+	components: { Toolbar, Grid, GridPagination, HiddenQueryFieldAlertInfo },
 	setup() { 
 		definePageMeta({ middleware : ['auth'] });
 		const queryPageStore = useProg002d0001Store();
@@ -307,6 +308,7 @@ function _copyRole() {
   </div>
 </div>
 
+<HiddenQueryFieldAlertInfo :dataSource="this.dsList" :queryFieldShowFlag="this.qFieldShow"></HiddenQueryFieldAlertInfo>
 <div class="row" v-show=" qFieldShow ">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<div class="form-group form-floating">
