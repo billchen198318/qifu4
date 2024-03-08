@@ -41,6 +41,7 @@ import org.qifu.base.model.ServiceMethodAuthority;
 import org.qifu.base.model.ServiceMethodType;
 import org.qifu.base.model.YesNo;
 import org.qifu.base.properties.BaseInfoConfigProperties;
+import org.qifu.core.model.PermissionType;
 import org.qifu.core.model.User;
 import org.qifu.core.support.SysEventLogSupport;
 import org.qifu.core.util.UserUtils;
@@ -144,7 +145,7 @@ public class ServiceAuthorityCheckAspect implements IBaseAspectService {
 					ServiceMethodType type = types[i];
 					// 如 core.service.logic.ApplicationSystemLogicService#INSERT
 					String methodPerm = serviceId + Constants.SERVICE_ID_TYPE_DISTINGUISH_SYMBOL + type.toString();
-					if (UserUtils.isPermitted(methodPerm)) {
+					if (UserUtils.isPermitted(methodPerm, PermissionType.SERVICE.name())) {
 						status = true;
 					}
 				}

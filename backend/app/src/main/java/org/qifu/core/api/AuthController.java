@@ -23,6 +23,7 @@ import org.qifu.core.entity.TbAccount;
 import org.qifu.core.entity.TbRolePermission;
 import org.qifu.core.entity.TbSysCode;
 import org.qifu.core.entity.TbUserRole;
+import org.qifu.core.model.PermissionType;
 import org.qifu.core.model.User;
 import org.qifu.core.service.IAccountService;
 import org.qifu.core.service.IRolePermissionService;
@@ -103,6 +104,9 @@ public class AuthController {
 							List<RolePermissionAttr> permList = rolePermissionMap.get(ur.getRole());
 							for (int x = 0; rpList != null && x < rpList.size(); x++) {
 								TbRolePermission rp = rpList.get(x);
+								if (!PermissionType.VIEW.name().equals(rp.getPermType())) {
+									continue;
+								}								
 								RolePermissionAttr rpa = new RolePermissionAttr();
 								rpa.setPermission(rp.getPermission());
 								rpa.setType(rp.getPermType());

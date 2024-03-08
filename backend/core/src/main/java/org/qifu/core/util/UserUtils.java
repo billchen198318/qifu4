@@ -32,6 +32,7 @@ import org.qifu.base.model.RolePermissionAttr;
 import org.qifu.base.model.UserRoleAndPermission;
 import org.qifu.base.model.YesNo;
 import org.qifu.base.util.UserLocalUtils;
+import org.qifu.core.model.PermissionType;
 import org.qifu.core.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -197,6 +198,12 @@ public class UserUtils {
 	}
 	
 	public static boolean isPermitted(String perm) {
+		return isPermitted(perm, PermissionType.SERVICE.name()) 
+				|| isPermitted(perm, PermissionType.CONTROLLER.name()) 
+				|| isPermitted(perm, PermissionType.VIEW.name());
+	}
+	
+	public static boolean isPermitted(String perm, String permissionType) {
 		if (isAdmin()) {
 			return true;
 		}
@@ -210,6 +217,9 @@ public class UserUtils {
 				UserRoleAndPermission userRole = user.getRoles().get(i);
 				if (userRole.getRolePermission() != null) {
 					for (RolePermissionAttr rp : userRole.getRolePermission()) {
+						if (!rp.getType().equals(permissionType)) {
+							continue;
+						}
 						if (perm.equals(rp.getPermission())) {
 							isPrem = true;
 						}

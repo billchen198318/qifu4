@@ -232,6 +232,7 @@ function _delParam(oid) {
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<label for="permType" class="form-label">類別</label>
 		<select class="form-select" id="permType" placeholder="請選取類別" aria-label="請選取類別" v-model="this.formParam.permType">
+			<option value="VIEW">View page / url</option>
 			<option value="CONTROLLER">Controller / url</option>
             <option value="SERVICE">Service</option>
 		</select>

@@ -32,6 +32,7 @@ import org.qifu.base.CoreAppConstants;
 import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.YesNo;
 import org.qifu.base.properties.BaseInfoConfigProperties;
+import org.qifu.core.model.PermissionType;
 import org.qifu.core.model.User;
 import org.qifu.core.support.SysEventLogSupport;
 import org.qifu.core.util.UserUtils;
@@ -104,7 +105,7 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 			this.log( user.getUsername(), baseInfoConfigProperties.getSystem(), url, true );
 			return true;
 		}		
-		if (UserUtils.isPermitted(url) || UserUtils.isPermitted("/"+url)) {
+		if (UserUtils.isPermitted(url, PermissionType.CONTROLLER.name()) || UserUtils.isPermitted("/"+url, PermissionType.CONTROLLER.name())) {
 			this.log( user.getUsername(), baseInfoConfigProperties.getSystem(), url, true );
 			return true;
 		}		
@@ -160,7 +161,7 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 				if (StringUtils.isBlank(progId)) {
 					return false;	
 				}
-				if (UserUtils.isPermitted(progId)) {
+				if (UserUtils.isPermitted(progId, PermissionType.CONTROLLER.name())) {
 					return true;
 				}
 			}
@@ -172,7 +173,7 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 	 * Event log 查詢的頁面
 	 */
 	private boolean isEventLogPage(String url) {
-		if (StringUtils.defaultString(url).startsWith("/sysEventLog")) {
+		if (StringUtils.defaultString(url).startsWith("/sysEventLog") || StringUtils.defaultString(url).startsWith("/api/PROG004D0002")) {
 			return true;
 		}
 		return false;

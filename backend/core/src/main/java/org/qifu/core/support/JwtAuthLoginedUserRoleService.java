@@ -18,6 +18,7 @@ import org.qifu.base.model.YesNo;
 import org.qifu.core.entity.TbRolePermission;
 import org.qifu.core.entity.TbSysLoginLog;
 import org.qifu.core.entity.TbUserRole;
+import org.qifu.core.model.PermissionType;
 import org.qifu.core.model.User;
 import org.qifu.core.service.IRolePermissionService;
 import org.qifu.core.service.ISysLoginLogService;
@@ -64,6 +65,9 @@ public class JwtAuthLoginedUserRoleService {
 						urap.setRolePermission(new ArrayList<RolePermissionAttr>());
 					}
 					for (int j = 0; rPermList != null && j < rPermList.size(); j++) {
+						if (!PermissionType.VIEW.name().equals(rPermList.get(j).getPermType())) {
+							continue;
+						}
 						RolePermissionAttr rpa = new RolePermissionAttr();
 						rpa.setPermission(rPermList.get(j).getPermission());
 						rpa.setType(rPermList.get(j).getPermType());
