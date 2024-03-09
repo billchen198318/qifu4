@@ -5,6 +5,7 @@
 		"/services/**",		
 		"/api**",
 		"/api/**",
-		"/commonOpenJasperReport"
+		"/commonOpenJasperReport",
+		"/"
 	]
 }

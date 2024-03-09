@@ -9,6 +9,11 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class BlankController {
 	
+	@RequestMapping("/")
+	public String indexPage(ModelMap mm, HttpServletRequest request) {
+		return "view/blank";
+	}
+	
 	@RequestMapping("/loginPage")
 	public String loginPage(ModelMap mm, HttpServletRequest request) {
 		return "view/blank";
