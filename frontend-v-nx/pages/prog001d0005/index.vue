@@ -13,6 +13,7 @@ import { PageConstants } from './config';
 import { getGridConfig, setConfigRow, setConfigPage, setConfigTotal, resetConfigByOld } from '../../components/GridHelper';
 import { useProg001d0005Store } from './QueryPageStore'; 
 import { 
+	getAccessTokenCookie,
 	getAxiosInstance, 
 	getProgItem, 
 	getUrlPrefixFromProgItem 
@@ -280,6 +281,7 @@ function _previewPdf() {
 			urlArgs += '&' + pname + '=' + inputs[i].value;
 		}
 	}	
+	urlArgs += '&qifutoken=' + getAccessTokenCookie();
 	myModal.hide();
 	window.open(import.meta.env.VITE_JASPERREPORT_COMMON_URL + urlArgs, "_blank");
 }
