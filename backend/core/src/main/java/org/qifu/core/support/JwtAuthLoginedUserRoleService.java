@@ -132,7 +132,7 @@ public class JwtAuthLoginedUserRoleService {
 		}
 		InputStream is = null;
 		try {
-			is = BaseAuthenticationSuccessHandler.class.getClassLoader().getResource( CREATE_USER_DATA_LDAP_MODE_SCRIPT ).openStream();
+			is = JwtAuthLoginedUserRoleService.class.getClassLoader().getResource( CREATE_USER_DATA_LDAP_MODE_SCRIPT ).openStream();
 			createUserDataLdapModeScript = IOUtils.toString(is, Constants.BASE_ENCODING);			
 		} catch (IOException e) {
 			e.printStackTrace();
