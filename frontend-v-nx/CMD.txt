@@ -24,9 +24,17 @@ npm install --save vue-echarts
 npm run build
 npm run dev
 npm run preview
+npx nuxi start
+
+# dev mode dot env of .env.local
+npx nuxi dev --dotenv .env.local
+
 
 # command will then output an .output/public/index.html entrypoint
 nuxi generate
 
 # This will launch your production Nuxt server that listens on port 3000 by default.
 node .output/server/index.mjs
+
+
+
