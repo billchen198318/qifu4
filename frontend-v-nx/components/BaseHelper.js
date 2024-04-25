@@ -259,6 +259,13 @@ export function getAxiosInstance() {
 					// 當不是 refresh token 作業發生 401 才需要更新 access token 並重發
 					// 如果是就略過此刷新 access token 作業，直接不處理(因為 catch 已經攔截處理更新失敗的情況了)
 					const refreshTokeUrl = import.meta.env.VITE_API_URL + '/auth/refreshNewToken';
+
+					if (error.config.url.indexOf('/auth/refreshNewToken') > -1) { // 2024-04-25 add
+						alert('請重新登入系統!');
+						window.location.href = '/';
+						return error.response;
+					}
+					
 					if (error.config.url !== refreshTokeUrl) {
 						// 原始 request 資訊
 						const originalRequest = error.config
@@ -270,6 +277,19 @@ export function getAxiosInstance() {
 							refreshToken : getRefreshTokenCookie()
 						})) // refresh_toke is attached in cookie
 						.then((response) => {
+							if (undefined == response.data || null == response.data) { // 2024-04-25 add
+								alert('請重新登入系統!');
+								window.location.href = '/';
+								return response;
+							}
+							// 2024-04-25 add
+							if (null == response.data.refreshToken || null == response.data.accessToken 
+								|| '' == response.data.refreshToken || '' == response.data.accessToken) {
+								alert('請重新登入系統!');
+								window.location.href = '/';
+								return response;
+							}
+
 							// [更新 access_token 成功]
 							// 刷新 storage (其他呼叫 api 的地方都會從此處取得新 access_token)
 							setRefreshAndAccessTokenCookie(response.data.refreshToken, response.data.accessToken)
@@ -312,9 +332,10 @@ export function getAxiosInstance() {
 				// shutdonw api server
 				alert('網路連線不穩定，請稍候再試')
 			}
+
         }
 		
-		return Promise.reject(error);
+		//return Promise.reject(error); // 2024-04-25 rem
 	});
 	return axios;
 }

@@ -222,7 +222,7 @@ public class AuthController {
 	    if (refreshNew) {
 	    	return ResponseEntity.ok().body(res);
 	    }
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
 	}	
 	
 }
