@@ -27,10 +27,10 @@ import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { PieChart, BarChart, LineChart } from 'echarts/charts';
 import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent
+	TitleComponent,
+	TooltipComponent,
+	LegendComponent,
+	GridComponent
 } from 'echarts/components';
 import VChart, { THEME_KEY } from 'vue-echarts';
 import { ref, reactive, provide, onMounted, onUnmounted } from 'vue';
@@ -44,14 +44,14 @@ import {
 definePageMeta({ middleware : ['auth'] });
 
 use([
-  CanvasRenderer,
-  PieChart,
-  BarChart,
-  LineChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent
+	CanvasRenderer,
+	PieChart,
+	BarChart,
+	LineChart,
+	TitleComponent,
+	TooltipComponent,
+	LegendComponent,
+	GridComponent
 ]);
 
 //provide(THEME_KEY, 'dark');
@@ -211,11 +211,11 @@ lineOption = reactive({
 
 <style scoped>
 .chartSmall {
-  width: 40vw;
-  height: 45vh;
+	width: 40vw;
+	height: 45vh;
 }
 .chartAll {
-  width: 80vw;
-  height: 45vh;
+	width: 80vw;
+	height: 45vh;
 }
 </style>
