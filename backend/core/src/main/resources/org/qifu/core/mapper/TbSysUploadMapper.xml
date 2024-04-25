@@ -43,7 +43,7 @@
 		AND OID = #{oid,jdbcType=CHAR}
 	</if>        
 	<if test="system != null and system != ''.toString() ">
-		AND SYSTEM = #{system,jdbcType=VARCHAR}
+		AND tb_sys_upload.SYSTEM = #{system,jdbcType=VARCHAR}
 	</if>
 	<if test="subDir != null and subDir != ''.toString() ">
 		AND SUB_DIR = #{subDir,jdbcType=VARCHAR}
@@ -95,7 +95,7 @@
         OID,
       </if>
       <if test="system != null">
-        SYSTEM,
+        tb_sys_upload.SYSTEM,
       </if>
       <if test="subDir != null">
         SUB_DIR,
@@ -172,7 +172,7 @@
     update <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_upload
     <set>
       <if test="system != null">
-        SYSTEM = #{system,jdbcType=VARCHAR},
+        tb_sys_upload.SYSTEM = #{system,jdbcType=VARCHAR},
       </if>
       <if test="subDir != null">
         SUB_DIR = #{subDir,jdbcType=VARCHAR},
@@ -219,7 +219,7 @@
   <select id="selectByPrimaryKeySimple" parameterType="java.lang.String" resultMap="SimpleBaseResultMap">
     select
 		OID,
-		SYSTEM,
+		tb_sys_upload.SYSTEM,
 		SUB_DIR,
 		TYPE,
 		FILE_NAME,
@@ -236,7 +236,7 @@
   <!-- 刪除 IS_FILE='N' && CONTENT 欄位放byte 類別為暫存的資料 -->
   <delete id="deleteTmpContentBySystem" parameterType="java.util.HashMap">
     delete from <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_upload
-    where SYSTEM = #{system,jdbcType=VARCHAR}
+    where tb_sys_upload.SYSTEM = #{system,jdbcType=VARCHAR}
     and TYPE = #{type,jdbcType=VARCHAR}
     and IS_FILE = #{isFile,jdbcType=VARCHAR}
   </delete>   

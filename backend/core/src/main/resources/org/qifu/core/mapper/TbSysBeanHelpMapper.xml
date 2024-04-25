@@ -29,7 +29,7 @@
 		AND METHOD = #{method,jdbcType=VARCHAR}
 	</if>
 	<if test="system != null and system != ''.toString() ">
-		AND SYSTEM = #{system,jdbcType=VARCHAR}
+		AND tb_sys_bean_help.SYSTEM = #{system,jdbcType=VARCHAR}
 	</if>
 	<if test="enableFlag != null and enableFlag != ''.toString() ">
 		AND ENABLE_FLAG = #{enableFlag,jdbcType=VARCHAR}
@@ -81,7 +81,7 @@
         METHOD,
       </if>
       <if test="system != null">
-        SYSTEM,
+        tb_sys_bean_help.SYSTEM,
       </if>
       <if test="enableFlag != null">
         ENABLE_FLAG,
@@ -146,7 +146,7 @@
         METHOD = #{method,jdbcType=VARCHAR},
       </if>
       <if test="system != null">
-        SYSTEM = #{system,jdbcType=VARCHAR},
+        tb_sys_bean_help.SYSTEM = #{system,jdbcType=VARCHAR},
       </if>
       <if test="enableFlag != null">
         ENABLE_FLAG = #{enableFlag,jdbcType=VARCHAR},

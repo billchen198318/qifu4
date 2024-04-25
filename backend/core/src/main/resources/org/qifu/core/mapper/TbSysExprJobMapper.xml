@@ -31,7 +31,7 @@
   
   <sql id="baseConditions">
 	<if test="system != null and system != ''.toString() ">
-		AND SYSTEM = #{system,jdbcType=VARCHAR}
+		AND tb_sys_expr_job.SYSTEM = #{system,jdbcType=VARCHAR}
 	</if>    
 	<if test="id != null and id != ''.toString() ">
 		AND ID = #{id,jdbcType=VARCHAR}
@@ -83,7 +83,7 @@
         OID,
       </if>
       <if test="system != null">
-        SYSTEM,
+        tb_sys_expr_job.SYSTEM,
       </if>
       <if test="id != null">
         ID,
@@ -196,7 +196,7 @@
     update <include refid="org.qifu.core.mapper.DB1Config.schema"/>tb_sys_expr_job
     <set>
       <if test="system != null">
-        SYSTEM = #{system,jdbcType=VARCHAR},
+        tb_sys_expr_job.SYSTEM = #{system,jdbcType=VARCHAR},
       </if>
       <if test="id != null">
         ID = #{id,jdbcType=VARCHAR},
