@@ -13,6 +13,13 @@
 /myBatisGenerator
 /backend/myBatisGenerator
 
+/backend/base/build/*
+/backend/core/build/*
+/backend/app/build/*
+/backend/base/.gradle/*
+/backend/core/.gradle/*
+/backend/app/.gradle/*
+
 # Compiled class file
 *.class
 
