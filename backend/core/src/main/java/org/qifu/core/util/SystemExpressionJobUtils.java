@@ -31,8 +31,6 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joda.time.LocalDateTime;
 import org.qifu.base.AppContext;
 import org.qifu.base.exception.ServiceException;
@@ -48,9 +46,11 @@ import org.qifu.core.service.ISysExprJobService;
 import org.qifu.core.service.ISysExpressionService;
 import org.qifu.core.support.ExpressionJobExecuteCallable;
 import org.qifu.util.SimpleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SystemExpressionJobUtils {
-	protected static Logger log = LogManager.getLogger(SystemExpressionJobUtils.class);
+	protected static Logger log = LoggerFactory.getLogger(SystemExpressionJobUtils.class);
 	
 	private static ISysExprJobService<TbSysExprJob, String> sysExprJobService;
 	private static ISysExpressionService<TbSysExpression, String> sysExpressionService;
@@ -96,7 +96,7 @@ public class SystemExpressionJobUtils {
 		Date udate = new Date();
 		String uuserid = "system";
 		for (TbSysExprJob exprJob : exprJobList) {
-			log.warn( "ExpressionJob current RUN_STATUS is 'R' update to 'Y' , Id: " + exprJob.getId() + " , Name: " + exprJob.getName() );
+			log.warn( "ExpressionJob current RUN_STATUS is 'R' update to 'Y' , Id: {} , Name: {}", exprJob.getId(), exprJob.getName() );
 			exprJob.setRunStatus(ExpressionJobConstants.RUNSTATUS_SUCCESS);
 			exprJob.setUdate(udate);
 			exprJob.setUuserid(uuserid);
@@ -236,7 +236,7 @@ public class SystemExpressionJobUtils {
 		}
 		for (TbSysExprJob exprJob : exprJobList) {
 			if (ExpressionJobConstants.RUNSTATUS_PROCESS_NOW.equals(exprJob.getRunStatus())) {
-				log.warn( "[Expression-Job] Please check it, process now, Id: " + exprJob.getExprId() + " , name: " + exprJob.getName() );				
+				log.warn( "[Expression-Job] Please check it, process now, Id: {} , name: {}", exprJob.getExprId(), exprJob.getName() );				
 				continue;
 			}
 			if (!isRunTime(exprJob, dayOfWeek, hour, minute)) {
@@ -249,7 +249,7 @@ public class SystemExpressionJobUtils {
 			expr.setExprId(exprJob.getExprId());
 			DefaultResult<TbSysExpression> exprResult = sysExpressionService.selectByUniqueKey(expr);
 			if (exprResult.getValue() == null) {
-				log.error( "[Expression-Job] Id: " + exprJob.getExprId() + " , data not found.");				
+				log.error( "[Expression-Job] Id: {} , data not found.", exprJob.getExprId());				
 				log.error( exprResult.getMessage() );
 				continue;
 			}

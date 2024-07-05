@@ -22,15 +22,15 @@
 package org.qifu.core.support;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.AppContext;
 import org.qifu.base.model.YesNo;
 import org.qifu.core.entity.TbSysEventLog;
 import org.qifu.core.service.ISysEventLogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SysEventLogSupport {
-	protected static Logger log = LogManager.getLogger(SysEventLogSupport.class);
+	protected static Logger log = LoggerFactory.getLogger(SysEventLogSupport.class);
 	
 	private static ISysEventLogService<TbSysEventLog, String> sysEventLogService;
 	
@@ -40,7 +40,7 @@ public class SysEventLogSupport {
 	
 	public static void log(String userId, String sysId, String executeEventId, boolean permit) {
 		if ( StringUtils.isBlank(userId) || StringUtils.isBlank(sysId) || StringUtils.isBlank(executeEventId) ) {
-			log.warn("parameter has null value, userId=" + userId + ", sysId=" + sysId + ", executeEventId=" + executeEventId);
+			log.warn("parameter has null value, userId={} , sysId={} , executeEventId={}", userId, sysId, executeEventId);
 			return;
 		}
 		TbSysEventLog eventLog = new TbSysEventLog();

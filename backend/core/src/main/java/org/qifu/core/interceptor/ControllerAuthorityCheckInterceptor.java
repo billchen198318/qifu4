@@ -25,8 +25,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.Constants;
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.model.ControllerMethodAuthority;
@@ -36,6 +34,8 @@ import org.qifu.core.model.PermissionType;
 import org.qifu.core.model.User;
 import org.qifu.core.support.SysEventLogSupport;
 import org.qifu.core.util.UserUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -45,7 +45,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
-	protected Logger logger = LogManager.getLogger(ControllerAuthorityCheckInterceptor.class);
+	protected static Logger logger = LoggerFactory.getLogger(ControllerAuthorityCheckInterceptor.class);
 	
 	@Autowired
 	BaseInfoConfigProperties baseInfoConfigProperties;
@@ -65,7 +65,7 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 			}
 		}
 		if (!log) {
-			logger.info("exclude log url: " + url);
+			logger.info("exclude log url: {}", url);
 			return;
 		}
 		SysEventLogSupport.log(userId, sysId, url, permit);
@@ -109,7 +109,7 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 			this.log( user.getUsername(), baseInfoConfigProperties.getSystem(), url, true );
 			return true;
 		}		
-		logger.warn("[decline] user=" + user.getUsername() + " url=" + url);
+		logger.warn("[decline] user={} url={}", user.getUsername(), url);
 		if (YesNo.YES.equals(qifuPageTab)) {
 			this.log( user.getUsername(), baseInfoConfigProperties.getSystem(), url, false );
 			response.sendRedirect( CoreAppConstants.SYS_PAGE_NO_AUTH );

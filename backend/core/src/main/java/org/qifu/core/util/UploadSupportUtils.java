@@ -38,8 +38,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.qifu.base.AppContext;
@@ -53,9 +51,11 @@ import org.qifu.core.entity.TbSysUpload;
 import org.qifu.core.model.UploadTypes;
 import org.qifu.core.service.ISysUploadService;
 import org.qifu.util.SimpleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UploadSupportUtils {
-	protected static Logger logger=LogManager.getLogger(UploadSupportUtils.class);
+	protected static Logger logger = LoggerFactory.getLogger(UploadSupportUtils.class);
 	public static final String HELP_EXPRESSION_VARIABLE = "datas";
 	private static final long DEFAULT_UPLOAD_MAX_SIZE = 8388608; // default max 8MB 
 	private static long UPLOAD_MAX_SIZE = DEFAULT_UPLOAD_MAX_SIZE;
@@ -122,7 +122,7 @@ public class UploadSupportUtils {
 	}
 	
 	public static void cleanTempUpload(String system) throws ServiceException, Exception {
-		logger.info("clean upload(" + system + ") temp begin...");
+		logger.info("clean upload({}) temp begin...", system);
 		//sysUploadService.deleteTmpContentBySystem(system); // 2020-06-27 rem
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("system", system);
@@ -135,17 +135,17 @@ public class UploadSupportUtils {
 			// --------------------------------------------------------------------
 			// 2021-05-20 add
 			if (entity.getCdate() == null) {
-				logger.warn("upload temp file null create date time, cannot remove, upload oid: " + entity.getOid());
+				logger.warn("upload temp file null create date time, cannot remove, upload oid: {}", entity.getOid());
 				continue;
 			}
 			DateTime createDateTime = new DateTime(entity.getCdate());
 			Duration duration = new Duration(createDateTime, currentDateTime);
 			if (duration.getStandardHours() < 4) {
-				logger.warn("upload temp file no over remove check time(hour-" + duration.getStandardHours() + ", min-" + duration.getStandardMinutes() + "), cannot remove, upload oid: " + entity.getOid());
+				logger.warn("upload temp file no over remove check time(hour-{}, min-{}), cannot remove, upload oid: {}", duration.getStandardHours(), duration.getStandardMinutes(), entity.getOid());
 				continue;
 			}
 			if (!YesNo.YES.equals(entity.getIsFile())) {
-				logger.warn("delete upload not real file type, upload oid : " + entity.getOid() + " , show-name: " + entity.getShowName());
+				logger.warn("delete upload not real file type, upload oid : {} , show-name: {}", entity.getOid(), entity.getShowName());
 				sysUploadService.delete(entity);
 				continue;
 			}
@@ -154,12 +154,12 @@ public class UploadSupportUtils {
 			String fileFullPath = dir + "/" + entity.getFileName();
 			File file = new File(fileFullPath);
 			if (!file.exists()) {
-				logger.warn("upload temp file no exists, upload oid: " + entity.getOid());
+				logger.warn("upload temp file no exists, upload oid: {}", entity.getOid());
 				file = null;
 				continue;
 			}
 			try {
-				logger.warn("delete : " + file.getPath());
+				logger.warn("delete : {}", file.getPath());
 				FileUtils.forceDelete(file);
 				sysUploadService.delete(entity);
 			} catch (IOException e) {

@@ -29,8 +29,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.RolePermissionAttr;
@@ -43,6 +41,8 @@ import org.qifu.core.service.IRolePermissionService;
 import org.qifu.core.service.ISysCodeService;
 import org.qifu.core.service.IUserRoleService;
 import org.qifu.core.util.UserUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -55,7 +55,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class UserBuilderInterceptor implements HandlerInterceptor {
 	
-	protected Logger logger = LogManager.getLogger(UserBuilderInterceptor.class);
+	protected static Logger logger = LoggerFactory.getLogger(UserBuilderInterceptor.class);
 	
 	@Autowired
 	ISysCodeService<TbSysCode, String> sysCodeService;	

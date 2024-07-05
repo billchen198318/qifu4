@@ -28,8 +28,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.message.BaseSystemMessage;
@@ -53,6 +51,8 @@ import org.qifu.core.service.ISysCodeService;
 import org.qifu.core.service.ISysMenuRoleService;
 import org.qifu.core.service.ISysProgService;
 import org.qifu.core.service.IUserRoleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -62,7 +62,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ServiceAuthority(check = true)
 @Transactional(propagation=Propagation.REQUIRED, readOnly=true)
 public class RoleLogicServiceImpl extends BaseLogicService implements IRoleLogicService {
-	protected Logger logger=LogManager.getLogger(RoleLogicServiceImpl.class);
+	protected static Logger logger = LoggerFactory.getLogger(RoleLogicServiceImpl.class);
 	
 	private final static String DEFAULT_ROLE_CODE = "CMM_CONF001"; // 預設要套用role的 TB_SYS_CODE.CODE = 'BSC_CONF001' and TYPE='BSC'
 	private final static String DEFAULT_ROLE_CODE_TYPE = "CMM"; // 預設要套用role的 TB_SYS_CODE.CODE = 'BSC_CONF001' and TYPE='BSC'	

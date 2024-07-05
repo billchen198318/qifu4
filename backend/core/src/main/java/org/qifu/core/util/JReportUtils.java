@@ -37,8 +37,6 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.AppContext;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
@@ -51,6 +49,8 @@ import org.qifu.core.service.ISysJreportParamService;
 import org.qifu.core.service.ISysJreportService;
 import org.qifu.util.DataUtils;
 import org.qifu.util.SimpleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -66,7 +66,7 @@ import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 
 public class JReportUtils {
 	
-	private static Logger logger = LogManager.getLogger( JReportUtils.class );
+	protected static Logger logger = LoggerFactory.getLogger(JReportUtils.class);
 	
 	//private static DataSource dataSource;
 	
@@ -183,14 +183,14 @@ public class JReportUtils {
 		File reportDeployDir = new File(reportDeployDirName);
 		try {
 			if (!reportDeployDir.exists()) {
-				logger.warn("no exists dir, force mkdir " + reportDeployDirName);
+				logger.warn("no exists dir, force mkdir {}", reportDeployDirName);
 				FileUtils.forceMkdir(reportDeployDir);
 			}								
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage().toString());
 		}
-		logger.info("REPORT-ID : " + report.getReportId());
+		logger.info("REPORT-ID : {}", report.getReportId());
 		File reportFile = null;
 		File reportZipFile = null;			
 		OutputStream os = null;
@@ -199,7 +199,7 @@ public class JReportUtils {
 			String reportZipFileFullPath = reportDeployDirName + report.getReportId() + ".zip";		
 			reportZipFile = new File(reportZipFileFullPath);
 			if (reportZipFile.exists()) {
-				logger.warn("delete " + reportZipFileFullPath);
+				logger.warn("delete {}", reportZipFileFullPath);
 				FileUtils.forceDelete(reportZipFile);					
 			}
 			os = new FileOutputStream(reportZipFile);
@@ -209,14 +209,14 @@ public class JReportUtils {
 			zipFile.extractAll( reportDeployDirName );
 			reportFile = new File( reportFileFullPath );
 			if (!reportFile.exists()) {
-				logger.warn("report file is missing : " + reportFileFullPath);
+				logger.warn("report file is missing : {}", reportFileFullPath);
 				return;
 			}
 			if (YesNo.YES.equals(report.getIsCompile()) && report.getFile().endsWith("jrxml")) {
 				logger.info("compile report...");
 				File d = new File( reportDeployDirName + report.getReportId() );
 				String outJasper = compileReportToJasperFile(d.listFiles(), reportDeployDirName + report.getReportId() + "/");
-				logger.info("out first : " + outJasper);
+				logger.info("out first : {}", outJasper);
 			}
 		} catch (JRException re) {
 			re.printStackTrace();
@@ -242,10 +242,10 @@ public class JReportUtils {
 		File reportDeployDir = new File(reportDeployDirName);
 		try {
 			if (reportDeployDir.exists()) {
-				logger.warn("delete " + reportDeployDirName);
+				logger.warn("delete {}", reportDeployDirName);
 				FileUtils.forceDelete(reportDeployDir);
 			}	
-			logger.warn("mkdir " + reportDeployDirName);
+			logger.warn("mkdir {}", reportDeployDirName);
 			FileUtils.forceMkdir(reportDeployDir);					
 			for (TbSysJreport report : reportResult.getValue()) {
 				deployReport(report);
@@ -280,7 +280,7 @@ public class JReportUtils {
 				jasperFirst = destFileName;
 			}
 			JasperCompileManager.compileReportToFile(srcFile.getPath(), destFileName);
-			logger.info("out process : " + destFileName);
+			logger.info("out process : {}", destFileName);
 		}
 		return jasperFirst;
 	}	
@@ -307,7 +307,7 @@ public class JReportUtils {
 				jasperFirst = destFileName;
 			}
 			JasperCompileManager.compileReportToFile(srcFile.getPath(), destFileName);
-			logger.info("out process : " + destFileName);
+			logger.info("out process : {}", destFileName);
 		}
 		return jasperFirst;
 	}

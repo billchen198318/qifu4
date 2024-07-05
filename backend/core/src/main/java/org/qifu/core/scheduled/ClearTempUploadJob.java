@@ -21,16 +21,16 @@
  */
 package org.qifu.core.scheduled;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.scheduled.BaseScheduledTasksProvide;
 import org.qifu.core.util.UploadSupportUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClearTempUploadJob extends BaseScheduledTasksProvide {
-	protected Logger logger = LogManager.getLogger(ClearTempUploadJob.class);
+	protected static Logger logger = LoggerFactory.getLogger(ClearTempUploadJob.class);
 	
 	@Scheduled(cron = "1 0 1 * * *")
 	public void execute() {

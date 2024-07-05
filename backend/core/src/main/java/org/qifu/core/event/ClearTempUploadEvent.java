@@ -24,17 +24,17 @@ package org.qifu.core.event;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.core.util.UploadSupportUtils;
 import org.qifu.core.util.UserUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClearTempUploadEvent {
-	protected Logger logger = LogManager.getLogger(ClearTempUploadEvent.class);
+	protected static Logger logger = LoggerFactory.getLogger(ClearTempUploadEvent.class);
 	
 	@EventListener(ApplicationStartedEvent.class)
 	public void afterStartup() {	

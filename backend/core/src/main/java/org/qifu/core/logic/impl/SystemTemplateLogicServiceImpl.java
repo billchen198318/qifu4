@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.message.BaseSystemMessage;
 import org.qifu.base.model.DefaultResult;
@@ -41,6 +39,8 @@ import org.qifu.core.logic.ISystemTemplateLogicService;
 import org.qifu.core.model.TemplateCode;
 import org.qifu.core.service.ISysTemplateParamService;
 import org.qifu.core.service.ISysTemplateService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -50,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ServiceAuthority(check = true)
 @Transactional(propagation=Propagation.REQUIRED, readOnly=true)
 public class SystemTemplateLogicServiceImpl extends BaseLogicService implements ISystemTemplateLogicService {
-	protected Logger logger=LogManager.getLogger(SystemTemplateLogicServiceImpl.class);
+	protected static Logger logger = LoggerFactory.getLogger(SystemTemplateLogicServiceImpl.class);
 	private static final int MAX_MESSAGE_LENGTH = 4000;
 	
 	@Autowired

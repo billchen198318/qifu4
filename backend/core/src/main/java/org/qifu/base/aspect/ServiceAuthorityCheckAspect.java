@@ -26,8 +26,6 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -45,6 +43,8 @@ import org.qifu.core.model.PermissionType;
 import org.qifu.core.model.User;
 import org.qifu.core.support.SysEventLogSupport;
 import org.qifu.core.util.UserUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -53,7 +53,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class ServiceAuthorityCheckAspect implements IBaseAspectService {
-	protected Logger logger=LogManager.getLogger(ServiceAuthorityCheckAspect.class);
+	protected static Logger logger = LoggerFactory.getLogger(ServiceAuthorityCheckAspect.class);
 	
 	@Autowired
 	BaseInfoConfigProperties baseInfoConfigProperties;	
@@ -103,10 +103,10 @@ public class ServiceAuthorityCheckAspect implements IBaseAspectService {
 			return pjp.proceed();
 		}
 		logger.warn(
-				"[decline] user[" + UserUtils.getCurrentUser().getUsername() + "] " 
-						+ pjp.getTarget().getClass().getName() 
-						+ " - " 
-						+ signature.getMethod().getName());		
+				"[decline] user[{}] {} - {}" 
+				, UserUtils.getCurrentUser().getUsername()
+				, pjp.getTarget().getClass().getName()
+				, signature.getMethod().getName());		
 		log(username, systemId, this.getEventId(serviceId, method.getName()), false );
 		throw new AuthorityException(BaseSystemMessage.noPermission());
 	}

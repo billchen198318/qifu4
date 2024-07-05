@@ -21,17 +21,17 @@
  */
 package org.qifu.core.scheduled;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.scheduled.BaseScheduledTasksProvide;
 import org.qifu.core.util.SystemExpressionJobUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SysExpressionJob extends BaseScheduledTasksProvide {
-	protected Logger log = LogManager.getLogger(SysExpressionJob.class);
+	protected static Logger log = LoggerFactory.getLogger(SysExpressionJob.class);
 	
 	/* fixedDelay 60000 , do not to modify */
 	@Scheduled(initialDelay = 10000, fixedDelay = 60000)

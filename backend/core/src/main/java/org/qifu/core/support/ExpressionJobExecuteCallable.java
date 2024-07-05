@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.AppContext;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
@@ -46,9 +44,12 @@ import org.qifu.core.util.SystemSettingConfigureUtils;
 import org.qifu.core.util.UserUtils;
 import org.qifu.util.ScriptExpressionUtils;
 import org.qifu.util.SimpleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExpressionJobExecuteCallable implements Callable<ExpressionJobObj> {
-	protected static Logger logger = LogManager.getLogger(ExpressionJobExecuteCallable.class);
+	protected static Logger logger = LoggerFactory.getLogger(ExpressionJobExecuteCallable.class);
+	
 	private ExpressionJobObj jobObj = null;
 	
 	public ExpressionJobExecuteCallable(ExpressionJobObj jobObj) {
@@ -82,7 +83,7 @@ public class ExpressionJobExecuteCallable implements Callable<ExpressionJobObj> 
 				setUserInfoBackgroundMode = true;
 			}
 			
-			logger.info("[Expression-Job] (Start) ID: " + this.jobObj.getSysExprJob().getId() + " , NAME: " + this.jobObj.getSysExprJob().getName());
+			logger.info("[Expression-Job] (Start) ID: {} , NAME: {}", this.jobObj.getSysExprJob().getId(), this.jobObj.getSysExprJob().getName());
 			
 			if (StringUtils.isBlank(jobObj.getSysExpression().getContent())) {
 				faultMsg = "No expression content!";
@@ -144,7 +145,7 @@ public class ExpressionJobExecuteCallable implements Callable<ExpressionJobObj> 
 			
 			this.sendMail();
 			
-			logger.info("[Expression-Job] (End) ID: " + this.jobObj.getSysExprJob().getId() + " , NAME: " + this.jobObj.getSysExprJob().getName());
+			logger.info("[Expression-Job] (End) ID: {} , NAME: {}", this.jobObj.getSysExprJob().getId(), this.jobObj.getSysExprJob().getName());
 			
 			if (setUserInfoBackgroundMode) {
 				UserUtils.removeForUserLocalUtils();

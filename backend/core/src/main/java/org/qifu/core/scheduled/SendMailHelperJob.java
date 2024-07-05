@@ -25,8 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.YesNo;
@@ -36,6 +34,8 @@ import org.qifu.core.service.ISysMailHelperService;
 import org.qifu.core.util.MailClientUtils;
 import org.qifu.core.util.SystemSettingConfigureUtils;
 import org.qifu.util.SimpleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SendMailHelperJob extends BaseScheduledTasksProvide {
-	protected Logger log = LogManager.getLogger(SendMailHelperJob.class);
+	protected static Logger log = LoggerFactory.getLogger(SendMailHelperJob.class);
 	
 	@Autowired
 	ISysMailHelperService<TbSysMailHelper, String> sysMailHelperService;
@@ -105,7 +105,7 @@ public class SendMailHelperJob extends BaseScheduledTasksProvide {
 				}
 				
 				try {
-					log.info("process mail-id: " + this.mailHelper.getMailId());	
+					log.info("process mail-id: {} " , this.mailHelper.getMailId());	
 					MailClientUtils.send(
 							this.mailHelper.getMailFrom(), 
 							this.mailHelper.getMailTo(), 
@@ -136,7 +136,7 @@ public class SendMailHelperJob extends BaseScheduledTasksProvide {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					log.info("success mail-id: " + this.mailHelper.getMailId());
+					log.info("success mail-id: {} " , this.mailHelper.getMailId());
 					this.flag = null;
 				}
 				this.rety--;

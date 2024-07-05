@@ -26,8 +26,6 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -36,6 +34,8 @@ import org.qifu.base.exception.AuthorityException;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.properties.BaseInfoConfigProperties;
 import org.qifu.core.util.ServiceScriptExpressionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class ServiceScriptExpressionProcessAspect implements IBaseAspectService {
-	protected Logger logger=LogManager.getLogger(ServiceScriptExpressionProcessAspect.class);
+	protected static Logger logger = LoggerFactory.getLogger(ServiceScriptExpressionProcessAspect.class);
 	
 	@Autowired
 	BaseInfoConfigProperties baseInfoConfigProperties;	

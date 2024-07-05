@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.message.BaseSystemMessage;
 import org.qifu.base.model.DefaultResult;
@@ -46,6 +44,8 @@ import org.qifu.core.service.ISysBeanHelpExprService;
 import org.qifu.core.service.ISysBeanHelpService;
 import org.qifu.core.service.ISysExpressionService;
 import org.qifu.core.service.ISysService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -55,7 +55,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ServiceAuthority(check = true)
 @Transactional(propagation=Propagation.REQUIRED, readOnly=true)
 public class SystemBeanHelpLogicServiceImpl extends BaseLogicService implements ISystemBeanHelpLogicService {
-	protected Logger logger=LogManager.getLogger(SystemBeanHelpLogicServiceImpl.class);
+	protected static Logger logger = LoggerFactory.getLogger(SystemBeanHelpLogicServiceImpl.class);
 	
 	@Autowired
 	ISysService<TbSys, String> sysService;

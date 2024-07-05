@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.message.BaseSystemMessage;
 import org.qifu.base.model.DefaultResult;
@@ -42,6 +40,8 @@ import org.qifu.core.entity.TbSysJreportParam;
 import org.qifu.core.logic.ISystemJreportLogicService;
 import org.qifu.core.service.ISysJreportParamService;
 import org.qifu.core.service.ISysJreportService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ServiceAuthority(check = true)
 @Transactional(propagation=Propagation.REQUIRED, readOnly=true)
 public class SystemJreportLogicServiceImpl extends BaseLogicService implements ISystemJreportLogicService {
-	protected Logger logger=LogManager.getLogger(SystemJreportLogicServiceImpl.class);
+	protected static Logger logger = LoggerFactory.getLogger(SystemJreportLogicServiceImpl.class);
 	private final static int MAX_DESCRIPTION_LENGTH = 500;
 	private final static String SUB_FILE_NAME_JRXML = ".jrxml";
 	private final static String SUB_FILE_NANME_JASPER = ".jasper";

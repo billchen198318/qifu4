@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.message.BaseSystemMessage;
 import org.qifu.base.model.DefaultResult;
@@ -45,6 +43,8 @@ import org.qifu.core.service.ISysBeanHelpExprService;
 import org.qifu.core.service.ISysExprJobService;
 import org.qifu.core.service.ISysExpressionService;
 import org.qifu.core.service.ISysService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -54,7 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ServiceAuthority(check = true)
 @Transactional(propagation=Propagation.REQUIRED, readOnly=true)
 public class SystemExpressionLogicServiceImpl extends BaseLogicService implements ISystemExpressionLogicService {
-	protected Logger logger=LogManager.getLogger(SystemExpressionLogicServiceImpl.class);
+	protected static Logger logger = LoggerFactory.getLogger(SystemExpressionLogicServiceImpl.class);
 	
 	private static final int MAX_CONTENT_LENGTH = 8000;
 	private static final int MAX_DESCRIPTION_LENGTH = 500;
@@ -171,7 +171,7 @@ public class SystemExpressionLogicServiceImpl extends BaseLogicService implement
 		exprJob.setRunStatus( oldSysExprJob.getRunStatus() );
 		if (super.isBlank(oldSysExprJob.getRunStatus())) {
 			exprJob.setRunStatus( ExpressionJobConstants.RUNSTATUS_FAULT );
-			logger.warn( "Before runStatus flag is blank. Expression Job ID: " + oldSysExprJob.getId() );			
+			logger.warn( "Before runStatus flag is blank. Expression Job ID: {}" , oldSysExprJob.getId() );			
 		}
 		this.setStringValueMaxLength(exprJob, "description", MAX_DESCRIPTION_LENGTH);
 		return this.sysExprJobService.update(exprJob);
