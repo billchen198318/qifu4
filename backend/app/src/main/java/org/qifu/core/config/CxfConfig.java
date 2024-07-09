@@ -70,7 +70,7 @@ public class CxfConfig {
 		endpoint.publish("/testService");
 		endpoint.getInInterceptors().add( this.loggingInInterceptor() );
 		endpoint.getOutInterceptors().add( this.loggingOutInterceptor() );
-		endpoint.getOutInterceptors().add( this.soapForceDoclitBareInInterceptor() );
+		endpoint.getInInterceptors().add( this.soapForceDoclitBareInInterceptor() );
 		return endpoint;
 	}	
 	
