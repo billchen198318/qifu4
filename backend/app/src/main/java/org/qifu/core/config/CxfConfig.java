@@ -5,16 +5,12 @@ import java.util.Arrays;
 import org.apache.cxf.Bus;
 import org.apache.cxf.ext.logging.LoggingInInterceptor;
 import org.apache.cxf.ext.logging.LoggingOutInterceptor;
-import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.transport.servlet.CXFServlet;
-import org.qifu.core.webservice.ITestService;
 import org.qifu.core.webservice.interceptor.SoapForceDoclitBareInInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import jakarta.xml.ws.Endpoint;
 
 @Configuration
 public class CxfConfig {
@@ -28,8 +24,8 @@ public class CxfConfig {
 	
 	private SoapForceDoclitBareInInterceptor soapForceDoclitBareInInterceptor;
 	
-	@Autowired
-	ITestService testService;
+	//@Autowired
+	//ITestService testService;
 	
 	
 	@Bean
@@ -64,6 +60,8 @@ public class CxfConfig {
 		return srb;
 	}	
 	
+	// change to config endpoint-publish.json file in classpath
+	/*
 	@Bean
 	public Endpoint testEndpoint() {
 		EndpointImpl endpoint = new EndpointImpl(bus, this.testService);
@@ -73,5 +71,6 @@ public class CxfConfig {
 		endpoint.getInInterceptors().add( this.soapForceDoclitBareInInterceptor() );
 		return endpoint;
 	}	
+	*/
 	
 }
