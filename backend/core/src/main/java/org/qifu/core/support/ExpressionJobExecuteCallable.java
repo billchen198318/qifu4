@@ -191,7 +191,7 @@ public class ExpressionJobExecuteCallable implements Callable<ExpressionJobObj> 
 			mailHelper.setMailFrom( SystemSettingConfigureUtils.getMailDefaultFromValue() );
 			mailHelper.setMailTo( contact );
 			mailHelper.setSubject( subject );
-			mailHelper.setText( content.getBytes("utf8") );
+			mailHelper.setText( content.getBytes(Constants.BASE_ENCODING) );
 			mailHelper.setRetainFlag(YesNo.NO);
 			mailHelper.setSuccessFlag(YesNo.NO);
 			sysMailHelperService.insert(mailHelper);

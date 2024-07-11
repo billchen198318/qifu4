@@ -23,6 +23,7 @@ package org.qifu.base;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -34,7 +35,7 @@ public class Constants {
 	/**
 	 * 不要更改這個設定
 	 */
-	public static final String BASE_ENCODING = "utf-8";
+	public static final String BASE_ENCODING = StandardCharsets.UTF_8.name();
 	
 	/**
 	 * EncryptorUtils 要用的 key1

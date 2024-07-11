@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
+import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.DefaultResult;
 import org.qifu.base.model.YesNo;
@@ -112,7 +113,7 @@ public class SendMailHelperJob extends BaseScheduledTasksProvide {
 							this.mailHelper.getMailCc(), 
 							this.mailHelper.getMailBcc(), 
 							this.mailHelper.getSubject(), 
-							new String(this.mailHelper.getText(), "utf8") );
+							new String(this.mailHelper.getText(), Constants.BASE_ENCODING) );
 					success = true;					
 				} catch (MailException e1) {
 					e1.printStackTrace();
