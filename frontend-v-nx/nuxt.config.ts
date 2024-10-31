@@ -13,5 +13,14 @@ export default defineNuxtConfig({
   }, */
   devServer: {
     port: 8077, // default: 3000
-  }
+  },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler' // or "modern"
+        }
+      }
+    }
+  }  
 })
