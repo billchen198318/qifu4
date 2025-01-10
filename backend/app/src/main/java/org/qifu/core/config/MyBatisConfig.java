@@ -27,7 +27,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -43,19 +44,21 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import jakarta.annotation.Resource;
+
 @MapperScan(basePackages = "org.qifu.core.mapper", sqlSessionFactoryRef = "sqlSessionFactory")
 @Configuration
 @EnableAutoConfiguration
 @EnableTransactionManagement
 @PropertySource("classpath:db1-config.properties")
 public class MyBatisConfig implements EnvironmentAware {
+	protected static Logger logger = LoggerFactory.getLogger(MyBatisConfig.class);
 	
-	@Autowired
 	private Environment environment;
 	
-	//@Autowired
 	private DataSource dataSource;
 	
+	@Resource
 	@Override
 	public void setEnvironment(Environment environment) {
 		this.environment = environment;
@@ -64,14 +67,9 @@ public class MyBatisConfig implements EnvironmentAware {
 	@Primary
 	@Bean(name = "dataSource")
 	@ConfigurationProperties(prefix = "db1.datasource")
-	public DataSource dataSource() {
-		
-		System.out.println("===========================================");
-		System.out.println(environment.getProperty("db1.datasource.jdbcUrl"));
-		System.out.println(environment.getProperty("db1.datasource.jdbcUrl"));
-		System.out.println(environment.getProperty("db1.datasource.jdbcUrl"));
-		System.out.println("===========================================");
-		
+	public DataSource dataSource() {		
+		String jdbcUrl = environment.getProperty("db1.datasource.jdbcUrl");
+		logger.info("dataSource build jdbcUrl: {}", jdbcUrl);
 		this.dataSource = DataSourceBuilder.create().build();
 		return this.dataSource;
 	}	

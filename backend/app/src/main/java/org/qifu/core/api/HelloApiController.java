@@ -27,7 +27,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.message.BaseSystemMessage;
 import org.qifu.base.model.QueryResult;
-import org.qifu.base.model.YesNo;
+import org.qifu.base.model.YesNoKeyProvide;
 import org.qifu.core.util.CoreApiSupport;
 import org.qifu.core.vo.TestModel;
 import org.springframework.http.MediaType;
@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,25 +51,17 @@ public class HelloApiController extends CoreApiSupport {
 	
 	private static final long serialVersionUID = -2710621780849674671L;
 	
-//	@Autowired
-//	RedisTemplate<String, String> redisTemplate;
-	
 	@Operation(summary = "測試del", description = "測試用的接口del")
-	//@ResponseBody
 	@DeleteMapping("/delPlay")
 	public String delPlay(String key) {
-		String flag = YesNo.NO;
+		String flag = YesNoKeyProvide.NO;
 		if (StringUtils.isBlank(key)) {
-			return YesNo.NO;
+			return YesNoKeyProvide.NO;
 		}		
-//		if (this.redisTemplate.delete(key)) {
-//			flag = YesNo.YES;
-//		}
 		return flag;
 	}
 	
 	@Operation(summary = "測試", description = "測試用的接口")
-	//@ResponseBody
 	@PostMapping(value = "/play", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public QueryResult<String> play(@RequestBody TestModel data) {
 		QueryResult<String> result = this.initResult();
@@ -79,19 +70,10 @@ public class HelloApiController extends CoreApiSupport {
 			return result;
 		}
 		try {
-//			if (StringUtils.isBlank(data.getMsg())) {
-//				this.successResult(result, this.redisTemplate.opsForValue().get(data.getKey()));
-//				return result;
-//			}
-//			if ( StringUtils.defaultString(this.redisTemplate.opsForValue().get(data.getKey())).length() > 1000 ) {
-//				this.successResult(result, this.redisTemplate.opsForValue().get(data.getKey()));
-//				return result;
-//			}
-			Map<String, String> dataMap = new HashMap<String, String>();
+			Map<String, String> dataMap = new HashMap<>();
 			dataMap.put("str", data.getMsg());
 			ObjectMapper om = new ObjectMapper();
 			String val = om.writeValueAsString(dataMap);
-//			this.redisTemplate.opsForValue().append(data.getKey(), val);
 			this.successResult(result, val);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -101,7 +83,6 @@ public class HelloApiController extends CoreApiSupport {
 	}
 	
 	@Operation(summary = "測試2", description = "測試用的接口2")
-	//@ResponseBody
 	@GetMapping(value = "/testPV/{id}")
 	public QueryResult<String> testPV(@PathVariable String id) {
 		QueryResult<String> result = this.initResult();
