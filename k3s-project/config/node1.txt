@@ -1,0 +1,4 @@
+node-ip: "192.168.10.1"
+flannel-iface: "enp0s8"
+tls-san:
+  - "192.168.10.200"

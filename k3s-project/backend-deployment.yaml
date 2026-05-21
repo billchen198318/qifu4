@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qifu4-backend
+  namespace: qifu4
+spec:
+  replicas: 3
+  # 建議加上這個，避免更新時 3 台機器擠不下
+  strategy:
+    type: Recreate 
+  selector:
+    matchLabels:
+      app: qifu4-backend
+  template:
+    metadata:
+      labels:
+        app: qifu4-backend
+    spec:
+      affinity:
+        podAntiAffinity:
+          # 使用 preferred 模式
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - qifu4-backend
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: backend
+        image: 192.168.10.99:5000/qifu4-backend-app:0.0.4
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8088
+        env:
+        - name: JAVA_OPTS
+          value: "-Xms256m -Xmx512m"
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "768Mi"
+        readinessProbe:
+          tcpSocket:
+            port: 8088
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 6
+        livenessProbe:
+          tcpSocket:
+            port: 8088
+          initialDelaySeconds: 150
+          periodSeconds: 20

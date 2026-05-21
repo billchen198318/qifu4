@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qifu4-frontend
+  namespace: qifu4
+spec:
+  replicas: 3
+  # 建議加入更新策略，確保新舊版本不會打架
+  strategy:
+    type: Recreate 
+  selector:
+    matchLabels:
+      app: qifu4-frontend
+  template:
+    metadata:
+      labels:
+        app: qifu4-frontend
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - qifu4-frontend
+              topologyKey: kubernetes.io/hostname # <-- 修正縮排
+      containers:
+      - name: frontend
+        image: 192.168.10.99:5000/qifu4-frontend-app:0.0.4
+        imagePullPolicy: Always # <-- 這是你解決快取問題的神器
+        ports:
+        - containerPort: 8077
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+        # 加上這個，確保 Pod 真的在 8077 開門了才對外服務
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8077
+          initialDelaySeconds: 5
+          periodSeconds: 5

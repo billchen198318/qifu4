@@ -1,0 +1,1 @@
+curl -sfL https://get.k3s.io | K3S_TOKEN=K10b96da3c1af60d73c389e27a62c7db1e809975d444639c4890ce30289b060e1d2::server:6a3bb69cff5b20086c394f67bf57e930 sh -s - server --server https://192.168.10.200:6443 --tls-san 192.168.10.200 --node-ip 192.168.10.3

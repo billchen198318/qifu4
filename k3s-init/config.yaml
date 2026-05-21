@@ -1,0 +1,5 @@
+bind-address: 0.0.0.0
+advertise-address: 192.168.10.200
+tls-san:
+  - "192.168.10.200"
+write-kubeconfig-mode: "0644"

@@ -1,0 +1,62 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: qifu4-ingress
+  namespace: qifu4
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/service.serversscheme: http
+    # 【完美修正】精確指定 CRD 供應商後綴，讓 Traefik 100% 成功加載
+    traefik.ingress.kubernetes.io/router.middlewares: qifu4-qifu4-cors-middleware@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+  - secretName: qifu4-tls
+  rules:
+  - http:
+      paths:
+      # 1. 後端路徑
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: qifu4-backend-service
+            port:
+              number: 8088
+      - path: /commonOpenJasperReport
+        pathType: Prefix
+        backend:
+          service:
+            name: qifu4-backend-service
+            port:
+              number: 8088      
+      - path: /loginPage
+        pathType: Prefix
+        backend:
+          service:
+            name: qifu4-backend-service
+            port:
+              number: 8088              
+      - path: /loginAgainPage
+        pathType: Prefix
+        backend:
+          service:
+            name: qifu4-backend-service
+            port:
+              number: 8088         
+      - path: /noAuthPage
+        pathType: Prefix
+        backend:
+          service:
+            name: qifu4-backend-service
+            port:
+              number: 8088
+              
+      # 2. 前端墊底路徑
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: qifu4-frontend-service
+            port:
+              number: 8077

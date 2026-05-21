@@ -1,0 +1,23 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: qifu4-cors-middleware
+  namespace: qifu4
+spec:
+  headers:
+    accessControlAllowCredentials: true
+    accessControlAllowOriginList:
+      - "https://192.168.10.200"
+    accessControlAllowMethods:
+      - "GET"
+      - "POST"
+      - "OPTIONS"
+      - "PUT"
+      - "DELETE"
+      - "PATCH"
+    accessControlAllowHeaders:
+      - "*"
+    accessControlExposeHeaders:
+      - "*"    
+    accessControlMaxAge: 86400
+    addVaryHeader: true
