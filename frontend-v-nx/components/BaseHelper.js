@@ -1,8 +1,8 @@
 import axios from "axios";
 import { getBaseStore } from '../store/baseStore';
 
-let _q4urt_var = import.meta.env.VITE_CK_HEAD_NAME + '__urt';
-let _q4uat_var = import.meta.env.VITE_CK_HEAD_NAME + '__uat';
+let _q4urt_var = import.meta.env.VITE_CK_HEAD_NAME + '__urt_flag';
+let _q4uat_var = import.meta.env.VITE_CK_HEAD_NAME + '__uat_flag';
 
 // GET COOKIE
 export function getCookie(name) {
@@ -53,8 +53,8 @@ export function deleteCookie(name) {
 }
 
 export function setRefreshAndAccessTokenCookie(rfToken, accessToken) {
-	setCookie(_q4urt_var, rfToken, 4, true);
-	setCookie(_q4uat_var, accessToken, 4, true);
+	setCookie(_q4urt_var, 'Y', 4, true);
+	setCookie(_q4uat_var, 'Y', 4, true);
 }
 
 export function getRefreshTokenCookie() {
@@ -66,6 +66,7 @@ export function getAccessTokenCookie() {
 }
 
 export function userLogoutClearCookie(){
+	axios.post(import.meta.env.VITE_API_URL + '/auth/logout', {}, { withCredentials: true });
 	deleteCookie(_q4urt_var);
 	deleteCookie(_q4uat_var);
 }
@@ -227,9 +228,9 @@ export function getFile2Base64(file) {
 
 export function getAxiosInstance() {
 
+	axios.defaults.withCredentials = true;
 	axios.defaults.headers = {
-		'Content-Type' : 'application/json',
-        'Authorization' : 'Bearer ' + getAccessTokenCookie()
+		'Content-Type' : 'application/json'
 	};
 
 	// 全局設定 AJAX Request 攔截器 (interceptor)
@@ -273,8 +274,8 @@ export function getAxiosInstance() {
 						// 依據 refresh_token 刷新 access_token 並重發 request
 						return axios.post(refreshTokeUrl, JSON.stringify({
 							username : getBaseStore().user.id,
-							accessToken : getAccessTokenCookie(),
-							refreshToken : getRefreshTokenCookie()
+							accessToken : '',
+							refreshToken : ''
 						})) // refresh_toke is attached in cookie
 						.then((response) => {
 							if (undefined == response.data || null == response.data) { // 2024-04-25 add
@@ -282,22 +283,8 @@ export function getAxiosInstance() {
 								window.location.href = '/';
 								return response;
 							}
-							// 2024-04-25 add
-							if (null == response.data.refreshToken || null == response.data.accessToken 
-								|| '' == response.data.refreshToken || '' == response.data.accessToken) {
-								alert('請重新登入系統!');
-								window.location.href = '/';
-								return response;
-							}
-
-							// [更新 access_token 成功]
-							// 刷新 storage (其他呼叫 api 的地方都會從此處取得新 access_token)
-							setRefreshAndAccessTokenCookie(response.data.refreshToken, response.data.accessToken)
-
-							// 刷新原始 request 的 access_token
-							originalRequest.headers.Authorization = 'Bearer ' + response.data.accessToken
-
-							// 重送 request (with new access_token)
+							
+							// 重送 request (with new access_token from cookie)
 							return axios(originalRequest)
 						})
 						.catch((err) => {

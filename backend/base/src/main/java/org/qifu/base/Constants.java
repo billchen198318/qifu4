@@ -125,6 +125,8 @@ public class Constants {
 	public static final String TOKEN_CHECK_URL_PATH = FORWARD_SLASH + "api" + FORWARD_SLASH;
 	public static final String TOKEN_AUTH = "Authorization";
 	public static final String TOKEN_PREFIX = "Bearer";
+	public static final String TOKEN_ACCESS_COOKIE_NAME = "QIFU4VNX__uat";
+	public static final String TOKEN_REFRESH_COOKIE_NAME = "QIFU4VNX__urt";
 	
 	public static final String HTTP_REQUEST_PASSWORD_AUTH = "_qifu4_userLoginPassword_" + SimpleUtils.createRandomString(5);
 	public static final String SYSCODE_TOKEN_CODE = "TOKEN";

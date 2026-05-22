@@ -28,6 +28,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
                     query: {}, 
                     body: JSON.stringify({ accessToken : ac, refreshToken : rc }),
                     watch: [],
+                    credentials: 'include',
                     onRequestError({ request, options, error }) {
                         userLogoutClearCookie();
                         baseStore.clearUserData();
@@ -48,12 +49,12 @@ export default defineNuxtRouteMiddleware((to, from) => {
                     const mRest = await useFetch(import.meta.env.VITE_API_URL + '/menu/getMemuItemAndProgList', {
                         method: 'POST', 
                         headers: { 
-                            "Content-Type": "application/json", 
-                            'Authorization' : 'Bearer ' + getAccessTokenCookie()
+                            "Content-Type": "application/json"
                         }, 
                         query: {},
                         body: {},
                         watch: [],
+                        credentials: 'include',
                         onResponse({ request, response, options }) {
                             baseStore.menuList = response._data.value.menuList;
                             baseStore.progList = response._data.value.programList;

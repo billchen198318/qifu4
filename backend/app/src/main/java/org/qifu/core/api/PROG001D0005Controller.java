@@ -42,7 +42,6 @@ import org.qifu.core.util.CoreApiSupport;
 import org.qifu.core.util.JReportUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +53,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import ognl.OgnlException;
 
 @Tag(name = "CORE_PROG001D0005", description = "Jasper report resources management.")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @ResponseBody
 @RequestMapping("/api/PROG001D0005")

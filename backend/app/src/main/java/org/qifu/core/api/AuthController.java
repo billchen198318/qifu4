@@ -39,7 +39,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,14 +46,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auth0.jwt.interfaces.Claim;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+	
+	private void setTokenCookie(HttpServletResponse response, String name, String value, int minutes) {
+		Cookie cookie = new Cookie(name, value);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true); // Should be true in production
+		cookie.setPath("/");
+		cookie.setMaxAge(minutes * 60);
+		response.addCookie(cookie);
+	}
+	
+	private String getCookieValue(HttpServletRequest request, String name) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (name.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
 	
 	private final AuthenticationManager authenticationManager;
 	
@@ -90,17 +110,29 @@ public class AuthController {
 	public ResponseEntity<User> validCheck(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
 		User user = null;
 	    try {
+	    	String accessToken = loginRequest.getAccessToken();
+	    	String refreshToken = loginRequest.getRefreshToken();
+	    	if (StringUtils.isBlank(accessToken) || "Y".equals(accessToken)) {
+	    		accessToken = this.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME);
+	    	}
+	    	if (StringUtils.isBlank(refreshToken) || "Y".equals(refreshToken)) {
+	    		refreshToken = this.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
+	    	}
+	    	
 	    	Map<String, Object> param = new HashMap<>();
 	    	TokenStoreValidate tsv = new TokenStoreValidateBuilder(this.dataSource);
-	    	if (TokenBuilderUtils.verifyRefresh(loginRequest.getRefreshToken(), tsv)) {
+	    	if (TokenBuilderUtils.verifyRefresh(refreshToken, tsv)) {
 	    		Map<String,Claim> userMapClaim = null;
-	    		if ((userMapClaim = TokenBuilderUtils.verifyToken(loginRequest.getAccessToken(), tsv)) != null) {
+	    		if ((userMapClaim = TokenBuilderUtils.verifyToken(accessToken, tsv)) != null) {
 	    			String userId = StringUtils.defaultString( userMapClaim.get(Constants.TOKEN_USER_PARAM_NAME).asString() );
 	    			List<String> roleIds = new ArrayList<>();
 	    			Map<String, List<RolePermissionAttr>> rolePermissionMap = new HashMap<>();
 					param.clear();
 					if (!StringUtils.isBlank(userId)) {
 						param.put("account", userId);
+						// Update loginRequest with real tokens for processOfValidCheck
+						loginRequest.setAccessToken(accessToken);
+						loginRequest.setRefreshToken(refreshToken);
 						user = this.processOfValidCheck(param, roleIds, rolePermissionMap, userId, loginRequest);
 					}	    			
 	    		}
@@ -115,7 +147,11 @@ public class AuthController {
 	    	user = new User("", "", YesNoKeyProvide.NO);
 	    	user.setAccessToken("");
 	    	user.setRefreshToken("");
-	    }	    
+	    } else {
+	    	// Return 'Y' flag to frontend instead of real token
+	    	user.setAccessToken("Y");
+	    	user.setRefreshToken("Y");
+	    }
 	    return ResponseEntity.ok().body(user);
 	}
 	
@@ -168,8 +204,10 @@ public class AuthController {
 			sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
 			if (null != sysCode && Constants.SYSCODE_TOKEN_TYPE.equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {								
 			    tbv = TokenBuilderUtils.createToken(user.getUserId(), Constants.TOKEN_AUTH, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
-				user.setAccessToken(tbv.getAccess());
-				user.setRefreshToken(tbv.getRefresh());
+				user.setAccessToken("Y");
+				user.setRefreshToken("Y");
+				this.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
+				this.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
 				user.blankPassword();
 				this.jwtAuthLoginedUserRoleService.onLoginedSuccess(authentication);
 			}
@@ -198,18 +236,29 @@ public class AuthController {
 		LoginRequest res = new LoginRequest();
 		boolean refreshNew = false;
 	    try {
-	    	if (StringUtils.isBlank(loginRequest.getAccessToken()) || StringUtils.isBlank(loginRequest.getRefreshToken()) || StringUtils.isBlank(loginRequest.getUsername())) {
+	    	String accessToken = loginRequest.getAccessToken();
+	    	String refreshToken = loginRequest.getRefreshToken();
+	    	if (StringUtils.isBlank(accessToken) || "Y".equals(accessToken)) {
+	    		accessToken = this.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME);
+	    	}
+	    	if (StringUtils.isBlank(refreshToken) || "Y".equals(refreshToken)) {
+	    		refreshToken = this.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
+	    	}
+	    	
+	    	if (StringUtils.isBlank(accessToken) || StringUtils.isBlank(refreshToken) || StringUtils.isBlank(loginRequest.getUsername())) {
 	    		throw new ControllerException( BaseSystemMessage.parameterBlank() );
 	    	}
 	    	tsv = TokenStoreValidateBuilder.build(this.dataSource);
-	    	if (tsv.refreshValidate(loginRequest.getRefreshToken(), loginRequest.getUsername())) {
+	    	if (tsv.refreshValidate(refreshToken, loginRequest.getUsername())) {
 			    TbSysCode sysCode = new TbSysCode();
 			    sysCode.setCode(Constants.SYSCODE_TOKEN_CODE);	
 			    sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
 			    if (null != sysCode && Constants.SYSCODE_TOKEN_TYPE.equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {
 			    	tbv = TokenBuilderUtils.createToken(loginRequest.getUsername(), Constants.TOKEN_AUTH, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
-			    	res.setAccessToken(tbv.getAccess());
-			    	res.setRefreshToken(tbv.getRefresh());
+			    	res.setAccessToken("Y");
+			    	res.setRefreshToken("Y");
+			    	this.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
+			    	this.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
 			    	res.setUsername(loginRequest.getUsername());
 			    	refreshNew = true;
 			    }
@@ -225,5 +274,12 @@ public class AuthController {
 	    }
 	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
 	}	
+	
+	@PostMapping("/logout")
+	public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+		this.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, "", 0);
+		this.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, "", 0);
+		return ResponseEntity.ok().body("OK");
+	}
 	
 }

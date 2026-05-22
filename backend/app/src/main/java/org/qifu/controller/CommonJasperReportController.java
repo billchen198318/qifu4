@@ -43,14 +43,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.auth0.jwt.interfaces.Claim;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class CommonJasperReportController {
-	
-	private final DataSource dataSource;	
-	
+
+	private String getCookieValue(HttpServletRequest request, String name) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (name.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
+	private final DataSource dataSource;
 	public CommonJasperReportController(DataSource dataSource) {
 		super();
 		this.dataSource = dataSource;
@@ -62,6 +74,9 @@ public class CommonJasperReportController {
 			@RequestParam("jreportId") String jreportId) throws IOException {
 		try {
 			String qifutoken = StringUtils.defaultString(request.getParameter("qifutoken"));
+			if (StringUtils.isBlank(qifutoken) || "Y".equals(qifutoken)) {
+				qifutoken = StringUtils.defaultString(this.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME));
+			}
 			TokenStoreValidateBuilder tsv = TokenStoreValidateBuilder.build(this.dataSource);
 			Map<String, Claim> claimToken = TokenBuilderUtils.verifyToken(qifutoken.replaceFirst(Constants.TOKEN_PREFIX, "").replace(" ", ""), tsv);
 			if (!TokenBuilderUtils.existsInfo(claimToken)) {

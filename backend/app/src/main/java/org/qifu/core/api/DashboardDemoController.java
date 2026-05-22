@@ -13,7 +13,6 @@ import org.qifu.core.vo.BoardDemo;
 import org.qifu.util.SimpleUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,7 +22,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "DASHBOARD_DEMO", description = "index page data from admin.")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @ResponseBody
 @RequestMapping("/api/DashboardDemo")

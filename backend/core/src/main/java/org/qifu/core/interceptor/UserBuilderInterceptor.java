@@ -48,12 +48,25 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import com.auth0.jwt.interfaces.Claim;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class UserBuilderInterceptor implements HandlerInterceptor {
 	
 	protected static Logger logger = LoggerFactory.getLogger(UserBuilderInterceptor.class);
+	
+	private String getCookieValue(HttpServletRequest request, String name) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (name.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
 	
 	private ISysCodeService<TbSysCode, String> sysCodeService;	
 	
@@ -105,11 +118,20 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		String authorization = StringUtils.defaultString(request.getHeader( Constants.TOKEN_AUTH )).trim();
-		if (!authorization.startsWith(Constants.TOKEN_PREFIX)) {
+		String token = "";
+		if (authorization.startsWith(Constants.TOKEN_PREFIX)) {
+			token = authorization.replaceFirst(Constants.TOKEN_PREFIX, "").replace(" ", "");
+		} 
+		
+		if (StringUtils.isBlank(token) || "Y".equals(token)) {
+			token = StringUtils.defaultString(this.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME));
+		}
+		
+		if (StringUtils.isBlank(token)) {
 			logger.warn(">>> No authorization uri: {} , remote-address: {} , remote-port: {} ", request.getRequestURI(), request.getRemoteAddr(), request.getRemotePort());
 			response.setCharacterEncoding( Constants.BASE_ENCODING );
 			response.setStatus(401); // 2023-08-04 add , 讓前端的 axios interceptor 去接
-			response.getWriter().print( "{ \"success\":\"N\",\"message\":\"No authorization head " + Constants.TOKEN_PREFIX + "\",\"login\":\"N\",\"isAuthorize\":\"N\" }" );
+			response.getWriter().print( "{ \"success\":\"N\",\"message\":\"No authorization token\",\"login\":\"N\",\"isAuthorize\":\"N\" }" );
 			response.getWriter().flush();
 			response.getWriter().close();						
 			return false;
@@ -118,7 +140,7 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 		TokenStoreValidateBuilder tsv = TokenStoreValidateBuilder.build(this.dataSource);
 		
 		Map<String, Object> param = new HashMap<>();
-		Map<String, Claim> claimToken = TokenBuilderUtils.verifyToken(authorization.replaceFirst(Constants.TOKEN_PREFIX, "").replace(" ", ""), tsv);
+		Map<String, Claim> claimToken = TokenBuilderUtils.verifyToken(token, tsv);
 		if (TokenBuilderUtils.existsInfo(claimToken)) {
 			String userId = StringUtils.defaultString( claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString() );
 			List<String> roleIds = new ArrayList<>();
