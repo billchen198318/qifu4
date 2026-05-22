@@ -30,6 +30,7 @@ import org.qifu.core.service.IRolePermissionService;
 import org.qifu.core.service.ISysCodeService;
 import org.qifu.core.service.IUserRoleService;
 import org.qifu.core.support.JwtAuthLoginedUserRoleService;
+import org.qifu.core.util.CookieUtils;
 import org.qifu.core.util.UserUtils;
 import org.qifu.core.vo.LoginRequest;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auth0.jwt.interfaces.Claim;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -54,27 +54,6 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-	
-	private void setTokenCookie(HttpServletResponse response, String name, String value, int minutes) {
-		Cookie cookie = new Cookie(name, value);
-		cookie.setHttpOnly(true);
-		cookie.setSecure(true); // Should be true in production
-		cookie.setPath("/");
-		cookie.setMaxAge(minutes * 60);
-		response.addCookie(cookie);
-	}
-	
-	private String getCookieValue(HttpServletRequest request, String name) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (name.equals(cookie.getName())) {
-					return cookie.getValue();
-				}
-			}
-		}
-		return null;
-	}
 	
 	private final AuthenticationManager authenticationManager;
 	
@@ -113,10 +92,10 @@ public class AuthController {
 	    	String accessToken = loginRequest.getAccessToken();
 	    	String refreshToken = loginRequest.getRefreshToken();
 	    	if (StringUtils.isBlank(accessToken) || "Y".equals(accessToken)) {
-	    		accessToken = this.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME);
+	    		accessToken = CookieUtils.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME);
 	    	}
 	    	if (StringUtils.isBlank(refreshToken) || "Y".equals(refreshToken)) {
-	    		refreshToken = this.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
+	    		refreshToken = CookieUtils.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
 	    	}
 	    	
 	    	Map<String, Object> param = new HashMap<>();
@@ -206,8 +185,8 @@ public class AuthController {
 			    tbv = TokenBuilderUtils.createToken(user.getUserId(), Constants.TOKEN_AUTH, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
 				user.setAccessToken("Y");
 				user.setRefreshToken("Y");
-				this.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
-				this.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
+				CookieUtils.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
+				CookieUtils.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
 				user.blankPassword();
 				this.jwtAuthLoginedUserRoleService.onLoginedSuccess(authentication);
 			}
@@ -239,10 +218,10 @@ public class AuthController {
 	    	String accessToken = loginRequest.getAccessToken();
 	    	String refreshToken = loginRequest.getRefreshToken();
 	    	if (StringUtils.isBlank(accessToken) || "Y".equals(accessToken)) {
-	    		accessToken = this.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME);
+	    		accessToken = CookieUtils.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME);
 	    	}
 	    	if (StringUtils.isBlank(refreshToken) || "Y".equals(refreshToken)) {
-	    		refreshToken = this.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
+	    		refreshToken = CookieUtils.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
 	    	}
 	    	
 	    	if (StringUtils.isBlank(accessToken) || StringUtils.isBlank(refreshToken) || StringUtils.isBlank(loginRequest.getUsername())) {
@@ -257,8 +236,8 @@ public class AuthController {
 			    	tbv = TokenBuilderUtils.createToken(loginRequest.getUsername(), Constants.TOKEN_AUTH, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
 			    	res.setAccessToken("Y");
 			    	res.setRefreshToken("Y");
-			    	this.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
-			    	this.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
+			    	CookieUtils.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
+			    	CookieUtils.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
 			    	res.setUsername(loginRequest.getUsername());
 			    	refreshNew = true;
 			    }
@@ -277,8 +256,8 @@ public class AuthController {
 	
 	@PostMapping("/logout")
 	public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-		this.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, "", 0);
-		this.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, "", 0);
+		CookieUtils.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, "", 0);
+		CookieUtils.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, "", 0);
 		return ResponseEntity.ok().body("OK");
 	}
 	

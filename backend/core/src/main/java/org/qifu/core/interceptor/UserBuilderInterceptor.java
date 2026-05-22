@@ -40,6 +40,7 @@ import org.qifu.core.entity.TbUserRole;
 import org.qifu.core.service.IRolePermissionService;
 import org.qifu.core.service.ISysCodeService;
 import org.qifu.core.service.IUserRoleService;
+import org.qifu.core.util.CookieUtils;
 import org.qifu.core.util.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,25 +49,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import com.auth0.jwt.interfaces.Claim;
 
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class UserBuilderInterceptor implements HandlerInterceptor {
 	
 	protected static Logger logger = LoggerFactory.getLogger(UserBuilderInterceptor.class);
-	
-	private String getCookieValue(HttpServletRequest request, String name) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (name.equals(cookie.getName())) {
-					return cookie.getValue();
-				}
-			}
-		}
-		return null;
-	}
 	
 	private ISysCodeService<TbSysCode, String> sysCodeService;	
 	
@@ -124,7 +112,7 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 		} 
 		
 		if (StringUtils.isBlank(token) || "Y".equals(token)) {
-			token = StringUtils.defaultString(this.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME));
+			token = StringUtils.defaultString(CookieUtils.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME));
 		}
 		
 		if (StringUtils.isBlank(token)) {

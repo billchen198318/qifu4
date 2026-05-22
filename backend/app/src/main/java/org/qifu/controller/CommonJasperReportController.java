@@ -35,6 +35,7 @@ import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.support.TokenStoreValidateBuilder;
 import org.qifu.base.util.TokenBuilderUtils;
+import org.qifu.core.util.CookieUtils;
 import org.qifu.core.util.JReportUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -43,24 +44,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.auth0.jwt.interfaces.Claim;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class CommonJasperReportController {
-
-	private String getCookieValue(HttpServletRequest request, String name) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (name.equals(cookie.getName())) {
-					return cookie.getValue();
-				}
-			}
-		}
-		return null;
-	}
 
 	private final DataSource dataSource;
 	public CommonJasperReportController(DataSource dataSource) {
@@ -75,7 +63,7 @@ public class CommonJasperReportController {
 		try {
 			String qifutoken = StringUtils.defaultString(request.getParameter("qifutoken"));
 			if (StringUtils.isBlank(qifutoken) || "Y".equals(qifutoken)) {
-				qifutoken = StringUtils.defaultString(this.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME));
+				qifutoken = StringUtils.defaultString(CookieUtils.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME));
 			}
 			TokenStoreValidateBuilder tsv = TokenStoreValidateBuilder.build(this.dataSource);
 			Map<String, Claim> claimToken = TokenBuilderUtils.verifyToken(qifutoken.replaceFirst(Constants.TOKEN_PREFIX, "").replace(" ", ""), tsv);
