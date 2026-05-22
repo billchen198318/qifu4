@@ -21,7 +21,9 @@
  */
 package org.qifu.base.properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.qifu.base.Constants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -32,6 +34,7 @@ import org.springframework.context.annotation.PropertySource;
 public class PageVariableConfigProperties {
 	
 	private String maxUploadSize;
+	private String allowedOrigin;
 
 	public String getMaxUploadSize() {
 		if (NumberUtils.toInt(this.maxUploadSize, 0) < 1048576) {
@@ -42,6 +45,18 @@ public class PageVariableConfigProperties {
 
 	public void setMaxUploadSize(String maxUploadSize) {
 		this.maxUploadSize = maxUploadSize;
+	}
+	
+	public String[] getAllowedOriginVals() {
+		return StringUtils.defaultString(allowedOrigin).split(Constants.DEFAULT_SPLIT_DELIMITER);
+	}
+
+	public String getAllowedOrigin() {
+		return allowedOrigin;
+	}
+
+	public void setAllowedOrigin(String allowedOrigin) {
+		this.allowedOrigin = allowedOrigin;
 	}
 	
 }

@@ -22,6 +22,7 @@
 package org.qifu.core.config;
 
 import org.qifu.base.CoreAppConstants;
+import org.qifu.base.properties.PageVariableConfigProperties;
 import org.qifu.core.interceptor.ControllerAuthorityCheckInterceptor;
 import org.qifu.core.interceptor.MDC4UserBuildInterceptor;
 import org.qifu.core.interceptor.UserBuilderInterceptor;
@@ -42,8 +43,13 @@ public class WebConfig implements WebMvcConfigurer {
 	
 	private static final String EVENT_LOG_PATH = "/api/PROG004D0001/**";
 	
+	private final PageVariableConfigProperties pageVariableConfigProperties;
 	
-    @Override
+    public WebConfig(PageVariableConfigProperties pageVariableConfigProperties) {
+		this.pageVariableConfigProperties = pageVariableConfigProperties;
+	}
+    
+	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
         .addResourceHandler( CoreAppConstants.getWebconfigresource() )
@@ -88,7 +94,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
     	registry.addMapping("/**")
-    		.allowedOriginPatterns("*")
+    		.allowedOriginPatterns(pageVariableConfigProperties.getAllowedOriginVals())
     		.allowedMethods("*")
     		.allowCredentials(true) 
     		.maxAge(3600)
