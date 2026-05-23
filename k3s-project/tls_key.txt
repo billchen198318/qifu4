@@ -1,0 +1,1 @@
+kubectl create secret tls qifu4-tls --cert=tls.crt --key=tls.key -n qifu4
