@@ -4,6 +4,22 @@ import { getBaseStore } from '../store/baseStore';
 let _q4urt_var = import.meta.env.VITE_CK_HEAD_NAME + '__urt_flag';
 let _q4uat_var = import.meta.env.VITE_CK_HEAD_NAME + '__uat_flag';
 
+// 2026-05-23 add to prevent refresh token storm
+let isRefreshing = false;
+let failedQueue = [];
+let interceptorsAttached = false;
+
+const processQueue = (error, token = null) => {
+	failedQueue.forEach(prom => {
+		if (error) {
+			prom.reject(error);
+		} else {
+			prom.resolve(token);
+		}
+	});
+	failedQueue = [];
+};
+
 // GET COOKIE
 export function getCookie(name) {
 	/*
@@ -40,7 +56,7 @@ export function setCookie(name, value, hour, _secure) {
 		document.cookie = name + "=" + value + ";" + expires + ";path=/";
 	}
 	*/
-	let s = hour*60*60*1000;
+	let s = hour*60*60; // 2026-05-23 fix unit to seconds for Nuxt 3 useCookie
 	const c = useCookie(name, { maxAge : s, secure : _secure});
 	c.value = value;
 }
@@ -53,8 +69,8 @@ export function deleteCookie(name) {
 }
 
 export function setRefreshAndAccessTokenCookie(rfToken, accessToken) {
-	setCookie(_q4urt_var, 'Y', 4, true);
-	setCookie(_q4uat_var, 'Y', 4, true);
+	setCookie(_q4urt_var, 'Y', 24, true); // 2026-05-23 increase to 24 hours to match backend
+	setCookie(_q4uat_var, 'Y', 24, true); // 2026-05-23 increase to 24 hours to match backend
 }
 
 export function getRefreshTokenCookie() {
@@ -233,6 +249,11 @@ export function getAxiosInstance() {
 		'Content-Type' : 'application/json'
 	};
 
+	if (interceptorsAttached) {
+		return axios;
+	}
+	interceptorsAttached = true;
+
 	// 全局設定 AJAX Request 攔截器 (interceptor)
 	axios.interceptors.request.use(async function (config) {
 		return config
@@ -271,28 +292,48 @@ export function getAxiosInstance() {
 						// 原始 request 資訊
 						const originalRequest = error.config
 
+						if (isRefreshing) {
+							return new Promise(function(resolve, reject) {
+								failedQueue.push({resolve, reject});
+							}).then(() => {
+								return axios(originalRequest);
+							}).catch(err => {
+								return Promise.reject(err);
+							});
+						}
+
+						isRefreshing = true;
+
 						// 依據 refresh_token 刷新 access_token 並重發 request
-						return axios.post(refreshTokeUrl, JSON.stringify({
-							username : getBaseStore().user.id,
-							accessToken : '',
-							refreshToken : ''
-						})) // refresh_toke is attached in cookie
-						.then((response) => {
-							if (undefined == response.data || null == response.data) { // 2024-04-25 add
-								alert('請重新登入系統!');
-								window.location.href = '/';
-								return response;
-							}
-							
-							// 重送 request (with new access_token from cookie)
-							return axios(originalRequest)
-						})
-						.catch((err) => {
-							// [更新 access_token 失敗] ( e.g. refresh_token 過期無效)
-							userLogoutClearCookie();
-							alert(`${err.response.status}: 作業逾時或無相關使用授權，請重新登入`)
-							window.location.href = '/'
-							return Promise.reject(error)
+						return new Promise(function(resolve, reject) {
+							axios.post(refreshTokeUrl, JSON.stringify({
+								username : getBaseStore().user.id,
+								accessToken : '',
+								refreshToken : ''
+							})) // refresh_toke is attached in cookie
+							.then((response) => {
+								if (undefined == response.data || null == response.data) { // 2024-04-25 add
+									alert('請重新登入系統!');
+									window.location.href = '/';
+									// return response;
+									processQueue(new Error('no data'), null);
+									reject(response);
+								} else {
+									processQueue(null, null);
+									resolve(axios(originalRequest));
+								}
+							})
+							.catch((err) => {
+								// [更新 access_token 失敗] ( e.g. refresh_token 過期無效)
+								userLogoutClearCookie();
+								alert(`${err.response.status}: 作業逾時或無相關使用授權，請重新登入`)
+								window.location.href = '/'
+								processQueue(err, null);
+								reject(err);
+							})
+							.finally(() => {
+								isRefreshing = false;
+							});
 						});
 					}
 				}
@@ -322,7 +363,7 @@ export function getAxiosInstance() {
 
         }
 		
-		//return Promise.reject(error); // 2024-04-25 rem
+		return Promise.reject(error);
 	});
 	return axios;
 }
