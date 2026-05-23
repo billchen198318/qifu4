@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.model.YesNoKeyProvide;
 import org.qifu.util.SimpleUtils;
 
@@ -121,7 +122,7 @@ public class Constants {
 	public static final int TOKEN_REFRESH_EXPIRED_INTERVAL = 1460; // 1460 minute
 	public static final String TOKEN_USER_PARAM_NAME = "USER_ID";
 	public static final String TOKEN_ISSUER = "QIFU4Application";
-	public static final String TOKEN_SECRET = "QIFU4@" + UUID.randomUUID().toString();
+	public static final String TOKEN_SECRET = StringUtils.defaultIfBlank(System.getenv("QIFU_JWT_SECRET"), "qifu4_default_secret_key_1234567890");
 	public static final String TOKEN_CHECK_URL_PATH = FORWARD_SLASH + "api" + FORWARD_SLASH;
 	public static final String TOKEN_AUTH = "Authorization";
 	public static final String TOKEN_PREFIX = "Bearer";

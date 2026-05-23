@@ -38,6 +38,8 @@ spec:
         env:
         - name: JAVA_OPTS
           value: "-Xms256m -Xmx512m"
+        - name: QIFU_JWT_SECRET
+          value: "qifu4_production_secret_key_change_me_12345"
         resources:
           requests:
             cpu: "200m"
