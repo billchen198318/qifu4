@@ -1,9 +1,11 @@
 {
+	"restAddress"	:	"/rest",
 	"endpoints" : [
 		{
 			"name"		:	"testService",
 			"beanId"	:	"testService",
 			"publish"	:	"/testService",
+			"hasRest"	:	false,
 			"inInterceptors"	:	[
 				"loggingInInterceptor",
 				"soapForceDoclitBareInInterceptor"

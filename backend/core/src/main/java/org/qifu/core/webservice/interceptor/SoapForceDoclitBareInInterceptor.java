@@ -8,7 +8,7 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.service.model.ServiceInfo;
 
 public class SoapForceDoclitBareInInterceptor extends AbstractPhaseInterceptor<Message> {
-	
+
 	public SoapForceDoclitBareInInterceptor() {
 		super(Phase.POST_PROTOCOL);
 	}
@@ -20,5 +20,5 @@ public class SoapForceDoclitBareInInterceptor extends AbstractPhaseInterceptor<M
 			si.setProperty("soap.force.doclit.bare", true);
 		}
 	}
-	
+
 }
