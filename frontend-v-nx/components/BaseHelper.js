@@ -22,22 +22,27 @@ const processQueue = (error, token = null) => {
 
 // GET COOKIE
 export function getCookie(name) {
-	/*
-	let cookieName = name + "=";
-	let decodedCookie = decodeURIComponent(document.cookie);
-	let ca = decodedCookie.split(';');
-	for(let i = 0; i < ca.length; i++) {
-		let c = ca[i];
-		while (c.charAt(0) == ' ') {
-			c = c.substring(1);
-		}
-		if (c.indexOf(cookieName) == 0) {
-			return c.substring(cookieName.length, c.length);
+	let v = '';
+	try {
+		v = useCookie(name).value;
+	} catch (e) {
+		// fallback to document.cookie
+		if (typeof document !== 'undefined') {
+			let cookieName = name + "=";
+			let decodedCookie = decodeURIComponent(document.cookie);
+			let ca = decodedCookie.split(';');
+			for(let i = 0; i < ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(cookieName) == 0) {
+					v = c.substring(cookieName.length, c.length);
+					break;
+				}
+			}
 		}
 	}
-	return "";
-	*/
-	let v = useCookie(name).value;
 	if (undefined == v || null == v) {
 		v = '';
 	}
@@ -81,10 +86,27 @@ export function getAccessTokenCookie() {
 	return getCookie(_q4uat_var);
 }
 
+export function getCsrfTokenCookie() {
+	let token = getCookie('XSRF-TOKEN');
+	if (!token && typeof window !== 'undefined') {
+		token = localStorage.getItem('XSRF-TOKEN-STORAGE') || '';
+	}
+	return token;
+}
+
+export function setCsrfTokenStorage(token) {
+	if (token && typeof window !== 'undefined') {
+		localStorage.setItem('XSRF-TOKEN-STORAGE', token);
+	}
+}
+
 export function userLogoutClearCookie(){
 	axios.post(import.meta.env.VITE_API_URL + '/auth/logout', {}, { withCredentials: true });
 	deleteCookie(_q4urt_var);
 	deleteCookie(_q4uat_var);
+	if (typeof window !== 'undefined') {
+		localStorage.removeItem('XSRF-TOKEN-STORAGE');
+	}
 }
 
 export function checkUserHasLogined(userData) {
@@ -245,6 +267,8 @@ export function getFile2Base64(file) {
 export function getAxiosInstance() {
 
 	axios.defaults.withCredentials = true;
+	axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
+	axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
 	axios.defaults.headers = {
 		'Content-Type' : 'application/json'
 	};
@@ -256,6 +280,10 @@ export function getAxiosInstance() {
 
 	// 全局設定 AJAX Request 攔截器 (interceptor)
 	axios.interceptors.request.use(async function (config) {
+		const token = getCsrfTokenCookie();
+		if (token) {
+			config.headers['X-XSRF-TOKEN'] = token;
+		}
 		return config
 	}, function (error) {
 		return Promise.reject(error)
@@ -263,6 +291,11 @@ export function getAxiosInstance() {
 	
 	// 全局設定 AJAX Response 攔截器 (interceptor)
 	axios.interceptors.response.use(function (response) {
+		// Sync CSRF token from header to storage
+		const token = response.headers['x-csrf-token'];
+		if (token) {
+			setCsrfTokenStorage(token);
+		}
 		return response
 	}, function (error) {
 		if (error.response) {

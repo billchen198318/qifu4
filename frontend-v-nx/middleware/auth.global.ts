@@ -1,6 +1,7 @@
 import { 
     getAccessTokenCookie, 
     getRefreshTokenCookie, 
+    getCsrfTokenCookie,
     checkUserHasLogined, 
     checkHasPermission, 
     userLogoutClearCookie, 
@@ -24,7 +25,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
             if (!checkUserHasLogined(userData)) { // try login from client token
                 const uRes = await useFetch(import.meta.env.VITE_API_URL + '/auth/validLogined', {
                     method: 'POST', 
-                    headers: { "Content-Type": "application/json" }, 
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "X-XSRF-TOKEN": getCsrfTokenCookie()
+                    }, 
                     query: {}, 
                     body: JSON.stringify({ accessToken : ac, refreshToken : rc }),
                     watch: [],
@@ -49,7 +53,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
                     const mRest = await useFetch(import.meta.env.VITE_API_URL + '/menu/getMemuItemAndProgList', {
                         method: 'POST', 
                         headers: { 
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            "X-XSRF-TOKEN": getCsrfTokenCookie()
                         }, 
                         query: {},
                         body: {},

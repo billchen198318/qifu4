@@ -34,7 +34,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
@@ -48,12 +56,16 @@ public class WebSecurityConfig {
     
     private final PasswordEncoder passwordEncoder;    
     
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    
     public WebSecurityConfig(BaseUserDetailsService baseUserDetailsService, 
-    		JwtAuthEntryPoint unauthorizedHandler, PasswordEncoder passwordEncoder) {
+    		JwtAuthEntryPoint unauthorizedHandler, PasswordEncoder passwordEncoder,
+    		CustomAccessDeniedHandler accessDeniedHandler) {
 		super();
 		this.baseUserDetailsService = baseUserDetailsService;
 		this.unauthorizedHandler = unauthorizedHandler;
 		this.passwordEncoder = passwordEncoder;
+		this.accessDeniedHandler = accessDeniedHandler;
 	}
 
 	@Bean
@@ -72,8 +84,29 @@ public class WebSecurityConfig {
     }    
     
     @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+    	CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+    	repository.setCookiePath("/");
+    	return repository;
+    }
+    
+    @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {   
-    	http.cors(Customizer.withDefaults()).csrf(csrf -> csrf.disable())
+    	http.cors(Customizer.withDefaults())
+    		.csrf(csrf -> csrf
+    			.csrfTokenRepository(csrfTokenRepository())
+    			.csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+    			.ignoringRequestMatchers(
+    					antMatcher("/"),
+    					antMatcher("/loginPage"),
+    					antMatcher("/loginAgainPage"),
+    					antMatcher("/noAuthPage"),
+    					antMatcher("/commonOpenJasperReport"),
+    					antMatcher("/api/auth/**")
+    			)
+    		)
+    		// Force our aggressive filter to run before standard CsrfFilter
+    		.addFilterBefore(new CsrfCookieFilter(csrfTokenRepository()), CsrfFilter.class)
     		.sessionManagement( sessMgr -> sessMgr.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
     		.authorizeHttpRequests(auth -> {
     			auth.requestMatchers(antMatcher("/api/auth/**")).permitAll();
@@ -82,7 +115,10 @@ public class WebSecurityConfig {
     			}
     			auth.anyRequest().authenticated();
     		});
-		http.exceptionHandling(exeConfig -> exeConfig.authenticationEntryPoint(this.unauthorizedHandler));
+		http.exceptionHandling(exeConfig -> exeConfig
+				.authenticationEntryPoint(this.unauthorizedHandler)
+				.accessDeniedHandler(this.accessDeniedHandler)
+		);
     	return http.build();
     }
     

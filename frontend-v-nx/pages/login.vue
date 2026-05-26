@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
-import { setRefreshAndAccessTokenCookie, userLogoutClearCookie } from '../components/BaseHelper';
+import { setRefreshAndAccessTokenCookie, userLogoutClearCookie, getCsrfTokenCookie } from '../components/BaseHelper';
 
 export default {
     setup(props) {
@@ -40,7 +40,8 @@ export default {
                 method: "POST",
 		        headers: {
 			        "Content-Type": "application/json",
-		        },
+                    "X-XSRF-TOKEN": getCsrfTokenCookie()
+		        }, 
                 credentials: 'include',
 		        body: JSON.stringify({
 			        username: this.userId,
