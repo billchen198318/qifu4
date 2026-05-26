@@ -39,8 +39,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -92,21 +90,21 @@ public class WebSecurityConfig {
     			.csrfTokenRepository(csrfTokenRepository())
     			.csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
     			.ignoringRequestMatchers(
-    					antMatcher("/"),
-    					antMatcher("/loginPage"),
-    					antMatcher("/loginAgainPage"),
-    					antMatcher("/noAuthPage"),
-    					antMatcher("/commonOpenJasperReport"),
-    					antMatcher("/api/auth/**")
+    					"/",
+    					"/loginPage",
+    					"/loginAgainPage",
+    					"/noAuthPage",
+    					"/commonOpenJasperReport",
+    					"/api/auth/**"
     			)
     		)
     		// Force our aggressive filter to run before standard CsrfFilter
     		.addFilterBefore(new CsrfCookieFilter(csrfTokenRepository()), CsrfFilter.class)
     		.sessionManagement( sessMgr -> sessMgr.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
     		.authorizeHttpRequests(auth -> {
-    			auth.requestMatchers(antMatcher("/api/auth/**")).permitAll();
+    			auth.requestMatchers("/api/auth/**").permitAll();
     			for (String par : CoreAppConstants.getWebConfiginterceptorExcludePathPatterns()) {
-    				auth.requestMatchers(antMatcher(par)).permitAll();
+    				auth.requestMatchers(par).permitAll();
     			}
     			auth.anyRequest().authenticated();
     		});
