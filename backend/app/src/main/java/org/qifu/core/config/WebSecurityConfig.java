@@ -35,6 +35,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
@@ -83,6 +84,10 @@ public class WebSecurityConfig {
     	return repository;
     }
     
+    private PathPatternRequestMatcher matcher(String pattern) {
+        return PathPatternRequestMatcher.withDefaults().matcher(pattern);
+    }    
+    
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {   
     	http.cors(Customizer.withDefaults())
@@ -90,21 +95,21 @@ public class WebSecurityConfig {
     			.csrfTokenRepository(csrfTokenRepository())
     			.csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
     			.ignoringRequestMatchers(
-    					"/",
-    					"/loginPage",
-    					"/loginAgainPage",
-    					"/noAuthPage",
-    					"/commonOpenJasperReport",
-    					"/api/auth/**"
+    					matcher("/"),
+    					matcher("/loginPage"),
+    					matcher("/loginAgainPage"),
+    					matcher("/noAuthPage"),
+    					matcher("/commonOpenJasperReport"),
+    					matcher("/api/auth/**")
     			)
     		)
     		// Force our aggressive filter to run before standard CsrfFilter
     		.addFilterBefore(new CsrfCookieFilter(csrfTokenRepository()), CsrfFilter.class)
     		.sessionManagement( sessMgr -> sessMgr.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
     		.authorizeHttpRequests(auth -> {
-    			auth.requestMatchers("/api/auth/**").permitAll();
+    			auth.requestMatchers(matcher("/api/auth/**")).permitAll();
     			for (String par : CoreAppConstants.getWebConfiginterceptorExcludePathPatterns()) {
-    				auth.requestMatchers(par).permitAll();
+    				auth.requestMatchers(matcher(par)).permitAll();
     			}
     			auth.anyRequest().authenticated();
     		});

@@ -71,47 +71,54 @@ public class CoreAppConstants {
             "classpath:/static/" // frontend static html/js/image resource
 	};
 	
-	protected static final String [] WebConfigInterceptorExcludePathPatterns = {
-			"/ui5/**", 
-			"/webjars/**", 
-			"/bootbox/**", 
-			"/bootstrap-vali/**", 
-			"/css/**", 
-			"/font-awesome/**", 
-			"/icons/**", 
-			"/images/**",
-			"/jquery/**", 
-			"/js/**", 
-			"/codemirror/**",
-			"/popper-js/**", 
-			"/tether/**", 
-			"/toastr/**",
-			"/error**",
-			"/swagger-resources/**",
-			"/swagger-ui.html",
-			"/swagger-ui.html/**",
-			"/swagger**",
-			"/swagger-ui**", // v3 swagger
-			"/swagger-ui/**", // v3 swagger			
-			"/**/v3/api-docs**", // api-docs
-			"/**/v3/api-docs/**", // api-docs 
-			"/v2**", //"/api-docs**",
-			"/v2/**", //"/api-docs/**",
-			"/springfox.js",
-			"/springfox.js/**",
-			"/csrf",
-			"/csrf/**",
-			"/configJs.js",
-			
-			/* for ControllerAuthorityCheckInterceptor no to check */
-			SYS_PAGE_TAB_LOGIN_AGAIN,
-			"/login",
-			SYS_PAGE_LOGIN,
-			"/logout",
-			"/error",
-			SYS_PAGE_NO_AUTH
-			
-	};	
+	protected static final String[] WebConfigInterceptorExcludePathPatterns = {
+		    "/ui5/**",
+		    "/webjars/**",
+		    "/bootbox/**",
+		    "/bootstrap-vali/**",
+		    "/css/**",
+		    "/font-awesome/**",
+		    "/icons/**",
+		    "/images/**",
+		    "/jquery/**",
+		    "/js/**",
+		    "/codemirror/**",
+		    "/popper-js/**",
+		    "/tether/**",
+		    "/toastr/**",
+		    
+		    /*
+		     * Error
+		     */
+		    "/error",
+		    "/error/**",
+
+		    /*
+		     * Swagger / OpenAPI
+		     */
+		    "/swagger-resources/**",
+		    "/swagger-ui",
+		    "/swagger-ui/**",
+		    "/swagger-ui.html",
+		    "/v3/api-docs",
+		    "/v3/api-docs/**",
+
+		    /*
+		     * CSRF
+		     */
+		    "/csrf",
+		    "/csrf/**",
+		    "/configJs.js",
+
+		    /*
+		     * Login / auth
+		     */
+		    SYS_PAGE_TAB_LOGIN_AGAIN,
+		    "/login",
+		    SYS_PAGE_LOGIN,
+		    "/logout",
+		    SYS_PAGE_NO_AUTH
+		};
 	
 	public static String[] getWebconfigresource() {
 		return WebConfigResource;
