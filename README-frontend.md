@@ -1,67 +1,72 @@
-# qífū-4 Frontend 開發手冊 (Nuxt 3)
+# qífū-4 前端開發手冊 (Frontend Development Guide)
 
-本文件詳述 qífū-4 前端系統的架構、技術棧及開發規範，旨在引導開發者理解前端運作並協助 AI Agent 進行後續開發。
+本文件詳述 qífū-4 前端系統的架構設計、狀態管理、權限控制及開發指引。
 
-## 1. 系統架構
+## 1. 架構概述 (Architecture Overview)
 
-前端基於 **Nuxt 3** 框架開發，採用單頁面應用 (SPA) 模式 (`ssr: false`)。
+前端基於 **Nuxt 3** 框架構建，設定為 **SPA 模式** (ssr: false)。
 
-*   **目錄結構**:
-    *   `pages/`: 頁面路由。
-    *   `components/`: 共用組件與 `BaseHelper.ts` 工具。
-    *   `store/`: Pinia 狀態管理 (`baseStore.ts`)。
-    *   `middleware/`: 路由中間件，包含全域權限檢查 (`auth.global.ts`)。
-    *   `plugins/`: Nuxt 插件，如 Bootstrap 整合。
-    *   `layouts/`: 頁面佈局。
+### 主要技術
+*   **Framework**: Nuxt 3 (Vue 3 + Vite)。
+*   **State Management**: Pinia (使用 `baseStore` 管理使用者資訊、選單與程式清單)。
+*   **Styling**: Bootstrap 5 (透過 `useBootstrap.client.ts` 插件載入)。
+*   **HTTP Client**: `useFetch` (Nuxt 內建) 與 `Axios` (用於特定攔截器邏輯)。
 
-## 2. 技術棧 (Tech Stack)
+## 2. 身份驗證與安全性 (Auth & Security)
 
-*   **Framework**: Nuxt 3.11.2, Vue 3.4.27
-*   **State Management**: Pinia 2.1.7
-*   **Styling**: Bootstrap 5.3.3, SCSS (api: modern-compiler)
-*   **Icons**: Bootstrap Icons 1.11.3
-*   **HTTP Client**: Axios 1.7.2 (搭配 Nuxt `useFetch` 使用)
-*   **Charts**: ECharts 5.5.0, Vue-ECharts
-*   **Editor**: ByteMD (Markdown 編輯器)
-*   **UI Helpers**: SweetAlert2 (彈窗), Vue3-Toastify (通知)
+系統與後端配合，採用高度安全的 HttpOnly Cookie 方案。
 
-## 3. 環境變數配置 (.env)
+### 全域路由中間件 (`middleware/auth.global.ts`)
+*   **登入檢查**: 每次跳轉頁面時，中間件會檢查 `baseStore` 中的登入狀態。
+*   **自動續期**: 如果 Store 為空但 Cookie 中存在 Token 旗標，會自動呼叫 `/api/auth/validLogined` 進行後端驗證並還原使用者狀態。
+*   **權限校驗**: 呼叫 `checkHasPermission` 檢查使用者是否有權進入該路徑。
 
-開發與生產環境需配置以下變數：
-*   `VITE_API_URL`: 後端 API 入口路徑。
-*   `VITE_CK_HEAD_NAME`: 用於特定業務的 Header 名稱。
+### CSRF 防護
+*   前端需從 `XSRF-TOKEN` Cookie 中讀取 Token。
+*   在 API 呼叫時，必須在 Header 中帶入 `X-XSRF-TOKEN`。
 
-## 4. 權限與身份驗證
+### Axios 攔截器 (`BaseHelper.js`)
+*   **401 處理**: 當 Access Token 過期（API 返回 401）時，攔截器會自動調用 `refreshNewToken` 接口。
+*   **無感刷新**: 刷新成功後，會自動重發先前失敗的請求，使用者無需手動重新登入。
 
-### 4.1 全域中間件 (`auth.global.ts`)
-系統在每次路由跳轉時會自動執行：
-1.  檢查 Cookie 中的 `accessToken` 與 `refreshToken` 是否存在。
-2.  若尚未登入，調用 `/api/auth/validLogined` 驗證 Token 合法性。
-3.  驗證成功後，同步用戶資訊至 `baseStore` 並加載選單及程式清單 (`/api/menu/getMemuItemAndProgList`)。
-4.  檢查用戶是否具備目標頁面的訪問權限。
+## 3. 目錄結構 (Directory Structure)
 
-### 4.2 Token 管理
-*   使用 `BaseHelper.ts` 中的工具函數管理 Cookie。
-*   自動處理 JWT 與 CSRF (`X-XSRF-TOKEN`) 的同步。
+*   `pages/`: 頁面組件，對應路由架構。
+*   `components/`: 通用 UI 組件。
+    *   `BaseHelper.js`: 核心工具函數，包含 Cookie 處理、權限檢查、Axios 實例等。
+    *   `Grid.vue` / `GridPagination.vue`: 統一的表格與分頁組件。
+*   `store/`: Pinia Store 定義。
+*   `layouts/`: 頁面佈局 (如 `default.vue`)。
 
-## 5. 開發規範
+## 4. 開發規範 (Development Guide)
 
-*   **組件化**: 複雜 UI 邏輯應封裝於 `components/` 中。
-*   **狀態存取**: 全域用戶狀態與選單權限應統一由 `baseStore` 管理。
-*   **API 呼叫**: 優先使用 Nuxt 的 `useFetch` 並配置正確的 `headers`（特別是 CSRF Token）。
+### 環境變數
+編輯 `.env` 檔案配置 API 地址：
+```text
+VITE_API_URL=https://192.168.10.200/api
+VITE_CK_HEAD_NAME=QIFU4VNX
+```
 
-## 6. 建置與運行
-
+### 常用指令
 ```bash
 # 安裝依賴
 npm install
 
-# 本地開發模式 (Port: 8077)
+# 啟動開發環境 (預設 8077 port)
 npm run dev
 
-# 生產環境建置
+# 專案打包 (輸出至 .output 夾)
 npm run build
-
-# 預覽建置結果
-npm run preview
 ```
+
+### 呼叫 API 範例
+建議使用 `BaseHelper.js` 中的 `getAxiosInstance()` 以確保攔截器與 CSRF 邏輯正常運作。
+```javascript
+import { getAxiosInstance } from '~/components/BaseHelper';
+
+const api = getAxiosInstance();
+const res = await api.post('/api/your-feature/query', data);
+```
+
+---
+*本系統專為 AI Agent 輔助開發優化，代碼結構清晰且模組化。*

@@ -1,21 +1,21 @@
-# qífū-4 K3s 建置與部署手冊
+# qífū-4 K3s 部署手冊 (K3s Deployment Guide)
 
-本文件詳述 qífū-4 系統在 K3s 高可用集群上的初始化、配置及自動化部署流程。
+本文件詳述 qífū-4 系統在 K3s 高可用環境下的建置與部署流程。
 
-## 1. 基礎設施架構 (HA Cluster)
+## 1. 叢集架構 (Cluster Architecture)
 
-*   **節點配置**:
-    *   Node 1: `192.168.10.1` (Init Master + Worker)
-    *   Node 2: `192.168.10.2` (Master + Worker)
-    *   Node 3: `192.168.10.3` (Master + Worker)
-*   **高可用機制**:
-    *   **VIP (Virtual IP)**: `192.168.10.200` (由 Keepalived 管理)。
-    *   **Database**: 內置 Embedded etcd。
-*   **Docker Registry**: `192.168.10.99:5000` (Private Registry)。
+本部署採用 **3 節點 Master HA (Embedded etcd)** 架構，並結合 **Keepalived** 提供 VIP。
 
-## 2. K3s 集群初始化
+### 節點資訊
+*   **VIP**: `192.168.10.200` (對外統一口徑)
+*   **Node 1**: `192.168.10.1` (Master/Worker, Keepalived Master)
+*   **Node 2**: `192.168.10.2` (Master/Worker, Keepalived Backup)
+*   **Node 3**: `192.168.10.3` (Master/Worker, Keepalived Backup)
+*   **Private Registry**: `192.168.10.99:5000`
 
-### 2.1 第一台節點 (Node 1)
+## 2. K3s 集群初始化 (Cluster Initialization)
+
+### 第一步：初始化 Node 1 (Cluster Init)
 ```bash
 curl -sfL https://get.k3s.io | sh -s - server \
   --cluster-init \
@@ -23,64 +23,55 @@ curl -sfL https://get.k3s.io | sh -s - server \
   --node-ip 192.168.10.1
 ```
 
-### 2.2 加入後續節點 (Node 2 & 3)
-讀取 Node 1 的 Token 後執行：
+### 第二步：加入 Node 2 與 Node 3
+獲取 Node 1 的 Token：`cat /var/lib/rancher/k3s/server/node-token`。
+在 Node 2/3 執行：
 ```bash
 curl -sfL https://get.k3s.io | K3S_TOKEN=<TOKEN> sh -s - server \
   --server https://192.168.10.200:6443 \
   --tls-san 192.168.10.200 \
-  --node-ip <NODE_IP>
+  --node-ip 192.168.10.[ID]
 ```
 
-## 3. 私有倉庫配置 (`registries.yaml`)
-在所有節點上建立 `/etc/rancher/k3s/registries.yaml` 以支援私有 Registry：
+## 3. 私有倉庫配置 (Private Registry)
+
+在三台機器上編輯 `/etc/rancher/k3s/registries.yaml`：
 ```yaml
 mirrors:
   "192.168.10.99:5000":
     endpoint:
       - "http://192.168.10.99:5000"
 ```
-完成後重啟服務：`sudo systemctl restart k3s`。
+完成後重啟 K3s：`sudo systemctl restart k3s`。
 
-## 4. 系統部署 (Deployment)
+## 4. 應用程式部署 (Application Deployment)
 
-系統部署於 `qifu4` Namespace，包含以下組件：
+應用程式運行於 `qifu4` namespace。
 
-### 4.1 後端 (qifu4-backend)
-*   **Replica**: 3 (分散部署於 3 台機器)。
-*   **Port**: 8088。
-*   **Anti-Affinity**: 確保 Pod 不會擠在同一台實體機。
-*   **Probes**: 包含 Liveness 與 Readiness 探針，確保服務可用性。
+### HA 策略
+*   **Replicas**: 前後端各部署 3 個副本。
+*   **Anti-Affinity**: 使用 `podAntiAffinity` 確保副本分散在不同實體節點上，達成真正的硬體級高可用。
 
-### 4.2 前端 (qifu4-frontend)
-*   **Replica**: 3。
-*   **Port**: 8077。
-*   **Strategy**: `Recreate` 確保更新時舊版本完全清除。
+### Ingress 與網路流量
+*   **Ingress Controller**: 使用 k3s 內建的 Traefik。
+*   **HTTPS**: 配置 `qifu4-tls` Secret (Self-signed 證書)。
+*   **Middlewares**: 透過 Traefik `Middleware` CRD 處理 CORS 問題。
+*   **路徑分流**:
+    *   `/` → `qifu4-frontend-service` (Port 8077)
+    *   `/api` → `qifu4-backend-service` (Port 8088)
 
-### 4.3 網絡入口 (Ingress & Middleware)
-*   **Ingress Controller**: Traefik。
-*   **HTTPS**: 使用自簽憑證 (`qifu4-tls`) 提供 TLS 保護。
-*   **CORS**: 透過 Traefik Middleware (`qifu4-cors-middleware`) 處理跨域資源共享。
-*   **路由規則**:
-    *   `/api` -> 後端服務。
-    *   `/` -> 前端服務。
-
-## 5. 部署指令參考
-
+### 部署指令
 ```bash
-# 建立 Namespace
+# 在 Node 1 執行
 kubectl create namespace qifu4
-
-# 套用部署檔
-kubectl apply -f backend-deployment.yaml
-kubectl apply -f backend-service.yaml
-kubectl apply -f frontend-deployment.yaml
-kubectl apply -f frontend-service.yaml
-kubectl apply -f cors-middleware.yaml
-kubectl apply -f ingress.yaml
+kubectl apply -f k3s-project/
 ```
 
-## 6. 維護與監控
-*   檢查 Pod 狀態: `kubectl get pods -n qifu4 -o wide`。
-*   查看日誌: `kubectl logs -f <pod-name> -n qifu4`。
-*   滾動更新: 修改 YAML 中的 Image Tag 後重新執行 `kubectl apply`。
+## 5. 運維監控 (Operations)
+
+*   **檢查狀態**: `kubectl get pods -n qifu4 -o wide`
+*   **滾動更新**: 更新 Deployment YAML 中的 Image Tag 後重新 Apply，K8s 會自動執行無中斷更新。
+*   **容錯測試**: 關閉任一 Master 節點，VIP 應自動漂移，且網站服務應保持正常。
+
+---
+*詳細 YAML 配置請參考專案根目錄下的 `k3s-project/` 資料夾。*
