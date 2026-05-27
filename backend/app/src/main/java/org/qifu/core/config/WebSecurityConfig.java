@@ -21,6 +21,7 @@
  */
 package org.qifu.core.config;
 
+import org.qifu.base.Constants;
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.service.impl.BaseUserDetailsService;
 import org.qifu.core.support.JwtAuthEntryPoint;
@@ -43,6 +44,8 @@ import org.springframework.security.web.csrf.CsrfFilter;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+	private static final String API_AUTH_MATCHER = "/api/auth/**";
+	private static final String JASPERREPORT_MATCHER = "/commonOpenJasperReport";
 	
     private final BaseUserDetailsService baseUserDetailsService;
     
@@ -80,7 +83,7 @@ public class WebSecurityConfig {
     @Bean
     public CsrfTokenRepository csrfTokenRepository() {
     	CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-    	repository.setCookiePath("/");
+    	repository.setCookiePath(Constants.FORWARD_SLASH);
     	return repository;
     }
     
@@ -95,19 +98,19 @@ public class WebSecurityConfig {
     			.csrfTokenRepository(csrfTokenRepository())
     			.csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
     			.ignoringRequestMatchers(
-    					matcher("/"),
-    					matcher("/loginPage"),
-    					matcher("/loginAgainPage"),
-    					matcher("/noAuthPage"),
-    					matcher("/commonOpenJasperReport"),
-    					matcher("/api/auth/**")
+    					matcher(Constants.FORWARD_SLASH),
+    					matcher(CoreAppConstants.SYS_PAGE_LOGIN),
+    					matcher(CoreAppConstants.SYS_PAGE_TAB_LOGIN_AGAIN),
+    					matcher(CoreAppConstants.SYS_PAGE_NO_AUTH),
+    					matcher(JASPERREPORT_MATCHER),
+    					matcher(API_AUTH_MATCHER)
     			)
     		)
     		// Force our aggressive filter to run before standard CsrfFilter
     		.addFilterBefore(new CsrfCookieFilter(csrfTokenRepository()), CsrfFilter.class)
     		.sessionManagement( sessMgr -> sessMgr.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
     		.authorizeHttpRequests(auth -> {
-    			auth.requestMatchers(matcher("/api/auth/**")).permitAll();
+    			auth.requestMatchers(matcher(API_AUTH_MATCHER)).permitAll();
     			for (String par : CoreAppConstants.getWebConfiginterceptorExcludePathPatterns()) {
     				auth.requestMatchers(matcher(par)).permitAll();
     			}

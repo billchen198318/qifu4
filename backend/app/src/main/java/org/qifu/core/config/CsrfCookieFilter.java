@@ -2,6 +2,7 @@ package org.qifu.core.config;
 
 import java.io.IOException;
 
+import org.qifu.base.Constants;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -43,7 +44,7 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
 			
 			// 3. Force write manual Cookie (to be 100% sure about path and domain)
 			Cookie cookie = new Cookie("XSRF-TOKEN", token);
-			cookie.setPath("/");
+			cookie.setPath(Constants.FORWARD_SLASH);
 			cookie.setHttpOnly(false); // MUST be false for JS to read
 			cookie.setSecure(request.isSecure());
 			response.addCookie(cookie);

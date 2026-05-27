@@ -113,7 +113,7 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 			this.log( user.getUsername(), baseInfoConfigProperties.getSystem(), url, true );
 			return true;
 		}		
-		if (UserUtils.isPermitted(url, PermissionType.CONTROLLER.name()) || UserUtils.isPermitted("/"+url, PermissionType.CONTROLLER.name())) {
+		if (UserUtils.isPermitted(url, PermissionType.CONTROLLER.name()) || UserUtils.isPermitted(Constants.FORWARD_SLASH + url, PermissionType.CONTROLLER.name())) {
 			this.log( user.getUsername(), baseInfoConfigProperties.getSystem(), url, true );
 			return true;
 		}		

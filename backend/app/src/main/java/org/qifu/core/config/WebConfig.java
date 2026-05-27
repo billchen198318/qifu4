@@ -41,6 +41,10 @@ public class WebConfig implements WebMvcConfigurer {
 			"/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined", "/api/auth/refreshNewToken" 
 	};
 	
+	private static final String[] API_PATH = new String[] { "/api/*", "/api/**" };
+	
+	private static final String[] ROOT_PATH = new String[] { "/*", "/**" };
+	
 	private static final String EVENT_LOG_PATH = "/api/PROG004D0001/**";
 	
 	private final PageVariableConfigProperties pageVariableConfigProperties;
@@ -79,15 +83,15 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(userBuilderInterceptor())
-        	.addPathPatterns("/api/*", "/api/**")
+        	.addPathPatterns(API_PATH)
         	.excludePathPatterns( AUTH_PATH );
         
         registry.addInterceptor(mdcInterceptor())
-    		.addPathPatterns("/*", "/**")
+    		.addPathPatterns(ROOT_PATH)
     		.excludePathPatterns( AUTH_PATH );        
         
         registry.addInterceptor(controllerAuthorityCheckInterceptor())
-        	.addPathPatterns("/api/*", "/api/**")
+        	.addPathPatterns(API_PATH)
         	.excludePathPatterns( AUTH_PATH ).excludePathPatterns( EVENT_LOG_PATH );
     }
     

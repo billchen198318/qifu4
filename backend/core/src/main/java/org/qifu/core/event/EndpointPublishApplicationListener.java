@@ -14,6 +14,7 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
+import org.qifu.base.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
@@ -74,7 +75,7 @@ public class EndpointPublishApplicationListener implements ApplicationListener<C
 			boolean hasRest = (boolean) endpointMap.get("hasRest");
 			boolean enable = (boolean) endpointMap.get("enable");
 			if (!enable || (StringUtils.isBlank(beanId) || StringUtils.isBlank(name) || StringUtils.isBlank(publish))
-					|| (!publish.startsWith("/") || publish.length() < 2)) {
+					|| (!publish.startsWith(Constants.FORWARD_SLASH) || publish.length() < 2)) {
 				continue;
 			}
 			Object serviceBean = this.getBean(event, beanId);

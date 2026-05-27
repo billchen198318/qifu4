@@ -246,7 +246,8 @@ public class UploadSupportUtils {
 		if (StringUtils.isBlank(system) || StringUtils.isBlank(subDir) || StringUtils.isBlank(type)) {
 			throw new java.lang.IllegalArgumentException("system, sub-dir and type cann't blank!");
 		}
-		return baseInfoConfigProperties.getUploadDir() + "/" + system + "/" + type + "/" + subDir + "/";
+		return baseInfoConfigProperties.getUploadDir() + Constants.FORWARD_SLASH + system + Constants.FORWARD_SLASH + type 
+				+ Constants.FORWARD_SLASH + subDir + Constants.FORWARD_SLASH;
 	}	
 	
 	public static File mkdirUploadFileDir(String system, String type) throws IOException {

@@ -290,7 +290,7 @@ public class JReportUtils {
 	}
 	
 	public static String selfTestDecompress4Upload(String uploadOid) throws ServiceException, IOException{
-		String extractDir = Constants.getWorkTmpDir() + File.separator + JReportUtils.class.getSimpleName() + File.separator + SimpleUtils.getUUIDStr() + "/";
+		String extractDir = Constants.getWorkTmpDir() + File.separator + JReportUtils.class.getSimpleName() + File.separator + SimpleUtils.getUUIDStr() + Constants.FORWARD_SLASH;
 		File realFile = UploadSupportUtils.getRealFile(uploadOid);
 		try (ZipFile zipFile = new ZipFile(realFile)) {
 			zipFile.extractAll( extractDir );

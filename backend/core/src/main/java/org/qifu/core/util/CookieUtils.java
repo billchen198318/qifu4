@@ -1,5 +1,6 @@
 package org.qifu.core.util;
 
+import org.qifu.base.Constants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 
@@ -25,7 +26,7 @@ public class CookieUtils {
 		ResponseCookie cookie = ResponseCookie.from(name, value)
 				.httpOnly(true)
 				.secure(true)
-				.path("/")
+				.path(Constants.FORWARD_SLASH)
 				.maxAge(minutes * 60)
 				.sameSite("Lax")
 				.build();
