@@ -5,8 +5,19 @@
 <br>
 <img src="https://raw.githubusercontent.com/billchen198318/qifu4/main/backend/doc/0002.png">
 
-## Installation backend, 後端安裝配置
-please use Eclipse import project folder `backend/app` and `backend/base`, `backend/core`.
+## 📚 系統文件 (Documentation)
+
+本專案已根據功能與層次拆分為多份詳細手冊，請點擊連結查看詳細內容：
+
+*   [**後端開發手冊 (Backend Guide)**](./README-backend.md): 包含 Spring Boot 架構、MyBatis 配置、安全性機制及 API 規範。
+*   [**前端開發手冊 (Frontend Guide)**](./README-frontend.md): 包含 Nuxt 3 專案結構、Pinia 狀態管理、權限控制及前端建置指引。
+*   [**K3s 部署手冊 (K3s Deployment)**](./README-k3s.md): 包含 K3s HA 集群建立、VIP 配置、Ingress 路由及私有倉庫設定。
+
+---
+
+## 🛠️ 安裝與初始化 (Installation)
+
+### 1. 數據庫匯入 (MariaDB Import)
 
 <br>mariadb import
 ```bash
@@ -23,121 +34,18 @@ db1.datasource.username=mariadb-account
 db1.datasource.password=mariadb-password
 ```
 
-<br><br><br>
+### 2. 後端開發環境
+請使用 Eclipse 匯入 `backend/app`、`backend/base` 與 `backend/core` (core-std) 模組。詳情請參閱 [後端開發手冊](./README-backend.md)。
 
-
-# qífū-4 frontend ( Vue with Nuxt3 version )
-
-This frontend build of VUE. (folder is `frontend-v-nx`)
-
-## Installation
-
+### 3. 前端開發環境
 ```bash
 cd frontend-v-nx
 npm install
-
-```
-
-## Backend API env value
-
-Update your backend API value in `.env`:
-
-```text
-VITE_API_URL="http://127.0.0.1:8088/api"
-```
-
-## Start a local server
-
-```bash
-npm run build
 npm run dev
 ```
+詳情請參閱 [前端開發手冊](./README-frontend.md)。
 
+---
 
-<br><br><br>
-
-# qífū-4 frontend ( SvelteKit version )
-
-This frontend build of SvelteKit. (folder is `frontend-k`)
-
-## Installation
-
-```bash
-cd frontend-various/frontend-k
-npm install
-
-```
-
-## Backend API env value
-
-Update your backend API value in `.env`:
-
-```text
-VITE_API_URL="http://127.0.0.1:8088/api"
-```
-
-## Start a local server
-
-```bash
-npm run build
-npm run preview
-```
-
-
-# qífū-4 frontend ( svelte with svelte-spa-router version)
-
-This frontend build of svelte & svelte-spa-router. (folder is `frontend`)
-
-## Installation
-
-```bash
-cd frontend-various/frontend
-pnpm i
-
-```
-
-## Backend API env value
-
-Update your backend API value in `.env`:
-
-```text
-VITE_API_URL="http://127.0.0.1:8088/api"
-```
-
-## Start a local server
-
-```bash
-npm run dev
-```
-
-
-<br><br><br>
-
-
-# qífū-4 frontend ( Vue version )
-
-This frontend build of VUE. (folder is `frontend-v`)
-
-## Installation
-
-```bash
-cd frontend-various/frontend-v
-npm install
-
-```
-
-## Backend API env value
-
-Update your backend API value in `.env`:
-
-```text
-VITE_API_URL="http://127.0.0.1:8088/api"
-```
-
-## Start a local server
-
-```bash
-npm run build
-npm run dev
-```
-
+## 🚀 生產環境部署
+生產環境採用 K3s 高可用架構，部署於 VIP `192.168.10.200`。詳情請參閱 [K3s 部署手冊](./README-k3s.md)。
