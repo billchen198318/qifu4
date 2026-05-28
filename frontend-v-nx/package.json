@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "nuxt": "^3.11.2",
+    "nuxt": "^3.15.2",
     "sass": "^1.77.4",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2"
@@ -21,7 +21,7 @@
     "@bytemd/vue-next": "^1.21.0",
     "@pinia/nuxt": "^0.9.0",
     "@popperjs/core": "^2.11.8",
-    "axios": "^1.7.2",
+    "axios": "^1.8.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "bytemd": "^1.21.0",
@@ -30,5 +30,8 @@
     "sweetalert2": "^11.11.0",
     "vue-echarts": "^6.7.3",
     "vue3-toastify": "^0.2.2"
+  },
+  "overrides": {
+    "vite": "^6.4.2"
   }
 }
