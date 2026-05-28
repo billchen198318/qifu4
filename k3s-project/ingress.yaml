@@ -7,7 +7,7 @@ metadata:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/service.serversscheme: http
     # 【完美修正】精確指定 CRD 供應商後綴，讓 Traefik 100% 成功加載
-    traefik.ingress.kubernetes.io/router.middlewares: qifu4-qifu4-cors-middleware@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: qifu4-cors-middleware@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
