@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  ssr: false, 
-  
+  ssr: false,
+
   // 1. 修正資源路徑，解決 JS 檔案抓不到 (404) 的問題
   app: {
     baseURL: '/',
@@ -18,11 +18,7 @@ export default defineNuxtConfig({
   },
 
   devtools: { enabled: true },
-  
-  plugins: [
-    '~/plugins/useBootstrap.client.ts'
-  ],
-  
+
   modules: [
     '@pinia/nuxt'
   ],
@@ -39,5 +35,7 @@ export default defineNuxtConfig({
         }
       }
     }
-  }  
+  },
+
+  compatibilityDate: '2026-05-27'
 })
