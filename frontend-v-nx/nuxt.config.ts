@@ -13,18 +13,22 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.VITE_API_URL,
       ckHeadName: process.env.VITE_CK_HEAD_NAME,
-      // 如果沒用到 reportUrl 就直接刪除這行
     }
   },
 
-  devtools: { enabled: true },
+  // 🛡️ 動態開關 DevTools，避免生產環境暴露應用結構與 Pinia 狀態
+  devtools: { 
+    enabled: process.env.NODE_ENV === 'development' 
+  },
 
   modules: [
     '@pinia/nuxt'
   ],
 
+  // 🛡️ 加固開發伺服器，鎖定本機回環位址，杜絕區域網路內對 Vite 漏洞的掃描
   devServer: {
     port: 8077,
+    host: '127.0.0.1',
   },
 
   vite: {
@@ -36,6 +40,9 @@ export default defineNuxtConfig({
       }
     }
   },
+
+  // 🛡️ 修正：直接給予布林值，確保 Nitro 引擎完美關閉所有用戶端原始碼映射 (Sourcemap)
+  sourcemap: false,
 
   compatibilityDate: '2026-05-27'
 })
