@@ -11,7 +11,8 @@
 
 *   [**後端開發手冊 (Backend Guide)**](./README-backend.md): 包含 Spring Boot 3.5 架構、MyBatis 配置、JWT/Cookie 安全性機制及 API 規範。
 *   [**前端開發手冊 (Frontend Guide)**](./README-frontend.md): 包含 Nuxt 3 專案結構、Pinia 狀態管理、Axios 自動續期攔截器及權限控制。
-*   [**K3s 部署手冊 (K3s Deployment)**](./README-k3s.md): 包含 K3s HA 集群建立、Keepalived VIP 配置、Traefik Ingress 路由及私有倉庫設定。
+*   [**K3s 部署手冊 (K3s Deployment Keepalived-VIP)**](./README-k3s.md): 包含 K3s HA 集群建立、Keepalived VIP 配置、Traefik Ingress 路由及私有倉庫設定。
+*   [**K3s 部署手冊 (K3s Deployment Kube-VIP 推薦)**](./README-k3s-kube-vip.md): 使用 kube-vip 內嵌管理 VIP，安裝更簡單、與 K8s 整合度更高。。
 
 ---
 
@@ -51,6 +52,8 @@ npm run dev
 
 ---
 
-## 🚀 生產環境部署
-生產環境採用 K3s 高可用架構，部署於 VIP `192.168.10.200`。透過 Traefik Ingress 實現前後端路徑分流與 SSL 終止。
-詳情請參閱 [K3s 部署手冊](./README-k3s.md)。
+## 🚀 生產環境部署參考 (Production Deployment Reference)
+本專案提供基於 K3s 高可用架構的部署參考（包含 VIP `192.168.10.200`、Traefik Ingress 等範例），詳情請參閱相關手冊：
+*   [**K3s + kube-vip 部署範例 (推薦)**](./README-k3s-kube-vip.md)
+*   [**K3s + Keepalived 部署範例**](./README-k3s.md)
+
