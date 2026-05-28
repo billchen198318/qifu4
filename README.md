@@ -47,6 +47,7 @@ npm run dev
 ```
 *   **Node.js 版本**: 18+
 *   **詳細說明**: 詳見 [前端開發手冊](./README-frontend.md)。
+*   **登入測試帳號密碼**: admin / admin99。
 
 ---
 
