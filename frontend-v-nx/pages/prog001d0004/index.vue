@@ -1,4 +1,6 @@
-<script>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -16,113 +18,79 @@ import {
 	getUrlPrefixFromProgItem 
 } from '../../components/BaseHelper';
 
-export default {
-	components: { Toolbar, Grid, GridPagination, HiddenQueryFieldAlertInfo },
-	setup() { 
-		definePageMeta({ middleware : ['auth'] });
-		const queryPageStore = useProg001d0004Store();
-		return {
-			queryPageStore
-		}
-	},
-	data() {
-		return {
-			pageProgramId : PageConstants.QueryId,
-			dsList : [],
-			qFieldShow : true
-		}
-	},
-	methods: { 
-		tbRefresh : function() {
-			this.btnClear();
-		},
-		tbCreate : function() {
-			this.$router.push(PageConstants.frontendNamespace + '/create');
-		},
-		tbQueryFieldShow : function() {
-			this.qFieldShow = !this.qFieldShow;
-		},		
-		initQueryGridConfig : _initQueryGridConfig,
-		btnQuery : _btnQuery,
-		btnClear : function() {
-			this.queryPageStore.queryParam.templateId = '';
-			this.queryPageStore.queryParam.titleLike = '';
-			this.dsList = [];
-			this.clearGridConfig();
-		},
-		changeQueryGridRow : function(row) {
-			setConfigRow(this.queryPageStore.gridConfig, row);
-			this.queryPageStore.gridConfig.page = 1;
-			this.btnQuery();
-		},
-		changePageSelect : function(page) {
-			setConfigPage(this.queryPageStore.gridConfig, page);
-			this.btnQuery();
-		},
-		clearGridConfig : function() {
-			setConfigRow(this.queryPageStore.gridConfig, import.meta.env.VITE_DEFAULT_ROW);
-			setConfigPage(this.queryPageStore.gridConfig, 1);
-			setConfigTotal(this.queryPageStore.gridConfig, 0);
-		},
-		delItem : _delItem
-	},
-	created() {
-		let newGridConfig = this.initQueryGridConfig();
-		let oldGridConfig = this.queryPageStore.gridConfig;
-		if ( !(undefined === this.queryPageStore.gridConfig.column) ) {
-			resetConfigByOld(newGridConfig, oldGridConfig);
-		}
-		this.queryPageStore.gridConfig = newGridConfig;
-	},
-	mounted() { 
-		if (this.queryPageStore.gridConfig.total > 0) {
-			this.btnQuery();
-		}
-	}
-}
+definePageMeta({ middleware: ['auth'] });
 
-function _initQueryGridConfig() {
-	var that = this;
-	var thatRouter = this.$router;
+const router = useRouter();
+const queryPageStore = useProg001d0004Store();
+
+const pageProgramId = ref(PageConstants.QueryId);
+const dsList = ref<any[]>([]);
+const qFieldShow = ref(true);
+
+const tbRefresh = () => btnClear();
+const tbCreate = () => router.push(PageConstants.frontendNamespace + '/create');
+const tbQueryFieldShow = () => qFieldShow.value = !qFieldShow.value;
+
+const btnClear = () => {
+	queryPageStore.queryParam.templateId = '';
+	queryPageStore.queryParam.titleLike = '';
+	dsList.value = [];
+	clearGridConfig();
+};
+
+const changeQueryGridRow = (row: number) => {
+	setConfigRow(queryPageStore.gridConfig, row);
+	queryPageStore.gridConfig.page = 1;
+	btnQuery();
+};
+
+const changePageSelect = (page: number) => {
+	setConfigPage(queryPageStore.gridConfig, page);
+	btnQuery();
+};
+
+const clearGridConfig = () => {
+	setConfigRow(queryPageStore.gridConfig, import.meta.env.VITE_DEFAULT_ROW);
+	setConfigPage(queryPageStore.gridConfig, 1);
+	setConfigTotal(queryPageStore.gridConfig, 0);
+};
+
+const initQueryGridConfig = () => {
   	return getGridConfig(
-		'oid'
-		,
+		'oid',
 		[
 			{
-				'method'  : function(val) { 
-					var url = getUrlPrefixFromProgItem( getProgItem(PageConstants.EditId) ) + '/' + val;
-					thatRouter.push( url );
+				'method'  : (val: any) => { 
+					const url = getUrlPrefixFromProgItem(getProgItem(PageConstants.EditId)) + '/' + val;
+					router.push(url);
 				},
 				'icon'    : 'pen',
 				'type'    : 'edit',
 				'memo'    : 'Edit current item.',
 				'class'	  : 'btn btn-info btn-sm'
-			}
-			,
+			},
 			{
-				'method'  : function(val) { 
-					var url = getUrlPrefixFromProgItem( getProgItem(PageConstants.SetParamId) ) + '/' + val;
-					thatRouter.push( url );
+				'method'  : (val: any) => { 
+					const url = getUrlPrefixFromProgItem(getProgItem(PageConstants.SetParamId)) + '/' + val;
+					router.push(url);
 				},
 				'icon'    : 'gear-fill',
 				'type'    : 'customize',
 				'memo'    : 'Set parameter.',
 				'class'	  : 'btn btn-secondary btn-sm'
-			}			
-			,
+			},
 			{
-				'method'  : function(val) { 
+				'method'  : (val: any) => { 
 					Swal.fire({
 						title: '刪除?',
 						icon: 'question',
-						iconHtml: '?',
 						confirmButtonText: 'Yes',
 						cancelButtonText: 'No',
 						showCancelButton: true,
 						showCloseButton: true
 					}).then((result) => {
 						if (result.isConfirmed) {
-							that.delItem(val);
+							delItem(val);
 						}
 					});            
 				},
@@ -131,96 +99,87 @@ function _initQueryGridConfig() {
 				'memo'    : 'Delete current item.',
 				'class'	  : 'btn btn-danger btn-sm'
 			}     
-		]
-		,
+		],
 		[
-			{
-				'label' 	: '<i class="bi bi-hand-index-thumb"></i>',
-				'field' 	: 'oid',
-				'labHtml'	: true			
-			}
-			,
-			{
-				'label' : '樣板編號',
-				'field' : 'templateId'
-			}
-			,
-			{
-				'label' : 'Title標題',
-				'field' : 'title'
-			}          
+			{ label: '<i class="bi bi-hand-index-thumb"></i>', field: 'oid', labHtml: true },
+			{ label: '樣板編號', field: 'templateId' },
+			{ label: 'Title標題', field: 'title' }          
 		]
 	);
-}
+};
 
-function _btnQuery() {
-	Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+const btnQuery = async () => {
+	Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
 	Swal.showLoading();
-	this.dsList = [];
-	var axiosInstance = getAxiosInstance();
-	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findPage', {
-		"field": {
-			"templateId"	: this.queryPageStore.queryParam.templateId,
-			"titleLike"		: this.queryPageStore.queryParam.titleLike
-		}
-		,
-		"pageOf": {
-			"select"  : this.queryPageStore.gridConfig.page,
-			"showRow" : this.queryPageStore.gridConfig.row
-		}
-	})
-	.then(response => {
-		Swal.hideLoading();
+	dsList.value = [];
+	try {
+		const axiosInstance = getAxiosInstance();
+		const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findPage', {
+			"field": {
+				"templateId"	: queryPageStore.queryParam.templateId,
+				"titleLike"		: queryPageStore.queryParam.titleLike
+			},
+			"pageOf": {
+				"select"  : queryPageStore.gridConfig.page,
+				"showRow" : queryPageStore.gridConfig.row
+			}
+		});
 		Swal.close();
-		if (null != response.data) {
+		if (response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
-				this.clearGridConfig();
+				clearGridConfig();
 				toast.warning(response.data.message);
 				return;
 			}
-			this.dsList = response.data.value;
-			setConfigTotal(this.queryPageStore.gridConfig, response.data.pageOf.countSize);
+			dsList.value = response.data.value;
+			setConfigTotal(queryPageStore.gridConfig, response.data.pageOf.countSize);
 		} else {
 			toast.error('error, null');
-			this.clearGridConfig();
+			clearGridConfig();
 		}
-	})
-	.catch(e => {
-		Swal.hideLoading();
+	} catch (e: any) {
 		Swal.close();    
-		this.clearGridConfig();
+		clearGridConfig();
 		alert(e);
-	});
-}
+	}
+};
 
-function _delItem(oid) {
-	Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+const delItem = async (oid: string) => {
+	Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
 	Swal.showLoading();  
-	var axiosInstance = getAxiosInstance();  
-	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/delete', {"oid": oid})
-	.then(response => {
-		Swal.hideLoading();
+	try {
+		const axiosInstance = getAxiosInstance();  
+		const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/delete', { "oid": oid });
 		Swal.close();
-		if (null != response.data) {
+		if (response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG == response.data.success) {
 				toast.success(response.data.message);
 			} else {        
 				toast.warning(response.data.message);
 			} 
-			this.btnQuery();
+			btnQuery();
 		} else {
 			toast.error('error, null');
-			this.clearGridConfig();
+			clearGridConfig();
 		}
-	})
-	.catch(e => {
-		Swal.hideLoading();
+	} catch (e: any) {
 		Swal.close();    
-		this.btnQuery();
+		btnQuery();
 		alert(e);
-	});
-}
+	}
+};
 
+onMounted(() => {
+	const newGridConfig = initQueryGridConfig();
+	if (queryPageStore.gridConfig.column) {
+		resetConfigByOld(newGridConfig, queryPageStore.gridConfig);
+	}
+	queryPageStore.gridConfig = newGridConfig;
+	
+	if (queryPageStore.gridConfig.total > 0) {
+		btnQuery();
+	}
+});
 </script>
 
 <template>
@@ -228,53 +187,59 @@ function _delItem(oid) {
 <div class="row">
   <div class="col-xs-12 col-md-12 col-lg-12">
     <Toolbar 
-        :progId="this.pageProgramId" 
+        :progId="pageProgramId" 
         description="Freemarker 樣板管理." 
         marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
-        backFlag="N"
-        @backMethod="null"
         createFlag="Y"
         @createMethod="tbCreate"
-        saveFlag="N"
-        @saveMethod="null"
 		queryFieldShowSwitchFlag="Y"
 		@queryFieldShowSwitcMethod="tbQueryFieldShow"			
-    ></Toolbar>
+    />
   </div>
 </div>
 
-<HiddenQueryFieldAlertInfo :dataSource="this.dsList" :queryFieldShowFlag="this.qFieldShow"></HiddenQueryFieldAlertInfo>
-<div class="row" v-show=" qFieldShow ">
+<HiddenQueryFieldAlertInfo :dataSource="dsList" :queryFieldShowFlag="qFieldShow" />
+
+<div class="row" v-show="qFieldShow">
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<div class="form-group form-floating">
-			<input type="text" class="form-control" id="templateId" placeholder="輸入樣板編號" v-model="this.queryPageStore.queryParam.templateId">
+			<input type="text" class="form-control" id="templateId" placeholder="輸入樣板編號" v-model="queryPageStore.queryParam.templateId">
 			<label for="templateId">樣板編號</label>
     	</div>
   	</div>
   	<div class="col-xs-6 col-md-6 col-lg-6">
     	<div class="form-group form-floating">
-			<input type="text" class="form-control" id="title" placeholder="輸入樣板標題" v-model="this.queryPageStore.queryParam.titleLike">
+			<input type="text" class="form-control" id="title" placeholder="輸入樣板標題" v-model="queryPageStore.queryParam.titleLike">
 			<label for="title">樣板標題</label>
     	</div>
   	</div>
 </div>
-<p style="margin-bottom: 5px" v-show=" qFieldShow "></p>
-<div class="row" v-show=" qFieldShow ">
+
+<p v-show="qFieldShow" style="margin-bottom: 5px"></p>
+
+<div class="row" v-show="qFieldShow">
   	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" v-on:click="btnQuery"><i class="'bi bi-search"></i>&nbsp;查詢</button>
+    	<button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-search"></i>&nbsp;查詢</button>
     	&nbsp;
-    	<button type="button" class="btn btn-primary" v-on:click="btnClear"><i class="'bi bi-eraser"></i>&nbsp;清除</button>
+    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>
   	</div>
 </div>  
-<div class="row" v-show=" qFieldShow ">
+
+<div v-show="qFieldShow" class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
 </div>
+
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
-		<GridPagination :progId="this.pageProgramId" :gridConfig="this.queryPageStore.gridConfig" :changePageSelectMethod="this.changePageSelect" :changeGridConfigRowMethod="this.changeQueryGridRow"></GridPagination>
-		<Grid :progId="this.pageProgramId" :dataSource="this.dsList" :config="this.queryPageStore.gridConfig" ></Grid>
+		<GridPagination 
+			:progId="pageProgramId" 
+			:gridConfig="queryPageStore.gridConfig" 
+			:changePageSelectMethod="changePageSelect" 
+			:changeGridConfigRowMethod="changeQueryGridRow" 
+		/>
+		<Grid :progId="pageProgramId" :dataSource="dsList" :config="queryPageStore.gridConfig" />
 	</div>
 </div>  
 

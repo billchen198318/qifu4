@@ -1,4 +1,5 @@
-<script>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -7,168 +8,137 @@ import Toolbar from '@/components/Toolbar.vue';
 import { PageConstants } from './config';
 import { useProg002d0003Store } from './QueryPageStore'; 
 import { 
-    escapeQifuHtmlMsg,
-	getAxiosInstance, 
-	getProgItem, 
-	getUrlPrefixFromProgItem 
+	getAxiosInstance
 } from '../../components/BaseHelper';
 
-export default {
-	components: { Toolbar },
-	setup() { 
-        definePageMeta({ middleware : ['auth'] });
-		const queryPageStore = useProg002d0003Store();
-		return {
-			queryPageStore
-		}
-	},
-	data() {
-		return {
-			pleaseSelectId : import.meta.env.VITE_PLEASE_SELECT_ID,
-			pleaseSelectText : import.meta.env.VITE_PLEASE_SELECT_LABEL,            
-			pageProgramId : PageConstants.QueryId,
-            progList : [],
-            progRoleList : [],
-            progRoleEnableList : [],
-            formParam : {
-                oid : ''
-            }
-		}
-	},
-	methods: { 
-		tbRefresh : function() {
-			this.clearPage();
-		},
-		clearPage : function() {
-			this.queryPageStore.queryParam.oid = import.meta.env.VITE_PLEASE_SELECT_ID;
-            this.progRoleList = [];
-            this.progRoleEnableList = [];
-            this.formParam.oid = '';
-		},
-        loadProgramList : _loadProgramList,
-        progChange : _progChange,
-        progRoleEnableChange : _progRoleEnableChange,
-        checkItemChecked : _checkItemChecked
-	},
-	created() {
-        this.loadProgramList();
-        if (this.queryPageStore.queryParam.oid != import.meta.env.VITE_PLEASE_SELECT_ID) {
-            this.progChange();
-        }
-	},
-	mounted() { 
-	}
-}
+definePageMeta({ middleware: ['auth'] });
 
-function _loadProgramList() {
-    var currSysId = 'CORE';
-	this.progList = [];
-    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+const queryPageStore = useProg002d0003Store();
+
+const pleaseSelectId = ref(import.meta.env.VITE_PLEASE_SELECT_ID);
+const pleaseSelectText = ref(import.meta.env.VITE_PLEASE_SELECT_LABEL);            
+const pageProgramId = ref(PageConstants.QueryId);
+
+const progList = ref<any[]>([]);
+const progRoleList = ref<any[]>([]);
+const progRoleEnableList = ref<any[]>([]);
+const formParam = ref({
+    oid : ''
+});
+
+const tbRefresh = () => clearPage();
+
+const clearPage = () => {
+	queryPageStore.queryParam.oid = import.meta.env.VITE_PLEASE_SELECT_ID;
+    progRoleList.value = [];
+    progRoleEnableList.value = [];
+    formParam.value.oid = '';
+};
+
+const loadProgramList = async () => {
+    const currSysId = 'CORE';
+	progList.value = [];
+    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
     Swal.showLoading(); 
-    let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findProgramFolderMenuItem/' + currSysId)
-    .then(response => {
-        Swal.hideLoading();
+    try {
+        const axiosInstance = getAxiosInstance();
+        const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findProgramFolderMenuItem/' + currSysId);
         Swal.close();
-        if (null != response.data) {
+        if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
                 return;
             }
-            this.progList = response.data.value;            
+            progList.value = response.data.value;            
         } else {
             toast.error('error, null');            
         }
-    })
-    .catch(e => {
-        Swal.hideLoading();
+    } catch (e: any) {
         Swal.close();        
         alert(e);        
-    });	
-}
+    }	
+};
 
-function _progChange() {
-	this.progRoleList = [];
-    this.progRoleEnableList = [];
-    if (import.meta.env.VITE_PLEASE_SELECT_ID == this.queryPageStore.queryParam.oid) {
+const progChange = async () => {
+	progRoleList.value = [];
+    progRoleEnableList.value = [];
+    if (import.meta.env.VITE_PLEASE_SELECT_ID == queryPageStore.queryParam.oid) {
         return;
     }
-	this.formParam.oid = this.queryPageStore.queryParam.oid;
-    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+	formParam.value.oid = queryPageStore.queryParam.oid;
+    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
     Swal.showLoading(); 
-    let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findMenuProgramRoleList', this.formParam)
-    .then(response => {
-        Swal.hideLoading();
+    try {
+        const axiosInstance = getAxiosInstance();
+        const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findMenuProgramRoleList', formParam.value);
         Swal.close();
-        if (null != response.data) {
+        if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
                 return;
             }
-            this.progRoleList = response.data.value.all;
-            this.progRoleEnableList = response.data.value.enable;
+            progRoleList.value = response.data.value.all;
+            progRoleEnableList.value = response.data.value.enable;
         } else {
             toast.error('error, null');            
         }
-    })
-    .catch(e => {
-        Swal.hideLoading();
+    } catch (e: any) {
         Swal.close();        
         alert(e);        
-    });    
-}
+    }    
+};
 
-function _progRoleEnableChange(e, itemOid) {
-	var checked = e.target.checked;
-    var appendOid = '';
-    for (var n in this.progRoleEnableList) {        
-        appendOid += this.progRoleEnableList[n].oid + ',';
+const progRoleEnableChange = async (e: any, itemOid: string) => {
+	const checked = e.target.checked;
+    let appendOid = '';
+    for (const n in progRoleEnableList.value) {        
+        appendOid += progRoleEnableList.value[n].oid + ',';
     }
     if (checked) {
         appendOid += itemOid + ',';
     } else {
-        appendOid = appendOid.replaceAll(itemOid+',', '');
+        appendOid = appendOid.replaceAll(itemOid + ',', '');
     }
 	if ('' == appendOid) {
 		appendOid = ',';
 	}
-    this.formParam.oid = this.queryPageStore.queryParam.oid;
-    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+    formParam.value.oid = queryPageStore.queryParam.oid;
+    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
     Swal.showLoading(); 
-    let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/updateMenuRole/' + this.formParam.oid + '/' + appendOid)
-    .then(response => {
-        Swal.hideLoading();
+    try {
+        const axiosInstance = getAxiosInstance();
+        const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/updateMenuRole/' + formParam.value.oid + '/' + appendOid);
         Swal.close();
-        if (null != response.data) {
+        if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
-                this.clearPage();
+                clearPage();
+            } else {
+                toast.success(response.data.message);
+                // 更新成功後重新載入列表以同步狀態
+                progChange();
             }            
         } else {
             toast.error('error, null');
-            this.clearPage();
+            clearPage();
         }        
-    })
-    .catch(e => {
-        Swal.hideLoading();
+    } catch (e: any) {
         Swal.close();        
         alert(e);        
-        this.clearPage();
-    });	
-}
+        clearPage();
+    }	
+};
 
-function _checkItemChecked(itemOid) {
-	var f = false;
-	for (var n in this.progRoleEnableList) {
-		if (this.progRoleEnableList[n].oid == itemOid) {
-			f = true;
-		}
-	}
-	return f;
-}
+const checkItemChecked = (itemOid: string) => {
+	return progRoleEnableList.value.some(item => item.oid === itemOid);
+};
 
+onMounted(() => {
+    loadProgramList();
+    if (queryPageStore.queryParam.oid != import.meta.env.VITE_PLEASE_SELECT_ID) {
+        progChange();
+    }
+});
 </script>
 
 <template>
@@ -176,29 +146,25 @@ function _checkItemChecked(itemOid) {
 <div class="row">
   <div class="col-xs-12 col-md-12 col-lg-12">
     <Toolbar 
-        :progId="this.pageProgramId" 
+        :progId="pageProgramId" 
         description="選單Role管理配置." 
         marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
-        backFlag="N"
-        @backMethod="null"
-        createFlag="N"
-        @createMethod="null"
-        saveFlag="N"
-        @saveMethod="null"
-    ></Toolbar>
+    />
   </div>
 </div>
+
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12 form-floating">
-		<select id="progOid" class="form-select" aria-label="請選取" v-model="this.queryPageStore.queryParam.oid" @change="this.progChange">
-			<option :value="this.pleaseSelectId">{{this.pleaseSelectText}}</option>
-			<option v-for=" item in this.progList " :value="item.oid">{{item.name}}</option>
+		<select id="progOid" class="form-select" aria-label="請選取" v-model="queryPageStore.queryParam.oid" @change="progChange">
+			<option :value="pleaseSelectId">{{pleaseSelectText}}</option>
+			<option v-for="item in progList" :key="item.oid" :value="item.oid">{{item.name}}</option>
 		</select>		
         <label for="progOid">程式</label>
 	</div>
 </div>
+
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<table class="table table-hover table-bordered">
@@ -209,10 +175,15 @@ function _checkItemChecked(itemOid) {
                 </tr>
             </thead>
 			<tbody>
-				<tr v-for=" item in this.progRoleList ">
+				<tr v-for="item in progRoleList" :key="item.oid">
 					<td style="background-color: #BCC6CC;">
 						<div class="form-check">
-							<input type="checkbox" class="form-check-input" @change="progRoleEnableChange($event, item.oid)" :checked="checkItemChecked(item.oid)">
+							<input 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                @change="progRoleEnableChange($event, item.oid)" 
+                                :checked="checkItemChecked(item.oid)"
+                            >
 						</div>
 					</td>
 					<td>{{item.role}}</td>

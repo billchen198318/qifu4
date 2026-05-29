@@ -1,5 +1,6 @@
-<script>
-import { ref, watch } from 'vue';
+<script setup lang="ts">
+import { ref, watch, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -15,215 +16,183 @@ import {
 	getUrlPrefixFromProgItem 		
 } from '../../../components/BaseHelper';
 
-let checkFields = new Object();
+definePageMeta({ middleware: ['auth'] });
 
-export default {
-	components: { Toolbar },
-	setup() { 
-		definePageMeta({ middleware : ['auth'] });
-	},
-	data() {
-		return {
-			pageProgramId : PageConstants.SetParamId,
-			checkFields,
-			masterParam : {
-				templateOid : this.$route.params.id,
-				templateId : '',
-				title : ''
-			},
-			formParam : {
-				templateId : '',
-				isTitle : 'N',
-				isTitleVar : false,
-				templateVar : '',
-				objectVar : ''
-			},
-			paramList : []
-		}
-	},
-	methods: { 
-		fieldInvalidFeedback : invalidFeedback,
-		fieldCheckInvalid : checkInvalid,
-		btnBack : function() {
-			this.$router.back();
-		},
-		queryParamList : _queryParamList,
-		btnSave : _btnSave,
-		btnClear : function() {
-			this.checkFields = new Object();
-			this.formParam.isTitle = 'N';
-			this.formParam.isTitleVar = false;
-			this.formParam.templateVar = '';
-			this.formParam.objectVar = '';
-		},
-		loadData : _loadData,
-		delParam : _delParam,
-		delParamConfirm : function(oid) {
-			Swal.fire({
-				title: '刪除?',
-				icon: 'question',
-				iconHtml: '?',
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'No',
-				showCancelButton: true,
-				showCloseButton: true
-			}).then((result) => {
-				if (result.isConfirmed) {
-					this.delParam(oid);
-				}
-			});  
-		}
-	},
-	created() { 
-        watch(() => this.formParam.isTitleVar, (newVal, oldVal) => {
-			if (this.formParam.isTitleVar) {
-				this.formParam.isTitle = 'Y';
-			} else {
-				this.formParam.isTitle = 'N';
-			}
-        });
-	},
-	mounted() { 
-		this.loadData();
-	}
-}
+const router = useRouter();
+const route = useRoute();
 
-function _loadData() {
-    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+const pageProgramId = ref(PageConstants.SetParamId);
+const checkFields = ref<any>({});
+const masterParam = ref({
+	templateOid : route.params.id as string,
+	templateId : '',
+	title : ''
+});
+const formParam = ref({
+	templateId : '',
+	isTitle : 'N',
+	isTitleVar : false,
+	templateVar : '',
+	objectVar : ''
+});
+const paramList = ref<any[]>([]);
+
+const btnBack = () => router.back();
+
+const btnClear = () => {
+	checkFields.value = {};
+	formParam.value.isTitle = 'N';
+	formParam.value.isTitleVar = false;
+	formParam.value.templateVar = '';
+	formParam.value.objectVar = '';
+};
+
+watch(() => formParam.value.isTitleVar, (newVal) => {
+	formParam.value.isTitle = newVal ? 'Y' : 'N';
+});
+
+const loadData = async () => {
+    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
     Swal.showLoading(); 
-    let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/load', {'oid' : this.masterParam.templateOid})
-    .then(response => {
-        Swal.hideLoading();
+    try {
+        const axiosInstance = getAxiosInstance();
+        const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/load', { 'oid' : masterParam.value.templateOid });
         Swal.close();
-        if (null != response.data) {
+        if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
-                this.$router.push( getUrlPrefixFromProgItem( getProgItem(PageConstants.QueryId) ) );
+                router.push(getUrlPrefixFromProgItem(getProgItem(PageConstants.QueryId)));
                 return;
             }
-            this.masterParam = response.data.value;
-			this.masterParam.templateOid = this.$route.params.id;
-            this.formParam.templateId = this.masterParam.templateId;
-            this.queryParamList();
+            masterParam.value = response.data.value;
+			masterParam.value.templateOid = route.params.id as string;
+            formParam.value.templateId = masterParam.value.templateId;
+            queryParamList();
         } else {
             toast.error('error, null');
-            this.$router.push( getUrlPrefixFromProgItem( getProgItem(PageConstants.QueryId) ) );
+            router.push(getUrlPrefixFromProgItem(getProgItem(PageConstants.QueryId)));
         }
-    })
-    .catch(e => {
-        Swal.hideLoading();
+    } catch (e: any) {
         Swal.close();        
         alert(e);
-        this.$router.push( getUrlPrefixFromProgItem( getProgItem(PageConstants.QueryId) ) );
-    });         
-}
+        router.push(getUrlPrefixFromProgItem(getProgItem(PageConstants.QueryId)));
+    }         
+};
 
-function _queryParamList() {
-    this.paramList = [];
-	var axiosInstance = getAxiosInstance();
-	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findSetParamPage', {
-		"field": {
-			"templateId"	: this.masterParam.templateId
-		}
-		,
-		"pageOf": {
-			"select"  : 1,
-			"showRow" : 100
-		}
-	})
-	.then(response => {
-		if (null != response.data) {
+const queryParamList = async () => {
+    paramList.value = [];
+	try {
+		const axiosInstance = getAxiosInstance();
+		const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findSetParamPage', {
+			"field": {
+				"templateId"	: masterParam.value.templateId
+			},
+			"pageOf": {
+				"select"  : 1,
+				"showRow" : 100
+			}
+		});
+		if (response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
 				return;
 			}
-			this.paramList = response.data.value;   
+			paramList.value = response.data.value;   
 		} else {
 			toast.error('error, null');
 		}
-	})
-	.catch(e => {
+	} catch (e: any) {
 		alert(e);
-	});
-}
+	}
+};
 
-function _btnSave() {
-    this.checkFields = new Object();
-    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+const btnSave = async () => {
+    checkFields.value = {};
+    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
     Swal.showLoading();      
-    let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/saveSetParam', this.formParam)
-    .then(response => {
-        Swal.hideLoading();
+    try {
+        const axiosInstance = getAxiosInstance();
+        const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/saveSetParam', formParam.value);
         Swal.close();
-        if (null != response.data) {
-            this.checkFields = response.data.checkFields;
+        if (response.data) {
+            checkFields.value = response.data.checkFields || {};
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
-                toast.warning( escapeQifuHtmlMsg(response.data.message) );
+                toast.warning(escapeQifuHtmlMsg(response.data.message));
             } else {
                 toast.success(response.data.message);
-                this.btnClear();
+                btnClear();
             }            
         } else {
             toast.error('error, null');
         }
-        this.queryParamList();
-    })
-    .catch(e => {
-        Swal.hideLoading();
+        queryParamList();
+    } catch (e: any) {
         Swal.close();        
         alert(e);
-    });
-}
+    }
+};
 
-function _delParam(oid) {
-	Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+const delParam = async (oid: string) => {
+	Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
 	Swal.showLoading();  
-	var axiosInstance = getAxiosInstance();  
-	axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/deleteSetParam', {"oid": oid})
-	.then(response => {
-		Swal.hideLoading();
+	try {
+		const axiosInstance = getAxiosInstance();  
+		const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/deleteSetParam', { "oid": oid });
 		Swal.close();
-		if (null != response.data) {
+		if (response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG == response.data.success) {
 				toast.success(response.data.message);
 			} else {        
 				toast.warning(response.data.message);
 			}      
-			this.queryParamList();
+			queryParamList();
 		} else {
 			toast.error('error, null');
-			this.queryParamList();
+			queryParamList();
 		}
-	})
-	.catch(e => {
-		Swal.hideLoading();
+	} catch (e: any) {
 		Swal.close();    
-		this.queryParamList();
+		queryParamList();
 		alert(e);
-	}); 
-}
+	} 
+};
 
+const delParamConfirm = (oid: string) => {
+	Swal.fire({
+		title: '刪除?',
+		icon: 'question',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
+		showCancelButton: true,
+		showCloseButton: true
+	}).then((result) => {
+		if (result.isConfirmed) {
+			delParam(oid);
+		}
+	});  
+};
+
+onMounted(() => {
+	loadData();
+});
 </script>
 
 <template>
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<Toolbar 
-			:progId="this.pageProgramId" 
+			:progId="pageProgramId" 
         	description="Freemarker 樣板管理，配置參數作業." 
         	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="loadData"
         	backFlag="Y"
         	@backMethod="btnBack"
-        	createFlag="N"
-        	@createMethod="null"
         	saveFlag="Y"
         	@saveMethod="btnSave"
-    	></Toolbar>		
+    	/>		
 	</div>
 </div>
+
 <div class="row">
     <div class="col-xs-6 col-md-6 col-lg-6">
         樣板編號:&nbsp;{{masterParam.templateId}}
@@ -232,37 +201,55 @@ function _delParam(oid) {
         樣板標題:&nbsp;{{masterParam.title}}
     </div>    
 </div>
+
 <div class="row">
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<label for="templateVar" class="form-label">樣板變數</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('templateVar', checkFields) ? 'is-invalid' : ' ')" id="templateVar" placeholder="輸入樣板變數" v-model="this.formParam.templateVar">
-		<div v-if="fieldCheckInvalid('templateVar', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('templateVar', checkFields) }}</div>
+		<input 
+			type="text" 
+			:class="['form-control', checkInvalid('templateVar', checkFields) ? 'is-invalid' : '']" 
+			id="templateVar" 
+			placeholder="輸入樣板變數" 
+			v-model="formParam.templateVar"
+		>
+		<div v-if="checkInvalid('templateVar', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('templateVar', checkFields) }}</div>
 	</div>
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<label for="objectVar" class="form-label">物件變數</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('objectVar', checkFields) ? 'is-invalid' : ' ')" id="objectVar" placeholder="輸入物件變數" v-model="this.formParam.objectVar">
-		<div v-if="fieldCheckInvalid('objectVar', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('objectVar', checkFields) }}</div>
+		<input 
+			type="text" 
+			:class="['form-control', checkInvalid('objectVar', checkFields) ? 'is-invalid' : '']" 
+			id="objectVar" 
+			placeholder="輸入物件變數" 
+			v-model="formParam.objectVar"
+		>
+		<div v-if="checkInvalid('objectVar', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('objectVar', checkFields) }}</div>
 	</div>
 </div>
+
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<div class="form-check form-switch">
-			<input class="form-check-input" type="checkbox" role="switch" id="isTitle" v-model="this.formParam.isTitleVar">
+			<input class="form-check-input" type="checkbox" role="switch" id="isTitle" v-model="formParam.isTitleVar">
 			<label class="form-check-label" for="isTitle">是否標題用</label>
 		</div>		
 	</div>
 </div>
+
 <p style="margin-bottom: 5px"></p>
+
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" v-on:click="btnSave"><i class="'bi bi-save"></i>&nbsp;儲存</button>
+    	<button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i>&nbsp;儲存</button>
     	&nbsp;
-    	<button type="button" class="btn btn-primary" v-on:click="btnClear"><i class="'bi bi-eraser"></i>&nbsp;清除</button>		
+    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>		
 	</div>
 </div>
+
 <div class="row">
 	&nbsp;
 </div>
+
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<table class="table table-hover table-bordered">
@@ -275,7 +262,7 @@ function _delParam(oid) {
                 </tr>
             </thead>
 			<tbody>
-				<tr v-for=" item in this.paramList ">
+				<tr v-for="item in paramList" :key="item.oid">
                     <td>
                         <button class="btn btn-warning btn-sm" @click="delParamConfirm(item.oid)"><i class="bi bi-trash"></i></button>
                     </td>

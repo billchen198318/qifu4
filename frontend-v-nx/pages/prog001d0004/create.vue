@@ -1,11 +1,13 @@
-<script>
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
 import '../../../node_modules/bytemd/dist/index.css';
 import gfm from '@bytemd/plugin-gfm';
-import { Editor, Viewer } from '@bytemd/vue-next';
+import { Editor } from '@bytemd/vue-next';
 import importHtml from '@bytemd/plugin-import-html';
 
 import Toolbar from '@/components/Toolbar.vue';
@@ -17,131 +19,126 @@ import {
 	escapeQifuHtmlMsg
 } from '../../components/BaseHelper';
 
-let checkFields = new Object();
+definePageMeta({ middleware: ['auth'] });
 
-export default {
-	components: { Toolbar, Editor },
-	setup() { 
-		definePageMeta({ middleware : ['auth'] });
-	},
-	data() {
-		return {
-			pageProgramId : PageConstants.CreateId,
-			checkFields,
-			formParam : {
-				templateId : '',
-				title : '',
-				message : '',
-				description : ''
-			},
-			plugins : null
-		}
-	},
-	methods: { 
-		fieldInvalidFeedback : invalidFeedback,
-		fieldCheckInvalid : checkInvalid,
-		btnBack : function() {
-			this.$router.back();
-		},
-		btnSave : _btnSave,
-		btnClear : function() {
-			this.checkFields = new Object();
-			this.formParam.templateId = '';
-			this.formParam.title = '';
-			this.formParam.message = '';
-			this.formParam.description = '';
-		},
-		handleChange : function(v) {
-			this.formParam.message = v;
-		}
-	},
-	created() { 
-		this.plugins = [ importHtml() ];
-	},
-	mounted() { 
-	}
-}
+const router = useRouter();
+const pageProgramId = ref(PageConstants.CreateId);
+const checkFields = ref<any>({});
+const formParam = ref({
+	templateId : '',
+	title : '',
+	message : '',
+	description : ''
+});
 
-function _btnSave() {
-    this.checkFields = new Object();
-    Swal.fire({title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false});
+const plugins = [ importHtml(), gfm() ];
+
+const btnBack = () => router.back();
+
+const btnClear = () => {
+	checkFields.value = {};
+	formParam.value.templateId = '';
+	formParam.value.title = '';
+	formParam.value.message = '';
+	formParam.value.description = '';
+};
+
+const handleChange = (v: string) => {
+	formParam.value.message = v;
+};
+
+const btnSave = async () => {
+    checkFields.value = {};
+    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
     Swal.showLoading();      
-    let axiosInstance = getAxiosInstance();
-    axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/save', this.formParam)
-    .then(response => {
-        Swal.hideLoading();
+    try {
+        const axiosInstance = getAxiosInstance();
+        const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/save', formParam.value);
         Swal.close();
-        if (null != response.data) {
-			this.checkFields = response.data.checkFields;
+        if (response.data) {
+			checkFields.value = response.data.checkFields || {};
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(escapeQifuHtmlMsg(response.data.message));
                 return;
             }            
             toast.success(response.data.message);   
-            this.btnClear();
+            btnClear();
         } else {
             toast.error('error, null');
         }
-    })
-    .catch(e => {
-        Swal.hideLoading();
+    } catch (e: any) {
         Swal.close();        
         alert(e);
-    });
-}
-
+    }
+};
 </script>
 
 <template>
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<Toolbar 
-			:progId="this.pageProgramId" 
+			:progId="pageProgramId" 
         	description="Freemarker 樣板管理，新增資料作業." 
         	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="btnClear"
         	backFlag="Y"
         	@backMethod="btnBack"
-        	createFlag="N"
-        	@createMethod="null"
         	saveFlag="Y"
         	@saveMethod="btnSave"
-    	></Toolbar>		
+    	/>		
 	</div>
 </div>
+
 <div class="row">
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<label for="templateId" class="form-label">樣板編號</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('templateId', checkFields) ? 'is-invalid' : ' ')" id="templateId" placeholder="輸入樣板編號" v-model="this.formParam.templateId">
-		<div v-if="fieldCheckInvalid('templateId', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('templateId', checkFields) }}</div>
+		<input 
+			type="text" 
+			:class="['form-control', checkInvalid('templateId', checkFields) ? 'is-invalid' : '']" 
+			id="templateId" 
+			placeholder="輸入樣板編號" 
+			v-model="formParam.templateId"
+		>
+		<div v-if="checkInvalid('templateId', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('templateId', checkFields) }}</div>
 	</div>
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<label for="title" class="form-label">樣板標題</label>
-		<input type="text" v-bind:class="'form-control ' + ( fieldCheckInvalid('title', checkFields) ? 'is-invalid' : ' ')" id="title" placeholder="輸入樣板標題" v-model="this.formParam.title">
-		<div v-if="fieldCheckInvalid('title', checkFields)" class="invalid-feedback d-block">{{ fieldInvalidFeedback('title', checkFields) }}</div>
+		<input 
+			type="text" 
+			:class="['form-control', checkInvalid('title', checkFields) ? 'is-invalid' : '']" 
+			id="title" 
+			placeholder="輸入樣板標題" 
+			v-model="formParam.title"
+		>
+		<div v-if="checkInvalid('title', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('title', checkFields) }}</div>
 	</div>
 </div>
+
 <div class="row">
-	&nbsp;
+	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
 </div>
+
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
-		<Editor :value="this.formParam.message" :plugins="plugins" @change="handleChange" />
+		<Editor :value="formParam.message" :plugins="plugins" @change="handleChange" />
 	</div>
 </div>
+
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
 		<label for="description" class="form-label">說明</label>
-		<textarea class="form-control" id="description" row="3" col="25" v-model="this.formParam.description"></textarea>		
+		<textarea class="form-control" id="description" rows="3" v-model="formParam.description"></textarea>		
 	</div>
 </div>
+
 <p style="margin-bottom: 5px"></p>
+
 <div class="row">
 	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" v-on:click="btnSave"><i class="'bi bi-save"></i>&nbsp;儲存</button>
+    	<button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i>&nbsp;儲存</button>
     	&nbsp;
-    	<button type="button" class="btn btn-primary" v-on:click="btnClear"><i class="'bi bi-eraser"></i>&nbsp;清除</button>		
+    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>		
 	</div>
 </div>
 </template>
