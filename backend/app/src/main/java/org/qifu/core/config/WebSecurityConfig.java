@@ -103,7 +103,8 @@ public class WebSecurityConfig {
     					matcher(CoreAppConstants.SYS_PAGE_TAB_LOGIN_AGAIN),
     					matcher(CoreAppConstants.SYS_PAGE_NO_AUTH),
     					matcher(JASPERREPORT_MATCHER),
-    					matcher(API_AUTH_MATCHER)
+    					matcher(API_AUTH_MATCHER),
+    					matcher(CoreAppConstants.WEBSERVICE_PATH)
     			)
     		)
     		// Force our aggressive filter to run before standard CsrfFilter

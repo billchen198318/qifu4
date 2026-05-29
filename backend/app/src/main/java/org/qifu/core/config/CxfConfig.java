@@ -7,6 +7,7 @@ import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.ext.logging.LoggingInInterceptor;
 import org.apache.cxf.ext.logging.LoggingOutInterceptor;
 import org.apache.cxf.transport.servlet.CXFServlet;
+import org.qifu.base.CoreAppConstants;
 import org.qifu.core.webservice.interceptor.SoapForceDoclitBareInInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -60,7 +61,7 @@ public class CxfConfig {
 	public ServletRegistrationBean<CXFServlet> cxfServlet() {
 		ServletRegistrationBean<CXFServlet> srb = new ServletRegistrationBean<>();
 		srb.setServlet(new CXFServlet());
-		srb.setUrlMappings(Arrays.asList("/services/*"));
+		srb.setUrlMappings(Arrays.asList(CoreAppConstants.WEBSERVICE_PATH));
 		srb.setInitParameters(Map.of("hide-service-list-page", hideServiceListPage));
 		return srb;
 	}
