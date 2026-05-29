@@ -16,6 +16,8 @@ import {
 	getUrlPrefixFromProgItem 	
 } from '../../../components/BaseHelper';
 
+import { popularIcons } from '@/assets/icons';
+
 definePageMeta({ middleware: ['auth'] });
 
 const router = useRouter();
@@ -226,13 +228,15 @@ onMounted(() => {
 	</div>
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<label for="fontIconClassId" class="form-label">Icon class</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('fontIconClassId', checkFields) ? 'is-invalid' : '']" 
+		<select 
+			:class="['form-select', checkInvalid('fontIconClassId', checkFields) ? 'is-invalid' : '']" 
 			id="fontIconClassId" 
-			placeholder="Icon class" 
 			v-model="formParam.fontIconClassId"
 		>
+			<option v-for="icon in popularIcons" :key="icon.name" :value="icon.name">
+				{{ icon.label }} ({{ icon.name }})
+			</option>
+		</select>
 		<div v-if="checkInvalid('fontIconClassId', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('fontIconClassId', checkFields) }}</div>
 	</div>
 </div>
