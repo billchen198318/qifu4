@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
+import type { BaseState, User, MenuItem, Program } from '../types'
 
 export const getBaseStore = function() {
     return useBaseStore();
 }
 
 export const useBaseStore = defineStore('baseStore', {
-    state: () => {
+    state: (): BaseState => {
         return { 
             user : {
                 id : '',
@@ -20,36 +21,40 @@ export const useBaseStore = defineStore('baseStore', {
             progList : []
         }
     },
+    getters: {
+        isLoggedIn: (state) => state.user.login === 'Y',
+        isAdmin: (state) => state.user.admin === 'Y',
+        userId: (state) => state.user.id,
+    },
     actions: {
-        setUserData(uJsonRes:any) {
-            this.user.id = uJsonRes.userId;
+        setUserData(uJsonRes: any) {
+            this.user.id = uJsonRes.userId || '';
             this.user.login = 'Y';
-            this.user.admin = 'N';
-            if (uJsonRes.admin) {
-                this.user.admin = 'Y';
-            }
-            this.user.roleList = uJsonRes.roles;
-            this.user.permList = uJsonRes.authorities;
-            this.user.accessToken = uJsonRes.accessToken;
-            this.user.refreshToken = uJsonRes.refreshToken;
+            this.user.admin = uJsonRes.admin ? 'Y' : 'N';
+            this.user.roleList = uJsonRes.roles || [];
+            this.user.permList = uJsonRes.authorities || [];
+            this.user.accessToken = uJsonRes.accessToken || '';
+            this.user.refreshToken = uJsonRes.refreshToken || '';
         },
-        setMenuList(v:any) {
+        setMenuList(v: MenuItem[]) {
             this.menuList = v;
         },
-        setProgList(v:any) {
+        setProgList(v: Program[]) {
             this.progList = v;
         },        
-        setLoginStatus(v:any) {
+        setLoginStatus(v: 'Y' | 'N' | '') {
             this.user.login = v;
         },
         clearUserData() {
-            this.user.id = '';
-            this.user.login = '';
-            this.user.admin = 'N';
-            this.user.roleList = [];
-            this.user.permList = [];
-            this.user.accessToken = '';
-            this.user.refreshToken = '';
+            this.user = {
+                id: '',
+                login: '',
+                admin: 'N',
+                roleList: [],
+                permList: [],
+                accessToken: '',
+                refreshToken: ''
+            };
             this.menuList = [];
             this.progList = [];
         }

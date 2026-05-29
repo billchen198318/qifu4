@@ -1,88 +1,74 @@
-<script>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { getProgItem } from './BaseHelper';
 
-export default {
-    props: [
-        'progId', 'description', 
-        'marginBottom',
-        'refreshFlag', 'refreshMethod', 
-        'backFlag', 'backMethod', 
-        'createFlag', 'createMethod',
-        'saveFlag', 'saveMethod',
-        'queryFieldShowSwitchFlag', 'queryFieldShowSwitcMethod'
-    ],
-    emits: ["refreshMethod", "backMethod", "createMethod", "saveMethod", "queryFieldShowSwitcMethod"],
-    setup(props) {
-    },    
-    data() {
-        return { 
-            pageProg : null,
-            switchEye : true
-        }
-    },
-    methods: {
-        fnBack : function() {
-            this.$emit('backMethod');
-        },        
-        fnRefresh : function() {
-            this.$emit('refreshMethod');
-        },
-        fnCreate : function() {
-            this.$emit('createMethod');
-        },
-        fnSave : function() {
-            this.$emit('saveMethod');
-        },
-        fnQueryFieldShowSwitch : function() {
-            this.switchEye = !this.switchEye;
-            this.$emit('queryFieldShowSwitcMethod');
-        }
-    },
-    created() {
-        this.pageProg = getProgItem(this.progId);
-        if (null == this.pageProg) {
-            //alert('Please close this page, toolbar load fail!');
-            //window.location = "/";
-            console.log('error, pageProg null');
-        }
-        //console.log(this.pageProg);
-    },
-    mounted() {
-        /*
-        this.pageProg = getProgItem(this.progId);
-        if (null == this.pageProg) {
-            alert('Please close this page, toolbar load fail!');
-        }
-        console.log(this.pageProg);
-        */
-    }
-}
+const props = defineProps<{
+  progId: string;
+  description?: string;
+  marginBottom?: string;
+  refreshFlag?: string;
+  backFlag?: string;
+  createFlag?: string;
+  saveFlag?: string;
+  queryFieldShowSwitchFlag?: string;
+}>();
+
+const emit = defineEmits<{
+  (e: 'refreshMethod'): void;
+  (e: 'backMethod'): void;
+  (e: 'createMethod'): void;
+  (e: 'saveMethod'): void;
+  (e: 'queryFieldShowSwitcMethod'): void;
+}>();
+
+const pageProg = ref<any>(null);
+const switchEye = ref(true);
+
+const fnBack = () => emit('backMethod');
+const fnRefresh = () => emit('refreshMethod');
+const fnCreate = () => emit('createMethod');
+const fnSave = () => emit('saveMethod');
+const fnQueryFieldShowSwitch = () => {
+  switchEye.value = !switchEye.value;
+  emit('queryFieldShowSwitcMethod');
+};
+
+onMounted(() => {
+  pageProg.value = getProgItem(props.progId);
+  if (!pageProg.value) {
+    console.warn('Toolbar load warning: pageProg is null for', props.progId);
+  }
+});
 </script>
 
 <template>
 <div class="app-title" style="background: linear-gradient(to top, #f8f9fa, #ffffff); width: 103vw; overflow: hidden;">
-	<div>
-		<h1 class="text-dark"><i v-bind:class="'bi bi-'+this.pageProg.fontIconClassId"></i>&nbsp;{{this.pageProg.name}}</h1>
-		<p class="text-muted">{{this.description}}</p>
+	<div v-if="pageProg">
+		<h1 class="text-dark"><i :class="'bi bi-' + pageProg.fontIconClassId"></i>&nbsp;{{ pageProg.name }}</h1>
+		<p class="text-muted">{{ description }}</p>
 		<div>
-            <i v-if=" 'Y' == this.backFlag" id="tb_back" class="fs-5 bi bi-arrow-left-square btn btn-light btn-sm text-info" @click="this.fnBack" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="上一頁" data-trigger="hover"></i>
-            {{ 'Y' == this.backFlag ? '&nbsp;' : '' }}
+            <i v-if="backFlag === 'Y'" id="tb_back" class="fs-5 bi bi-arrow-left-square btn btn-light btn-sm text-info" @click="fnBack" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="上一頁" data-trigger="hover"></i>
+            {{ backFlag === 'Y' ? '&nbsp;' : '' }}
 
-            <i v-if=" 'Y' == this.refreshFlag" id="tb_repeat" class="fs-5 bi bi-repeat btn btn-light btn-sm text-info" @click="this.fnRefresh" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="刷新" data-trigger="hover"></i>
-            {{ 'Y' == this.refreshFlag ? '&nbsp;' : '' }}
+            <i v-if="refreshFlag === 'Y'" id="tb_repeat" class="fs-5 bi bi-repeat btn btn-light btn-sm text-info" @click="fnRefresh" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="刷新" data-trigger="hover"></i>
+            {{ refreshFlag === 'Y' ? '&nbsp;' : '' }}
 
-            <i v-if=" 'Y' == this.createFlag " id="tb_plus" class="fs-5 bi bi-plus-circle btn btn-light btn-sm text-info" @click="this.fnCreate" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="新增頁" data-trigger="hover"></i>
-            {{ 'Y' == this.createFlag ? '&nbsp;' : '' }}
+            <i v-if="createFlag === 'Y'" id="tb_plus" class="fs-5 bi bi-plus-circle btn btn-light btn-sm text-info" @click="fnCreate" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="新增頁" data-trigger="hover"></i>
+            {{ createFlag === 'Y' ? '&nbsp;' : '' }}
 
-            <i class="fs-7 bi bi-three-dots-vertical text-muted" v-if=" 'Y' == this.queryFieldShowSwitchFlag || 'Y' == this.saveFlag " ></i>
+            <i class="fs-7 bi bi-three-dots-vertical text-muted" v-if="queryFieldShowSwitchFlag === 'Y' || saveFlag === 'Y'"></i>
 
-            <i v-if=" 'Y' == this.saveFlag " id="tb_save" class="fs-5 bi bi-save btn btn-light btn-sm text-info" @click="this.fnSave" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="儲存/更新" data-trigger="hover"></i>
-            {{ 'Y' == this.saveFlag ? '&nbsp;' : '' }}
+            <i v-if="saveFlag === 'Y'" id="tb_save" class="fs-5 bi bi-save btn btn-light btn-sm text-info" @click="fnSave" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="儲存/更新" data-trigger="hover"></i>
+            {{ saveFlag === 'Y' ? '&nbsp;' : '' }}
 
-            <i v-if=" 'Y' == this.queryFieldShowSwitchFlag " id="tb_queryFieldShowSwitch" v-bind:class="'fs-5 bi bi-' + (this.switchEye ? 'arrow-down-circle' : 'arrow-up-circle') + ' btn btn-light btn-sm '" @click="this.fnQueryFieldShowSwitch" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="顯示/隱藏查詢區塊" data-trigger="hover"></i>
-            {{ 'Y' == this.queryFieldShowSwitchFlag ? '&nbsp;' : '' }}            
+            <i v-if="queryFieldShowSwitchFlag === 'Y'" id="tb_queryFieldShowSwitch" :class="'fs-5 bi bi-' + (switchEye ? 'arrow-down-circle' : 'arrow-up-circle') + ' btn btn-light btn-sm '" @click="fnQueryFieldShowSwitch" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="顯示/隱藏查詢區塊" data-trigger="hover"></i>
+            {{ queryFieldShowSwitchFlag === 'Y' ? '&nbsp;' : '' }}            
 		</div>
 	</div>    
 </div> 
-<p v-if=" 'Y' == this.marginBottom " style="margin-bottom: 5px"></p>
+<p v-if="marginBottom === 'Y'" style="margin-bottom: 5px"></p>
 </template>
+
+<style scoped>
+/* 移除多餘的 padding 與 margin，回歸全域 vali.css 控制 */
+</style>

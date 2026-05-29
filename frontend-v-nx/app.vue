@@ -1,151 +1,68 @@
-<script>
+<script setup lang="ts">
+import { onMounted, onUnmounted, nextTick } from "vue";
+import { useBaseStore } from './store/baseStore';
+import { userLogoutClearCookie } from './components/BaseHelper';
+import { createPopper } from '@popperjs/core';
+
+// CSS Imports
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import './assets/vali.css';
 import './assets/m.css';
 import './assets/callout.scss';
 
-import { watch } from "vue";
-import { useBaseStore } from './store/baseStore';
-import { 
-	getAxiosInstance,
-	getAccessTokenCookie, 
-	getRefreshTokenCookie, 
-	setRefreshAndAccessTokenCookie, 
-	checkUserHasLogined, 
-	userLogoutClearCookie, 
-	checkHasPermission } from './components/BaseHelper';
-	
-import { createPopper } from '@popperjs/core';
-import Swal from 'sweetalert2';
+const baseStore = useBaseStore();
+const nuxtApp = useNuxtApp();
 
-export default {
-	setup() {
-		const baseStore = useBaseStore();
-		return { 
-			baseStore
-		}
-	},
-	data() {
-		return { }
-	},
-	methods: {
-		//loadUserLoginedFromClient : _loadUserLoginedFromClient,
-		clearUserLoginData        : _clearUserLoginData
-	},
-	created() {
-		// move to auth.global.ts
-		//this.loadUserLoginedFromClient();
-		
-		// move to auth.global.ts
-		/*
-		this.$router.beforeEach((to, from, next) => {
-			let pageUrl = to.path;
-			if (pageUrl != '/nopermission' && pageUrl != '/about' && pageUrl != '/' && pageUrl != '/login') {
-				if (checkHasPermission(to.path, true)) {
-					next();
-					return;
-				}
-			} else {
-				next();
-				return;
-			}
-			next({path : '/nopermission', replace : true});
-		});
-		*/   
-	},
-	mounted() {
-		const nuxtApp = useNuxtApp();
-		let bsToolTip = new nuxtApp.$bootstrap.Tooltip(document.body, {
-			selector: "[data-bs-toggle='tooltip']",
-			trigger : 'hover'
-		});    
-		document.addEventListener("mousedown", e => {
-			if (null != bsToolTip) {
-				//bsToolTip.hide(); // no work...
-				const el = document.getElementsByClassName("tooltip bs-tooltip-auto fade show");
-				if (null != el) {
-					for (var n in el) {
-						if (null == el[n]) { continue; }
-						if (undefined == el[n].id) { continue; }
-						if (null == el[n].id) { continue; }
-						if (el[n].id.indexOf('tooltip') == 0) {
-							el[n].remove();
-						}
-					}
-				}
-			}
-		});
-		
-		this.$nextTick(() => {
-			const button = document.querySelector('#button');
-			const tooltip = document.querySelector('#tooltip');
-			createPopper(button, tooltip);
-		});
-	},
-	unmounted() {
-		document.removeEventListener("mousedown");
-	}
+const clearUserLoginData = () => {
+  userLogoutClearCookie();
+  baseStore.clearUserData();  
 };
 
-// move to auth.global.ts
-/*
-function _loadUserLoginedFromClient() {
-	var ck_user_refresh_token = getRefreshTokenCookie();
-	var ck_user_access_token = getAccessTokenCookie();
-	let userData = this.baseStore.user;
-	if (!checkUserHasLogined(userData) && (null != ck_user_refresh_token && '' != ck_user_refresh_token) && (null != ck_user_access_token && '' != ck_user_access_token)) {
-		fetch(import.meta.env.VITE_API_URL + '/auth/validLogined', {
-  			method: "POST",
-  			headers: {
-  				"Content-Type": "application/json",
-  			},
-  			body: JSON.stringify({
-  				accessToken: ck_user_access_token,
-  				refreshToken: ck_user_refresh_token
-  			}),
-  			signal: AbortSignal.timeout(parseInt(import.meta.env.VITE_FETCH_TIMEOUT,10))
-		})
-		.then(response => {
-  			if (response.ok) {
-  				return response.json();
-  			}
-			this.clearUserLoginData();
-  			throw new Error(response.status + ' ' + response.statusText);
-		})
-		.then((responseJson) => {
-			if (null != responseJson) {
-				if ('' == responseJson.accessToken || '' == responseJson.refreshToken) {
-					this.clearUserLoginData();
-					return;
-				}
-				this.baseStore.setUserData(responseJson);
-				setRefreshAndAccessTokenCookie(userData.refreshToken, userData.accessToken);
-			} else {
-				this.clearUserLoginData();
-				navigateTo('/login');
-			}
-		})
-		.catch((error) => {
-  			this.clearUserLoginData();
-  			console.log(error);
-		});
-	}
-}
-*/
+const handleMouseDown = (e: MouseEvent) => {
+  // 移除 Bootstrap Tooltip 的 DOM
+  const el = document.getElementsByClassName("tooltip bs-tooltip-auto fade show");
+  if (el && el.length > 0) {
+    for (let i = 0; i < el.length; i++) {
+      const item = el[i] as HTMLElement;
+      if (item.id && item.id.indexOf('tooltip') === 0) {
+        item.remove();
+      }
+    }
+  }
+};
 
-function _clearUserLoginData() {
-	userLogoutClearCookie();
-	this.baseStore.clearUserData();  
-}
+onMounted(() => {
+  // 初始化 Bootstrap Tooltip
+  if (nuxtApp.$bootstrap) {
+    new nuxtApp.$bootstrap.Tooltip(document.body, {
+      selector: "[data-bs-toggle='tooltip']",
+      trigger : 'hover'
+    });
+  }
 
+  document.addEventListener("mousedown", handleMouseDown);
+
+  nextTick(() => {
+    const button = document.querySelector('#button');
+    const tooltip = document.querySelector('#tooltip');
+    if (button && tooltip) {
+      createPopper(button, tooltip);
+    }
+  });
+});
+
+onUnmounted(() => {
+  document.removeEventListener("mousedown", handleMouseDown);
+});
 </script>
 
-<style>
-</style>
-
 <template>
-	<NuxtLayout>
-		<NuxtPage/>
-	</NuxtLayout>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
+
+<style>
+/* 全域樣式 */
+</style>

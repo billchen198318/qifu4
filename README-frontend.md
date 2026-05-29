@@ -4,46 +4,51 @@
 
 ## 1. 架構概述 (Architecture Overview)
 
-前端基於 **Nuxt 3** 框架構建，設定為 **SPA 模式** (ssr: false)。
+前端基於 **Nuxt 3** 框架構建，設定為 **SPA 模式** (ssr: false)，並全面採用 **TypeScript** 與 **Composition API (`<script setup>`)** 進行開發。
 
 ### 主要技術
 *   **Framework**: Nuxt 3 (Vue 3 + Vite)。
-*   **State Management**: Pinia (使用 `baseStore` 管理使用者資訊、選單與程式清單)。
-*   **Styling**: Bootstrap 5 (透過 `useBootstrap.client.ts` 插件載入)。
-*   **HTTP Client**: `useFetch` (Nuxt 內建) 與 `Axios` (用於特定攔截器邏輯)。
+*   **Language**: TypeScript (嚴格型別定義)。
+*   **State Management**: Pinia (使用 `baseStore` 並定義 Interface 確保型別安全)。
+*   **Styling**: Bootstrap 5 (透過 `useBootstrap.client.ts` 插件載入) 與 Bootstrap Icons。
+*   **HTTP Client**: 統一使用自定義的 `useApi` Composable (基於 Nuxt `ohmyfetch` / `$fetch`)。
 
 ## 2. 身份驗證與安全性 (Auth & Security)
 
 系統與後端配合，採用高度安全的 HttpOnly Cookie 方案。
 
-### 全域路由中間件 (`middleware/auth.global.ts`)
-*   **登入檢查**: 每次跳轉頁面時，中間件會檢查 `baseStore` 中的登入狀態。
-*   **自動續期**: 如果 Store 為空但 Cookie 中存在 Token 旗標，會自動呼叫 `/api/auth/validLogined` 進行後端驗證並還原使用者狀態。
-*   **權限校驗**: 呼叫 `checkHasPermission` 檢查使用者是否有權進入該路徑。
+### 路由中間件 (`middleware/auth.ts`)
+*   **具名中間件**: 頁面透過 `definePageMeta({ middleware: ['auth'] })` 引用。
+*   **自動續期**: 如果 Store 為空但存在 Token，會自動呼叫 `/auth/validLogined` 還原狀態。
+*   **選單加載**: 登入成功後自動抓取 `menuList` 與 `progList`，確保 UI 同步。
+*   **權限校驗**: 透過 `checkHasPermission` 檢查使用者路徑權限。
 
 ### CSRF 防護
-*   前端需從 `XSRF-TOKEN` Cookie 中讀取 Token。
-*   在 API 呼叫時，必須在 Header 中帶入 `X-XSRF-TOKEN`。
+*   透過 `plugins/csrf.client.ts` 自動處理 Token 同步。
+*   在 `useApi` 中已封裝自動在 Header 帶入 `X-XSRF-TOKEN`。
 
-### Axios 攔截器 (`BaseHelper.js`)
-*   **401 處理**: 當 Access Token 過期（API 返回 401）時，攔截器會自動調用 `refreshNewToken` 接口。
-*   **無感刷新**: 刷新成功後，會自動重發先前失敗的請求，使用者無需手動重新登入。
+### API 呼叫與攔截 (`composables/useApi.ts`)
+*   **統一入口**: 取代分散的 `fetch`, `axios` 或 `useFetch`。
+*   **全域攔截**: 內建 401 (自動重新登入)、400、404、500 等錯誤代碼的 `Swal` 提示。
+*   **型別支援**: 支援傳入泛型以獲得完整的 Response 型別提示。
 
 ## 3. 目錄結構 (Directory Structure)
 
-*   `pages/`: 頁面組件，對應路由架構。
+*   `pages/`: 頁面組件，採用 `<script setup lang="ts">` 寫法。
 *   `components/`: 通用 UI 組件。
-    *   `BaseHelper.js`: 核心工具函數，包含 Cookie 處理、權限檢查、Axios 實例等。
-    *   `Grid.vue` / `GridPagination.vue`: 統一的表格與分頁組件。
-*   `store/`: Pinia Store 定義。
-*   `layouts/`: 頁面佈局 (如 `default.vue`)。
+    *   `BaseHelper.ts`: 核心工具函數（Cookie、權限、路徑處理等）。
+    *   `GridHelper.ts`: 提供表格配置與分頁輔助函式。
+    *   `Grid.vue` / `GridPagination.vue`: 現代化的表格與分頁組件。
+*   `store/`: Pinia Store 定義（`baseStore.ts`）。
+*   `types/`: 全域 TypeScript 介面定義（`index.ts`）。
+*   `composables/`: 自定義組合式函式（如 `useApi.ts`）。
 
 ## 4. 開發規範 (Development Guide)
 
 ### 環境變數
-編輯 `.env` 檔案配置 API 地址：
+編輯 `.env` 檔案配置：
 ```text
-VITE_API_URL=https://192.168.10.200/api
+VITE_API_URL=https://your-api-domain/api
 VITE_CK_HEAD_NAME=QIFU4VNX
 ```
 
@@ -55,18 +60,18 @@ npm install
 # 啟動開發環境 (預設 8077 port)
 npm run dev
 
-# 專案打包 (輸出至 .output 夾)
+# 專案打包
 npm run build
 ```
 
-### 呼叫 API 範例
-建議使用 `BaseHelper.js` 中的 `getAxiosInstance()` 以確保攔截器與 CSRF 邏輯正常運作。
-```javascript
-import { getAxiosInstance } from '~/components/BaseHelper';
-
-const api = getAxiosInstance();
-const res = await api.post('/api/your-feature/query', data);
+### 呼叫 API 範例 (推薦方式)
+```typescript
+// 在 <script setup> 中
+const response = await useApi<any>('/your-feature/query', {
+  method: 'POST',
+  body: { id: 'test' }
+});
 ```
 
 ---
-*本系統專為 AI Agent 輔助開發優化，代碼結構清晰且模組化。*
+*本系統已完成 2026-05-29 優化工程，代碼全面轉向 TypeScript 與 Composition API，具有極高的維護性。*
