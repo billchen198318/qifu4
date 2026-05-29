@@ -1,16 +1,14 @@
 import { defineStore } from 'pinia';
-import { getInitGridConfigVariable } from '@/components/GridHelper';
+import { getInitGridConfigVariable, type GridConfig } from '@/components/GridHelper';
 
 export const getProg001d0004Store = function() {
     return useProg001d0004Store();
 }
 
-let _gridConfigVar = getInitGridConfigVariable();
-
 export const useProg001d0004Store = defineStore('prog001d0004', {
     state: () => {
         return { 
-            gridConfig : _gridConfigVar,
+            gridConfig : getInitGridConfigVariable() as GridConfig,
             queryParam : {
                 templateId : '',
                 titleLike : ''
