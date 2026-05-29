@@ -228,15 +228,18 @@ onMounted(() => {
 	</div>
 	<div class="col-xs-6 col-md-6 col-lg-6">
 		<label for="fontIconClassId" class="form-label">Icon class</label>
-		<select 
-			:class="['form-select', checkInvalid('fontIconClassId', checkFields) ? 'is-invalid' : '']" 
-			id="fontIconClassId" 
-			v-model="formParam.fontIconClassId"
-		>
-			<option v-for="icon in popularIcons" :key="icon.name" :value="icon.name">
-				{{ icon.label }} ({{ icon.name }})
-			</option>
-		</select>
+		<div class="d-flex align-items-center">
+			<select 
+				:class="['form-select', checkInvalid('fontIconClassId', checkFields) ? 'is-invalid' : '']" 
+				id="fontIconClassId" 
+				v-model="formParam.fontIconClassId"
+			>
+				<option v-for="icon in popularIcons" :key="icon.name" :value="icon.name">
+					{{ icon.label }} ({{ icon.name }})
+				</option>
+			</select>
+			<i :class="['bi', 'bi-' + formParam.fontIconClassId]" style="font-size: 1.5rem; margin-left: 10px;"></i>
+		</div>
 		<div v-if="checkInvalid('fontIconClassId', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('fontIconClassId', checkFields) }}</div>
 	</div>
 </div>
