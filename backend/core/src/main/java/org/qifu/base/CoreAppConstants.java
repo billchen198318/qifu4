@@ -118,7 +118,7 @@ public class CoreAppConstants {
 		    SYS_PAGE_LOGIN,
 		    "/logout",
 		    SYS_PAGE_NO_AUTH
-		};
+	};
 	
 	public static String[] getWebconfigresource() {
 		return WebConfigResource;
