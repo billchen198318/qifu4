@@ -18,6 +18,7 @@ import {
 definePageMeta({ middleware: ['auth'] });
 
 const router = useRouter();
+const { showLoading, hideLoading } = useSwalLoading();
 const pageProgramId = ref(PageConstants.CreateId);
 const checkFields = ref<any>({});
 const formParam = ref({
@@ -83,12 +84,11 @@ watch(() => formParam.value.compile, refreshSwitchItemVariableFn);
 
 const btnSave = async () => {
     checkFields.value = {};
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading();
+    showLoading();
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/save', formParam.value);
-        Swal.close();
+        hideLoading();
         if (response.data) {
 			checkFields.value = response.data.checkFields || {};
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
@@ -101,7 +101,7 @@ const btnSave = async () => {
             toast.error('error, null');
         }
     } catch (e: any) {
-        Swal.close();        
+        hideLoading();        
         alert(e);
     }
 };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
@@ -25,6 +25,7 @@ definePageMeta({ middleware: ['auth'] });
 
 const router = useRouter();
 const queryPageStore = useProg001d0005Store();
+const { showLoading, hideLoading } = useSwalLoading();
 
 const pageProgramId = ref(PageConstants.QueryId);
 const dsList = ref<any[]>([]);
@@ -97,6 +98,7 @@ const initQueryGridConfig = () => {
 					}
 					
 					try {
+						showLoading();
 						const axiosInstance = getAxiosInstance();
 						const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findSetParamPage', {
 							"field": {
@@ -107,19 +109,21 @@ const initQueryGridConfig = () => {
 								"showRow" : 100
 							}
 						});
-						
+						hideLoading();
 						if (response.data) {
 							if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+								toast.warning(response.data.message);
 								return;
 							}
 							previewParamList.value = response.data.value;
-							myModal = new bootstrap.Modal(document.getElementById('exampleModal')!);
-							myModal.show();							 
+							if (myModal) myModal.show();
 						} else {
+							toast.error('error, null');
 							previewParamList.value = [];
 							previewReportId.value = '';
 						}
 					} catch (e: any) {
+						hideLoading();
 						alert(e);
 					}
 				},
@@ -158,8 +162,7 @@ const initQueryGridConfig = () => {
 };
 
 const btnQuery = async () => {
-	Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-	Swal.showLoading();
+	showLoading();
 	dsList.value = [];
 	try {
 		const axiosInstance = getAxiosInstance();
@@ -172,7 +175,7 @@ const btnQuery = async () => {
 				"showRow" : queryPageStore.gridConfig.row
 			}
 		});
-		Swal.close();
+		hideLoading();
 		if (response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
 				clearGridConfig();
@@ -186,19 +189,18 @@ const btnQuery = async () => {
 			clearGridConfig();
 		}
 	} catch (e: any) {
-		Swal.close();    
+		hideLoading();    
 		clearGridConfig();
 		alert(e);
 	}
 };
 
 const delItem = async (oid: string) => {
-	Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-	Swal.showLoading();  
+	showLoading();  
 	try {
 		const axiosInstance = getAxiosInstance();  
 		const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/delete', { "oid": oid });
-		Swal.close();
+		hideLoading();
 		if (response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG == response.data.success) {
 				toast.success(response.data.message);
@@ -211,7 +213,7 @@ const delItem = async (oid: string) => {
 			clearGridConfig();
 		}
 	} catch (e: any) {
-		Swal.close();    
+		hideLoading();    
 		btnQuery();
 		alert(e);
 	}
@@ -240,6 +242,19 @@ onMounted(() => {
 	
 	if (queryPageStore.gridConfig.total > 0) {
 		btnQuery();
+	}
+
+	// 在組件掛載後初始化 Modal 實例，避免重複建立
+	const modalElement = document.getElementById('exampleModal');
+	if (modalElement) {
+		myModal = new bootstrap.Modal(modalElement);
+	}
+});
+
+onBeforeUnmount(() => {
+	// 組件銷毀前清理 Modal 資源，防止記憶體洩漏
+	if (myModal) {
+		myModal.dispose();
 	}
 });
 </script>

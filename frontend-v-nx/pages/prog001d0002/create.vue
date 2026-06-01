@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import Swal from 'sweetalert2';
+import { useSwalLoading } from '@/composables/useSwalLoading';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
@@ -21,6 +21,7 @@ definePageMeta({ middleware: ['auth'] });
 const router = useRouter();
 const pageProgramId = ref(PageConstants.CreateId);
 const checkFields = ref<any>({});
+const { showLoading, hideLoading } = useSwalLoading();
 const formParam = ref({
 	progId : '',
 	name : '',
@@ -66,12 +67,11 @@ watch(() => formParam.value.isDialogVar, refreshSwitchItemVariableFn);
 
 const btnSave = async () => {
     checkFields.value = {};
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading();      
+    showLoading();      
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/save', formParam.value);
-        Swal.close();
+        hideLoading();
         if (response.data) {
 			checkFields.value = response.data.checkFields || {};
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
@@ -84,7 +84,7 @@ const btnSave = async () => {
             toast.error('error, null');
         }
     } catch (e: any) {
-        Swal.close();        
+        hideLoading();        
         alert(e);
     }
 };

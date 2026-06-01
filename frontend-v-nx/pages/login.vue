@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useBaseStore } from '../store/baseStore';
-import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { setRefreshAndAccessTokenCookie, userLogoutClearCookie } from '../components/BaseHelper';
+import { useSwalLoading } from '@/composables/useSwalLoading';
 
 definePageMeta({ layout: 'blank' });
 
@@ -12,6 +12,7 @@ const baseStore = useBaseStore();
 const userId = ref('');
 const passwd = ref('');
 const message = ref('');
+const { showLoading, hideLoading } = useSwalLoading();
 
 const loginBtnClick = async () => {
   if (!userId.value.trim() || !passwd.value.trim()) {
@@ -19,15 +20,7 @@ const loginBtnClick = async () => {
     return;
   }
 
-  Swal.fire({
-    title: "Loading...",
-    html: "請等待",
-    showConfirmButton: false,
-    allowOutsideClick: false,
-    didOpen: () => {
-      Swal.showLoading();
-    }
-  });
+  showLoading();
 
   message.value = '';
 
@@ -40,7 +33,7 @@ const loginBtnClick = async () => {
       }
     });
 
-    Swal.close();
+    hideLoading();
 
     if (responseJson) {
       baseStore.setUserData(responseJson);
@@ -56,7 +49,7 @@ const loginBtnClick = async () => {
     message.value = 'Login failed';
     userId.value = '';
     passwd.value = '';
-    Swal.close();
+    hideLoading();
   }
 };
 </script>
