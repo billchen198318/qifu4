@@ -23,7 +23,7 @@ definePageMeta({ middleware: ['auth'] });
 
 const router = useRouter();
 const queryPageStore = useProg001d0001Store();
-const { showLoading, hideLoading } = useSwalLoading();
+const { showLoading, hideLoading, confirmFire } = useSwalLoading();
 
 const pageProgramId = ref(PageConstants.QueryId);
 const dsList = ref<any[]>([]);
@@ -73,18 +73,7 @@ const initQueryGridConfig = () => {
 			},
 			{
 				'method'  : (val: any) => { 
-					Swal.fire({
-						title: '刪除?',
-						icon: 'question',
-						confirmButtonText: 'Yes',
-						cancelButtonText: 'No',
-						showCancelButton: true,
-						showCloseButton: true
-					}).then((result) => {
-						if (result.isConfirmed) {
-							delItem(val);
-						}
-					});            
+					confirmFire('刪除?', delItem, val);           
 				},
 				'icon'    : 'trash',
 				'type'    : 'delete',

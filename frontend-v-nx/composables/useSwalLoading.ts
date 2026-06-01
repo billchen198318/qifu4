@@ -20,8 +20,24 @@ export const useSwalLoading = () => {
     Swal.close();
   };
 
+  const confirmFire = (title: string = "確認?", confirmFunction: any = null, confirmDataItemKey: any) => {
+    Swal.fire({
+      title: title,
+      icon: 'question',
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      showCancelButton: true,
+      showCloseButton: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        confirmFunction(confirmDataItemKey);
+      }
+    });
+  }
+  
   return {
     showLoading,
     hideLoading,
+    confirmFire
   };
 };
