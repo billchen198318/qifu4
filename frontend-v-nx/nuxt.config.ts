@@ -16,9 +16,8 @@ export default defineNuxtConfig({
     }
   },
 
-  // 🛡️ 動態開關 DevTools，避免生產環境暴露應用結構與 Pinia 狀態
   devtools: { 
-    enabled: process.env.NODE_ENV === 'development' 
+    enabled: import.meta.dev 
   },
 
   modules: [
