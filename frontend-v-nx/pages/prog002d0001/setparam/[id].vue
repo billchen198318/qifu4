@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
+import { useSwalLoading } from '@/composables/useSwalLoading';
 import 'vue3-toastify/dist/index.css';
 
 import Toolbar from '@/components/Toolbar.vue';
@@ -20,6 +21,8 @@ definePageMeta({ middleware: ['auth'] });
 
 const router = useRouter();
 const route = useRoute();
+
+const { showLoading, hideLoading } = useSwalLoading();
 
 const pageProgramId = ref(PageConstants.SetParamId);
 const checkFields = ref<any>({});
@@ -50,12 +53,11 @@ const tbRefresh = () => {
 };
 
 const loadData = async () => {
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/load', { 'oid' : masterParam.value.oid });
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -71,7 +73,7 @@ const loadData = async () => {
             router.push(getUrlPrefixFromProgItem(getProgItem(PageConstants.QueryId)));
         }
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);
         router.push(getUrlPrefixFromProgItem(getProgItem(PageConstants.QueryId)));
     }         
@@ -105,12 +107,11 @@ const queryParamList = async () => {
 
 const btnSave = async () => {
     checkFields.value = {};
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading();      
+    showLoading()      
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/saveSetParam', formParam.value);
-        Swal.close();
+        hideLoading()
         if (response.data) {
             checkFields.value = response.data.checkFields || {};
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
@@ -124,18 +125,17 @@ const btnSave = async () => {
         }
         queryParamList();
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);
     }
 };
 
 const delParam = async (oid: string) => {
-	Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-	Swal.showLoading();  
+	showLoading()  
 	try {
 		const axiosInstance = getAxiosInstance();  
 		const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/deleteSetParam', { "oid": oid });
-		Swal.close();
+		hideLoading()
 		if (response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG == response.data.success) {
 				toast.success(response.data.message);
@@ -148,7 +148,7 @@ const delParam = async (oid: string) => {
 			queryParamList();
 		}
 	} catch (e: any) {
-		Swal.close();    
+		hideLoading()    
 		queryParamList();
 		alert(e);
 	} 

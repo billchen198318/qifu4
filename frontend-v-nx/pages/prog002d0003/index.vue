@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
+import { useSwalLoading } from '@/composables/useSwalLoading';
 import 'vue3-toastify/dist/index.css';
 
 import Toolbar from '@/components/Toolbar.vue';
@@ -17,6 +18,8 @@ const queryPageStore = useProg002d0003Store();
 
 const pleaseSelectId = ref(import.meta.env.VITE_PLEASE_SELECT_ID);
 const pleaseSelectText = ref(import.meta.env.VITE_PLEASE_SELECT_LABEL);            
+const { showLoading, hideLoading } = useSwalLoading();
+
 const pageProgramId = ref(PageConstants.QueryId);
 
 const progList = ref<any[]>([]);
@@ -38,12 +41,11 @@ const clearPage = () => {
 const loadProgramList = async () => {
     const currSysId = 'CORE';
 	progList.value = [];
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findProgramFolderMenuItem/' + currSysId);
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -54,7 +56,7 @@ const loadProgramList = async () => {
             toast.error('error, null');            
         }
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);        
     }	
 };
@@ -66,12 +68,11 @@ const progChange = async () => {
         return;
     }
 	formParam.value.oid = queryPageStore.queryParam.oid;
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findMenuProgramRoleList', formParam.value);
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -83,7 +84,7 @@ const progChange = async () => {
             toast.error('error, null');            
         }
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);        
     }    
 };
@@ -103,12 +104,11 @@ const progRoleEnableChange = async (e: any, itemOid: string) => {
 		appendOid = ',';
 	}
     formParam.value.oid = queryPageStore.queryParam.oid;
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/updateMenuRole/' + formParam.value.oid + '/' + appendOid);
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -123,7 +123,7 @@ const progRoleEnableChange = async (e: any, itemOid: string) => {
             clearPage();
         }        
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);        
         clearPage();
     }	

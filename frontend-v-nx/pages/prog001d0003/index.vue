@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
+import { useSwalLoading } from '@/composables/useSwalLoading';
 import 'vue3-toastify/dist/index.css';
 
 import Toolbar from '@/components/Toolbar.vue';
@@ -17,6 +17,8 @@ const queryPageStore = useProg001d0003Store();
 
 const pleaseSelectId = ref(import.meta.env.VITE_PLEASE_SELECT_ID);
 const pleaseSelectText = ref(import.meta.env.VITE_PLEASE_SELECT_LABEL);
+const { showLoading, hideLoading } = useSwalLoading();
+
 const pageProgramId = ref(PageConstants.QueryId);
 
 const itemAllList = ref<any[]>([]);
@@ -36,12 +38,11 @@ const clearPage = () => {
 
 const loadProgramFolder = async () => {
     folderList.value = [];
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadProgramFolder');
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -52,7 +53,7 @@ const loadProgramFolder = async () => {
             toast.error('error, null');            
         }
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);        
     }
 };
@@ -63,12 +64,11 @@ const programFolderChange = async () => {
     if (import.meta.env.VITE_PLEASE_SELECT_ID == queryPageStore.queryParam.folderOid) {
         return;
     }
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadProgramEnableAndAllList/' + queryPageStore.queryParam.folderOid);
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -80,7 +80,7 @@ const programFolderChange = async () => {
             toast.error('error, null');            
         }
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);        
     }
 };
@@ -99,12 +99,11 @@ const programItemEnableChange = async (e: any, itemOid: string) => {
 	if ('' == appendOid) {
 		appendOid = ',';
 	}    
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/updateMenu/' + queryPageStore.queryParam.folderOid + '/' + appendOid);
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -119,7 +118,7 @@ const programItemEnableChange = async (e: any, itemOid: string) => {
             clearPage();
         }        
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);        
         clearPage();
     }

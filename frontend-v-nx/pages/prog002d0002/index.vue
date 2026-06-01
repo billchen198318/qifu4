@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
+import { useSwalLoading } from '@/composables/useSwalLoading';
 import 'vue3-toastify/dist/index.css';
 
 import Toolbar from '@/components/Toolbar.vue';
@@ -17,6 +17,8 @@ const queryPageStore = useProg002d0002Store();
 
 const pleaseSelectId = ref(import.meta.env.VITE_PLEASE_SELECT_ID);
 const pleaseSelectText = ref(import.meta.env.VITE_PLEASE_SELECT_LABEL);            
+const { showLoading, hideLoading } = useSwalLoading();
+
 const pageProgramId = ref(PageConstants.QueryId);
 
 const userList = ref<any[]>([]);
@@ -37,12 +39,11 @@ const clearPage = () => {
 
 const loadUserList = async () => {
 	userList.value = [];
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/loadUserList');
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -53,7 +54,7 @@ const loadUserList = async () => {
             toast.error('error, null');            
         }
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);        
     }	
 };
@@ -65,12 +66,11 @@ const userChange = async () => {
         return;
     }
 	formParam.value.oid = queryPageStore.queryParam.oid;
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findUserRoleListByAccountOid', formParam.value);
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -82,7 +82,7 @@ const userChange = async () => {
             toast.error('error, null');            
         }
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);        
     }		
 };
@@ -102,12 +102,11 @@ const userRoleEnableChange = async (e: any, itemOid: string) => {
 		appendOid = ',';
 	}
     formParam.value.oid = queryPageStore.queryParam.oid;
-    Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-    Swal.showLoading(); 
+    showLoading() 
     try {
         const axiosInstance = getAxiosInstance();
         const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/updateUserRole/' + formParam.value.oid + '/' + appendOid);
-        Swal.close();
+        hideLoading()
         if (response.data) {
             if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
                 toast.warning(response.data.message);
@@ -122,7 +121,7 @@ const userRoleEnableChange = async (e: any, itemOid: string) => {
             clearPage();
         }        
     } catch (e: any) {
-        Swal.close();        
+        hideLoading()        
         alert(e);        
         clearPage();
     }	

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
@@ -25,7 +24,7 @@ definePageMeta({ middleware: ['auth'] });
 
 const router = useRouter();
 const queryPageStore = useProg002d0001Store();
-const { showLoading, hideLoading } = useSwalLoading();
+const { showLoading, hideLoading, confirmFire } = useSwalLoading();
 
 const pageProgramId = ref(PageConstants.QueryId);
 const dsList = ref<any[]>([]);
@@ -107,18 +106,7 @@ const initQueryGridConfig = () => {
 			},				
 			{
 				'method'  : (val: any) => { 
-					Swal.fire({
-						title: '刪除?',
-						icon: 'question',
-						confirmButtonText: 'Yes',
-						cancelButtonText: 'No',
-						showCancelButton: true,
-						showCloseButton: true
-					}).then((result) => {
-						if (result.isConfirmed) {
-							delItem(val);
-						}
-					});            
+					confirmFire('刪除?', delItem, val);           
 				},
 				'icon'    : 'trash',
 				'type'    : 'delete',

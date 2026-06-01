@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import Swal from 'sweetalert2';
 import { toast } from 'vue3-toastify';
+import { useSwalLoading } from '@/composables/useSwalLoading';
 import 'vue3-toastify/dist/index.css';
 
 import Toolbar from '@/components/Toolbar.vue';
@@ -22,6 +22,8 @@ definePageMeta({ middleware: ['auth'] });
 
 const router = useRouter();
 const queryPageStore = useProg001d0004Store();
+
+const { showLoading, hideLoading, confirmFire } = useSwalLoading();
 
 const pageProgramId = ref(PageConstants.QueryId);
 const dsList = ref<any[]>([]);
@@ -81,18 +83,7 @@ const initQueryGridConfig = () => {
 			},
 			{
 				'method'  : (val: any) => { 
-					Swal.fire({
-						title: '刪除?',
-						icon: 'question',
-						confirmButtonText: 'Yes',
-						cancelButtonText: 'No',
-						showCancelButton: true,
-						showCloseButton: true
-					}).then((result) => {
-						if (result.isConfirmed) {
-							delItem(val);
-						}
-					});            
+					confirmFire('刪除?', delItem, val);           
 				},
 				'icon'    : 'trash',
 				'type'    : 'delete',
@@ -109,8 +100,7 @@ const initQueryGridConfig = () => {
 };
 
 const btnQuery = async () => {
-	Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-	Swal.showLoading();
+	showLoading()
 	dsList.value = [];
 	try {
 		const axiosInstance = getAxiosInstance();
@@ -124,7 +114,7 @@ const btnQuery = async () => {
 				"showRow" : queryPageStore.gridConfig.row
 			}
 		});
-		Swal.close();
+		hideLoading()
 		if (response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
 				clearGridConfig();
@@ -138,19 +128,18 @@ const btnQuery = async () => {
 			clearGridConfig();
 		}
 	} catch (e: any) {
-		Swal.close();    
+		hideLoading()    
 		clearGridConfig();
 		alert(e);
 	}
 };
 
 const delItem = async (oid: string) => {
-	Swal.fire({ title: "Loading...", html: "請等待", showConfirmButton: false, allowOutsideClick: false });
-	Swal.showLoading();  
+	showLoading()  
 	try {
 		const axiosInstance = getAxiosInstance();  
 		const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/delete', { "oid": oid });
-		Swal.close();
+		hideLoading()
 		if (response.data) {
 			if (import.meta.env.VITE_SUCCESS_FLAG == response.data.success) {
 				toast.success(response.data.message);
@@ -163,7 +152,7 @@ const delItem = async (oid: string) => {
 			clearGridConfig();
 		}
 	} catch (e: any) {
-		Swal.close();    
+		hideLoading()    
 		btnQuery();
 		alert(e);
 	}
