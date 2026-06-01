@@ -1,6 +1,6 @@
 export const popularIcons = [
   { name: 'file-text', label: 'File Text' }, { name: 'file-pdf', label: 'File Pdf' }, { name: 'person-square', label: 'Person Square' },
-  { name: 'clipboard-pulse', label: 'Clipboard Pulse' }, { name: 'filetype-html', label: 'Filetype Html' }, { name: 'menu-app-fill', label: 'Menu App Fill' },
+  { name: 'clipboard-pulse', label: 'Clipboard Pulse' }, { name: 'filetype-html', label: 'Filetype Html' }, { name: 'menu-app-fill', label: 'Menu App Fill' }, { name: 'globe2', label: 'Globe2' },
   { name: 'house', label: 'House' }, { name: 'house-fill', label: 'House Fill' }, { name: 'person', label: 'Person' },
   { name: 'person-fill', label: 'Person Fill' }, { name: 'gear', label: 'Gear' }, { name: 'gear-fill', label: 'Gear Fill' },
   { name: 'search', label: 'Search' }, { name: 'plus', label: 'Plus' }, { name: 'dash', label: 'Dash' },
