@@ -38,7 +38,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 	
 	private static final String[] AUTH_PATH = new String[] { 
-			"/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined", "/api/auth/refreshNewToken" 
+			"/api/client", "/api/auth", "/api/auth/signin", "/api/auth/validLogined", "/api/auth/refreshNewToken", "/api/auth/logout" 
 	};
 	
 	private static final String[] API_PATH = new String[] { "/api/*", "/api/**" };

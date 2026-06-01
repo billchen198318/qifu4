@@ -52,7 +52,8 @@ const loginBtnClick = async () => {
     }
   } catch (error: any) {
     userLogoutClearCookie();
-    message.value = error.message || 'Login failed';
+    console.log(error.message);
+    message.value = 'Login failed';
     userId.value = '';
     passwd.value = '';
     Swal.close();
