@@ -10,6 +10,9 @@ let interceptorsAttached = false;
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach(prom => {
     if (error) {
+      if (typeof error === 'object' && error !== null) {
+        error.__isRefreshed = true;
+      }
       prom.reject(error);
     } else {
       prom.resolve(token);
@@ -71,7 +74,9 @@ export function setCsrfTokenStorage(token: string) {
 
 export function userLogoutClearCookie() {
   const config = useRuntimeConfig();
-  axios.post(config.public.apiUrl + '/auth/logout', {}, { withCredentials: true });
+  // Use a separate axios instance or direct call to avoid interceptor loop
+  axios.create().post(config.public.apiUrl + '/auth/logout', {}, { withCredentials: true }).catch(() => {});
+  
   deleteCookie(config.public.ckHeadName + '__urt_flag');
   deleteCookie(config.public.ckHeadName + '__uat_flag');
   if (typeof window !== 'undefined') {
@@ -220,33 +225,49 @@ export function getAxiosInstance() {
     if (error.response) {
       const status = error.response.status;
       const baseStore = useBaseStore();
+      const url = error.config.url || '';
       
+      const isLoginPage = typeof window !== 'undefined' && window.location.pathname === '/login';
+      const isExcluded = url.indexOf('/auth/signin') > -1 || 
+                         url.indexOf('/auth/logout') > -1 || 
+                         url.indexOf('/auth/validLogined') > -1 || 
+                         url.indexOf('/auth/refreshNewToken') > -1 ||
+                         isLoginPage;
+
       switch (status) {
         case 401:
           const refreshTokeUrl = config.public.apiUrl + '/auth/refreshNewToken';
-          if (error.config.url.indexOf('/auth/refreshNewToken') > -1) {
-            alert('請重新登入系統!');
-            window.location.href = '/login';
+          if (url.indexOf('/auth/refreshNewToken') > -1) {
+            if (typeof window !== 'undefined') {
+              alert('請重新登入系統!');
+              window.location.href = '/login';
+            }
             return error.response;
           }
-          if (error.config.url !== refreshTokeUrl) {
+          
+          if (!isExcluded && !error.__isRefreshed) {
             const originalRequest = error.config;
             if (isRefreshing) {
               return new Promise((resolve, reject) => {
                 failedQueue.push({ resolve, reject });
-              }).then(() => axios(originalRequest)).catch(err => Promise.reject(err));
+              }).then(() => axios(originalRequest)).catch(err => {
+                if (err && typeof err === 'object') err.__isRefreshed = true;
+                return Promise.reject(err);
+              });
             }
             isRefreshing = true;
             return new Promise((resolve, reject) => {
-              axios.post(refreshTokeUrl, JSON.stringify({
-                username: baseStore.user.id,
+              axios.post(refreshTokeUrl, {
+                username: baseStore.user.id || '',
                 accessToken: '',
                 refreshToken: ''
-              }))
+              })
               .then((response) => {
                 if (!response.data) {
-                  alert('請重新登入系統!');
-                  window.location.href = '/login';
+                  if (typeof window !== 'undefined') {
+                    alert('請重新登入系統!');
+                    window.location.href = '/login';
+                  }
                   processQueue(new Error('no data'), null);
                   reject(response);
                 } else {
@@ -255,10 +276,14 @@ export function getAxiosInstance() {
                 }
               })
               .catch((err) => {
-                userLogoutClearCookie();
-                alert(`${err.response?.status || 'Unknown'}: 作業逾時或無相關使用授權，請重新登入`);
-                window.location.href = '/login';
+                isRefreshing = false;
                 processQueue(err, null);
+                userLogoutClearCookie();
+                if (typeof window !== 'undefined') {
+                  alert(`${err.response?.status || 'Unknown'}: 作業逾時或無相關使用授權，請重新登入`);
+                  window.location.href = '/login';
+                }
+                if (err && typeof err === 'object') err.__isRefreshed = true;
                 reject(err);
               })
               .finally(() => {
@@ -268,7 +293,6 @@ export function getAxiosInstance() {
           }
           break;
         default:
-          // Other errors can be handled here or in useApi
           break;
       }
     }
