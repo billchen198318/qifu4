@@ -3,6 +3,7 @@ package org.qifu.core.config;
 import java.io.IOException;
 
 import org.qifu.base.Constants;
+import org.qifu.base.CoreAppConstants;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,8 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
  * Super aggressive filter to ensure CSRF token is available via Cookie AND Header.
  */
 public class CsrfCookieFilter extends OncePerRequestFilter {
-	private final String HEADER_NAME = "X-CSRF-TOKEN";
-	
 	private final CsrfTokenRepository tokenRepository;
 
 	public CsrfCookieFilter(CsrfTokenRepository tokenRepository) {
@@ -41,10 +40,10 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
 			request.setAttribute(CsrfToken.class.getName(), csrfToken);
 			
 			// 2. Force write to Response Header (as backup for frontend)
-			response.setHeader(HEADER_NAME, token);
+			response.setHeader(CoreAppConstants.X_CSRF_TOKEN_HEADER, token);
 			
 			// 3. Force write manual Cookie (to be 100% sure about path and domain)
-			Cookie cookie = new Cookie(HEADER_NAME, token);
+			Cookie cookie = new Cookie(CoreAppConstants.X_CSRF_TOKEN_HEADER, token);
 			cookie.setPath(Constants.FORWARD_SLASH);
 			cookie.setHttpOnly(false); // MUST be false for JS to read
 			cookie.setSecure(request.isSecure());

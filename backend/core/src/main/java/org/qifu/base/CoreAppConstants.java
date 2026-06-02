@@ -38,6 +38,8 @@ public class CoreAppConstants {
 	public static final String SYS_BLANK_ROLE = "QIFU_BLANK_USERROLE";
 	public static final String WEBSERVICE_PATH = "/services/**";
 	
+	public static final String X_CSRF_TOKEN_HEADER = "X-CSRF-TOKEN";
+	
 	// ======================================================================================
 	
 	private static Map<String, Object> excludePathPatternsMap = null;

@@ -103,7 +103,7 @@ public class WebConfig implements WebMvcConfigurer {
     		.allowCredentials(true) 
     		.maxAge(3600)
     		.allowedHeaders("*")
-    		.exposedHeaders("X-CSRF-TOKEN");
+    		.exposedHeaders( CoreAppConstants.X_CSRF_TOKEN_HEADER );
     }
     
 }
