@@ -121,15 +121,18 @@ cd k3s-project/
 # 1. 部署 Middleware (CORS)
 kubectl apply -f cors-middleware.yaml
 
-# 2. 部署 Backend (Deployment + Service)
+# 2. 部署 Middleware (gzip)
+kubectl apply -f gzip-middleware.yaml
+
+# 3. 部署 Backend (Deployment + Service)
 kubectl apply -f backend-deployment.yaml
 kubectl apply -f backend-service.yaml
 
-# 3. 部署 Frontend (Deployment + Service)
+# 4. 部署 Frontend (Deployment + Service)
 kubectl apply -f frontend-deployment.yaml
 kubectl apply -f frontend-service.yaml
 
-# 4. 部署 Ingress (Route)
+# 5. 部署 Ingress (Route)
 kubectl apply -f ingress.yaml
 ```
 
