@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
@@ -29,21 +29,23 @@ public class MqttBrokerConfig {
         log.info(" [MQTT] 正在初始化內嵌式 Moquette MQTT Broker (RocksDB 檔案持久化模式)...");
         log.info("====================================================================");
 
+        // 💡 建議：如果在 Linux 上因 /var 權限卡住，可改為 "./mqtt-data/rocksdb_store"
         String storePath = "/var/mqtt-data/rocksdb_store";
         File storeDir = new File(storePath);
         if (!storeDir.exists()) {
             storeDir.mkdirs();
         }
 
-        // 1. 【核心策略】動態生成 Moquette 標準密碼檔案 (格式為 username:password)
+        // 1. 【核心策略】動態生成 Moquette 標準密碼檔案 (從 Classpath 讀取，寫出到實體路徑)
         try {
             tempPasswordFile = new File("/var/mqtt-data/password.properties");
-            try (FileWriter writer = new FileWriter(tempPasswordFile)) {
-                // 寫入你想卡控的帳號與密碼
-            	List<String> lines = LoadResources.readLine("mqtt_password.properties", MqttBrokerConfig.class);
-            	for (String pwd : lines) {
-            		writer.write(pwd);
-            	}                
+            
+            // 💡 改用 PrintWriter，它自帶 println() 可以完美保留換行格式
+            try (PrintWriter writer = new PrintWriter(tempPasswordFile)) {
+                List<String> lines = LoadResources.readLine("mqtt_password.properties", MqttBrokerConfig.class);
+                for (String pwd : lines) {
+                    writer.println(pwd); // 👈 確保多組帳密或結尾有正確的換行
+                }                
             }
             log.info(" [MQTT] 安全憑證檔案已成功在本地生成。");
         } catch (IOException e) {
@@ -55,10 +57,8 @@ public class MqttBrokerConfig {
         props.setProperty("port", "1883");                  
         props.setProperty("host", "0.0.0.0");               
         
-        // 核心安全卡控三路徑：
-        props.setProperty("allow_anonymous", "false"); // 1. 拒絕匿名連線
+        props.setProperty("allow_anonymous", "false"); 
         if (tempPasswordFile != null && tempPasswordFile.exists()) {
-            // 2. 指向我們剛剛動態生成的密碼檔案路徑 (絕對路徑)
             props.setProperty("password_file", tempPasswordFile.getAbsolutePath()); 
         }
 
@@ -69,7 +69,7 @@ public class MqttBrokerConfig {
 
         IConfig config = new MemoryConfig(props);
 
-        // 3. 呼叫最純粹的單參數啟動，徹底告別 Java 泛型與反射地獄
+        // 3. 啟動服務
         mqttServer = new Server();
         mqttServer.startServer(config);
 
@@ -82,14 +82,12 @@ public class MqttBrokerConfig {
 
     @PreDestroy
     public void stopMqttServer() {
-        // 安全釋放資源與關閉服務
         if (mqttServer != null) {
             log.info(" [MQTT] 偵測到 Spring 容器關閉，正在安全儲存佇列數據並關閉 MQTT Broker...");
             mqttServer.stopServer();
             log.info(" [MQTT] MQTT Broker 已安全關閉。");
         }
         
-        // 順手把生命週期結束的暫存密碼檔砍掉，確保安全性
         if (tempPasswordFile != null && tempPasswordFile.exists()) {
             tempPasswordFile.delete();
         }
