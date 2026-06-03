@@ -1,9 +1,11 @@
 package org.qifu.core.config;
 
 import io.moquette.broker.Server;
+import io.moquette.broker.config.FluentConfig;
 import io.moquette.broker.config.IConfig;
-import io.moquette.broker.config.MemoryConfig;
 import jakarta.annotation.PreDestroy;
+
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qifu.base.properties.MqttConfigProperties;
@@ -16,7 +18,6 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 @Configuration
 @ConditionalOnProperty(prefix = "mqttbroker", name = "enable", havingValue = "true", matchIfMissing = false)
@@ -54,24 +55,27 @@ public class MqttBrokerConfig {
 		} catch (IOException e) {
 			log.error(" [MQTT] 無法生成憑證檔案: ", e);
 		}
-
-		// 2. 標準配置設定 (注意：setProperty 接收 String，Port 要轉字串)
-		Properties props = new Properties();
-		props.setProperty("port", String.valueOf(mqttConfigProperties.getPort()));
-		props.setProperty("host", mqttConfigProperties.getHost());
-		props.setProperty("allow_anonymous", String.valueOf(mqttConfigProperties.isAllowAnonymous()));
-
-		if (tempPasswordFile != null && tempPasswordFile.exists()) {
-			props.setProperty("password_file", tempPasswordFile.getAbsolutePath());
+		
+		FluentConfig fConfig = new FluentConfig()
+		        .host(mqttConfigProperties.getHost())
+		        .port(NumberUtils.toInt(mqttConfigProperties.getPort(),1883))
+		        .enablePersistence()
+		        .dataPath(mqttConfigProperties.getStorePath());
+		mqttConfigProperties.setTempPasswordFile(tempPasswordFile.getAbsolutePath());
+		
+		if (mqttConfigProperties.isAllowAnonymous()) {
+			fConfig.allowAnonymous();
+		} else {
+			fConfig.disallowAnonymous();
 		}
-
-		props.setProperty("telemetry_enabled", String.valueOf(mqttConfigProperties.isTelemetryEnabled()));
-		props.setProperty("persistent_store_engine", "rocksdb");
-		props.setProperty("persistent_store_path", mqttConfigProperties.getStorePath());
-		props.setProperty("rocksdb.wal_sync", "true");
-
-		IConfig config = new MemoryConfig(props);
-
+		if (mqttConfigProperties.isTelemetryEnabled()) {
+			fConfig.enableTelemetry();
+		} else {
+			fConfig.disableTelemetry();
+		}
+		
+		IConfig config = fConfig.build();
+		
 		// 3. 啟動服務
 		mqttServer = new Server();
 		mqttServer.startServer(config);
