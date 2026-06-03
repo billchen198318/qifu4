@@ -341,6 +341,23 @@
 		    <version>2.1.214</version>
 		</dependency>
 		-->
+		
+		<dependency>
+		    <groupId>io.moquette</groupId>
+		    <artifactId>moquette-broker</artifactId>
+		    <version>0.17</version>
+		    <exclusions>
+		        <exclusion>
+		            <groupId>org.slf4j</groupId>
+		            <artifactId>slf4j-log4j12</artifactId>
+		        </exclusion>
+		    </exclusions>
+		</dependency>	
+		<dependency>
+		    <groupId>org.rocksdb</groupId>
+		    <artifactId>rocksdbjni</artifactId>
+		    <version>8.10.0</version>
+		</dependency>		
 				
 		<dependency>
 		    <groupId>org.qifu</groupId>
