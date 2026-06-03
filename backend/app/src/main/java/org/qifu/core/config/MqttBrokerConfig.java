@@ -59,8 +59,8 @@ public class MqttBrokerConfig {
 		        .host(mqttConfigProperties.getHost())
 		        .port(NumberUtils.toInt(mqttConfigProperties.getPort(),1883))
 		        .enablePersistence()
-		        .dataPath(mqttConfigProperties.getStorePath());
-		mqttConfigProperties.setTempPasswordFile(tempPasswordFile.getAbsolutePath());
+		        .dataPath(mqttConfigProperties.getStorePath())
+		        .passwordFile(tempPasswordFile.getAbsolutePath());
 		
 		if (mqttConfigProperties.isAllowAnonymous()) {
 			fConfig.allowAnonymous();
