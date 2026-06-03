@@ -40,6 +40,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -51,6 +52,7 @@ import jakarta.annotation.Resource;
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @EnableCaching
 @EnableScheduling
+@PropertySource("classpath:appConfig.properties")
 public class Application {
 	protected static Logger logger = LoggerFactory.getLogger(Application.class);
 	
