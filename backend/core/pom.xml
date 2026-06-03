@@ -272,12 +272,6 @@
 		    <artifactId>commons-net</artifactId>
 		    <version>3.11.1</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -342,6 +336,12 @@
 		</dependency>
 		-->
 		
+		<dependency>
+		    <groupId>org.eclipse.paho</groupId>
+		    <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+		    <version>1.2.5</version>
+		</dependency>
+				
 		<dependency>
 		    <groupId>io.moquette</groupId>
 		    <artifactId>moquette-broker</artifactId>
