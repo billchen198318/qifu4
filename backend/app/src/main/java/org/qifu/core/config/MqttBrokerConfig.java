@@ -64,9 +64,11 @@ public class MqttBrokerConfig {
 		FluentConfig fConfig = new FluentConfig()
 		        .host(mqttConfigProperties.getHost())
 		        .port(NumberUtils.toInt(mqttConfigProperties.getPort(),1883))
-		        .enablePersistence()
-		        .dataPath(mqttConfigProperties.getStorePath())
 		        .passwordFile(tempPasswordFile.getAbsolutePath());
+		
+		if (mqttConfigProperties.isEnablePersistence()) {
+			fConfig.enablePersistence().dataPath(mqttConfigProperties.getStorePath());	
+		}
 		
 		if (mqttConfigProperties.isAllowAnonymous()) {
 			fConfig.allowAnonymous();

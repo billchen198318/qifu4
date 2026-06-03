@@ -12,6 +12,7 @@ public class MqttConfigProperties {
 	private boolean enable;
 	private String host;
 	private String port;
+	private boolean enablePersistence;
 	private boolean allowAnonymous;
 	private boolean telemetryEnabled;
 	private String storePath;
@@ -39,6 +40,14 @@ public class MqttConfigProperties {
 
 	public void setPort(String port) {
 		this.port = port;
+	}
+
+	public boolean isEnablePersistence() {
+		return enablePersistence;
+	}
+
+	public void setEnablePersistence(boolean enablePersistence) {
+		this.enablePersistence = enablePersistence;
 	}
 
 	public boolean isAllowAnonymous() {
