@@ -4,6 +4,8 @@ import io.moquette.broker.Server;
 import io.moquette.broker.config.FluentConfig;
 import jakarta.annotation.PreDestroy;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @ConditionalOnProperty(prefix = "mqttbroker", name = "enable", havingValue = "true", matchIfMissing = false)
@@ -45,9 +48,12 @@ public class MqttBrokerConfig {
 		try {
 			tempPasswordFile = new File(mqttConfigProperties.getTempPasswordFile());
 			try (PrintWriter writer = new PrintWriter(tempPasswordFile)) {
-				List<String> lines = LoadResources.readLine("mqtt_password.properties", MqttBrokerConfig.class);
-				for (String pwd : lines) {
-					writer.println(pwd);
+				@SuppressWarnings("unchecked")
+				Map<String, Object> dataMap = LoadResources.objectMapperReadValue("mqtt-user.json", Map.class, MqttBrokerConfig.class);
+				@SuppressWarnings("unchecked")
+				List<Map<String, String>> accountList = (List<Map<String, String>>) dataMap.get("accountList");
+				for (Map<String, String> account : accountList) {
+					writer.println(account.get("account") + ":" + DigestUtils.sha256Hex(account.get("password")));
 				}
 			}
 			log.info(" [MQTT] 安全憑證檔案已成功在本地生成。");
@@ -91,9 +97,12 @@ public class MqttBrokerConfig {
 			mqttServer.stopServer();
 			log.info(" [MQTT] MQTT Broker 已安全關閉。");
 		}
-
 		if (tempPasswordFile != null && tempPasswordFile.exists()) {
-			tempPasswordFile.delete();
+			try {
+				FileUtils.delete(tempPasswordFile);
+			} catch (IOException e) {
+				log.error(e.getMessage());
+			}
 			log.info(" [MQTT] 暫存憑證檔案已成功刪除。");
 		}
 	}
