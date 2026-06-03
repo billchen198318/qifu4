@@ -2,7 +2,6 @@ package org.qifu.core.config;
 
 import io.moquette.broker.Server;
 import io.moquette.broker.config.FluentConfig;
-import io.moquette.broker.config.IConfig;
 import jakarta.annotation.PreDestroy;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -74,12 +73,10 @@ public class MqttBrokerConfig {
 			fConfig.disableTelemetry();
 		}
 		
-		IConfig config = fConfig.build();
-		
 		// 3. 啟動服務
 		mqttServer = new Server();
-		mqttServer.startServer(config);
-
+		mqttServer.startServer(fConfig.build());
+		
 		log.info("====================================================================");
 		log.info(" [MQTT] Broker 啟動成功！已透過標準安全檔啟用帳密卡控 (Port: {})。", mqttConfigProperties.getPort());
 		log.info("====================================================================");
@@ -100,4 +97,5 @@ public class MqttBrokerConfig {
 			log.info(" [MQTT] 暫存憑證檔案已成功刪除。");
 		}
 	}
+	
 }
