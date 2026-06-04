@@ -10,7 +10,7 @@ import org.qifu.base.model.ControllerMethodAuthority;
 import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.SearchBody;
 import org.qifu.base.properties.MqttConfigProperties;
-import org.qifu.core.mqtt.MqttMonitoringInterceptor;
+import org.qifu.core.interceptor.MqttMonitoringInterceptor;
 import org.qifu.core.util.CoreApiSupport;
 import org.qifu.core.vo.MqttBrokerVO;
 import org.qifu.core.vo.MqttBrokerVO.MqttClientVO;

@@ -1,4 +1,4 @@
-package org.qifu.core.mqtt;
+package org.qifu.core.interceptor;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -22,7 +22,6 @@ import io.moquette.interception.messages.InterceptUnsubscribeMessage;
 import io.netty.buffer.ByteBuf;
 
 public class MqttMonitoringInterceptor extends AbstractInterceptHandler {
-
 	private static final int MAX_MESSAGES_PER_TOPIC = 20;
 
 	/**
@@ -162,5 +161,5 @@ public class MqttMonitoringInterceptor extends AbstractInterceptHandler {
 
 		return count == null ? 0 : count.get();
 	}
-
+	
 }
