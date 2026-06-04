@@ -23,8 +23,15 @@ const { showLoading, hideLoading } = useSwalLoading();
 const pageProgramId = ref(PageConstants.QueryId);
 const dsList = ref<any[]>([]);
 const qFieldShow = ref(true);
+const activeTab = ref('clients'); // clients, topics
 
-const tbRefresh = () => btnQuery();
+const tbRefresh = () => {
+    if (activeTab.value === 'clients') {
+        btnQuery();
+    } else {
+        btnQueryTopics();
+    }
+};
 const tbQueryFieldShow = () => qFieldShow.value = !qFieldShow.value;
 
 const btnClear = () => {
@@ -60,6 +67,29 @@ const initQueryGridConfig = () => {
 			{ label: 'Port', field: 'port' }
 		]  
 	);
+};
+
+const initTopicGridConfig = () => {
+    return getGridConfig(
+        'topic',
+        [
+            {
+				'method'  : (val: any) => { 
+					btnViewMessages(val);           
+				},
+				'icon'    : 'search',
+				'type'    : 'view',
+				'memo'    : 'View messages for this topic.',
+				'class'	  : 'btn btn-info btn-sm'
+			}
+        ],
+        [
+            { label: 'Topic Filter', field: 'topic' },
+            { label: 'Subscribers', field: 'subscriberCount' },
+            { label: 'Last Message', field: 'lastMessageTime' },
+            { label: 'Messages', field: 'topic' }
+        ]
+    );
 };
 
 const btnQuery = async () => {
@@ -98,12 +128,68 @@ const btnQuery = async () => {
 	}
 };
 
+const btnQueryTopics = async () => {
+    showLoading();
+    queryPageStore.topics = [];
+    try {
+        const axiosInstance = getAxiosInstance();
+        const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findTopics', {
+            "field": {},
+            "pageOf": {
+                "select" : 1,
+                "showRow" : 100
+            }
+        });
+        hideLoading();
+        if (response.data) {
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.warning(response.data.message);
+                return;
+            }
+            queryPageStore.topics = response.data.value;
+            setConfigTotal(queryPageStore.topicGridConfig, queryPageStore.topics.length);
+        }
+    } catch (e: any) {
+        hideLoading();
+        alert(e);
+    }
+};
+
+const btnViewMessages = async (topic: string) => {
+    showLoading();
+    queryPageStore.currentTopic = topic;
+    queryPageStore.currentTopicMessages = [];
+    try {
+        const axiosInstance = getAxiosInstance();
+        const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findMessages', {
+            "field": { "topic": topic }
+        });
+        hideLoading();
+        if (response.data) {
+            if (import.meta.env.VITE_SUCCESS_FLAG != response.data.success) {
+                toast.warning(response.data.message);
+                return;
+            }
+            queryPageStore.currentTopicMessages = response.data.value;
+            showMessagesModal.value = true;
+        }
+    } catch (e: any) {
+        hideLoading();
+        alert(e);
+    }
+};
+
+const showMessagesModal = ref(false);
+
 onMounted(() => {
 	const newGridConfig = initQueryGridConfig();
 	if (queryPageStore.gridConfig.column) {
 		resetConfigByOld(newGridConfig, queryPageStore.gridConfig);
 	}
-	queryPageStore.gridConfig = newGridConfig;		
+	queryPageStore.gridConfig = newGridConfig;
+
+    const newTopicGridConfig = initTopicGridConfig();
+    queryPageStore.topicGridConfig = newTopicGridConfig;
     
     btnQuery();
 });
@@ -154,26 +240,106 @@ onMounted(() => {
     </div>
 </div>
 
-<div class="row" v-show="qFieldShow">
-  	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-arrow-clockwise"></i>&nbsp;重新整理</button>
-  	</div>
-</div>  
+<br/>
 
-<div v-show="qFieldShow" class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item">
+    <a class="nav-link" :class="{ active: activeTab === 'clients' }" href="#" @click.prevent="activeTab = 'clients'; btnQuery()">Clients</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" :class="{ active: activeTab === 'topics' }" href="#" @click.prevent="activeTab = 'topics'; btnQueryTopics()">Topics</a>
+  </li>
+</ul>
+
+<div v-if="activeTab === 'clients'">
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <GridPagination 
+                :progId="pageProgramId" 
+                :gridConfig="queryPageStore.gridConfig" 
+                :changePageSelectMethod="changePageSelect" 
+                :changeGridConfigRowMethod="changeQueryGridRow" 
+            />
+            <Grid :progId="pageProgramId" :dataSource="dsList" :config="queryPageStore.gridConfig" />
+        </div>
+    </div>
 </div>
 
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<GridPagination 
-			:progId="pageProgramId" 
-			:gridConfig="queryPageStore.gridConfig" 
-			:changePageSelectMethod="changePageSelect" 
-			:changeGridConfigRowMethod="changeQueryGridRow" 
-		/>
-		<Grid :progId="pageProgramId" :dataSource="dsList" :config="queryPageStore.gridConfig" />
-	</div>
-</div>  
+<div v-if="activeTab === 'topics'">
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <Grid :progId="pageProgramId" :dataSource="queryPageStore.topics" :config="queryPageStore.topicGridConfig" />
+        </div>
+    </div>
+</div>
+
+<!-- Messages Modal Overlay -->
+<div v-if="showMessagesModal" class="modal-overlay">
+    <div class="modal-content-custom">
+        <div class="modal-header">
+            <h5 class="modal-title">Messages for: {{ queryPageStore.currentTopic }}</h5>
+            <button type="button" class="btn-close" @click="showMessagesModal = false"></button>
+        </div>
+        <div class="modal-body">
+            <div v-if="queryPageStore.currentTopicMessages.length === 0" class="alert alert-info">
+                No messages captured for this topic yet.
+            </div>
+            <div v-else class="list-group">
+                <div v-for="(msg, index) in queryPageStore.currentTopicMessages" :key="index" class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <small>{{ msg.time }}</small>
+                    </div>
+                    <pre class="mb-1 mt-2 p-2 bg-light border rounded"><code>{{ msg.payload }}</code></pre>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="showMessagesModal = false">Close</button>
+        </div>
+    </div>
+</div>
 
 </template>
+
+<style scoped>
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+}
+.modal-content-custom {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+}
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    margin-top: 15px;
+    padding-top: 10px;
+    text-align: right;
+}
+pre {
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+</style>

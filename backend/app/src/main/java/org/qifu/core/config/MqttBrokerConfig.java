@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qifu.base.properties.MqttConfigProperties;
 import org.qifu.util.LoadResources;
+import org.qifu.core.mqtt.MqttMonitoringInterceptor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -32,9 +34,14 @@ public class MqttBrokerConfig {
 	public MqttBrokerConfig(MqttConfigProperties mqttConfigProperties) {
 		this.mqttConfigProperties = mqttConfigProperties;
 	}
+	
+	@Bean
+	public MqttMonitoringInterceptor mqttMonitoringInterceptor() {
+		return new MqttMonitoringInterceptor();
+	}
 
 	@Bean
-	public Server mqttServer() throws IOException {
+	public Server mqttServer(MqttMonitoringInterceptor interceptor) throws IOException {
 		log.info("====================================================================");
 		log.info(" [MQTT] 正在初始化內嵌式 Moquette MQTT Broker (RocksDB 檔案持久化模式)...");
 		log.info("====================================================================");
@@ -83,7 +90,7 @@ public class MqttBrokerConfig {
 		
 		// 3. 啟動服務
 		mqttServer = new Server();
-		mqttServer.startServer(fConfig.build());
+		mqttServer.startServer(fConfig.build(), Collections.singletonList(interceptor));
 		
 		log.info("====================================================================");
 		log.info(" [MQTT] Broker 啟動成功！已透過標準安全檔啟用帳密卡控 (Port: {})。", mqttConfigProperties.getPort());

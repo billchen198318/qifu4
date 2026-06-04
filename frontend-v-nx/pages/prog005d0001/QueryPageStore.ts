@@ -9,6 +9,7 @@ export const useProg005d0001Store = defineStore('prog005d0001', {
     state: () => {
         return { 
             gridConfig : getInitGridConfigVariable() as GridConfig,
+            topicGridConfig : getInitGridConfigVariable() as GridConfig,
             queryParam : {
                 // No specific query params for now
             },
@@ -16,7 +17,10 @@ export const useProg005d0001Store = defineStore('prog005d0001', {
                 host: '',
                 port: '',
                 clientSize: 0
-            }
+            },
+            topics: [] as any[],
+            currentTopicMessages: [] as any[],
+            currentTopic: ''
         }
     },
     actions: {
@@ -30,9 +34,15 @@ export const useProg005d0001Store = defineStore('prog005d0001', {
             this.gridConfig.page = 1;
             this.gridConfig.row = 10;
             this.gridConfig.total = 0;
+            this.topicGridConfig.page = 1;
+            this.topicGridConfig.row = 10;
+            this.topicGridConfig.total = 0;
             this.brokerInfo.host = '';
             this.brokerInfo.port = '';
             this.brokerInfo.clientSize = 0;
+            this.topics = [];
+            this.currentTopicMessages = [];
+            this.currentTopic = '';
         }
     },
 })
