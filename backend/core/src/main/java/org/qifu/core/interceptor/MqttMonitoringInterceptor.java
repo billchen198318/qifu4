@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.qifu.base.properties.MqttConfigProperties;
 import org.qifu.core.vo.MqttMessageVO;
 
 import io.moquette.interception.AbstractInterceptHandler;
@@ -22,7 +23,11 @@ import io.moquette.interception.messages.InterceptUnsubscribeMessage;
 import io.netty.buffer.ByteBuf;
 
 public class MqttMonitoringInterceptor extends AbstractInterceptHandler {
-	private static final int MAX_MESSAGES_PER_TOPIC = 20;
+	private final MqttConfigProperties mqttConfigProperties;
+	
+	public MqttMonitoringInterceptor(MqttConfigProperties mqttConfigProperties) {
+		this.mqttConfigProperties = mqttConfigProperties;
+	}
 
 	/**
 	 * Topic -> Recent Messages
@@ -68,7 +73,7 @@ public class MqttMonitoringInterceptor extends AbstractInterceptHandler {
 
 			queue.addFirst(messageVO);
 
-			while (queue.size() > MAX_MESSAGES_PER_TOPIC) {
+			while (queue.size() > mqttConfigProperties.getMonitoringInterceptorPerTopic()) {
 				queue.removeLast();
 			}
 		}

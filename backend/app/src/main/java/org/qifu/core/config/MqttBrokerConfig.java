@@ -37,7 +37,7 @@ public class MqttBrokerConfig {
 	
 	@Bean
 	public MqttMonitoringInterceptor mqttMonitoringInterceptor() {
-		return new MqttMonitoringInterceptor();
+		return new MqttMonitoringInterceptor(mqttConfigProperties);
 	}
 
 	@Bean

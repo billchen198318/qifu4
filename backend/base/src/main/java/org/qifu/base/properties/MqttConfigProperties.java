@@ -17,6 +17,7 @@ public class MqttConfigProperties {
 	private boolean telemetryEnabled;
 	private String storePath;
 	private String tempPasswordFile;
+	private int monitoringInterceptorPerTopic;
 
 	public boolean isEnable() {
 		return enable;
@@ -80,6 +81,14 @@ public class MqttConfigProperties {
 
 	public void setTempPasswordFile(String tempPasswordFile) {
 		this.tempPasswordFile = tempPasswordFile;
+	}
+
+	public int getMonitoringInterceptorPerTopic() {
+		return monitoringInterceptorPerTopic;
+	}
+
+	public void setMonitoringInterceptorPerTopic(int monitoringInterceptorPerTopic) {
+		this.monitoringInterceptorPerTopic = monitoringInterceptorPerTopic;
 	}
 
 }
