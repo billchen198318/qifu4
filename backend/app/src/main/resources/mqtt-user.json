@@ -1,0 +1,13 @@
+{
+	"accountList" : [
+		{
+			"account" : "admin",
+			"password" : "password123"
+		}
+		,
+		{
+			"account" : "brokerusr",
+			"password" : "P@ssw0rd"
+		}
+	]
+}
