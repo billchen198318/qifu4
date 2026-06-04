@@ -87,7 +87,7 @@ const initTopicGridConfig = () => {
             { label: 'Topic Filter', field: 'topic' },
             { label: 'Subscribers', field: 'subscriberCount' },
             { label: 'Last Message', field: 'lastMessageTime' },
-            { label: 'Messages', field: 'topic' }
+            { label: 'Messages', field: 'topicMsg' }
         ]
     );
 };

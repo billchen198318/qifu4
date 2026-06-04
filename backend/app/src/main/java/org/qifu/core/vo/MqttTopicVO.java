@@ -7,7 +7,9 @@ public class MqttTopicVO implements Serializable {
 	private String topic;
 	private int subscriberCount;
 	private String lastMessageTime;
-	
+	public String getTopicMsg() {
+		return topic;
+	}	
 	public String getTopic() {
 		return topic;
 	}
