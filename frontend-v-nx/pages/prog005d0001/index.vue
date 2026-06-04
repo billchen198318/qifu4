@@ -214,46 +214,48 @@ onMounted(() => {
 <HiddenQueryFieldAlertInfo :dataSource="dsList" :queryFieldShowFlag="qFieldShow" />
 
 <div class="row" v-show="qFieldShow">
-    <div class="col-xs-12 col-md-4 col-lg-4">
-        <div class="card bg-primary text-white mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Broker Host</h5>
-                <p class="card-text">{{ queryPageStore.brokerInfo.host }}</p>
+    <div class="col-md-4">
+        <div class="tile">
+            <h5 class="tile-title"><i class="bi bi-hdd-network"></i> Broker Host</h5>
+            <div class="tile-body">
+                <p class="fs-4">{{ queryPageStore.brokerInfo.host }}</p>
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-md-4 col-lg-4">
-        <div class="card bg-success text-white mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Broker Port</h5>
-                <p class="card-text">{{ queryPageStore.brokerInfo.port }}</p>
+    <div class="col-md-4">
+        <div class="tile">
+            <h5 class="tile-title"><i class="bi bi-plug"></i> Broker Port</h5>
+            <div class="tile-body">
+                <p class="fs-4">{{ queryPageStore.brokerInfo.port }}</p>
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-md-4 col-lg-4">
-        <div class="card bg-info text-white mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Connected Clients</h5>
-                <p class="card-text">{{ queryPageStore.brokerInfo.clientSize }}</p>
+    <div class="col-md-4">
+        <div class="tile">
+            <h5 class="tile-title"><i class="bi bi-people"></i> Connected Clients</h5>
+            <div class="tile-body">
+                <p class="fs-4">{{ queryPageStore.brokerInfo.clientSize }}</p>
             </div>
         </div>
     </div>
 </div>
 
-<br/>
+<div class="tile">
+    <div class="tile-body">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="btn-group w-100" role="group">
+                    <button type="button" class="btn" :class="activeTab === 'clients' ? 'btn-primary' : 'btn-outline-primary'" @click="activeTab = 'clients'; btnQuery()">
+                        <i class="bi bi-pc-display"></i> Clients
+                    </button>
+                    <button type="button" class="btn" :class="activeTab === 'topics' ? 'btn-primary' : 'btn-outline-primary'" @click="activeTab = 'topics'; btnQueryTopics()">
+                        <i class="bi bi-tags"></i> Topics
+                    </button>
+                </div>
+            </div>
+        </div>
 
-<ul class="nav nav-tabs mb-3">
-  <li class="nav-item">
-    <a class="nav-link" :class="{ active: activeTab === 'clients' }" href="#" @click.prevent="activeTab = 'clients'; btnQuery()">Clients</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" :class="{ active: activeTab === 'topics' }" href="#" @click.prevent="activeTab = 'topics'; btnQueryTopics()">Topics</a>
-  </li>
-</ul>
-
-<div v-if="activeTab === 'clients'">
-    <div class="row">
-        <div class="col-xs-12 col-md-12 col-lg-12">
+        <div v-if="activeTab === 'clients'">
             <GridPagination 
                 :progId="pageProgramId" 
                 :gridConfig="queryPageStore.gridConfig" 
@@ -262,12 +264,8 @@ onMounted(() => {
             />
             <Grid :progId="pageProgramId" :dataSource="dsList" :config="queryPageStore.gridConfig" />
         </div>
-    </div>
-</div>
 
-<div v-if="activeTab === 'topics'">
-    <div class="row">
-        <div class="col-xs-12 col-md-12 col-lg-12">
+        <div v-if="activeTab === 'topics'">
             <Grid :progId="pageProgramId" :dataSource="queryPageStore.topics" :config="queryPageStore.topicGridConfig" />
         </div>
     </div>
@@ -275,9 +273,9 @@ onMounted(() => {
 
 <!-- Messages Modal Overlay -->
 <div v-if="showMessagesModal" class="modal-overlay">
-    <div class="modal-content-custom">
+    <div class="modal-content-custom tile">
         <div class="modal-header">
-            <h5 class="modal-title">Messages for: {{ queryPageStore.currentTopic }}</h5>
+            <h5 class="modal-title"><i class="bi bi-chat-left-text"></i> Messages for: {{ queryPageStore.currentTopic }}</h5>
             <button type="button" class="btn-close" @click="showMessagesModal = false"></button>
         </div>
         <div class="modal-body">
@@ -287,7 +285,7 @@ onMounted(() => {
             <div v-else class="list-group">
                 <div v-for="(msg, index) in queryPageStore.currentTopicMessages" :key="index" class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
-                        <small>{{ msg.time }}</small>
+                        <small class="text-muted">{{ msg.time }}</small>
                     </div>
                     <pre class="mb-1 mt-2 p-2 bg-light border rounded"><code>{{ msg.payload }}</code></pre>
                 </div>
@@ -317,12 +315,13 @@ onMounted(() => {
 .modal-content-custom {
     background: white;
     padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 800px;
-    max-height: 80%;
+    border-radius: 4px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85%;
     overflow-y: auto;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    margin-bottom: 0; /* Override tile margin */
 }
 .modal-header {
     display: flex;
@@ -341,5 +340,11 @@ onMounted(() => {
 pre {
     white-space: pre-wrap;
     word-break: break-all;
+    font-size: 0.875rem;
+}
+.tile-title {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
 }
 </style>
