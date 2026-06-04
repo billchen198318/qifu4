@@ -6,7 +6,6 @@ import { useSwalLoading } from '@/composables/useSwalLoading';
 
 import Toolbar from '@/components/Toolbar.vue';
 import Grid from '@/components/Grid.vue';
-import GridPagination from '@/components/GridPagination.vue';
 import HiddenQueryFieldAlertInfo from '@/components/HiddenQueryFieldAlertInfo.vue';
 import { PageConstants } from './config';
 import { getGridConfig, setConfigRow, setConfigPage, setConfigTotal, resetConfigByOld } from '../../components/GridHelper';
@@ -40,19 +39,8 @@ const btnClear = () => {
     queryPageStore.clearData();
 };
 
-const changeQueryGridRow = (row: number) => {
-	setConfigRow(queryPageStore.gridConfig, row);
-	queryPageStore.gridConfig.page = 1;
-	btnQuery();
-};
-
-const changePageSelect = (page: number) => {
-	setConfigPage(queryPageStore.gridConfig, page);
-	btnQuery();
-};
-
 const clearGridConfig = () => {
-	setConfigRow(queryPageStore.gridConfig, import.meta.env.VITE_DEFAULT_ROW);
+	setConfigRow(queryPageStore.gridConfig, 1000);
 	setConfigPage(queryPageStore.gridConfig, 1);
 	setConfigTotal(queryPageStore.gridConfig, 0);
 };
@@ -100,8 +88,8 @@ const btnQuery = async () => {
 		const response = await axiosInstance.post(import.meta.env.VITE_API_URL + PageConstants.eventNamespace + '/findPage', {
 			"field": {},
 			"pageOf": {
-				"select"  : queryPageStore.gridConfig.page,
-				"showRow" : queryPageStore.gridConfig.row
+				"select"  : 1,
+				"showRow" : 1000
 			}
 		});
 		hideLoading();
@@ -112,6 +100,10 @@ const btnQuery = async () => {
 				return;
 			}
 			const brokerVO = response.data.value;
+            queryPageStore.isBrokerEnable = brokerVO.enable;
+            if (!queryPageStore.isBrokerEnable) {
+                return;
+            }
             queryPageStore.brokerInfo.host = brokerVO.host;
             queryPageStore.brokerInfo.port = brokerVO.port;
             queryPageStore.brokerInfo.clientSize = brokerVO.clientSize;
@@ -137,7 +129,7 @@ const btnQueryTopics = async () => {
             "field": {},
             "pageOf": {
                 "select" : 1,
-                "showRow" : 100
+                "showRow" : 1000
             }
         });
         hideLoading();
@@ -213,63 +205,69 @@ onMounted(() => {
 
 <HiddenQueryFieldAlertInfo :dataSource="dsList" :queryFieldShowFlag="qFieldShow" />
 
-<div class="row" v-show="qFieldShow">
-    <div class="col-md-4">
-        <div class="tile">
-            <h5 class="tile-title"><i class="bi bi-hdd-network"></i> Broker Host</h5>
-            <div class="tile-body">
-                <p class="fs-4">{{ queryPageStore.brokerInfo.host }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="tile">
-            <h5 class="tile-title"><i class="bi bi-plug"></i> Broker Port</h5>
-            <div class="tile-body">
-                <p class="fs-4">{{ queryPageStore.brokerInfo.port }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="tile">
-            <h5 class="tile-title"><i class="bi bi-people"></i> Connected Clients</h5>
-            <div class="tile-body">
-                <p class="fs-4">{{ queryPageStore.brokerInfo.clientSize }}</p>
-            </div>
+<div v-if="!queryPageStore.isBrokerEnable" class="row">
+    <div class="col-12">
+        <div class="tile text-center p-5">
+            <i class="bi bi-exclamation-triangle text-warning display-1"></i>
+            <h2 class="mt-4">Mqtt Broker no enable!</h2>
+            <p class="text-muted">Please check your configuration in appConfig.properties.</p>
         </div>
     </div>
 </div>
 
-<div class="tile">
-    <div class="tile-body">
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="btn-group w-100" role="group">
-                    <button type="button" class="btn" :class="activeTab === 'clients' ? 'btn-primary' : 'btn-outline-primary'" @click="activeTab = 'clients'; btnQuery()">
-                        <i class="bi bi-pc-display"></i> Clients
-                    </button>
-                    <button type="button" class="btn" :class="activeTab === 'topics' ? 'btn-primary' : 'btn-outline-primary'" @click="activeTab = 'topics'; btnQueryTopics()">
-                        <i class="bi bi-tags"></i> Topics
-                    </button>
+<template v-if="queryPageStore.isBrokerEnable">
+    <div class="row" v-show="qFieldShow">
+        <div class="col-md-4">
+            <div class="tile">
+                <h5 class="tile-title"><i class="bi bi-hdd-network"></i> Broker Host</h5>
+                <div class="tile-body">
+                    <p class="fs-4">{{ queryPageStore.brokerInfo.host }}</p>
                 </div>
             </div>
         </div>
-
-        <div v-if="activeTab === 'clients'">
-            <GridPagination 
-                :progId="pageProgramId" 
-                :gridConfig="queryPageStore.gridConfig" 
-                :changePageSelectMethod="changePageSelect" 
-                :changeGridConfigRowMethod="changeQueryGridRow" 
-            />
-            <Grid :progId="pageProgramId" :dataSource="dsList" :config="queryPageStore.gridConfig" />
+        <div class="col-md-4">
+            <div class="tile">
+                <h5 class="tile-title"><i class="bi bi-plug"></i> Broker Port</h5>
+                <div class="tile-body">
+                    <p class="fs-4">{{ queryPageStore.brokerInfo.port }}</p>
+                </div>
+            </div>
         </div>
-
-        <div v-if="activeTab === 'topics'">
-            <Grid :progId="pageProgramId" :dataSource="queryPageStore.topics" :config="queryPageStore.topicGridConfig" />
+        <div class="col-md-4">
+            <div class="tile">
+                <h5 class="tile-title"><i class="bi bi-people"></i> Connected Clients</h5>
+                <div class="tile-body">
+                    <p class="fs-4">{{ queryPageStore.brokerInfo.clientSize }}</p>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <div class="tile">
+        <div class="tile-body">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn" :class="activeTab === 'clients' ? 'btn-primary' : 'btn-outline-primary'" @click="activeTab = 'clients'; btnQuery()">
+                            <i class="bi bi-pc-display"></i> Clients
+                        </button>
+                        <button type="button" class="btn" :class="activeTab === 'topics' ? 'btn-primary' : 'btn-outline-primary'" @click="activeTab = 'topics'; btnQueryTopics()">
+                            <i class="bi bi-tags"></i> Topics
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="activeTab === 'clients'">
+                <Grid :progId="pageProgramId" :dataSource="dsList" :config="queryPageStore.gridConfig" />
+            </div>
+
+            <div v-if="activeTab === 'topics'">
+                <Grid :progId="pageProgramId" :dataSource="queryPageStore.topics" :config="queryPageStore.topicGridConfig" />
+            </div>
+        </div>
+    </div>
+</template>
 
 <!-- Messages Modal Overlay -->
 <div v-if="showMessagesModal" class="modal-overlay">

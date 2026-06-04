@@ -57,6 +57,7 @@ public class PROG005D0001Controller extends CoreApiSupport {
 
 		try {
 			MqttBrokerVO brokerVO = new MqttBrokerVO();
+			brokerVO.setEnable(mqttConfigProperties.isEnable());
 			brokerVO.setHost(mqttConfigProperties.getHost());
 			brokerVO.setPort(mqttConfigProperties.getPort());
 

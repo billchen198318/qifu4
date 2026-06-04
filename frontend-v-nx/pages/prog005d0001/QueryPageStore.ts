@@ -18,6 +18,7 @@ export const useProg005d0001Store = defineStore('prog005d0001', {
                 port: '',
                 clientSize: 0
             },
+            isBrokerEnable: true,
             topics: [] as any[],
             currentTopicMessages: [] as any[],
             currentTopic: ''
@@ -32,10 +33,10 @@ export const useProg005d0001Store = defineStore('prog005d0001', {
         },        
         clearData() {
             this.gridConfig.page = 1;
-            this.gridConfig.row = 10;
+            this.gridConfig.row = 100;
             this.gridConfig.total = 0;
             this.topicGridConfig.page = 1;
-            this.topicGridConfig.row = 10;
+            this.topicGridConfig.row = 1000;
             this.topicGridConfig.total = 0;
             this.brokerInfo.host = '';
             this.brokerInfo.port = '';

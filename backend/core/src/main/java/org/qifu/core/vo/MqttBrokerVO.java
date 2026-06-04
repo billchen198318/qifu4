@@ -8,6 +8,7 @@ public class MqttBrokerVO implements Serializable {
 	
 	private String host;
 	private String port;
+	private boolean enable;
 	private int clientSize;
 	private List<MqttClientVO> clients;
 	
@@ -22,6 +23,12 @@ public class MqttBrokerVO implements Serializable {
 	}
 	public void setPort(String port) {
 		this.port = port;
+	}
+	public boolean isEnable() {
+		return enable;
+	}
+	public void setEnable(boolean enable) {
+		this.enable = enable;
 	}
 	public int getClientSize() {
 		return clientSize;
