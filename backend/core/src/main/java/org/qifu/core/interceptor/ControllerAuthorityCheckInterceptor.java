@@ -26,6 +26,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.qifu.base.Constants;
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.model.ControllerMethodAuthority;
@@ -91,7 +92,8 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 			}		
 			String header = request.getHeader("X-Requested-With"); // qifu3, qifu2... bambooBSC old
 			String contentType = request.getContentType().toLowerCase(); // qifu4
-			if ("XMLHttpRequest".equalsIgnoreCase(header) || StringUtils.indexOf(contentType, "json") >-1) {
+			if ("XMLHttpRequest".equalsIgnoreCase(header) || Strings.CS.indexOf(contentType, "json") >-1) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().print(Constants.NO_AUTHZ_JSON_DATA);
 				response.getWriter().flush();
 				response.getWriter().close();
@@ -125,7 +127,7 @@ public class ControllerAuthorityCheckInterceptor implements HandlerInterceptor {
 		}		
 		String header = request.getHeader("X-Requested-With"); // qifu3, qifu2... bambooBSC old
 		String contentType = request.getContentType().toLowerCase(); // qifu4
-		if ("XMLHttpRequest".equalsIgnoreCase(header) || StringUtils.indexOf(contentType, "json") >-1) {
+		if ("XMLHttpRequest".equalsIgnoreCase(header) || Strings.CS.indexOf(contentType, "json") >-1) {
 			response.getWriter().print(Constants.NO_AUTHZ_JSON_DATA);
 			response.getWriter().flush();
 			response.getWriter().close();

@@ -24,6 +24,7 @@ package org.qifu.core.support;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.qifu.base.Constants;
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.model.YesNoKeyProvide;
@@ -44,7 +45,7 @@ public class BaseLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentication
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         String xhrHeader = request.getHeader("X-Requested-With"); // qifu3, qifu2... bambooBSC old
         String contentType = request.getContentType().toLowerCase(); // qifu4
-        if ("XMLHttpRequest".equals(xhrHeader) || StringUtils.indexOf(contentType, "json") >-1) {
+        if ("XMLHttpRequest".equals(xhrHeader) || Strings.CS.indexOf(contentType, "json") >-1) {
         	response.setCharacterEncoding( Constants.BASE_ENCODING );
         	response.setContentType("application/json");
         	response.getWriter().write(Constants.NO_AUTHZ_JSON_DATA);
