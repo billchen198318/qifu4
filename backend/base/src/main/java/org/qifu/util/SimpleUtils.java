@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.io.IOUtils;

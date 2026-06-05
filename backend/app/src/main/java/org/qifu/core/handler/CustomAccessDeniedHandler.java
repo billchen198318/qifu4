@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -21,6 +22,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 	protected static Logger logger = LoggerFactory.getLogger(CustomAccessDeniedHandler.class);
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
@@ -42,8 +46,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 	    body.put("csrf_error", accessDeniedException instanceof CsrfException);
 	    body.put("path", request.getServletPath());
 	    
-	    ObjectMapper mapper = new ObjectMapper();
-	    mapper.writeValue(response.getOutputStream(), body);
+	    objectMapper.writeValue(response.getOutputStream(), body);
 	}
 	
 }

@@ -32,12 +32,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class LoadResources {
 	
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+	
 	protected LoadResources() {
 		throw new IllegalStateException("Utils class: LoadResources");
 	}
 	
 	public static <T> T objectMapperReadValue(String fileRes, Class<T> resourceJson2HashMapOrListClazz, Class<?> resourceClazz) throws IOException {
-		return new ObjectMapper().readValue( read( fileRes, resourceClazz), resourceJson2HashMapOrListClazz );
+		return OBJECT_MAPPER.readValue( read( fileRes, resourceClazz), resourceJson2HashMapOrListClazz );
+	}
+	
+	public static ObjectMapper getObjectMapper() {
+		return OBJECT_MAPPER;
 	}
 	
 	public static List<String> readLine(String fileRes, Class<?> resourceClazz) throws IOException {

@@ -30,6 +30,7 @@ import org.qifu.base.model.QueryResult;
 import org.qifu.base.model.YesNoKeyProvide;
 import org.qifu.core.util.CoreApiSupport;
 import org.qifu.core.vo.TestModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class HelloApiController extends CoreApiSupport {
 	
 	private static final long serialVersionUID = -2710621780849674671L;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	@Operation(summary = "測試del", description = "測試用的接口del")
 	@DeleteMapping("/delPlay")
@@ -72,8 +76,7 @@ public class HelloApiController extends CoreApiSupport {
 		try {
 			Map<String, String> dataMap = new HashMap<>();
 			dataMap.put("str", data.getMsg());
-			ObjectMapper om = new ObjectMapper();
-			String val = om.writeValueAsString(dataMap);
+			String val = objectMapper.writeValueAsString(dataMap);
 			this.successResult(result, val);
 		} catch (Exception e) {
 			e.printStackTrace();
