@@ -4,21 +4,22 @@
 
 ## 1. 架構概述 (Architecture Overview)
 
-qífū-4 後端基於 **Spring Boot 3.5.x** 構建，採用多模組 (Multi-module) Maven 結構，專注於提供高效能、高安全性的 RESTful API。
+qífū-4 後端基於 **Spring Boot 4.0.6** 構建，採用多模組 (Multi-module) Maven 結構，專注於提供高效能、高安全性的 RESTful API。採用 **Java 21** 虛擬執行緒 (Virtual Threads) 技術以獲得極致的併發能力。
 
 ### 核心模組
 *   **core-app (`backend/app`)**: 主應用程式，包含 Controller、Config、API 定義及主要業務邏輯。
-*   **core-base (`backend/base`)**: 基礎架構模組，定義 Constants、Exception、Message、以及通用的 Service/DAO 基礎介面。
+*   **core-base (`backend/base`)**: 基礎架構模組，定義 Constants、Exception、Message、以及通用的 Service/DAO 基礎介面。包含支援 JWT 與資料庫 Token 驗證的 `TokenStore` 體系。
 *   **core-std (`backend/core`)**: 標準核心模組，包含與權限管理 (ACL)、系統代碼 (SysCode) 相關的實體類 (Entity) 與服務。
 
 ## 2. 技術棧 (Technology Stack)
 
+*   **Runtime**: Java 21。
 *   **Web Server**: Undertow (替代預設的 Tomcat，提供更佳的效能與記憶體管理)。
 *   **Persistence**: MyBatis (半自動 ORM，靈活控制 SQL)。
 *   **Database**: MariaDB (支援 MySQL 協定)。
 *   **Security**: Spring Security 6+。
 *   **API Documentation**: SpringDoc OpenAPI (Swagger UI)。
-*   **Web Services**: Apache CXF (支援 JAX-WS 與 JAX-RS)。
+*   **Web Services**: Apache CXF 4.1.x (支援 JAX-WS 與 JAX-RS)。
 *   **Reporting**: JasperReports (PDF/Excel 報表生成)。
 *   **Cache**: Spring Cache + Redis。
 
@@ -30,6 +31,11 @@ qífū-4 後端基於 **Spring Boot 3.5.x** 構建，採用多模組 (Multi-modu
 1.  **JWT 與 Cookie**: 登入成功後，後端生成 Access Token 與 Refresh Token。
 2.  **HttpOnly Cookie**: Token **不返回**給前端 JS，而是透過 `Set-Cookie` 存入瀏覽器的 HttpOnly Cookie (`QIFU4VNX__uat` 與 `QIFU4VNX__urt`)。這能有效防止 XSS 攻擊竊取 Token。
 3.  **前端旗標**: `AuthController` 返回 `accessToken: "Y"` 給前端，僅作為登入狀態旗標。
+
+### 刷新機制 (Token Refresh) - 2026/06/05 優化
+*   **自動化身分識別**: 當 Access Token Cookie 因逾時消失或失效時，前端會發起 `/refreshNewToken` 請求。
+*   **自主識別**: 後端不再強制要求同時帶入 Access Token 與 Refresh Token。只要 `QIFU4VNX__urt` (Refresh Token) 在有效期內且存在於資料庫中，後端會自動根據 Token 反查 `USER_ID` 並核發新的 JWT。
+*   **安全性**: 採用 Refresh Token Rotation (輪轉) 機制，每次刷新都會產生新的 `urt` 並使舊的失效。
 
 ### 授權與攔截器 (Authorization & Interceptors)
 *   **ControllerAuthorityCheckInterceptor**: 攔截 `/api/**` 請求，根據使用者的 Role 與 Permission 檢查是否有權存取特定功能 (PROG ID)。
