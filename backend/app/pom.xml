@@ -231,14 +231,6 @@
 		    <artifactId>java-jwt</artifactId>
 		    <version>4.4.0</version>
 		</dependency>
-		
-		<!--
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>3.6.3</version>
-        </dependency>
-        -->
 
         <dependency>
             <groupId>javax.cache</groupId>
@@ -299,22 +291,6 @@
 		    <version>2.3.1</version>
 		</dependency>		  
 		
-<!-- 		<dependency> -->
-<!-- 		    <groupId>com.oracle</groupId> -->
-<!-- 		    <artifactId>ojdbc7</artifactId> -->
-<!-- 		    <scope>system</scope> -->
-<!-- 		    <version>12.0.1</version> -->
-<!-- 		    <systemPath>${workspaceDir}/thirdpartylib/ojdbc7.jar</systemPath> -->
-<!-- 		</dependency>		 -->
-		
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.orchis</groupId> -->
-<!-- 		    <artifactId>font</artifactId> -->
-<!-- 		    <scope>system</scope> -->
-<!-- 		    <version>0.0.1</version> -->
-<!-- 		    <systemPath>${workspaceDir}/thirdpartylib/DFKai-SB.jar</systemPath> -->
-<!-- 		</dependency>					 -->
-        
         <!-- Maybe can change to mariadb and mariadb-JDBC-driver is good for than MySQL. -->
         <!--  
 		<dependency>
@@ -328,15 +304,6 @@
 		    <groupId>org.mariadb.jdbc</groupId>
 		    <artifactId>mariadb-java-client</artifactId>
 		</dependency>
-		
-		<!--
-		<dependency>
-		    <groupId>com.h2database</groupId>
-		    <artifactId>h2</artifactId>
-		    <scope>runtime</scope>
-		    <version>2.1.214</version>
-		</dependency>
-		-->
 		
 		<dependency>
 		    <groupId>org.eclipse.paho</groupId>
