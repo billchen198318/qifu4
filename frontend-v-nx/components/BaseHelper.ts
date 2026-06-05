@@ -260,6 +260,8 @@ export function getAxiosInstance() {
               axios.post(refreshTokeUrl, {
                 accessToken: '',
                 refreshToken: ''
+              }, {
+                withCredentials: true
               })
               .then((response) => {
                 if (!response.data) {

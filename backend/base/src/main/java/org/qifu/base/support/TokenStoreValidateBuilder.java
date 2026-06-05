@@ -2,6 +2,7 @@ package org.qifu.base.support;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -17,6 +18,8 @@ public class TokenStoreValidateBuilder implements TokenStoreValidate {
 	private static final String HEAD_COUNT_COMMAND = "select count(*) from ";
 	
 	private final String refreshValidateSql = HEAD_COUNT_COMMAND + TokenStoreConfig.getTableName() + " where OID = :refreshTokenOrOID and RF_EXPIRES_DATE > :currDate ";
+	
+	private final String findUserIdByRefreshSql = "select USER_ID from " + TokenStoreConfig.getTableName() + " where OID = :refreshTokenOrOID and RF_EXPIRES_DATE > :currDate ";
 	
 	private final String accessValidateSql = HEAD_COUNT_COMMAND + TokenStoreConfig.getTableName() + " where TOKEN = :accessToken and EXPIRES_DATE > :currDate ";
 	
@@ -40,6 +43,17 @@ public class TokenStoreValidateBuilder implements TokenStoreValidate {
 		param.put(CURRENT_DATE_PARAM, currDate);
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(this.dataSource);
 		return (jdbcTemplate.queryForObject(refreshValidateSql, param, Integer.class) > 0);
+	}
+	
+	@Override
+	public String getUserIdByRefreshToken(String refreshTokenOrOID) {
+		Date currDate = new Date();
+		Map<String, Object> param = new HashMap<>();
+		param.put("refreshTokenOrOID", refreshTokenOrOID);
+		param.put(CURRENT_DATE_PARAM, currDate);
+		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(this.dataSource);
+		List<String> list = jdbcTemplate.queryForList(findUserIdByRefreshSql, param, String.class);
+		return (list.size() > 0) ? list.get(0) : null;
 	}
 
 	@Override
