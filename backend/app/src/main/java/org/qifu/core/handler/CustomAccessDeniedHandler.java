@@ -13,7 +13,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.csrf.CsrfException;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

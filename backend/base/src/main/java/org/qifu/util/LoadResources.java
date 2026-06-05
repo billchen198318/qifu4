@@ -28,7 +28,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.qifu.base.Constants;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 public class LoadResources {
 	

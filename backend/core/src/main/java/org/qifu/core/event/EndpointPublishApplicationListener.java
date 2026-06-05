@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 /** 載入 endpoint-publish.json 依設定內容部屬 soap 與 jaxrs(rest) */
 @Component
