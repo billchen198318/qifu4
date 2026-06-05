@@ -224,21 +224,28 @@ public class AuthController {
 	    		refreshToken = CookieUtils.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
 	    	}
 	    	
-	    	if (StringUtils.isBlank(accessToken) || StringUtils.isBlank(refreshToken) || StringUtils.isBlank(loginRequest.getUsername())) {
+	    	if (StringUtils.isBlank(refreshToken)) {
 	    		throw new ControllerException( BaseSystemMessage.parameterBlank() );
 	    	}
 	    	tsv = TokenStoreValidateBuilder.build(this.dataSource);
-	    	if (tsv.refreshValidate(refreshToken, loginRequest.getUsername())) {
+	    	if (tsv.refreshValidate(refreshToken)) {
+	    		String userId = loginRequest.getUsername();
+	    		if (StringUtils.isBlank(userId)) {
+	    			userId = tsv.getUserIdByRefreshToken(refreshToken);
+	    		}
+	    		if (StringUtils.isBlank(userId)) {
+	    			throw new ControllerException( BaseSystemMessage.parameterBlank() );
+	    		}
 			    TbSysCode sysCode = new TbSysCode();
 			    sysCode.setCode(Constants.SYSCODE_TOKEN_CODE);	
 			    sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
 			    if (null != sysCode && Constants.SYSCODE_TOKEN_TYPE.equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {
-			    	tbv = TokenBuilderUtils.createToken(loginRequest.getUsername(), Constants.TOKEN_AUTH, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
+			    	tbv = TokenBuilderUtils.createToken(userId, Constants.TOKEN_AUTH, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
 			    	res.setAccessToken("Y");
 			    	res.setRefreshToken("Y");
 			    	CookieUtils.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
 			    	CookieUtils.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
-			    	res.setUsername(loginRequest.getUsername());
+			    	res.setUsername(userId);
 			    	refreshNew = true;
 			    }
 	    	}

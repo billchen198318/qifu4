@@ -24,8 +24,6 @@ package org.qifu.core.config;
 import org.qifu.base.CoreAppConstants;
 import org.qifu.base.properties.PageVariableConfigProperties;
 import org.qifu.core.interceptor.ControllerAuthorityCheckInterceptor;
-import org.qifu.core.interceptor.MDC4UserBuildInterceptor;
-import org.qifu.core.interceptor.UserBuilderInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextListener;
@@ -42,8 +40,6 @@ public class WebConfig implements WebMvcConfigurer {
 	};
 	
 	private static final String[] API_PATH = new String[] { "/api/*", "/api/**" };
-	
-	private static final String[] ROOT_PATH = new String[] { "/*", "/**" };
 	
 	private static final String EVENT_LOG_PATH = "/api/PROG004D0001/**";
 	
@@ -66,30 +62,12 @@ public class WebConfig implements WebMvcConfigurer {
     }     
     
     @Bean
-    MDC4UserBuildInterceptor mdcInterceptor() {
-    	return new MDC4UserBuildInterceptor();
-    }
-    
-    @Bean
     ControllerAuthorityCheckInterceptor controllerAuthorityCheckInterceptor() {
     	return new ControllerAuthorityCheckInterceptor();
     }
     
-    @Bean
-    UserBuilderInterceptor userBuilderInterceptor() {
-    	return new UserBuilderInterceptor();
-    }
-    
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userBuilderInterceptor())
-        	.addPathPatterns(API_PATH)
-        	.excludePathPatterns( AUTH_PATH );
-        
-        registry.addInterceptor(mdcInterceptor())
-    		.addPathPatterns(ROOT_PATH)
-    		.excludePathPatterns( AUTH_PATH );        
-        
         registry.addInterceptor(controllerAuthorityCheckInterceptor())
         	.addPathPatterns(API_PATH)
         	.excludePathPatterns( AUTH_PATH ).excludePathPatterns( EVENT_LOG_PATH );

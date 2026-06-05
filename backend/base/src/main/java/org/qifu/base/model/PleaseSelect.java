@@ -31,7 +31,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 public class PleaseSelect {
 	private static String pleaseSelectDatas = " { } ";
@@ -66,7 +66,7 @@ public class PleaseSelect {
 	public static Map<String, Object> loadDatas() {
 		Map<String, Object> datas = null;
 		try {
-			datas = new ObjectMapper().readValue( pleaseSelectDatas, LinkedHashMap.class );
+			datas = org.qifu.util.LoadResources.getObjectMapper().readValue( pleaseSelectDatas, LinkedHashMap.class );
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -3,11 +3,10 @@ package org.qifu.core.webservice.impl;
 import java.util.Map;
 
 import org.qifu.core.webservice.ITestService;
+import org.qifu.util.LoadResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.jws.WebService;
 import jakarta.ws.rs.Consumes;
@@ -39,7 +38,7 @@ public class TestServiceImpl implements ITestService {
 	public String createItemRest(String requestContent) {
 		String jsonStr = "{ \"processCode\" : \"400\", \"processMessage\":\"錯誤\" }";
 		try {
-			jsonStr = new ObjectMapper().writeValueAsString(Map.of("value", "TEST!"));
+			jsonStr = LoadResources.getObjectMapper().writeValueAsString(Map.of("value", "TEST!"));
 		} catch (Exception e) {
 			log.info("Exception Happened ! ", e);
 		}

@@ -258,9 +258,10 @@ export function getAxiosInstance() {
             isRefreshing = true;
             return new Promise((resolve, reject) => {
               axios.post(refreshTokeUrl, {
-                username: baseStore.user.id || '',
                 accessToken: '',
                 refreshToken: ''
+              }, {
+                withCredentials: true
               })
               .then((response) => {
                 if (!response.data) {

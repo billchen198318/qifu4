@@ -4,6 +4,8 @@ public interface TokenStoreValidate {
 	
 	public boolean refreshValidate(String refreshTokenOrOID);
 	
+	public String getUserIdByRefreshToken(String refreshTokenOrOID);
+	
 	public boolean accessValidate(String accessToken);
 	
 	public boolean refreshValidate(String refreshTokenOrOID, String userId);
