@@ -15,12 +15,12 @@ import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.qifu.base.Constants;
+import org.qifu.util.LoadResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.ObjectMapper;
 
 /** 載入 endpoint-publish.json 依設定內容部屬 soap 與 jaxrs(rest) */
 @Component
@@ -42,7 +42,7 @@ public class EndpointPublishApplicationListener implements ApplicationListener<C
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> objectMapperReadValue(String fileRes) throws IOException {
-		return new ObjectMapper().readValue(read(fileRes), Map.class);
+		return LoadResources.getObjectMapper().readValue(read(fileRes), Map.class);
 	}
 
 	private String read(String fileRes) throws IOException {

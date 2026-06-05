@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.qifu.util.LoadResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-
-import tools.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,8 +33,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 	    body.put("message", authException.getMessage());
 	    body.put("path", request.getServletPath());
 	    
-	    ObjectMapper mapper = new ObjectMapper();
-	    mapper.writeValue(response.getOutputStream(), body);
+	    LoadResources.getObjectMapper().writeValue(response.getOutputStream(), body);
 	}
 	
 }
