@@ -44,6 +44,10 @@ import org.qifu.core.util.CookieUtils;
 import org.qifu.core.util.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.auth0.jwt.interfaces.Claim;
@@ -105,6 +109,28 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 		if (request.getRequestURL().indexOf(Constants.TOKEN_CHECK_URL_PATH) == -1) {
 			return true;
 		}
+		if (this.buildUserFromSecurityContext()) {
+			return true;
+		}
+		return this.buildUserFromLegacyToken(request, response);
+	}
+	
+	private boolean buildUserFromSecurityContext() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof JwtAuthenticationToken jwtAuthentication)) {
+			return false;
+		}
+		Jwt jwt = jwtAuthentication.getToken();
+		String userId = StringUtils.defaultString(jwt.getClaimAsString(Constants.TOKEN_USER_PARAM_NAME));
+		if (StringUtils.isBlank(userId)) {
+			logger.warn(">>> JWT authenticated, but no user claim: {}", Constants.TOKEN_USER_PARAM_NAME);
+			return false;
+		}
+		this.buildUserLocal(userId);
+		return true;
+	}
+	
+	private boolean buildUserFromLegacyToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String authorization = StringUtils.defaultString(request.getHeader( Constants.TOKEN_AUTH )).trim();
 		String token = "";
 		if (authorization.startsWith(Constants.TOKEN_PREFIX)) {
@@ -131,12 +157,7 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 		Map<String, Claim> claimToken = TokenBuilderUtils.verifyToken(token, tsv);
 		if (TokenBuilderUtils.existsInfo(claimToken)) {
 			String userId = StringUtils.defaultString( claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString() );
-			List<String> roleIds = new ArrayList<>();
-			Map<String, List<RolePermissionAttr>> rolePermissionMap = new HashMap<>();
-			this.fillUserRoleDataOfPreHandle(param, userId, roleIds, rolePermissionMap);		
-			UserUtils.setUserInfoForUserLocalUtils( claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString(), roleIds, rolePermissionMap);
-			String tkUserName = claimToken.get(Constants.TOKEN_USER_PARAM_NAME).asString();
-			logger.info("User builder from JWT Authorization header : {} , role: {}", tkUserName, roleIds);
+			this.buildUserLocal(userId, param);
 		}
 		if ( UserUtils.getCurrentUser() == null ) {
 			logger.warn(">>> No authorization uri: {} , remote-address: {} , remote-port: {} ", request.getRequestURI(), request.getRemoteAddr(), request.getRemotePort());
@@ -148,6 +169,18 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 			return false;
 		}
 		return true;
+	}
+
+	private void buildUserLocal(String userId) {
+		this.buildUserLocal(userId, new HashMap<>());
+	}
+	
+	private void buildUserLocal(String userId, Map<String, Object> param) {
+		List<String> roleIds = new ArrayList<>();
+		Map<String, List<RolePermissionAttr>> rolePermissionMap = new HashMap<>();
+		this.fillUserRoleDataOfPreHandle(param, userId, roleIds, rolePermissionMap);
+		UserUtils.setUserInfoForUserLocalUtils(userId, roleIds, rolePermissionMap);
+		logger.info("User builder from Resource Server JWT : {} , role: {}", userId, roleIds);
 	}
 	
 	private void fillUserRoleDataOfPreHandle(Map<String, Object> param, String userId, List<String> roleIds, Map<String, List<RolePermissionAttr>> rolePermissionMap) {
