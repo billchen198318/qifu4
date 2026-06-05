@@ -9,7 +9,7 @@
 
 本專案已根據功能與層次拆分為多份詳細手冊，請點擊連結查看詳細內容：
 
-*   [**後端開發手冊 (Backend Guide)**](./README-backend.md): 包含 Spring Boot 3.5 架構、MyBatis 配置、JWT/Cookie 安全性機制及 API 規範。
+*   [**後端開發手冊 (Backend Guide)**](./README-backend.md): 包含 Spring Boot 4.0.6 架構、MyBatis 配置、JWT/Cookie 安全性機制及 API 規範。
 *   [**前端開發手冊 (Frontend Guide)**](./README-frontend.md): 包含 Nuxt 3 專案結構、Pinia 狀態管理、Axios 自動續期攔截器及權限控制。
 *   [**K3s 部署手冊 (K3s Deployment Keepalived-VIP)**](./README-k3s.md): 包含 K3s HA 集群建立、Keepalived VIP 配置、Traefik Ingress 路由及私有倉庫設定。
 *   [**K3s 部署手冊 (K3s Deployment Kube-VIP 推薦)**](./README-k3s-kube-vip.md): 使用 kube-vip 內嵌管理 VIP，安裝更簡單、與 K8s 整合度更高。
