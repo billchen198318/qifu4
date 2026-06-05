@@ -1,4 +1,4 @@
-package org.qifu.core.config;
+package org.qifu.core.handler;
 
 import java.util.function.Supplier;
 
