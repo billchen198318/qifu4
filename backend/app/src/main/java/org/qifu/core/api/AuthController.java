@@ -224,11 +224,11 @@ public class AuthController {
 	    		refreshToken = CookieUtils.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
 	    	}
 	    	
-	    	if (StringUtils.isBlank(accessToken) || StringUtils.isBlank(refreshToken) || StringUtils.isBlank(loginRequest.getUsername())) {
+	    	if (StringUtils.isBlank(accessToken) || StringUtils.isBlank(refreshToken)) {
 	    		throw new ControllerException( BaseSystemMessage.parameterBlank() );
 	    	}
 	    	tsv = TokenStoreValidateBuilder.build(this.dataSource);
-	    	if (tsv.refreshValidate(refreshToken, loginRequest.getUsername())) {
+	    	if (tsv.refreshValidate(refreshToken)) {
 			    TbSysCode sysCode = new TbSysCode();
 			    sysCode.setCode(Constants.SYSCODE_TOKEN_CODE);	
 			    sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();

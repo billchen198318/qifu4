@@ -95,7 +95,6 @@ export const useApi = async (url: string, opts: any = {}) => {
             'Content-Type': 'application/json'
           },
           body: {
-            username: baseStore.user.id || '',
             accessToken: '',
             refreshToken: ''
           }

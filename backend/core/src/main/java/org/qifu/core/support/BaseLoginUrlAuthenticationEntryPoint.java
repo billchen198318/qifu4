@@ -23,7 +23,6 @@ package org.qifu.core.support;
 
 import java.io.IOException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.qifu.base.Constants;
 import org.qifu.base.CoreAppConstants;
