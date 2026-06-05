@@ -59,7 +59,7 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * @deprecated JWT user context is now built by JwtUserContextFilter in the Spring Security filter chain.
  */
-@Deprecated(since = "0.0.4")
+@Deprecated(since = "0.0.5")
 public class UserBuilderInterceptor implements HandlerInterceptor {
 	
 	protected static Logger logger = LoggerFactory.getLogger(UserBuilderInterceptor.class);
