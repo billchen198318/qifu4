@@ -21,6 +21,7 @@
  */
 package org.qifu.core.util;
 
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -33,43 +34,49 @@ import org.qifu.base.exception.ServiceException;
 import org.qifu.core.model.UploadTypes;
 import org.qifu.util.SimpleUtils;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfCopy;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.parser.PdfTextExtractor;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.pdfbox.util.Matrix;
 
 public class PdfCopyPageBuilder {
-	private byte[] sourceReportData = null; 
+	private byte[] sourceReportData = null;
 	private List<String> findWords = new ArrayList<>();
 	private String readPassword = "";
 	private boolean modeByFindFound = true;
 	private boolean forcePutAllPage = false;
-	
+	private boolean enableWatermark = false;
+	private String watermarkText = "";
+	private String fontPath = "fonts/fireflysung.ttf";
+	private String owner = "owner";
+	private String userPass = "user";
+
 	public static PdfCopyPageBuilder build() {
 		return new PdfCopyPageBuilder();
 	}
-	
+
 	public PdfCopyPageBuilder setSourceReportData(byte[] content) {
-		if (null == content) {
+		if (content == null) {
 			throw new IllegalArgumentException("null data.");
 		}
 		this.sourceReportData = content;
 		return this;
 	}
-	
+
 	public PdfCopyPageBuilder setSourcePdfFile(File file) throws IOException {
-		if (null == file || !file.exists() || !file.isFile()) {
+		if (file == null || !file.exists() || !file.isFile()) {
 			throw new IllegalArgumentException("file args error.");
 		}
-		this.setSourceReportData( FileUtils.readFileToByteArray(file) );
+		this.sourceReportData = FileUtils.readFileToByteArray(file);
 		return this;
 	}
-	
+
 	public PdfCopyPageBuilder addFindWord(String word) {
 		if (StringUtils.isBlank(word)) {
 			return this;
@@ -79,19 +86,34 @@ public class PdfCopyPageBuilder {
 		}
 		return this;
 	}
-	
+
 	public PdfCopyPageBuilder setReadPassword(String password) {
 		this.readPassword = password;
 		return this;
 	}
-	
+
 	public PdfCopyPageBuilder setModeByFindFound(boolean mode) {
 		this.modeByFindFound = mode;
 		return this;
 	}
-	
+
 	public PdfCopyPageBuilder setForcePutAllPage(boolean forcePutAllPage) {
 		this.forcePutAllPage = forcePutAllPage;
+		return this;
+	}
+
+	public PdfCopyPageBuilder enableWatermark(String text, String fontPath) {
+		this.enableWatermark = true;
+		this.watermarkText = text;
+		if (StringUtils.isNotBlank(fontPath)) {
+			this.fontPath = fontPath;
+		}
+		return this;
+	}
+
+	public PdfCopyPageBuilder setEncryption(String owner, String user) {
+		this.owner = owner;
+		this.userPass = user;
 		return this;
 	}
 	
@@ -101,93 +123,108 @@ public class PdfCopyPageBuilder {
 	
 	public String toUpload(String system, String uploadType) throws ServiceException, IOException {
 		byte[] newPdfByte = this.getContent();
-		return UploadSupportUtils.create(system, uploadType, false, newPdfByte, SimpleUtils.getUUIDStr()+".pdf");
-	}	
-	
+		return UploadSupportUtils.create(system, uploadType, false, newPdfByte, SimpleUtils.getUUIDStr() + ".pdf");
+	}
+
 	public byte[] getContent() throws IOException {
-	    if (!this.modeByFindFound && this.findWords.size() > 1) {
-	        throw new IllegalArgumentException("modeByFindFound set to false, cannot add many find word.");
-	    }
+		try (PDDocument sourceDoc = loadSourceDocument();
+				PDDocument resultDoc = new PDDocument();
+				ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+			PDFTextStripper stripper = new PDFTextStripper();
+			int totalPages = sourceDoc.getNumberOfPages();
+			boolean hasPage = false;
+			PDType0Font font = null;
 
-	    try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-	        PdfReader pdfReader = createPdfReader();
-	        Document document = new Document(pdfReader.getPageSizeWithRotation(1));
-	        boolean isCutPdf = false;
-	        
-	        try (PdfCopy pdfCopy = new PdfCopy(document, os)) {
-	            document.open();
-	            PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfReader);
-	            
-	            for (int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
-	                String text = pdfTextExtractor.getTextFromPage(i);
-	                boolean needPut = shouldIncludePage(text);
-	                if (needPut) {
-                        PdfImportedPage page = pdfCopy.getImportedPage(pdfReader, i);
-                        pdfCopy.addPage(page);
-                        isCutPdf = true;
-	                }
-	            }
-	        } 
-	        // Handle case where no pages were included (generate an empty document)
-	        if (!isCutPdf) {
-	            generateEmptyDocument(os);
-	        }
-	        return os.toByteArray();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	        throw e;  // Re-throw to notify the caller of an IO exception
-	    }
+			if (enableWatermark && StringUtils.isNotBlank(watermarkText)) {
+				File fontFile = new File(fontPath);
+				if (!fontFile.exists()) {
+					throw new IOException("Font not found: " + fontPath);
+				}
+				font = PDType0Font.load(resultDoc, fontFile);
+			}
+
+			for (int i = 1; i <= totalPages; i++) {
+				stripper.setStartPage(i);
+				stripper.setEndPage(i);
+				String text = stripper.getText(sourceDoc);
+				if (!shouldIncludePage(text)) {
+					continue;
+				}
+
+				// =========================
+				// ✔ DEEP COPY PAGE (SAFE)
+				// =========================
+				PDPage newPage = resultDoc.importPage(sourceDoc.getPage(i - 1));
+				resultDoc.addPage(newPage);
+				hasPage = true;
+
+				// =========================
+				// ✔ WATERMARK
+				// =========================
+				if (enableWatermark && font != null) {
+					addWatermark(resultDoc, newPage, font, watermarkText);
+				}
+			}
+
+			if (!hasPage) {
+				resultDoc.addPage(new PDPage());
+			}
+			
+			// =========================
+			// ✔ ENCRYPT
+			// =========================
+			AccessPermission ap = new AccessPermission();
+			ap.setCanPrint(true);
+			StandardProtectionPolicy policy = new StandardProtectionPolicy(owner, userPass, ap);
+			policy.setEncryptionKeyLength(128);
+			resultDoc.protect(policy);
+			resultDoc.save(os);
+			return os.toByteArray();
+		}
 	}
 
-	// Helper method to create PdfReader with or without password
-	private PdfReader createPdfReader() throws IOException {
-	    if (StringUtils.isBlank(this.readPassword)) {
-	        return new PdfReader(sourceReportData);
-	    } else {
-	        return new PdfReader(sourceReportData, readPassword.getBytes());
-	    }
+	// =========================
+	// WATERMARK (PER PAGE SAFE)
+	// =========================
+	private void addWatermark(PDDocument doc, PDPage page, PDType0Font font, String text) throws IOException {
+		float fontSize = 60f;
+		float width = page.getMediaBox().getWidth();
+		float height = page.getMediaBox().getHeight();
+		float centerX = width / 2;
+		float centerY = height / 2;
+		float textWidth = font.getStringWidth(text) / 1000f * fontSize;
+		try (PDPageContentStream cs = new PDPageContentStream(doc, page, AppendMode.APPEND, true, true)) {
+			cs.setNonStrokingColor(Color.RED);
+			cs.beginText();
+			cs.setFont(font, fontSize);
+			Matrix m = Matrix.getRotateInstance(Math.toRadians(45), centerX - textWidth / 2, centerY);
+			cs.setTextMatrix(m);
+			cs.showText(text);
+			cs.endText();
+		}
 	}
 
-	// Helper method to determine if the page should be included based on the mode and find words
+	private PDDocument loadSourceDocument() throws IOException {
+		File temp = File.createTempFile("pdfbox_", ".pdf");
+		FileUtils.writeByteArrayToFile(temp, sourceReportData);
+		if (StringUtils.isBlank(readPassword)) {
+			return Loader.loadPDF(temp);
+		} else {
+			return Loader.loadPDF(temp, readPassword);
+		}
+	}
+
 	private boolean shouldIncludePage(String text) {
-	    if (this.forcePutAllPage) {
-	        return true;
-	    }
-
-	    for (String word : this.findWords) {
-	        boolean found = text.contains(word);
-	        if ((this.modeByFindFound && found) || (!this.modeByFindFound && !found)) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-
-	// Helper method to generate an empty document with some space
-	private void generateEmptyDocument(ByteArrayOutputStream os) {
-	    try (Document emptyDocument = new Document()) {
-	        PdfWriter.getInstance(emptyDocument, os);
-	        emptyDocument.open();
-	        addEmptyParagraphs(emptyDocument);
-	    } catch (DocumentException e) {
-	        e.printStackTrace();
-	    }
-	}
-	
-	private void addEmptyParagraphs(Document document) throws DocumentException {		
-		Paragraph paragraph = new Paragraph(" ");
-		paragraph.setAlignment(Element.ALIGN_RIGHT);
-		document.add(paragraph);
-		paragraph = new Paragraph(" ");
-		paragraph.setAlignment(Element.ALIGN_CENTER);
-		document.add(paragraph);
-		paragraph = new Paragraph(" ");
-		paragraph.setAlignment(Element.ALIGN_LEFT);
-		document.add(paragraph);
-		paragraph = new Paragraph(" ");
-		paragraph.setAlignment(Element.ALIGN_LEFT);
-		paragraph.setIndentationLeft(50);    			
-		document.add(paragraph);					
+		if (forcePutAllPage) {
+			return true;
+		}
+		for (String word : findWords) {
+			boolean found = text != null && text.contains(word);
+			if ((modeByFindFound && found) || (!modeByFindFound && !found)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

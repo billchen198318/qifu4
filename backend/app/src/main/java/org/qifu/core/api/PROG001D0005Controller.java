@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import net.sf.jasperreports.engine.JRException;
 import ognl.OgnlException;
 
 @Tag(name = "CORE_PROG001D0005", description = "Jasper report resources management.")
@@ -120,21 +121,21 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		}
 	}
 	
-	private void deployReport(DefaultResult<TbSysJreport> result) throws ControllerException, ServiceException, IOException {
+	private void deployReport(DefaultResult<TbSysJreport> result) throws ControllerException, ServiceException, IOException, JRException {
 		if (YES.equals(result.getSuccess())) {
 			TbSysJreport sysJRpt = result.getValue();
 			JReportUtils.deployReport(sysJRpt);			
 		}		
 	}
 	
-	private void save(DefaultControllerJsonResultObj<TbSysJreport> result, TbSysJreport sysJreport) throws ControllerException, ServiceException, IOException {
+	private void save(DefaultControllerJsonResultObj<TbSysJreport> result, TbSysJreport sysJreport) throws ControllerException, ServiceException, IOException, JRException {
 		this.handlerCheck(result, sysJreport, true);
 		DefaultResult<TbSysJreport> cResult = this.systemJreportLogicService.create(sysJreport);
 		this.deployReport(cResult);
 		this.setDefaultResponseJsonResult(result, cResult);
 	}
 	
-	private void update(DefaultControllerJsonResultObj<TbSysJreport> result, TbSysJreport sysJreport) throws ControllerException, ServiceException, IOException {
+	private void update(DefaultControllerJsonResultObj<TbSysJreport> result, TbSysJreport sysJreport) throws ControllerException, ServiceException, IOException, JRException {
 		this.handlerCheck(result, sysJreport, false);
 		DefaultResult<TbSysJreport> uResult = this.systemJreportLogicService.update(sysJreport);
 		this.deployReport(uResult);
@@ -148,7 +149,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		DefaultControllerJsonResultObj<TbSysJreport> result = this.initDefaultJsonResult();
 		try {
 			this.save(result, sysJreport);
-		} catch (ServiceException | ControllerException | IOException e) {
+		} catch (ServiceException | ControllerException | IOException | JRException e) {
 			this.exceptionResult(result, e);
 		} 
 		return ResponseEntity.ok().body(result);
@@ -175,7 +176,7 @@ public class PROG001D0005Controller extends CoreApiSupport {
 		DefaultControllerJsonResultObj<TbSysJreport> result = this.initDefaultJsonResult();
 		try {
 			this.update(result, sysJreport);
-		} catch (ServiceException | ControllerException | IOException e) {
+		} catch (ServiceException | ControllerException | IOException | JRException e) {
 			this.exceptionResult(result, e);
 		} 
 		return ResponseEntity.ok().body(result);

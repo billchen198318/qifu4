@@ -22,57 +22,51 @@
 package org.qifu.util;
 
 import java.awt.Color;
+import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.lowagie.text.Element;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfGState;
-import com.lowagie.text.pdf.PdfStamper;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.util.Matrix;
 
 public class PdfWatermarkUtils {
-	
+
 	protected PdfWatermarkUtils() {
 		throw new IllegalStateException("Utils class: PdfWatermarkUtils");
 	}
-	
-	public static void addWatermark(PdfStamper pdfStamper, BaseFont baseFont, Color fontColor, String waterMarkString) throws IllegalArgumentException {
-		if (null == pdfStamper || null == baseFont) {
-			throw new IllegalArgumentException("PdfStamper or BaseFont is null.");
+
+	public static void addWatermark(PDDocument document, PDType0Font font, Color fontColor, String waterMarkString)
+			throws IOException {
+		if (document == null || font == null) {
+			throw new IllegalArgumentException("PDDocument or PDType0Font is null.");
 		}
 		if (StringUtils.isBlank(waterMarkString)) {
 			return;
 		}
-		PdfContentByte pdfContentByte = null;
-		Rectangle pageRect = null;
-		PdfGState pdfGState = new PdfGState();
-		// 设置透明度为0.4
-		pdfGState.setFillOpacity(0.4f);
-		pdfGState.setStrokeOpacity(0.4f);
-        int pageNum = pdfStamper.getReader().getNumberOfPages();
-        try {
-            for (int i = 1; i <= pageNum; i++) {
-            	pageRect = pdfStamper.getReader().getPageSizeWithRotation(i);
-            	// 计算水印X,Y坐标
-            	float x = pageRect.getWidth() / 2;
-            	float y = pageRect.getHeight() / 2;
-            	//获得PDF最顶层
-            	pdfContentByte = pdfStamper.getOverContent(i);
-            	pdfContentByte.saveState();
-            	// set Transparency
-            	pdfContentByte.setGState(pdfGState);
-            	pdfContentByte.beginText();
-            	pdfContentByte.setColorFill(fontColor);
-            	pdfContentByte.setFontAndSize(baseFont, 60);
-            	// 水印文字成45度角倾斜
-            	pdfContentByte.showTextAligned(Element.ALIGN_CENTER, waterMarkString, x, y, 45);
-            	pdfContentByte.endText();             	
-            }
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
+		PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
+		gs.setNonStrokingAlphaConstant(0.4f);
+		gs.setStrokingAlphaConstant(0.4f);
+		for (PDPage page : document.getPages()) {
+			float width = page.getMediaBox().getWidth();
+			float height = page.getMediaBox().getHeight();
+			float centerX = width / 2;
+			float centerY = height / 2;
+			try (PDPageContentStream cs = new PDPageContentStream(document, page, AppendMode.APPEND, true, true)) {
+				cs.setGraphicsStateParameters(gs);
+				cs.beginText();
+				cs.setNonStrokingColor(fontColor);
+				cs.setFont(font, 60);
+				Matrix matrix = Matrix.getRotateInstance(Math.toRadians(45), centerX, centerY);
+				cs.setTextMatrix(matrix);
+				cs.showText(waterMarkString);
+				cs.endText();
+			}
+		}
 	}
 	
 }

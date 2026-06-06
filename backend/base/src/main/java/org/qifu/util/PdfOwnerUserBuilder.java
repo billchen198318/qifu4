@@ -23,26 +23,26 @@ package org.qifu.util;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfWriter;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 public class PdfOwnerUserBuilder {
+
 	private String pdfFileFullPath = "";
 	private String destEncryptionPdfPath = "";
 	private String owner = "PdfOwnerUserBuilder";
 	private String user = "PdfOwnerUserBuilder";
 	private String watermarkText = "";
+	private String fontPath = "fonts/fireflysung.ttf";
 	
 	public static PdfOwnerUserBuilder build() {
 		return new PdfOwnerUserBuilder();
@@ -69,56 +69,65 @@ public class PdfOwnerUserBuilder {
 		return this;
 	}
 	
+	public PdfOwnerUserBuilder fontPath(String fontPath) {
+		if (!StringUtils.isBlank(fontPath)) {
+			this.fontPath = fontPath;
+		}
+		return this;
+	}
+
 	public PdfOwnerUserBuilder destFile(String fullPath) {
 		this.destEncryptionPdfPath = fullPath;
 		return this;
 	}
-	
+
 	public PdfOwnerUserBuilder destFileToTmpdir() {
-		String fullPath = System.getProperty("java.io.tmpdir") + Constants.FORWARD_SLASH + PdfOwnerUserBuilder.class.getSimpleName() + Constants.FORWARD_SLASH + System.currentTimeMillis() + Constants.FORWARD_SLASH + System.currentTimeMillis()+".pdf";
+		String fullPath = System.getProperty("java.io.tmpdir") + Constants.FORWARD_SLASH
+				+ PdfOwnerUserBuilder.class.getSimpleName() + Constants.FORWARD_SLASH + System.currentTimeMillis()
+				+ Constants.FORWARD_SLASH + System.currentTimeMillis() + ".pdf";
 		this.destFile(fullPath);
 		return this;
 	}
-	
+
 	public PdfOwnerUserBuilder sourceFile(String fullPath) throws IOException {
-		File f = new File(fullPath);
-		if (!f.exists()) {
+		File file = new File(fullPath);
+		if (!file.exists()) {
 			throw new IOException("no exists file : " + fullPath);
 		}
 		this.pdfFileFullPath = fullPath;
 		return this;
 	}
-	
+
 	public PdfOwnerUserBuilder process() throws IOException {
 		if (StringUtils.isBlank(this.destEncryptionPdfPath) || StringUtils.isBlank(this.pdfFileFullPath)) {
-			throw new IOException("no exists dest file : " + destEncryptionPdfPath + " or source file : " + this.pdfFileFullPath);
+			throw new IOException("no exists dest file : " + this.destEncryptionPdfPath + " or source file : "
+					+ this.pdfFileFullPath);
 		}
-		File destEncryptionPdfFile = new File(this.destEncryptionPdfPath);
-		if (!destEncryptionPdfFile.getParentFile().exists()) {
-			FileUtils.forceMkdir(destEncryptionPdfFile.getParentFile());
+		File destFile = new File(this.destEncryptionPdfPath);
+		if (destFile.getParentFile() != null && !destFile.getParentFile().exists()) {
+			FileUtils.forceMkdir(destFile.getParentFile());
 		}
-		destEncryptionPdfFile = null;
-		try (FileOutputStream destEncryptionPdfFileOs = new FileOutputStream(this.destEncryptionPdfPath)) {
-			try (PdfReader reader = new PdfReader(this.pdfFileFullPath)) {
-				PdfStamper stamper = new PdfStamper(reader, destEncryptionPdfFileOs);
-				stamper.setEncryption(
-						this.user.getBytes(), 
-						this.owner.getBytes(), 
-						PdfWriter.ALLOW_PRINTING, 
-						PdfWriter.ENCRYPTION_AES_128);
-				if (!StringUtils.isBlank(this.watermarkText)) {
-					Font font = FontFactory.getFont("fonts/fireflysung.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-					PdfWatermarkUtils.addWatermark(stamper, font.getBaseFont(), Color.RED, this.watermarkText);
+		try (PDDocument document = Loader.loadPDF(new File(this.pdfFileFullPath))) {
+			if (StringUtils.isNotBlank(this.watermarkText)) {
+				File fontFile = new File(this.fontPath);
+				if (!fontFile.exists()) {
+					throw new IOException("Font file not found : " + this.fontPath);
 				}
-				stamper.close();				
+				PDType0Font font = PDType0Font.load(document, fontFile);
+				PdfWatermarkUtils.addWatermark(document, font, Color.RED, this.watermarkText);
 			}
+			AccessPermission permission = new AccessPermission();
+			permission.setCanPrint(true);
+			StandardProtectionPolicy policy = new StandardProtectionPolicy(this.owner, this.user, permission);
+			policy.setEncryptionKeyLength(128);
+			document.protect(policy);
+			document.save(this.destEncryptionPdfPath);
 		}
 		return this;
 	}
 	
 	public String destFileFullPath() {
 		return this.destEncryptionPdfPath;
-	}	
-	
+	}
 	
 }
