@@ -43,7 +43,7 @@ public class MqttBrokerConfig {
 	@Bean
 	public Server mqttServer(MqttMonitoringInterceptor interceptor) throws IOException {
 		log.info("====================================================================");
-		log.info(" [MQTT] 正在初始化內嵌式 Moquette MQTT Broker (RocksDB 檔案持久化模式)...");
+		log.info(" [MQTT] 正在初始化內嵌式 Moquette MQTT Broker ({})...", mqttConfigProperties.isEnablePersistence() ? "檔案模式" : "非檔案模式");
 		log.info("====================================================================");
 
 		File storeDir = new File(mqttConfigProperties.getStorePath());
@@ -77,9 +77,7 @@ public class MqttBrokerConfig {
 			fConfig.enablePersistence().dataPath(mqttConfigProperties.getStorePath());	
 		}
 		
-		if (mqttConfigProperties.isAllowAnonymous()) {
-			fConfig.allowAnonymous();
-		} else {
+		if (!mqttConfigProperties.isAllowAnonymous()) {
 			fConfig.disallowAnonymous();
 		}
 		if (mqttConfigProperties.isTelemetryEnabled()) {

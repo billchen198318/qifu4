@@ -77,13 +77,13 @@ public class MqttMonitoringInterceptor extends AbstractInterceptHandler {
 	
 	@Override
 	public void onSubscribe(InterceptSubscribeMessage msg) {
-		String topic = msg.getTopicFilter();
+		String topic = msg.getTopicFilterClient();
 		topicSubscribers.computeIfAbsent(topic, k -> new AtomicInteger(0)).incrementAndGet();
 	}
 	
 	@Override
 	public void onUnsubscribe(InterceptUnsubscribeMessage msg) {
-		String topic = msg.getTopicFilter();
+		String topic = msg.getTopicFilterClient();
 		AtomicInteger count = topicSubscribers.get(topic);
 		if (count != null) {
 			if (count.decrementAndGet() <= 0) {
