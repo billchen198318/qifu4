@@ -77,7 +77,8 @@ onMounted(() => {
 .app-toolbar {
     height: 40px; /* 固定精簡高度 */
     padding: 0 15px; /* 兩側呼吸空間 */
-    background: #fff;
+    background-color: #f8f9fa; /* 改為極淡灰底 */
+    border-bottom: 1px solid #e9ecef; /* 明確的邊框 */
     border-radius: 4px;
 }
 .app-toolbar .btn i {
