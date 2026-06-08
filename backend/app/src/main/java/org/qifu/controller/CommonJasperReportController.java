@@ -33,6 +33,7 @@ import org.qifu.base.Constants;
 import org.qifu.base.exception.ControllerException;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.ControllerMethodAuthority;
+import org.qifu.base.model.YesNoKeyProvide;
 import org.qifu.base.support.TokenStoreValidateBuilder;
 import org.qifu.base.util.TokenBuilderUtils;
 import org.qifu.core.util.CookieUtils;
@@ -62,7 +63,7 @@ public class CommonJasperReportController {
 			@RequestParam("jreportId") String jreportId) throws IOException {
 		try {
 			String qifutoken = StringUtils.defaultString(request.getParameter("qifutoken"));
-			if (StringUtils.isBlank(qifutoken) || "Y".equals(qifutoken)) {
+			if (StringUtils.isBlank(qifutoken) || YesNoKeyProvide.YES.equals(qifutoken)) {
 				qifutoken = StringUtils.defaultString(CookieUtils.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME));
 			}
 			TokenStoreValidateBuilder tsv = TokenStoreValidateBuilder.build(this.dataSource);

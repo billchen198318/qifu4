@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.model.RolePermissionAttr;
+import org.qifu.base.model.YesNoKeyProvide;
 import org.qifu.base.support.TokenStoreValidateBuilder;
 import org.qifu.base.util.TokenBuilderUtils;
 import org.qifu.core.entity.TbRolePermission;
@@ -141,7 +142,7 @@ public class UserBuilderInterceptor implements HandlerInterceptor {
 			token = authorization.replaceFirst(Constants.TOKEN_PREFIX, "").replace(" ", "");
 		} 
 		
-		if (StringUtils.isBlank(token) || "Y".equals(token)) {
+		if (StringUtils.isBlank(token) || YesNoKeyProvide.YES.equals(token)) {
 			token = StringUtils.defaultString(CookieUtils.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME));
 		}
 		

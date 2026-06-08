@@ -72,10 +72,10 @@ public class AuthController {
 	    try {
 	    	String accessToken = loginRequest.getAccessToken();
 	    	String refreshToken = loginRequest.getRefreshToken();
-	    	if (StringUtils.isBlank(accessToken) || "Y".equals(accessToken)) {
+	    	if (StringUtils.isBlank(accessToken) || YesNoKeyProvide.YES.equals(accessToken)) {
 	    		accessToken = CookieUtils.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME);
 	    	}
-	    	if (StringUtils.isBlank(refreshToken) || "Y".equals(refreshToken)) {
+	    	if (StringUtils.isBlank(refreshToken) || YesNoKeyProvide.YES.equals(refreshToken)) {
 	    		refreshToken = CookieUtils.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
 	    	}
 	    	
@@ -222,7 +222,7 @@ public class AuthController {
 		boolean refreshNew = false;
 	    try {
 	    	String refreshToken = loginRequest.getRefreshToken();
-	    	if (StringUtils.isBlank(refreshToken) || "Y".equals(refreshToken)) {
+	    	if (StringUtils.isBlank(refreshToken) || YesNoKeyProvide.YES.equals(refreshToken)) {
 	    		refreshToken = CookieUtils.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
 	    	}
 	    	
