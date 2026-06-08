@@ -40,6 +40,22 @@ public class CoreAppConstants {
 	
 	public static final String X_CSRF_TOKEN_HEADER = "X-CSRF-TOKEN";
 	
+	public static final String API_AUTH_VALID_LOGINED = "/api/auth/validLogined";
+	public static final String API_AUTH_SIGNIN = "/api/auth/signin";
+	public static final String API_AUTH_LOGOUT = "/api/auth/logout";	
+	public static final String API_AUTH_REFRESH_TOKEN = "/api/auth/refreshNewToken";		
+	public static final String[] AUTH_PATH = new String[] {
+			API_AUTH_VALID_LOGINED,
+			API_AUTH_SIGNIN,
+			API_AUTH_LOGOUT,
+			API_AUTH_REFRESH_TOKEN
+	};
+	public static final String[] AUTH_PATH_NO_REFRESH_TOKEN = new String[] {
+			API_AUTH_VALID_LOGINED,
+			API_AUTH_SIGNIN,
+			API_AUTH_LOGOUT
+	};	
+	
 	// ======================================================================================
 	
 	private static Map<String, Object> excludePathPatternsMap = null;

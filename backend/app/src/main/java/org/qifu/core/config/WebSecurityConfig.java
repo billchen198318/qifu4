@@ -68,7 +68,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-	private static final String API_AUTH_MATCHER = "/api/auth/**";
+	
 	private static final String JASPERREPORT_MATCHER = "/commonOpenJasperReport";
 	
     private final BaseUserDetailsService baseUserDetailsService;
@@ -170,15 +170,21 @@ public class WebSecurityConfig {
     					matcher(CoreAppConstants.SYS_PAGE_TAB_LOGIN_AGAIN),
     					matcher(CoreAppConstants.SYS_PAGE_NO_AUTH),
     					matcher(JASPERREPORT_MATCHER),
-    					matcher(API_AUTH_MATCHER),
+    					matcher(CoreAppConstants.API_AUTH_SIGNIN),
+    					matcher(CoreAppConstants.API_AUTH_LOGOUT),
+    					matcher(CoreAppConstants.API_AUTH_VALID_LOGINED),
     					matcher(CoreAppConstants.WEBSERVICE_PATH)
-    			)
+    			) // 需排除 refreshNewToken , 因 refreshNewToken 需要 CSRF 處理
     		)
     		// Force our aggressive filter to run before standard CsrfFilter
     		.addFilterBefore(new CsrfCookieFilter(csrfTokenRepository()), CsrfFilter.class)
     		.sessionManagement( sessMgr -> sessMgr.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
     		.authorizeHttpRequests(auth -> {
-    			auth.requestMatchers(matcher(API_AUTH_MATCHER)).permitAll();
+    			auth.requestMatchers(
+    					matcher(CoreAppConstants.API_AUTH_SIGNIN),
+    					matcher(CoreAppConstants.API_AUTH_LOGOUT),
+    					matcher(CoreAppConstants.API_AUTH_VALID_LOGINED),
+    					matcher(CoreAppConstants.API_AUTH_REFRESH_TOKEN)).permitAll();
     			for (String par : CoreAppConstants.getWebConfiginterceptorExcludePathPatterns()) {
     				auth.requestMatchers(matcher(par)).permitAll();
     			}
