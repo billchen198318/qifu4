@@ -45,8 +45,8 @@ const loginBtnClick = async () => {
     }
   } catch (error: any) {
     userLogoutClearCookie();
-    console.log(error.message);
-    message.value = 'Login failed';
+    console.log(error);
+    message.value = error.response?._data?.message || 'Login failed';
     userId.value = '';
     passwd.value = '';
     hideLoading();
