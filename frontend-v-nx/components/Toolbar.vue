@@ -51,13 +51,13 @@ onMounted(() => {
 
   <!-- 右側：按鈕群 (使用 gap 取代 &nbsp;) -->
   <div class="toolbar-right d-flex align-items-center gap-1">
-    <button v-if="backFlag === 'Y'" class="btn btn-light btn-sm text-info" @click="fnBack" title="上一頁">
+    <button v-if="backFlag === 'Y'" class="btn btn-light btn-sm text-secondary" @click="fnBack" title="上一頁">
         <i class="bi bi-arrow-left"></i>
     </button>
-    <button v-if="refreshFlag === 'Y'" class="btn btn-light btn-sm text-info" @click="fnRefresh" title="刷新">
+    <button v-if="refreshFlag === 'Y'" class="btn btn-light btn-sm text-secondary" @click="fnRefresh" title="刷新">
         <i class="bi bi-repeat"></i>
     </button>
-    <button v-if="createFlag === 'Y'" class="btn btn-light btn-sm text-info" @click="fnCreate" title="新增">
+    <button v-if="createFlag === 'Y'" class="btn btn-light btn-sm text-success" @click="fnCreate" title="新增">
         <i class="bi bi-plus-circle"></i>
     </button>
     
@@ -66,7 +66,7 @@ onMounted(() => {
     <button v-if="saveFlag === 'Y'" class="btn btn-light btn-sm text-primary" @click="fnSave" title="儲存">
         <i class="bi bi-save"></i>
     </button>
-    <button v-if="queryFieldShowSwitchFlag === 'Y'" class="btn btn-light btn-sm text-secondary" @click="fnQueryFieldShowSwitch" title="查詢開關">
+    <button v-if="queryFieldShowSwitchFlag === 'Y'" class="btn btn-light btn-sm text-dark" @click="fnQueryFieldShowSwitch" title="查詢開關">
         <i :class="'bi bi-' + (switchEye ? 'chevron-down' : 'chevron-up')"></i>
     </button>
   </div>
