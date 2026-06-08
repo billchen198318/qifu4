@@ -80,5 +80,8 @@ onMounted(() => {
     background: #fff;
     border-radius: 4px;
 }
+.app-toolbar .btn i {
+    font-size: 1.15rem; /* 放大圖示 */
+}
 .small { font-size: 0.8rem; }
 </style>
