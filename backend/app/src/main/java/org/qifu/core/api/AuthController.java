@@ -25,19 +25,14 @@ import org.qifu.core.entity.TbSysCode;
 import org.qifu.core.entity.TbUserRole;
 import org.qifu.core.model.PermissionType;
 import org.qifu.core.model.User;
-import org.qifu.core.service.IAccountService;
-import org.qifu.core.service.IRolePermissionService;
 import org.qifu.core.service.ISysCodeService;
-import org.qifu.core.service.ISysLoginLogService;
-import org.qifu.core.service.IUserRoleService;
-import org.qifu.core.support.JwtAuthLoginedUserRoleService;
+import org.qifu.core.support.AuthComponents;
 import org.qifu.core.util.CookieUtils;
 import org.qifu.core.util.UserUtils;
 import org.qifu.core.vo.LoginRequest;
 import org.qifu.core.entity.TbSysLoginLog;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -58,39 +53,17 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-	
-	private final AuthenticationManager authenticationManager;
-	
 	private final DataSource dataSource;
 	
 	private final ISysCodeService<TbSysCode, String> sysCodeService;
 	
-	private final JwtAuthLoginedUserRoleService jwtAuthLoginedUserRoleService;
+	private final AuthComponents authComponents;
 	
-	private final IUserRoleService<TbUserRole, String> userRoleService; 
-	
-	private final IRolePermissionService<TbRolePermission, String> rolePermissionService;	
-	
-	private final IAccountService<TbAccount, String> accountService;
-
-	private final ISysLoginLogService<TbSysLoginLog, String> sysLoginLogService;
-	
-	public AuthController(AuthenticationManager authenticationManager, DataSource dataSource,
-			ISysCodeService<TbSysCode, String> sysCodeService,
-			JwtAuthLoginedUserRoleService jwtAuthLoginedUserRoleService,
-			IUserRoleService<TbUserRole, String> userRoleService,
-			IRolePermissionService<TbRolePermission, String> rolePermissionService,
-			IAccountService<TbAccount, String> accountService,
-			ISysLoginLogService<TbSysLoginLog, String> sysLoginLogService) {
+	public AuthController(DataSource dataSource, ISysCodeService<TbSysCode, String> sysCodeService, AuthComponents authComponents) {
 		super();
-		this.authenticationManager = authenticationManager;
 		this.dataSource = dataSource;
 		this.sysCodeService = sysCodeService;
-		this.jwtAuthLoginedUserRoleService = jwtAuthLoginedUserRoleService;
-		this.userRoleService = userRoleService;
-		this.rolePermissionService = rolePermissionService;
-		this.accountService = accountService;
-		this.sysLoginLogService = sysLoginLogService;
+		this.authComponents = authComponents;
 	}
 	
 	@PostMapping("/validLogined")
@@ -145,13 +118,13 @@ public class AuthController {
 	private User processOfValidCheck(Map<String, Object> param, List<String> roleIds, 
 			Map<String, List<RolePermissionAttr>> rolePermissionMap, String userId,
 			LoginRequest loginRequest) throws ServiceException {
-		List<TbUserRole> urList = this.userRoleService.selectListByParams(param).getValue();
+		List<TbUserRole> urList = this.authComponents.getUserRoleService().selectListByParams(param).getValue();
 		for (int j = 0; urList != null && j < urList.size(); j++) {
 			TbUserRole ur = urList.get(j);
 			roleIds.add(ur.getRole());
 			param.clear();
 			param.put("role", ur.getRole());
-			List<TbRolePermission> rpList = this.rolePermissionService.selectListByParams(param).getValue();
+			List<TbRolePermission> rpList = this.authComponents.getRolePermissionService().selectListByParams(param).getValue();
 			rolePermissionMap.put(ur.getRole(), new ArrayList<>());
 			List<RolePermissionAttr> permList = rolePermissionMap.get(ur.getRole());
 			for (int x = 0; rpList != null && x < rpList.size(); x++) {
@@ -168,7 +141,7 @@ public class AuthController {
 		User user = UserUtils.setUserInfoForUserLocalUtils( userId, roleIds, rolePermissionMap );
 		TbAccount acc = new TbAccount();
 		acc.setAccount(userId);
-		accountService.selectByUniqueKey(acc).getValueEmptyThrowMessage();											
+		authComponents.getAccountService().selectByUniqueKey(acc).getValueEmptyThrowMessage();											
 		user.setAccessToken(loginRequest.getAccessToken());
 		user.setRefreshToken(loginRequest.getRefreshToken());	
 		return user;
@@ -184,7 +157,7 @@ public class AuthController {
 		// Find logs within the last 5 minutes
 		paramMap.put("cdateStart", new Date(System.currentTimeMillis() - (5 * 60 * 1000)));
 		
-		Long failCount = this.sysLoginLogService.count(paramMap);
+		Long failCount = this.authComponents.getSysLoginLogService().count(paramMap);
 		if (failCount != null && failCount >= 3) {
 			throw new AuthenticationException("Account is locked due to multiple failed login attempts. Please try again later.") {};
 		}
@@ -193,7 +166,7 @@ public class AuthController {
 		User user = null;
 	    try {
 			request.setAttribute(Constants.HTTP_REQUEST_PASSWORD_AUTH, loginRequest.getPassword());
-		    Authentication authentication = authenticationManager.authenticate(
+		    Authentication authentication = authComponents.getAuthenticationManager().authenticate(
 		    		new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 		    SecurityContextHolder.getContext().setAuthentication(authentication);
 		    user = (User) authentication.getPrincipal();
@@ -209,14 +182,14 @@ public class AuthController {
 				CookieUtils.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
 				CookieUtils.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
 				user.blankPassword();
-				this.jwtAuthLoginedUserRoleService.onLoginedSuccess(authentication);
+				this.authComponents.getJwtAuthLoginedUserRoleService().onLoginedSuccess(authentication);
 			}
 	    } catch (AuthenticationException | ServiceException e) {
 	    	// 2. Log failed attempt
 	    	TbSysLoginLog log = new TbSysLoginLog();
 	    	log.setUser(loginRequest.getUsername());
 	    	log.setCdate(new Date());
-	    	this.sysLoginLogService.insertLoginFailLog(log);
+	    	this.authComponents.getSysLoginLogService().insertLoginFailLog(log);
 	    	
 	    	e.printStackTrace();
 	    	throw e;
@@ -225,7 +198,7 @@ public class AuthController {
 	    	TbSysLoginLog log = new TbSysLoginLog();
 	    	log.setUser(loginRequest.getUsername());
 	    	log.setCdate(new Date());
-	    	this.sysLoginLogService.insertLoginFailLog(log);
+	    	this.authComponents.getSysLoginLogService().insertLoginFailLog(log);
 	    	
 			e.printStackTrace();
 		}		
