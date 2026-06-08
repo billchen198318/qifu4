@@ -239,11 +239,10 @@ onBeforeUnmount(() => {
 <template>
 
 <div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12">
+  <div class="col-12">
     <Toolbar 
         :progId="pageProgramId" 
         description="Role管理." 
-        marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
         createFlag="Y"
@@ -256,31 +255,23 @@ onBeforeUnmount(() => {
 
 <HiddenQueryFieldAlertInfo :dataSource="dsList" :queryFieldShowFlag="qFieldShow" />
 
-<div class="row" v-show="qFieldShow">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<div class="form-group form-floating">
-			<input type="text" class="form-control" id="role" placeholder="輸入Role編號" v-model="queryPageStore.queryParam.role">
-			<label for="role">Role編號</label>
-    	</div>
-  	</div>
-</div>
-
-<p v-show="qFieldShow" style="margin-bottom: 5px"></p>
-
-<div class="row" v-show="qFieldShow">
-  	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-search"></i>&nbsp;查詢</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>
-  	</div>
-</div>  
-
-<div v-show="qFieldShow" class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
+<div v-show="qFieldShow" class="card mb-4">
+  <div class="card-body">
+    <div class="row">
+        <div class="col-12 form-floating">
+            <input type="text" class="form-control" id="role" placeholder="輸入Role編號" v-model="queryPageStore.queryParam.role">
+            <label for="role">Role編號</label>
+        </div>
+    </div>
+    <div class="mt-3 d-flex gap-2">
+        <button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-search"></i> 查詢</button>
+        <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>
+    </div>
+  </div>
 </div>
 
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<GridPagination 
 			:progId="pageProgramId" 
 			:gridConfig="queryPageStore.gridConfig" 
@@ -295,12 +286,12 @@ onBeforeUnmount(() => {
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="exampleModalLabel">複製Role</h1>
+				<h5 class="modal-title" id="exampleModalLabel">複製Role</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<label for="copyRoleId">Role編號，複製來源:&nbsp;{{refRoleId}}</label>
+					<label for="copyRoleId" class="form-label">Role編號，複製來源: {{refRoleId}}</label>
 					<input type="text" class="form-control" id="copyRoleId" v-model="copyRoleId">					
 				</div>
 			</div>

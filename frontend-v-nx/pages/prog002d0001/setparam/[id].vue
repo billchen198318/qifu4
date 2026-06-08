@@ -176,11 +176,10 @@ onMounted(() => {
 
 <template>
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="Role管理，Permission配置作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="tbRefresh"
         	backFlag="Y"
@@ -191,68 +190,65 @@ onMounted(() => {
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		Role編號:&nbsp;{{masterParam.role}}
-	</div>   
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h6 class="text-muted mb-0">Role編號: <span class="text-dark">{{masterParam.role}}</span></h6>
+        </div>
+    </div>
+    
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="permission" class="form-label">Permission字串</label>
+        <input 
+          type="text" 
+          :class="['form-control', checkInvalid('permission', checkFields) ? 'is-invalid' : '']" 
+          id="permission" 
+          placeholder="輸入Permission字串" 
+          v-model="formParam.permission"
+        >
+        <div v-if="checkInvalid('permission', checkFields)" class="invalid-feedback">{{ invalidFeedback('permission', checkFields) }}</div>
+      </div>
+      <div class="col-md-6">
+        <label for="permType" class="form-label">類別</label>
+        <select class="form-select" id="permType" v-model="formParam.permType">
+          <option value="VIEW">View page / url</option>
+          <option value="CONTROLLER">Controller / url</option>
+          <option value="SERVICE">Service</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="mt-4 d-flex gap-2">
+      <button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i> 儲存</button>
+      <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>		
+    </div>
+  </div>
 </div>
 
-<div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="permission" class="form-label">Permission字串</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('permission', checkFields) ? 'is-invalid' : '']" 
-			id="permission" 
-			placeholder="輸入Permission字串" 
-			v-model="formParam.permission"
-		>
-		<div v-if="checkInvalid('permission', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('permission', checkFields) }}</div>
-	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="permType" class="form-label">類別</label>
-		<select class="form-select" id="permType" v-model="formParam.permType">
-			<option value="VIEW">View page / url</option>
-			<option value="CONTROLLER">Controller / url</option>
-            <option value="SERVICE">Service</option>
-		</select>
-	</div>
-</div>
-
-<p style="margin-bottom: 5px"></p>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i>&nbsp;儲存</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>		
-	</div>
-</div>
-
-<div class="row">
-	&nbsp;
-</div>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<table class="table table-hover table-bordered">
-            <thead>
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered mb-0">
+            <thead class="table-dark">
                 <tr>
-                    <th style="background-color: #575757; color: whitesmoke;"><i class="bi bi-hand-index-thumb"></i></th>
-                    <th style="background-color: #575757; color: whitesmoke;">Permission字串</th>
-                    <th style="background-color: #575757; color: whitesmoke;">類別</th>
+                    <th style="width: 50px;"><i class="bi bi-hand-index-thumb"></i></th>
+                    <th>Permission字串</th>
+                    <th>類別</th>
                 </tr>
             </thead>
-			<tbody>
-				<tr v-for="item in paramList" :key="item.oid">
+            <tbody>
+                <tr v-for="item in paramList" :key="item.oid">
                     <td>
-                        <button class="btn btn-warning btn-sm" @click="delParamConfirm(item.oid)"><i class="bi bi-trash"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" @click="delParamConfirm(item.oid)"><i class="bi bi-trash"></i></button>
                     </td>
                     <td>{{item.permission}}</td>
                     <td>{{item.permType}}</td>
-				</tr>	
-			</tbody>
-		</table>		
-	</div>
+                </tr>	
+            </tbody>
+        </table>
+    </div>
+  </div>
 </div>
 </template>

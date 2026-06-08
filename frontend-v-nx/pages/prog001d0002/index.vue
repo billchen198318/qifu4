@@ -181,11 +181,10 @@ onMounted(() => {
 <template>
 
 <div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12">
+  <div class="col-12">
     <Toolbar 
         :progId="pageProgramId" 
         description="程式管理." 
-        marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
         createFlag="Y"
@@ -198,37 +197,33 @@ onMounted(() => {
 
 <HiddenQueryFieldAlertInfo :dataSource="dsList" :queryFieldShowFlag="qFieldShow" />
 
-<div class="row" v-show="qFieldShow">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<div class="form-group form-floating">
-			<input type="text" class="form-control" id="progId" placeholder="輸入程式編號" v-model="queryPageStore.queryParam.progId">
-			<label for="progId">程式編號</label>
-    	</div>
-  	</div>
-  	<div class="col-xs-6 col-md-6 col-lg-6">
-    	<div class="form-group form-floating">
-			<input type="text" class="form-control" id="name" placeholder="輸入程式名稱" v-model="queryPageStore.queryParam.name">
-			<label for="name">程式名稱</label>
-    	</div>
-  	</div>
-</div>
-
-<p v-show="qFieldShow" style="margin-bottom: 5px"></p>
-
-<div class="row" v-show="qFieldShow">
-  	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-search"></i>&nbsp;查詢</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>
-  	</div>
-</div>  
-
-<div v-show="qFieldShow" class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
+<div v-show="qFieldShow" class="card mb-4">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="form-group form-floating">
+          <input type="text" class="form-control" id="progId" placeholder="輸入程式編號" v-model="queryPageStore.queryParam.progId">
+          <label for="progId">程式編號</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group form-floating">
+          <input type="text" class="form-control" id="name" placeholder="輸入程式名稱" v-model="queryPageStore.queryParam.name">
+          <label for="name">程式名稱</label>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12 d-flex gap-2">
+        <button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-search"></i> 查詢</button>
+        <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<GridPagination 
 			:progId="pageProgramId" 
 			:gridConfig="queryPageStore.gridConfig" 

@@ -92,11 +92,10 @@ const btnSave = async () => {
 
 <template>
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="程式管理，新增資料作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="btnClear"
         	backFlag="Y"
@@ -107,116 +106,117 @@ const btnSave = async () => {
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="progId" class="form-label">程式編號</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('progId', checkFields) ? 'is-invalid' : '']" 
-			id="progId" 
-			placeholder="輸入程式編號" 
-			v-model="formParam.progId"
-		>
-		<div v-if="checkInvalid('progId', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('progId', checkFields) }}</div>
-	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="name" class="form-label">程式名稱</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('name', checkFields) ? 'is-invalid' : '']" 
-			id="name" 
-			placeholder="輸入程式名稱" 
-			v-model="formParam.name"
-		>
-		<div v-if="checkInvalid('name', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('name', checkFields) }}</div>
-	</div>
-</div>
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="progId" class="form-label">程式編號</label>
+                <input 
+                    type="text" 
+                    :class="['form-control', checkInvalid('progId', checkFields) ? 'is-invalid' : '']" 
+                    id="progId" 
+                    placeholder="輸入程式編號" 
+                    v-model="formParam.progId"
+                >
+                <div v-if="checkInvalid('progId', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('progId', checkFields) }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="name" class="form-label">程式名稱</label>
+                <input 
+                    type="text" 
+                    :class="['form-control', checkInvalid('name', checkFields) ? 'is-invalid' : '']" 
+                    id="name" 
+                    placeholder="輸入程式名稱" 
+                    v-model="formParam.name"
+                >
+                <div v-if="checkInvalid('name', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('name', checkFields) }}</div>
+            </div>
+        </div>
 
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<label for="url" class="form-label">Url</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('url', checkFields) ? 'is-invalid' : '']" 
-			id="url" 
-			placeholder="輸入Url" 
-			v-model="formParam.url"
-		>
-		<div v-if="checkInvalid('url', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('url', checkFields) }}</div>
-	</div>
-</div>
+        <div class="row g-3 mt-1">
+            <div class="col-12">
+                <label for="url" class="form-label">Url</label>
+                <input 
+                    type="text" 
+                    :class="['form-control', checkInvalid('url', checkFields) ? 'is-invalid' : '']" 
+                    id="url" 
+                    placeholder="輸入Url" 
+                    v-model="formParam.url"
+                >
+                <div v-if="checkInvalid('url', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('url', checkFields) }}</div>
+            </div>
+        </div>
 
-<div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<div class="form-check form-switch">
-			<input class="form-check-input" type="checkbox" role="switch" id="editMode" v-model="formParam.editModeVar">
-			<label class="form-check-label" for="editMode">編輯頁</label>
-		</div>
-	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<div class="form-check form-switch">
-			<input class="form-check-input" type="checkbox" role="switch" id="isDialog" v-model="formParam.isDialogVar">
-			<label class="form-check-label" for="isDialog">Dialog模式</label>
-		</div>
-	</div>
-</div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="editMode" v-model="formParam.editModeVar">
+                    <label class="form-check-label" for="editMode">編輯頁</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="isDialog" v-model="formParam.isDialogVar">
+                    <label class="form-check-label" for="isDialog">Dialog模式</label>
+                </div>
+            </div>
+        </div>
 
-<div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="dialogW" class="form-label">Dialog寬</label>
-		<input 
-			type="number" 
-			:class="['form-control', checkInvalid('dialogW', checkFields) ? 'is-invalid' : '']" 
-			id="dialogW" 
-			v-model="formParam.dialogW"
-		>
-		<div v-if="checkInvalid('dialogW', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('dialogW', checkFields) }}</div>
-	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="dialogH" class="form-label">Dialog高</label>
-		<input 
-			type="number" 
-			:class="['form-control', checkInvalid('dialogH', checkFields) ? 'is-invalid' : '']" 
-			id="dialogH" 
-			v-model="formParam.dialogH"
-		>
-		<div v-if="checkInvalid('dialogH', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('dialogH', checkFields) }}</div>
-	</div>
-</div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <label for="dialogW" class="form-label">Dialog寬</label>
+                <input 
+                    type="number" 
+                    :class="['form-control', checkInvalid('dialogW', checkFields) ? 'is-invalid' : '']" 
+                    id="dialogW" 
+                    v-model="formParam.dialogW"
+                >
+                <div v-if="checkInvalid('dialogW', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('dialogW', checkFields) }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="dialogH" class="form-label">Dialog高</label>
+                <input 
+                    type="number" 
+                    :class="['form-control', checkInvalid('dialogH', checkFields) ? 'is-invalid' : '']" 
+                    id="dialogH" 
+                    v-model="formParam.dialogH"
+                >
+                <div v-if="checkInvalid('dialogH', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('dialogH', checkFields) }}</div>
+            </div>
+        </div>
 
-<div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="itemType" class="form-label">類別</label>
-		<select class="form-select" id="itemType" v-model="formParam.itemType">
-			<option value="ITEM">ITEM-頁面</option>
-			<option value="FOLDER">FOLDER-目錄</option>
-		</select>
-	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="fontIconClassId" class="form-label">Icon class</label>
-		<div class="d-flex align-items-center">
-			<select 
-				:class="['form-select', checkInvalid('fontIconClassId', checkFields) ? 'is-invalid' : '']" 
-				id="fontIconClassId" 
-				v-model="formParam.fontIconClassId"
-			>
-				<option v-for="icon in popularIcons" :key="icon.name" :value="icon.name">
-					{{ icon.label }} ({{ icon.name }})
-				</option>
-			</select>
-			<i :class="['bi', 'bi-' + formParam.fontIconClassId]" style="font-size: 1.5rem; margin-left: 10px;"></i>
-		</div>
-		<div v-if="checkInvalid('fontIconClassId', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('fontIconClassId', checkFields) }}</div>
-	</div>
-</div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <label for="itemType" class="form-label">類別</label>
+                <select class="form-select" id="itemType" v-model="formParam.itemType">
+                    <option value="ITEM">ITEM-頁面</option>
+                    <option value="FOLDER">FOLDER-目錄</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="fontIconClassId" class="form-label">Icon class</label>
+                <div class="d-flex align-items-center gap-2">
+                    <select 
+                        :class="['form-select', checkInvalid('fontIconClassId', checkFields) ? 'is-invalid' : '']" 
+                        id="fontIconClassId" 
+                        v-model="formParam.fontIconClassId"
+                    >
+                        <option v-for="icon in popularIcons" :key="icon.name" :value="icon.name">
+                            {{ icon.label }} ({{ icon.name }})
+                        </option>
+                    </select>
+                    <i :class="['bi', 'bi-' + formParam.fontIconClassId]" style="font-size: 1.5rem;"></i>
+                </div>
+                <div v-if="checkInvalid('fontIconClassId', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('fontIconClassId', checkFields) }}</div>
+            </div>
+        </div>
 
-<p style="margin-bottom: 5px"></p>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i>&nbsp;儲存</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>		
-	</div>
+        <div class="row mt-4">
+            <div class="col-12 d-flex gap-2">
+                <button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i> 儲存</button>
+                <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>		
+            </div>
+        </div>
+    </div>
 </div>
 </template>

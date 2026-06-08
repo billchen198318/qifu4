@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { computed } from 'vue';
 import { getProgItem } from './BaseHelper';
 
 const props = defineProps<{
@@ -9,131 +9,77 @@ const props = defineProps<{
   changeGridConfigRowMethod: (row: number) => void;
 }>();
 
-const pageProg = ref<any>(null);
-const prevPage = ref(1);
-const nexPage = ref(1);
-const lastPage = ref(1);
-const midMaxShow = 3;
-const pItem = ref<number[]>([]);
+const pageProg = computed(() => getProgItem(props.progId));
 
-const gBtnChangeRowClasses = ref({
-  r10: ' ',
-  r30: ' ',
-  r50: ' ',
-  r100: ' ',
+const lastPage = computed(() => {
+  return Math.max(1, Math.ceil(props.gridConfig.total / props.gridConfig.row));
 });
 
-const refreshRowActiveFn = () => {
-  gBtnChangeRowClasses.value = {
-    r10: props.gridConfig.row === 10 ? ' active ' : ' ',
-    r30: props.gridConfig.row === 30 ? ' active ' : ' ',
-    r50: props.gridConfig.row === 50 ? ' active ' : ' ',
-    r100: props.gridConfig.row === 100 ? ' active ' : ' ',
-  };
-};
+const prevPage = computed(() => Math.max(1, props.gridConfig.page - 1));
+const nexPage = computed(() => Math.min(lastPage.value, props.gridConfig.page + 1));
 
-const refreshPageNumFn = () => {
-  pItem.value = [];
-  if (props.gridConfig.total > 0) {
-    lastPage.value = Math.ceil(props.gridConfig.total / props.gridConfig.row);
-    
-    // 修正頁碼範圍
-    if (props.gridConfig.page > lastPage.value) props.gridConfig.page = lastPage.value;
-    if (props.gridConfig.page < 1) props.gridConfig.page = 1;
+const pItem = computed(() => {
+  const items = [];
+  const midMaxShow = 3;
+  
+  // 確保頁碼在合法範圍內
+  let currentPage = props.gridConfig.page;
+  if (currentPage > lastPage.value) currentPage = lastPage.value;
+  if (currentPage < 1) currentPage = 1;
 
-    prevPage.value = Math.max(1, props.gridConfig.page - 1);
-    nexPage.value = Math.min(lastPage.value, props.gridConfig.page + 1);
+  let pStart = Math.max(1, currentPage - midMaxShow);
+  let pEnd = Math.min(lastPage.value, currentPage + midMaxShow);
 
-    let pStart = Math.max(1, props.gridConfig.page - midMaxShow);
-    let pEnd = Math.min(lastPage.value, props.gridConfig.page + midMaxShow);
-
-    for (let i = pStart; i <= pEnd; i++) {
-      pItem.value.push(i);
-    }
+  for (let i = pStart; i <= pEnd; i++) {
+    items.push(i);
   }
-};
-
-watch(() => props.gridConfig.row, () => {
-  refreshRowActiveFn();
-  refreshPageNumFn();
-});
-
-watch(() => [props.gridConfig.page, props.gridConfig.total], () => {
-  refreshPageNumFn();
-});
-
-onMounted(() => {
-  pageProg.value = getProgItem(props.progId);
-  refreshRowActiveFn();
-  refreshPageNumFn();
+  return items;
 });
 </script>
 
 <template>
-  <div class="row">
-    <div class="col-xs-12 col-md-12 col-lg-12">
-      <table v-if="gridConfig && gridConfig.total > 0" width="100%" border="0" cellspacing="0" cellpadding="1">
-        <tbody>
-          <tr>
-            <td width="70%" align="left" valign="middle">
-              <nav aria-label="Page navigation">
-                <ul class="pagination">
-                  <li class="page-item" @click.prevent="changePageSelectMethod(1)">
-                    <a class="page-link" href="#"><span aria-hidden="true">&laquo;</span></a>
-                  </li>
-                  <li class="page-item" @click.prevent="changePageSelectMethod(prevPage)">
-                    <a class="page-link" href="#"><span aria-hidden="true">&lsaquo;</span></a>
-                  </li>
-                  <li 
-                    v-for="pNum in pItem" 
-                    :key="pNum"
-                    :class="['page-item', pNum === gridConfig.page ? 'active' : '']" 
-                    @click.prevent="changePageSelectMethod(pNum)"
-                  >
-                    <a class="page-link" href="#">{{ pNum }}</a>
-                  </li>
-                  <li class="page-item" @click.prevent="changePageSelectMethod(nexPage)">
-                    <a class="page-link" href="#"><span aria-hidden="true">&rsaquo;</span></a>
-                  </li>
-                  <li class="page-item" @click.prevent="changePageSelectMethod(lastPage)">
-                    <a class="page-link" href="#"><span aria-hidden="true">&raquo;</span></a>
-                  </li>
-                </ul> 
-              </nav>       	      
-            </td>   
-            <td width="30%" align="right" valign="middle">
-              <table width="100%" border="0" cellspacing="0" cellpadding="1">
-                <tbody>
-                  <tr>
-                    <td align="right">
-                      <div class="btn-group me-2" role="group">
-                        <button type="button" :class="['btn btn-secondary', gBtnChangeRowClasses.r10]" @click="changeGridConfigRowMethod(10)">10</button>
-                        <button type="button" :class="['btn btn-secondary', gBtnChangeRowClasses.r30]" @click="changeGridConfigRowMethod(30)">30</button>
-                        <button type="button" :class="['btn btn-secondary', gBtnChangeRowClasses.r50]" @click="changeGridConfigRowMethod(50)">50</button>
-                        <button type="button" :class="['btn btn-secondary', gBtnChangeRowClasses.r100]" @click="changeGridConfigRowMethod(100)">100</button>
-                      </div>
-                    </td>
-                    <td align="left">
-                      <h6>
-                        Total
-                        <span class="badge text-bg-info">{{ gridConfig.total }}</span>
-                      </h6>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>             
-          </tr>
-        </tbody>
-      </table>
+  <div v-if="gridConfig && gridConfig.total > 0" class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-3">
+    <!-- 左側：分頁條 -->
+    <nav aria-label="Page navigation">
+      <ul class="pagination pagination-sm mb-0">
+        <li class="page-item" @click.prevent="changePageSelectMethod(1)">
+          <a class="page-link" href="#"><span aria-hidden="true">&laquo;</span></a>
+        </li>
+        <li class="page-item" @click.prevent="changePageSelectMethod(prevPage)">
+          <a class="page-link" href="#"><span aria-hidden="true">&lsaquo;</span></a>
+        </li>
+        <li 
+          v-for="pNum in pItem" 
+          :key="pNum"
+          :class="['page-item', pNum === gridConfig.page ? 'active' : '']" 
+          @click.prevent="changePageSelectMethod(pNum)"
+        >
+          <a class="page-link" href="#">{{ pNum }}</a>
+        </li>
+        <li class="page-item" @click.prevent="changePageSelectMethod(nexPage)">
+          <a class="page-link" href="#"><span aria-hidden="true">&rsaquo;</span></a>
+        </li>
+        <li class="page-item" @click.prevent="changePageSelectMethod(lastPage)">
+          <a class="page-link" href="#"><span aria-hidden="true">&raquo;</span></a>
+        </li>
+      </ul> 
+    </nav>
+
+    <!-- 右側：資料筆數與切換 -->
+    <div class="d-flex align-items-center gap-3">
+      <div class="btn-group btn-group-sm" role="group">
+        <button v-for="size in [10, 30, 50, 100]" :key="size" type="button" 
+                :class="['btn btn-outline-secondary', gridConfig.row === size ? 'active' : '']" 
+                @click="changeGridConfigRowMethod(size)">{{ size }}</button>
+      </div>
+      <div class="text-muted small">
+        共 <span class="badge bg-info text-dark">{{ gridConfig.total }}</span> 筆
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.pagination {
-  margin-bottom: 0;
-}
 .page-link {
   cursor: pointer;
 }

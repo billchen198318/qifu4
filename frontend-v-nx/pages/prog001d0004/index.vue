@@ -174,11 +174,10 @@ onMounted(() => {
 <template>
 
 <div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12">
+  <div class="col-12">
     <Toolbar 
         :progId="pageProgramId" 
         description="Freemarker 樣板管理." 
-        marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
         createFlag="Y"
@@ -191,37 +190,31 @@ onMounted(() => {
 
 <HiddenQueryFieldAlertInfo :dataSource="dsList" :queryFieldShowFlag="qFieldShow" />
 
-<div class="row" v-show="qFieldShow">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<div class="form-group form-floating">
-			<input type="text" class="form-control" id="templateId" placeholder="輸入樣板編號" v-model="queryPageStore.queryParam.templateId">
-			<label for="templateId">樣板編號</label>
-    	</div>
-  	</div>
-  	<div class="col-xs-6 col-md-6 col-lg-6">
-    	<div class="form-group form-floating">
-			<input type="text" class="form-control" id="title" placeholder="輸入樣板標題" v-model="queryPageStore.queryParam.titleLike">
-			<label for="title">樣板標題</label>
-    	</div>
-  	</div>
-</div>
-
-<p v-show="qFieldShow" style="margin-bottom: 5px"></p>
-
-<div class="row" v-show="qFieldShow">
-  	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-search"></i>&nbsp;查詢</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>
-  	</div>
-</div>  
-
-<div v-show="qFieldShow" class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
+<div v-show="qFieldShow" class="card mb-4">
+  <div class="card-body">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="templateId" placeholder="輸入樣板編號" v-model="queryPageStore.queryParam.templateId">
+                <label for="templateId">樣板編號</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="title" placeholder="輸入樣板標題" v-model="queryPageStore.queryParam.titleLike">
+                <label for="title">樣板標題</label>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+        <button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-search"></i> 查詢</button>
+        <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>
+    </div>
+  </div>
 </div>
 
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<GridPagination 
 			:progId="pageProgramId" 
 			:gridConfig="queryPageStore.gridConfig" 

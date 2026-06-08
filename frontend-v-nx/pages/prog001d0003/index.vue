@@ -140,42 +140,46 @@ onMounted(() => {
 <template>
 
 <div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12">
+  <div class="col-12">
     <Toolbar 
         :progId="pageProgramId" 
         description="選單配置." 
-        marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
     />
   </div>
 </div>
 
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12 form-floating">
-		<select id="folderOid" class="form-select" aria-label="請選取" v-model="queryPageStore.queryParam.folderOid" @change="programFolderChange">
-			<option :value="pleaseSelectId">{{pleaseSelectText}}</option>
-			<option v-for="item in folderList" :key="item.oid" :value="item.oid">{{item.progId}} - {{item.name}}</option>
-		</select>		
-        <label for="folderOid">程式目錄</label>
-	</div>
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="row">
+        <div class="col-md-12 form-floating">
+            <select id="folderOid" class="form-select" aria-label="請選取" v-model="queryPageStore.queryParam.folderOid" @change="programFolderChange">
+                <option :value="pleaseSelectId">{{pleaseSelectText}}</option>
+                <option v-for="item in folderList" :key="item.oid" :value="item.oid">{{item.progId}} - {{item.name}}</option>
+            </select>		
+            <label for="folderOid">程式目錄</label>
+        </div>
+    </div>
+  </div>
 </div>
 
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<table class="table table-hover table-bordered">
-            <thead>
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered mb-0">
+            <thead class="table-dark">
                 <tr>
-                    <th style="background-color: #575757; color: whitesmoke;"><i class="bi bi-hand-index-thumb"></i></th>
-                    <th style="background-color: #575757; color: whitesmoke;">頁面程式代號</th>
-                    <th style="background-color: #575757; color: whitesmoke;">頁面程式名稱</th>
+                    <th style="width: 50px;"><i class="bi bi-hand-index-thumb"></i></th>
+                    <th>頁面程式代號</th>
+                    <th>頁面程式名稱</th>
                 </tr>
             </thead>
-			<tbody>
-				<template v-for="item in itemAllList" :key="item.oid">
-					<tr v-if="item.itemType != 'FOLDER'">
-                        <td style="background-color: #BCC6CC;">
-                            <div class="form-check">
+            <tbody>
+                <template v-for="item in itemAllList" :key="item.oid">
+                    <tr v-if="item.itemType != 'FOLDER'">
+                        <td>
+                            <div class="form-check d-flex justify-content-center">
                                 <input 
                                     type="checkbox" 
                                     class="form-check-input" 
@@ -186,12 +190,13 @@ onMounted(() => {
                             </div>
                         </td>
                         <td>{{item.progId}}</td>
-                        <td><i :class="'bi bi-' + item.fontIconClassId"></i>&nbsp;{{item.name}}</td>
+                        <td><i :class="'bi bi-' + item.fontIconClassId"></i> {{item.name}}</td>
                     </tr>		
-				</template>
-			</tbody>
-		</table>
-	</div>
+                </template>
+            </tbody>
+        </table>
+    </div>
+  </div>
 </div>
 
 </template>

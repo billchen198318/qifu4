@@ -174,11 +174,10 @@ onMounted(() => {
 
 <template>
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="Jasperreport resources管理，參數配置作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="tbRefresh"
         	backFlag="Y"
@@ -189,71 +188,68 @@ onMounted(() => {
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		Jasperreport報表編號:&nbsp;{{masterParam.reportId}}
-	</div>   
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h6 class="text-muted mb-0">Jasperreport報表編號: <span class="text-dark">{{masterParam.reportId}}</span></h6>
+        </div>
+    </div>
+    
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="urlParam" class="form-label">Url參數</label>
+        <input 
+          type="text" 
+          :class="['form-control', checkInvalid('urlParam', checkFields) ? 'is-invalid' : '']" 
+          id="urlParam" 
+          placeholder="輸入Url參數" 
+          v-model="formParam.urlParam"
+        >
+        <div v-if="checkInvalid('urlParam', checkFields)" class="invalid-feedback">{{ invalidFeedback('urlParam', checkFields) }}</div>
+      </div>
+      <div class="col-md-6">
+        <label for="rptParam" class="form-label">Jasperreport參數</label>
+        <input 
+          type="text" 
+          :class="['form-control', checkInvalid('rptParam', checkFields) ? 'is-invalid' : '']" 
+          id="rptParam" 
+          placeholder="輸入物件變數" 
+          v-model="formParam.rptParam"
+        >
+        <div v-if="checkInvalid('rptParam', checkFields)" class="invalid-feedback">{{ invalidFeedback('rptParam', checkFields) }}</div>
+      </div>
+    </div>
+    
+    <div class="mt-4 d-flex gap-2">
+      <button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i> 儲存</button>
+      <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>		
+    </div>
+  </div>
 </div>
 
-<div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="urlParam" class="form-label">Url參數</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('urlParam', checkFields) ? 'is-invalid' : '']" 
-			id="urlParam" 
-			placeholder="輸入Url參數" 
-			v-model="formParam.urlParam"
-		>
-		<div v-if="checkInvalid('urlParam', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('urlParam', checkFields) }}</div>
-	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="rptParam" class="form-label">Jasperreport參數</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('rptParam', checkFields) ? 'is-invalid' : '']" 
-			id="rptParam" 
-			placeholder="輸入物件變數" 
-			v-model="formParam.rptParam"
-		>
-		<div v-if="checkInvalid('rptParam', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('rptParam', checkFields) }}</div>
-	</div>
-</div>
-
-<p style="margin-bottom: 5px"></p>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i>&nbsp;儲存</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>		
-	</div>
-</div>
-
-<div class="row">
-	&nbsp;
-</div>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<table class="table table-hover table-bordered">
-            <thead>
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered mb-0">
+            <thead class="table-dark">
                 <tr>
-                    <th style="background-color: #575757; color: whitesmoke;"><i class="bi bi-hand-index-thumb"></i></th>
-                    <th style="background-color: #575757; color: whitesmoke;">Url參數</th>
-                    <th style="background-color: #575757; color: whitesmoke;">Jasperreport參數</th>
+                    <th style="width: 50px;"><i class="bi bi-hand-index-thumb"></i></th>
+                    <th>Url參數</th>
+                    <th>Jasperreport參數</th>
                 </tr>
             </thead>
-			<tbody>
-				<tr v-for="item in paramList" :key="item.oid">
+            <tbody>
+                <tr v-for="item in paramList" :key="item.oid">
                     <td>
-                        <button class="btn btn-warning btn-sm" @click="delParamConfirm(item.oid)"><i class="bi bi-trash"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" @click="delParamConfirm(item.oid)"><i class="bi bi-trash"></i></button>
                     </td>
                     <td>{{item.urlParam}}</td>
                     <td>{{item.rptParam}}</td>
-				</tr>	
-			</tbody>
-		</table>		
-	</div>
+                </tr>	
+            </tbody>
+        </table>
+    </div>
+  </div>
 </div>
 </template>
