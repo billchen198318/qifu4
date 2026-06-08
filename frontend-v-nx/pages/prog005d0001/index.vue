@@ -194,7 +194,6 @@ onMounted(() => {
     <Toolbar 
         :progId="pageProgramId" 
         description="MQTT Dashboard." 
-        marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
 		queryFieldShowSwitchFlag="Y"

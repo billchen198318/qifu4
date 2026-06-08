@@ -96,7 +96,6 @@ const btnSave = async () => {
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="程式管理，新增資料作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="btnClear"
         	backFlag="Y"

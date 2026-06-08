@@ -5,7 +5,6 @@ import { getProgItem } from './BaseHelper';
 const props = defineProps<{
   progId: string;
   description?: string;
-  marginBottom?: string;
   refreshFlag?: string;
   backFlag?: string;
   createFlag?: string;

@@ -170,7 +170,6 @@ onMounted(() => {
     <Toolbar 
         :progId="pageProgramId" 
         description="站台測試用." 
-        marginBottom="N"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
         createFlag="Y"

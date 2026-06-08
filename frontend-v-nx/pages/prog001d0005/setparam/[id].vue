@@ -178,7 +178,6 @@ onMounted(() => {
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="Jasperreport resources管理，參數配置作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="tbRefresh"
         	backFlag="Y"

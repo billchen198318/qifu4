@@ -185,7 +185,6 @@ onMounted(() => {
     <Toolbar 
         :progId="pageProgramId" 
         description="程式管理." 
-        marginBottom="N"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
         createFlag="Y"

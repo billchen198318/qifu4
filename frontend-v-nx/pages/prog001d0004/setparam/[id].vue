@@ -182,7 +182,6 @@ onMounted(() => {
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="Freemarker 樣板管理，配置參數作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="loadData"
         	backFlag="Y"

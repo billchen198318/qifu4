@@ -130,7 +130,6 @@ onMounted(() => {
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="程式管理，修改資料作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="loadData"
         	backFlag="Y"

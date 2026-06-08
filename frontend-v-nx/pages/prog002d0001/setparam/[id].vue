@@ -180,7 +180,6 @@ onMounted(() => {
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="Role管理，Permission配置作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="tbRefresh"
         	backFlag="Y"
