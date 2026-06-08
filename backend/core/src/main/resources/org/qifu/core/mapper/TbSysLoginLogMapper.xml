@@ -7,6 +7,7 @@
     <result column="USER" jdbcType="VARCHAR" property="user" />
     <result column="CUSERID" jdbcType="VARCHAR" property="cuserid" />
     <result column="CDATE" jdbcType="TIMESTAMP" property="cdate" />
+    <result column="FAIL_FLAG" jdbcType="CHAR" property="failFlag" />
     <result column="UUSERID" jdbcType="VARCHAR" property="uuserid" />
     <result column="UDATE" jdbcType="TIMESTAMP" property="udate" />
   </resultMap>
@@ -21,6 +22,12 @@
 	<if test="user != null and user != ''.toString() ">
 		AND USER = #{user,jdbcType=VARCHAR}
 	</if>  
+	<if test="failFlag != null and failFlag != ''.toString() ">
+		AND FAIL_FLAG = #{failFlag,jdbcType=CHAR}
+	</if>
+	<if test="cdateStart != null">
+		AND CDATE <![CDATA[ >= ]]> #{cdateStart,jdbcType=TIMESTAMP}
+	</if>
   </sql>
   
   <select id="selectListByParams" parameterType="java.util.HashMap" resultMap="BaseResultMap">
@@ -70,6 +77,9 @@
       <if test="cdate != null">
         CDATE,
       </if>
+      <if test="failFlag != null">
+        FAIL_FLAG,
+      </if>
       <if test="uuserid != null">
         UUSERID,
       </if>
@@ -90,6 +100,9 @@
       <if test="cdate != null">
         #{cdate,jdbcType=TIMESTAMP},
       </if>
+      <if test="failFlag != null">
+        #{failFlag,jdbcType=CHAR},
+      </if>
       <if test="uuserid != null">
         #{uuserid,jdbcType=VARCHAR},
       </if>
@@ -105,14 +118,9 @@
       <if test="user != null">
         USER = #{user,jdbcType=VARCHAR},
       </if>
-      <!--  
-      <if test="cuserid != null">
-        CUSERID = #{cuserid,jdbcType=VARCHAR},
+      <if test="failFlag != null">
+        FAIL_FLAG = #{failFlag,jdbcType=CHAR},
       </if>
-      <if test="cdate != null">
-        CDATE = #{cdate,jdbcType=TIMESTAMP},
-      </if>
-      -->
       <if test="uuserid != null">
         UUSERID = #{uuserid,jdbcType=VARCHAR},
       </if>

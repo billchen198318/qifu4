@@ -22,22 +22,25 @@
 package org.qifu.core.service.impl;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.qifu.base.exception.ServiceException;
 import org.qifu.base.mapper.IBaseMapper;
+import org.qifu.base.message.BaseSystemMessage;
 import org.qifu.base.service.BaseService;
 import org.qifu.core.entity.TbSysLoginLog;
 import org.qifu.core.mapper.TbSysLoginLogMapper;
 import org.qifu.core.service.ISysLoginLogService;
+import org.qifu.util.SimpleUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-// change use SysTokenServiceImpl
 @Component
 @Service
 @Transactional(propagation=Propagation.REQUIRED, timeout=300, readOnly=true)
@@ -74,6 +77,27 @@ public class SysLoginLogServiceImpl extends BaseService<TbSysLoginLog, String> i
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("cdate", dt.plusDays(-14).toDate());
 		return this.tbSysLoginLogMapper.deleteByDate(paramMap);
-	}	
+	}
+
+	@Transactional(
+			propagation=Propagation.REQUIRED, 
+			readOnly=false,
+			rollbackFor={RuntimeException.class, IOException.class, Exception.class} )		
+	@Override
+	public void insertLoginFailLog(TbSysLoginLog log) throws ServiceException {
+		if (StringUtils.isBlank(log.getOid())) {
+			log.setOid(SimpleUtils.getUUIDStr());
+		}
+		
+		log.setCuserid("sys");
+		log.setFailFlag("Y");
+		if (log.getCdate() == null) {
+			log.setCdate(new Date());
+		}
+		
+		if (this.tbSysLoginLogMapper.insert(log) < 1) {
+			throw new ServiceException(BaseSystemMessage.insertFail());
+		}
+	}
 	
 }

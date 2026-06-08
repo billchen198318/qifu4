@@ -32,4 +32,6 @@ public interface ISysLoginLogService<T, E> extends IBaseService<TbSysLoginLog, S
 	
 	public Boolean deleteByDate() throws ServiceException;
 	
+	public void insertLoginFailLog(TbSysLoginLog log) throws ServiceException;
+	
 }

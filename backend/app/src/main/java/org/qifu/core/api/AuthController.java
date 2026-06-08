@@ -28,11 +28,13 @@ import org.qifu.core.model.User;
 import org.qifu.core.service.IAccountService;
 import org.qifu.core.service.IRolePermissionService;
 import org.qifu.core.service.ISysCodeService;
+import org.qifu.core.service.ISysLoginLogService;
 import org.qifu.core.service.IUserRoleService;
 import org.qifu.core.support.JwtAuthLoginedUserRoleService;
 import org.qifu.core.util.CookieUtils;
 import org.qifu.core.util.UserUtils;
 import org.qifu.core.vo.LoginRequest;
+import org.qifu.core.entity.TbSysLoginLog;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -51,6 +53,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -68,13 +72,16 @@ public class AuthController {
 	private final IRolePermissionService<TbRolePermission, String> rolePermissionService;	
 	
 	private final IAccountService<TbAccount, String> accountService;
+
+	private final ISysLoginLogService<TbSysLoginLog, String> sysLoginLogService;
 	
 	public AuthController(AuthenticationManager authenticationManager, DataSource dataSource,
 			ISysCodeService<TbSysCode, String> sysCodeService,
 			JwtAuthLoginedUserRoleService jwtAuthLoginedUserRoleService,
 			IUserRoleService<TbUserRole, String> userRoleService,
 			IRolePermissionService<TbRolePermission, String> rolePermissionService,
-			IAccountService<TbAccount, String> accountService) {
+			IAccountService<TbAccount, String> accountService,
+			ISysLoginLogService<TbSysLoginLog, String> sysLoginLogService) {
 		super();
 		this.authenticationManager = authenticationManager;
 		this.dataSource = dataSource;
@@ -83,6 +90,7 @@ public class AuthController {
 		this.userRoleService = userRoleService;
 		this.rolePermissionService = rolePermissionService;
 		this.accountService = accountService;
+		this.sysLoginLogService = sysLoginLogService;
 	}
 	
 	@PostMapping("/validLogined")
@@ -168,6 +176,19 @@ public class AuthController {
 	
 	@PostMapping("/signin")
 	public ResponseEntity<User> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+		
+		// 1. Check if account is locked
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("user", loginRequest.getUsername());
+		paramMap.put("failFlag", "Y");
+		// Find logs within the last 5 minutes
+		paramMap.put("cdateStart", new Date(System.currentTimeMillis() - (5 * 60 * 1000)));
+		
+		Long failCount = this.sysLoginLogService.count(paramMap);
+		if (failCount != null && failCount >= 3) {
+			throw new AuthenticationException("Account is locked due to multiple failed login attempts. Please try again later.") {};
+		}
+
 		TokenBuilderVariable tbv = null;
 		User user = null;
 	    try {
@@ -191,9 +212,21 @@ public class AuthController {
 				this.jwtAuthLoginedUserRoleService.onLoginedSuccess(authentication);
 			}
 	    } catch (AuthenticationException | ServiceException e) {
+	    	// 2. Log failed attempt
+	    	TbSysLoginLog log = new TbSysLoginLog();
+	    	log.setUser(loginRequest.getUsername());
+	    	log.setCdate(new Date());
+	    	this.sysLoginLogService.insertLoginFailLog(log);
+	    	
 	    	e.printStackTrace();
 	    	throw e;
 		}  catch (Exception e) {
+	    	// Log failed attempt
+	    	TbSysLoginLog log = new TbSysLoginLog();
+	    	log.setUser(loginRequest.getUsername());
+	    	log.setCdate(new Date());
+	    	this.sysLoginLogService.insertLoginFailLog(log);
+	    	
 			e.printStackTrace();
 		}		
 	    if (null == user) {

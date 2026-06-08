@@ -18,6 +18,7 @@ public class TbSysLoginLog implements java.io.Serializable {
 	private Date cdate;
 	private String uuserid;
 	private Date udate;
+	private String failFlag;
 	
 	/* for query grid show */
 	public String getCdateString() {
@@ -59,6 +60,14 @@ public class TbSysLoginLog implements java.io.Serializable {
 		this.cdate = cdate;
 	}
 	
+	public String getFailFlag() {
+		return failFlag;
+	}
+
+	public void setFailFlag(String failFlag) {
+		this.failFlag = failFlag;
+	}
+
 	@UpdateUserField(name = "uuserid")
 	public String getUuserid() {
 		return uuserid;
