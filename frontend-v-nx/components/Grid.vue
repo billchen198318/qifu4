@@ -47,18 +47,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="col-xs-12 col-md-12 col-lg-12">
-    <table class="table table-hover table-bordered" v-if="dataSource && dataSource.length > 0">
-      <thead>
+  <div v-if="dataSource && dataSource.length > 0" class="table-responsive">
+    <table class="table table-hover table-bordered mb-0">
+      <thead class="table-dark">
         <tr>
           <th 
             v-for="(col, idx) in config.column" 
             :key="idx"
-            :style="{
-              backgroundColor: config.theadColor.backgroundColor,
-              color: config.theadColor.color,
-              textAlign: col.labTextAlign || 'left'
-            }"
+            :class="[col.labTextAlign ? `text-${col.labTextAlign}` : 'text-start']"
           >
             <template v-if="col.labHtml">
               <span v-html="col.label"></span>
@@ -74,27 +70,28 @@ onMounted(() => {
           <td 
             v-for="(col, cIdx) in config.column" 
             :key="cIdx"
-            :style="{ textAlign: col.textAlign || 'left' }"
+            :class="[col.textAlign ? `text-${col.textAlign}` : 'text-start']"
           >
             <!-- Key Field Formatter (Buttons) -->
             <template v-if="config.keyFieldFormatter.field === col.field">
-              <template v-for="(item, iIdx) in config.keyFieldFormatter.item" :key="iIdx">
-                <button 
-                  v-if="typeof item.method === 'function'"
-                  :id="`_${item.type}_${row[col.field]}`"
-                  :class="item.class"
-                  @click="item.method(row[col.field])"
-                  :data-bs-toggle="config.keyFieldFormatter.showTooltip ? 'tooltip' : undefined"
-                  data-bs-placement="bottom"
-                  :data-bs-title="item.memo"
-                >
-                  <i :class="`bi bi-${item.icon}`"></i>
-                </button>
-                <template v-else>
-                  {{ row[col.field] }}
+              <div class="d-flex gap-1">
+                <template v-for="(item, iIdx) in config.keyFieldFormatter.item" :key="iIdx">
+                  <button 
+                    v-if="typeof item.method === 'function'"
+                    :id="`_${item.type}_${row[col.field]}`"
+                    :class="item.class"
+                    @click="item.method(row[col.field])"
+                    :data-bs-toggle="config.keyFieldFormatter.showTooltip ? 'tooltip' : undefined"
+                    data-bs-placement="bottom"
+                    :data-bs-title="item.memo"
+                  >
+                    <i :class="`bi bi-${item.icon}`"></i>
+                  </button>
+                  <template v-else>
+                    {{ row[col.field] }}
+                  </template>
                 </template>
-                <span v-if="iIdx + 1 < config.keyFieldFormatter.item.length">&nbsp;</span>
-              </template>
+              </div>
             </template>
 
             <!-- Regular Field -->
@@ -119,9 +116,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Grid 專屬樣式 */
-.table {
-  width: 100%;
-  margin-bottom: 1rem;
+.table-responsive {
+  border-radius: 4px;
 }
 </style>
