@@ -35,40 +35,51 @@ const fnQueryFieldShowSwitch = () => {
 
 onMounted(() => {
   pageProg.value = getProgItem(props.progId);
-  if (!pageProg.value) {
-    console.warn('Toolbar load warning: pageProg is null for', props.progId);
-  }
 });
 </script>
 
 <template>
-<div class="app-title" style="background: linear-gradient(to top, #f8f9fa, #ffffff); width: 103vw; overflow: hidden;">
-	<div v-if="pageProg">
-		<h1 class="text-dark"><i :class="'bi bi-' + pageProg.fontIconClassId"></i>&nbsp;{{ pageProg.name }}</h1>
-		<p class="text-muted">{{ description }}</p>
-		<div>
-            <i v-if="backFlag === 'Y'" id="tb_back" class="fs-5 bi bi-arrow-left-square btn btn-light btn-sm text-info" @click="fnBack" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="上一頁" data-trigger="hover"></i>
-            {{ backFlag === 'Y' ? '&nbsp;' : '' }}
+<div class="app-toolbar d-flex align-items-center justify-content-between mb-3 shadow-sm border-bottom">
+  <!-- 左側：標題 (精簡型) -->
+  <div class="toolbar-left d-flex align-items-center">
+    <h6 class="mb-0 text-dark fw-bold" v-if="pageProg">
+      <i :class="'bi bi-' + pageProg.fontIconClassId" class="me-2"></i>{{ pageProg.name }}
+    </h6>
+    <span class="text-muted ms-2 ps-2 border-start d-none d-md-inline-block small">
+        {{ description }}
+    </span>
+  </div>
 
-            <i v-if="refreshFlag === 'Y'" id="tb_repeat" class="fs-5 bi bi-repeat btn btn-light btn-sm text-info" @click="fnRefresh" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="刷新" data-trigger="hover"></i>
-            {{ refreshFlag === 'Y' ? '&nbsp;' : '' }}
+  <!-- 右側：按鈕群 (使用 gap 取代 &nbsp;) -->
+  <div class="toolbar-right d-flex align-items-center gap-1">
+    <button v-if="backFlag === 'Y'" class="btn btn-light btn-sm text-info" @click="fnBack" title="上一頁">
+        <i class="bi bi-arrow-left"></i>
+    </button>
+    <button v-if="refreshFlag === 'Y'" class="btn btn-light btn-sm text-info" @click="fnRefresh" title="刷新">
+        <i class="bi bi-repeat"></i>
+    </button>
+    <button v-if="createFlag === 'Y'" class="btn btn-light btn-sm text-info" @click="fnCreate" title="新增">
+        <i class="bi bi-plus-circle"></i>
+    </button>
+    
+    <div v-if="(queryFieldShowSwitchFlag === 'Y' || saveFlag === 'Y') && (backFlag === 'Y' || refreshFlag === 'Y' || createFlag === 'Y')" class="vr mx-1"></div>
 
-            <i v-if="createFlag === 'Y'" id="tb_plus" class="fs-5 bi bi-plus-circle btn btn-light btn-sm text-info" @click="fnCreate" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="新增頁" data-trigger="hover"></i>
-            {{ createFlag === 'Y' ? '&nbsp;' : '' }}
-
-            <i class="fs-7 bi bi-three-dots-vertical text-muted" v-if="queryFieldShowSwitchFlag === 'Y' || saveFlag === 'Y'"></i>
-
-            <i v-if="saveFlag === 'Y'" id="tb_save" class="fs-5 bi bi-save btn btn-light btn-sm text-info" @click="fnSave" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="儲存/更新" data-trigger="hover"></i>
-            {{ saveFlag === 'Y' ? '&nbsp;' : '' }}
-
-            <i v-if="queryFieldShowSwitchFlag === 'Y'" id="tb_queryFieldShowSwitch" :class="'fs-5 bi bi-' + (switchEye ? 'arrow-down-circle' : 'arrow-up-circle') + ' btn btn-light btn-sm '" @click="fnQueryFieldShowSwitch" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="顯示/隱藏查詢區塊" data-trigger="hover"></i>
-            {{ queryFieldShowSwitchFlag === 'Y' ? '&nbsp;' : '' }}            
-		</div>
-	</div>    
-</div> 
-<p v-if="marginBottom === 'Y'" style="margin-bottom: 5px"></p>
+    <button v-if="saveFlag === 'Y'" class="btn btn-light btn-sm text-primary" @click="fnSave" title="儲存">
+        <i class="bi bi-save"></i>
+    </button>
+    <button v-if="queryFieldShowSwitchFlag === 'Y'" class="btn btn-light btn-sm text-secondary" @click="fnQueryFieldShowSwitch" title="查詢開關">
+        <i :class="'bi bi-' + (switchEye ? 'chevron-down' : 'chevron-up')"></i>
+    </button>
+  </div>
+</div>
 </template>
 
 <style scoped>
-/* 移除多餘的 padding 與 margin，回歸全域 vali.css 控制 */
+.app-toolbar {
+    height: 40px; /* 固定精簡高度 */
+    padding: 0 15px; /* 兩側呼吸空間 */
+    background: #fff;
+    border-radius: 4px;
+}
+.small { font-size: 0.8rem; }
 </style>

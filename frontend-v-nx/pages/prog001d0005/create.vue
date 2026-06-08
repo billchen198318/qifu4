@@ -108,11 +108,10 @@ const btnSave = async () => {
 
 <template>
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="Jasperreport resources管理，新增資料作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="btnClear"
         	backFlag="Y"
@@ -123,54 +122,48 @@ const btnSave = async () => {
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="reportId" class="form-label">報表編號</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('reportId', checkFields) ? 'is-invalid' : '']" 
-			id="reportId" 
-			placeholder="輸入報表編號" 
-			v-model="formParam.reportId"
-		>
-		<div v-if="checkInvalid('reportId', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('reportId', checkFields) }}</div>
-	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="file" class="form-label">jasperreport資源zip壓縮檔</label>
-		<input 
-			type="file" 
-			:class="['custom-file-input form-control', checkInvalid('file', checkFields) ? 'is-invalid' : '']" 
-			id="file" 
-			placeholder="輸入名稱" 
-			@change="handleFiles"
-		>
-		<div v-if="checkInvalid('file', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('file', checkFields) }}</div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<div class="form-check form-switch">
-			<input class="form-check-input" type="checkbox" role="switch" id="compile" v-model="formParam.compile">
-			<label class="form-check-label" for="compile">編譯jrxml</label>
-		</div>		
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<label for="description" class="form-label">說明</label>
-		<textarea class="form-control" id="description" rows="3" v-model="formParam.description"></textarea>			
-	</div>
-</div>
-
-<p style="margin-bottom: 5px"></p>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i>&nbsp;儲存</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>		
-	</div>
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="reportId" class="form-label">報表編號</label>
+        <input 
+          type="text" 
+          :class="['form-control', checkInvalid('reportId', checkFields) ? 'is-invalid' : '']" 
+          id="reportId" 
+          placeholder="輸入報表編號" 
+          v-model="formParam.reportId"
+        >
+        <div v-if="checkInvalid('reportId', checkFields)" class="invalid-feedback">{{ invalidFeedback('reportId', checkFields) }}</div>
+      </div>
+      <div class="col-md-6">
+        <label for="file" class="form-label">jasperreport資源zip壓縮檔</label>
+        <input 
+          type="file" 
+          :class="['form-control', checkInvalid('file', checkFields) ? 'is-invalid' : '']" 
+          id="file" 
+          @change="handleFiles"
+        >
+        <div v-if="checkInvalid('file', checkFields)" class="invalid-feedback">{{ invalidFeedback('file', checkFields) }}</div>
+      </div>
+      
+      <div class="col-12">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="compile" v-model="formParam.compile">
+          <label class="form-check-label" for="compile">編譯jrxml</label>
+        </div>
+      </div>
+      
+      <div class="col-12">
+        <label for="description" class="form-label">說明</label>
+        <textarea class="form-control" id="description" rows="3" v-model="formParam.description"></textarea>			
+      </div>
+    </div>
+    
+    <div class="mt-4 d-flex gap-2">
+      <button type="button" class="btn btn-primary" @click="btnSave"><i class="bi bi-save"></i> 儲存</button>
+      <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>		
+    </div>
+  </div>
 </div>
 </template>

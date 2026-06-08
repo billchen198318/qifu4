@@ -97,11 +97,11 @@ onMounted(() => {
 
 <template>
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="站台測試用，修改資料作業." 
-        	marginBottom="Y"
+        	marginBottom="N"
         	refreshFlag="Y"
         	@refreshMethod="loadData"
         	backFlag="Y"
@@ -112,63 +112,58 @@ onMounted(() => {
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="sysId" class="form-label">編號</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('sysId', checkFields) ? 'is-invalid' : '']" 
-			id="sysId" 
-			v-model="formParam.sysId" 
-			readonly
-		>
-		<div v-if="checkInvalid('sysId', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('sysId', checkFields) }}</div>
-	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="name" class="form-label">名稱</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('name', checkFields) ? 'is-invalid' : '']" 
-			id="name" 
-			placeholder="輸入名稱" 
-			v-model="formParam.name"
-		>
-		<div v-if="checkInvalid('name', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('name', checkFields) }}</div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="host" class="form-label">Host</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('host', checkFields) ? 'is-invalid' : '']" 
-			id="host" 
-			placeholder="輸入Host" 
-			v-model="formParam.host"
-		>
-		<div v-if="checkInvalid('host', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('host', checkFields) }}</div>
-	</div>
-	<div class="col-xs-6 col-md-6 col-lg-6">
-		<label for="contextPath" class="form-label">Context path</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('contextPath', checkFields) ? 'is-invalid' : '']" 
-			id="contextPath" 
-			placeholder="輸入Context path" 
-			v-model="formParam.contextPath"
-		>
-		<div v-if="checkInvalid('contextPath', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('contextPath', checkFields) }}</div>
-	</div>
-</div>
-
-<p style="margin-bottom: 5px"></p>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnUpdate"><i class="bi bi-save"></i>&nbsp;儲存</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>		
-	</div>
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="sysId" class="form-label">編號</label>
+        <input 
+          type="text" 
+          :class="['form-control', checkInvalid('sysId', checkFields) ? 'is-invalid' : '']" 
+          id="sysId" 
+          v-model="formParam.sysId" 
+          readonly
+        >
+        <div v-if="checkInvalid('sysId', checkFields)" class="invalid-feedback">{{ invalidFeedback('sysId', checkFields) }}</div>
+      </div>
+      <div class="col-md-6">
+        <label for="name" class="form-label">名稱</label>
+        <input 
+          type="text" 
+          :class="['form-control', checkInvalid('name', checkFields) ? 'is-invalid' : '']" 
+          id="name" 
+          placeholder="輸入名稱" 
+          v-model="formParam.name"
+        >
+        <div v-if="checkInvalid('name', checkFields)" class="invalid-feedback">{{ invalidFeedback('name', checkFields) }}</div>
+      </div>
+      <div class="col-md-6">
+        <label for="host" class="form-label">Host</label>
+        <input 
+          type="text" 
+          :class="['form-control', checkInvalid('host', checkFields) ? 'is-invalid' : '']" 
+          id="host" 
+          placeholder="輸入Host" 
+          v-model="formParam.host"
+        >
+        <div v-if="checkInvalid('host', checkFields)" class="invalid-feedback">{{ invalidFeedback('host', checkFields) }}</div>
+      </div>
+      <div class="col-md-6">
+        <label for="contextPath" class="form-label">Context path</label>
+        <input 
+          type="text" 
+          :class="['form-control', checkInvalid('contextPath', checkFields) ? 'is-invalid' : '']" 
+          id="contextPath" 
+          placeholder="輸入Context path" 
+          v-model="formParam.contextPath"
+        >
+        <div v-if="checkInvalid('contextPath', checkFields)" class="invalid-feedback">{{ invalidFeedback('contextPath', checkFields) }}</div>
+      </div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+      <button type="button" class="btn btn-primary" @click="btnUpdate"><i class="bi bi-save"></i> 儲存</button>
+      <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>		
+    </div>
+  </div>
 </div>
 </template>

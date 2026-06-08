@@ -189,11 +189,10 @@ onMounted(() => {
 <template>
 
 <div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12">
+  <div class="col-12">
     <Toolbar 
         :progId="pageProgramId" 
         description="操作紀錄檢視." 
-        marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
 		queryFieldShowSwitchFlag="Y"
@@ -204,34 +203,24 @@ onMounted(() => {
 
 <HiddenQueryFieldAlertInfo :dataSource="dsList" :queryFieldShowFlag="qFieldShow" />
 
-<div class="row" v-show="qFieldShow">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<div class="form-group form-floating">
-			<input type="text" class="form-control" id="user" placeholder="輸入帳戶" v-model="queryPageStore.queryParam.user">
-			<label for="user">帳戶</label>
-    	</div>	
-	</div>
-</div>
-
-<p v-show="qFieldShow" style="margin-bottom: 5px"></p>
-
-<div class="row" v-show="qFieldShow">
-  	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-search"></i>&nbsp;查詢</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>
-        &nbsp;
-        &nbsp;
-        <button type="button" class="btn btn-warning" @click="btnDeleteAll"><i class="bi bi-trash"></i>&nbsp;刪除全部紀錄</button>
-  	</div>
-</div>  
-
-<div v-show="qFieldShow" class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">&nbsp;</div>
+<div v-show="qFieldShow" class="card mb-4">
+  <div class="card-body">
+    <div class="row">
+        <div class="col-12 form-floating">
+            <input type="text" class="form-control" id="user" placeholder="輸入帳戶" v-model="queryPageStore.queryParam.user">
+            <label for="user">帳戶</label>
+        </div>
+    </div>
+    <div class="mt-3 d-flex gap-2">
+        <button type="button" class="btn btn-primary" @click="btnQuery"><i class="bi bi-search"></i> 查詢</button>
+        <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>
+        <button type="button" class="btn btn-warning" @click="btnDeleteAll"><i class="bi bi-trash"></i> 刪除全部紀錄</button>
+    </div>
+  </div>
 </div>
 
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<GridPagination 
 			:progId="pageProgramId" 
 			:gridConfig="queryPageStore.gridConfig" 

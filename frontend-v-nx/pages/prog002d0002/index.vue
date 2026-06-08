@@ -142,53 +142,58 @@ onMounted(() => {
 <template>
 
 <div class="row">
-  <div class="col-xs-12 col-md-12 col-lg-12">
+  <div class="col-12">
     <Toolbar 
         :progId="pageProgramId" 
         description="帳戶角色Role管理配置." 
-        marginBottom="Y"
         refreshFlag="Y"
         @refreshMethod="tbRefresh"
     />
   </div>
 </div>
 
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12 form-floating">
-		<select id="userOid" class="form-select" aria-label="請選取" v-model="queryPageStore.queryParam.oid" @change="userChange">
-			<option :value="pleaseSelectId">{{pleaseSelectText}}</option>
-			<option v-for="item in userList" :key="item.oid" :value="item.oid">{{item.account}}</option>
-		</select>		
-        <label for="userOid">使用者帳戶</label>
-	</div>
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="row">
+        <div class="col-12 form-floating">
+            <select id="userOid" class="form-select" aria-label="請選取" v-model="queryPageStore.queryParam.oid" @change="userChange">
+                <option :value="pleaseSelectId">{{pleaseSelectText}}</option>
+                <option v-for="item in userList" :key="item.oid" :value="item.oid">{{item.account}}</option>
+            </select>		
+            <label for="userOid">使用者帳戶</label>
+        </div>
+    </div>
+  </div>
 </div>
 
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<table class="table table-hover table-bordered">
-            <thead>
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered mb-0">
+            <thead class="table-dark">
                 <tr>
-                    <th style="background-color: #575757; color: whitesmoke;"><i class="bi bi-hand-index-thumb"></i></th>
-                    <th style="background-color: #575757; color: whitesmoke;">Role代號</th>
+                    <th style="width: 50px;"><i class="bi bi-hand-index-thumb"></i></th>
+                    <th>Role代號</th>
                 </tr>
             </thead>
-			<tbody>
-				<tr v-for="item in userRoleList" :key="item.oid">
-					<td style="background-color: #BCC6CC;">
-						<div class="form-check">
-							<input 
+            <tbody>
+                <tr v-for="item in userRoleList" :key="item.oid">
+                    <td>
+                        <div class="form-check d-flex justify-content-center">
+                            <input 
                                 type="checkbox" 
                                 class="form-check-input" 
                                 @change="userRoleEnableChange($event, item.oid)" 
                                 :checked="checkItemChecked(item.oid)"
                             >
-						</div>
-					</td>
-					<td>{{item.role}}</td>
-				</tr>		
-			</tbody>
-		</table>
-	</div>
+                        </div>
+                    </td>
+                    <td>{{item.role}}</td>
+                </tr>		
+            </tbody>
+        </table>
+    </div>
+  </div>
 </div>
 
 </template>

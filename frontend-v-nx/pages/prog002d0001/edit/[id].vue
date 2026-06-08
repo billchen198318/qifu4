@@ -93,11 +93,10 @@ onMounted(() => {
 
 <template>
 <div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
+	<div class="col-12">
 		<Toolbar 
 			:progId="pageProgramId" 
         	description="Role管理，修改資料作業." 
-        	marginBottom="Y"
         	refreshFlag="Y"
         	@refreshMethod="loadData"
         	backFlag="Y"
@@ -108,34 +107,31 @@ onMounted(() => {
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<label for="role" class="form-label">Role編號</label>
-		<input 
-			type="text" 
-			:class="['form-control', checkInvalid('role', checkFields) ? 'is-invalid' : '']" 
-			id="role" 
-			v-model="formParam.role" 
-			readonly
-		>
-		<div v-if="checkInvalid('role', checkFields)" class="invalid-feedback d-block">{{ invalidFeedback('role', checkFields) }}</div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<label for="description" class="form-label">說明</label>
-		<textarea class="form-control" id="description" rows="3" v-model="formParam.description"></textarea>			
-	</div>
-</div>
-
-<p style="margin-bottom: 5px"></p>
-
-<div class="row">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-    	<button type="button" class="btn btn-primary" @click="btnUpdate"><i class="bi bi-save"></i>&nbsp;儲存</button>
-    	&nbsp;
-    	<button type="button" class="btn btn-primary" @click="btnClear"><i class="bi bi-eraser"></i>&nbsp;清除</button>		
-	</div>
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-12">
+        <label for="role" class="form-label">Role編號</label>
+        <input 
+          type="text" 
+          :class="['form-control', checkInvalid('role', checkFields) ? 'is-invalid' : '']" 
+          id="role" 
+          v-model="formParam.role" 
+          readonly
+        >
+        <div v-if="checkInvalid('role', checkFields)" class="invalid-feedback">{{ invalidFeedback('role', checkFields) }}</div>
+      </div>
+      
+      <div class="col-12">
+        <label for="description" class="form-label">說明</label>
+        <textarea class="form-control" id="description" rows="3" v-model="formParam.description"></textarea>			
+      </div>
+    </div>
+    
+    <div class="mt-4 d-flex gap-2">
+      <button type="button" class="btn btn-primary" @click="btnUpdate"><i class="bi bi-save"></i> 儲存</button>
+      <button type="button" class="btn btn-outline-secondary" @click="btnClear"><i class="bi bi-eraser"></i> 清除</button>		
+    </div>
+  </div>
 </div>
 </template>
