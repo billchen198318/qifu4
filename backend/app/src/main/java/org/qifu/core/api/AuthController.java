@@ -248,11 +248,7 @@ public class AuthController {
 		LoginRequest res = new LoginRequest();
 		boolean refreshNew = false;
 	    try {
-	    	String accessToken = loginRequest.getAccessToken();
 	    	String refreshToken = loginRequest.getRefreshToken();
-	    	if (StringUtils.isBlank(accessToken) || "Y".equals(accessToken)) {
-	    		accessToken = CookieUtils.getCookieValue(request, Constants.TOKEN_ACCESS_COOKIE_NAME);
-	    	}
 	    	if (StringUtils.isBlank(refreshToken) || "Y".equals(refreshToken)) {
 	    		refreshToken = CookieUtils.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
 	    	}
