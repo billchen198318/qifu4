@@ -23,161 +23,152 @@ package org.qifu.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.ConfigurableMimeFileTypeMap;
 
 public class FSUtils {
-	
+	private static final Logger logger = LoggerFactory.getLogger(FSUtils.class);
+
 	protected FSUtils() {
 		throw new IllegalStateException("Utils class: FSUtils");
 	}
-	
-	public static void mv(final String sourceFile, final String destFile) throws IOException {		
-		File srcFile=new File(sourceFile);
-		File desFile=new File(destFile);	
-		org.apache.commons.io.FileUtils.moveFile(srcFile, desFile);				
+
+	public static void mv(final String sourceFile, final String destFile) throws IOException {
+		Files.move(Paths.get(sourceFile), Paths.get(destFile), StandardCopyOption.REPLACE_EXISTING);
 	}
-	
-	public static void cp(final String sourceFile, final String destFile) throws IOException {		
-		File srcFile=new File(sourceFile);
-		File desFile=new File(destFile);		
-		org.apache.commons.io.FileUtils.copyFile(srcFile, desFile);		
+
+	public static void cp(final String sourceFile, final String destFile) throws IOException {
+		Files.copy(Paths.get(sourceFile), Paths.get(destFile), StandardCopyOption.REPLACE_EXISTING);
 	}
-	
+
 	public static void rm(final String removeFile) throws IOException {
-		File rmFile=new File(removeFile);
-		org.apache.commons.io.FileUtils.forceDelete(rmFile);
+		FileUtils.forceDelete(new File(removeFile));
 	}
-	
+
 	public static String[] getList(final String dir) {
-		File directory=new File(dir);
+		File directory = new File(dir);
 		return directory.list();
 	}
-	
+
 	public static String readStr(final String fileFullPath) {
-		String v="";	
-		File f=new File(fileFullPath);
+		Path path = Paths.get(fileFullPath);
 		try {
-			if (f.exists()) {
-				byte[] b = org.apache.commons.io.FileUtils.readFileToByteArray(f);
-				v=new String(b);				
+			if (Files.exists(path)) {
+				return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Read file error: {}", e.getMessage(), e);
 		}
-		return v;
+		return "";
 	}
-	
+
+	/**
+	 * Write content to file. If file exists, overwrite it.
+	 * 
+	 * @param fileFullPath
+	 * @param content
+	 * @return boolean
+	 */
 	public static boolean writeStr(final String fileFullPath, final String content) {
-		boolean s=false;
-		File f=new File(fileFullPath);		
 		try {
-			if (f.exists()) {
-				org.apache.commons.io.FileUtils.writeByteArrayToFile(f, SimpleUtils.getStr(content).getBytes() );
-				s=true;				
-			}
+			Files.write(Paths.get(fileFullPath), StringUtils.defaultString(content).getBytes(StandardCharsets.UTF_8));
+			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-		return s;
+			logger.error("Write file error: {}", e.getMessage(), e);
+		}
+		return false;
 	}
-	
+
+	/**
+	 * Same as writeStr, kept for compatibility if needed.
+	 * 
+	 * @param fileFullPath
+	 * @param content
+	 * @return boolean
+	 */
 	public static boolean writeStr2(final String fileFullPath, final String content) {
-		boolean s=false;
-		File f=new File(fileFullPath);
-		try {
-			org.apache.commons.io.FileUtils.writeByteArrayToFile(f, SimpleUtils.getStr(content).getBytes() );
-			s=true;	
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-		return s;
+		return writeStr(fileFullPath, content);
 	}
-	
-	public static List<String> findFileListByCondition(
-			final String directory, final String[] subName, final String content) {
-		List<String> list1=new ArrayList<>();
-		List<String> findList=new ArrayList<>();
-		File dir=new File(directory);
-		if (!dir.isDirectory() ) {
-			return list1;
+
+	public static List<String> findFileListByCondition(final String directory, final String[] subName,
+			final String content) {
+		List<String> result = new ArrayList<>();
+		Path start = Paths.get(directory);
+		if (!Files.isDirectory(start)) {
+			return result;
 		}
-		findFileNext(directory, findList);
-		String[] f=null;
-		f=new String[findList.size()];
-		for (int ix=0; ix<findList.size(); ix++ ) {
-			f[ix]=findList.get(ix);
-		}
-		for (int ix=0; ix<f.length; ix++ ) {	
-			boolean foundSub=false;
-			for (int jx=0; jx<subName.length && !foundSub; jx++ ) {
-				if (f[ix].toUpperCase().indexOf(subName[jx].toUpperCase() )>-1 ) {
-					foundSub=true;
+
+		try (Stream<Path> stream = Files.walk(start)) {
+			List<Path> files = stream.filter(Files::isRegularFile).collect(Collectors.toList());
+			for (Path file : files) {
+				String fileName = file.getFileName().toString().toUpperCase();
+				boolean matchExtension = false;
+				for (String sub : subName) {
+					if (fileName.contains(sub.toUpperCase())) {
+						matchExtension = true;
+						break;
+					}
+				}
+
+				if (matchExtension) {
+					String fileContent = readStr(file.toAbsolutePath().toString());
+					if (fileContent.contains(content)) {
+						result.add(file.toAbsolutePath().toString());
+					}
 				}
 			}
-			if (foundSub &&  (readStr(f[ix]).indexOf(content)>-1 )) {
-				list1.add(f[ix] );
-			}
-		}		
-		findList.clear();		
-		return list1;
-	}
-	
-	private static void findFileNext(final String f, List<String> findList) {
-		File file=new File(f);
-		if (file.isDirectory() ) {
-			File[] l=file.listFiles();
-			for (int ix=0; l!=null && ix<l.length; ix++ ) {
-				findFileNext(l[ix].getPath(), findList);
-			}				
-		} else {
-			findList.add(f);
-		}	
-	}
-	
-	/**
-	 * get MIME-TYPE 
-	 * Using javax.activation.MimetypesFileTypeMap
-	 * 
-	 * @param file
-	 * @return
-	 * @throws IOException 
-	 */
-	public static String getMimeType(File file) throws IOException {		
-		String mimeType="";
-		if (file==null || !file.exists() || file.isDirectory() ) {
-			return mimeType;
+		} catch (IOException e) {
+			logger.error("Find files error: {}", e.getMessage(), e);
 		}
-		return Files.probeContentType(file.toPath());
+
+		return result;
 	}
-	
-	public static String getMimeType(String filename) {
-		ConfigurableMimeFileTypeMap mfm = new ConfigurableMimeFileTypeMap();		
-		return mfm.getContentType(filename);
-	}	
-	
+
 	/**
-	 * get MIME-TYPE 
-	 * Using java.net.URL
+	 * get MIME-TYPE
 	 * 
 	 * @param file
-	 * @return
-	 * @throws Exception
-	 */	
-	public static String getMimeType4URL(File file) throws IOException {
-		String mimeType="";
-		if (file==null || !file.exists() || file.isDirectory() ) {
-			return mimeType;
-		}		
-		URL url=new URL(file.getPath());
-		URLConnection urlConnection=url.openConnection();
-		mimeType=urlConnection.getContentType();
-		return mimeType;
+	 * @return String
+	 * @throws IOException
+	 */
+	public static String getMimeType(File file) throws IOException {
+		if (file == null || !file.exists() || file.isDirectory()) {
+			return "";
+		}
+		String type = Files.probeContentType(file.toPath());
+		return type != null ? type : "";
 	}
-	
+
+	public static String getMimeType(String filename) {
+		ConfigurableMimeFileTypeMap mfm = new ConfigurableMimeFileTypeMap();
+		return mfm.getContentType(filename);
+	}
+
+	/**
+	 * get MIME-TYPE Using URLConnection.guessContentTypeFromName
+	 * 
+	 * @param file
+	 * @return String
+	 */
+	public static String getMimeType4URL(File file) {
+		if (file == null || !file.exists() || file.isDirectory()) {
+			return "";
+		}
+		return URLConnection.guessContentTypeFromName(file.getName());
+	}
+
 }

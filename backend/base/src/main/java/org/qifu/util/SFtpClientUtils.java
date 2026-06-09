@@ -39,21 +39,50 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
 public class SFtpClientUtils {
-	protected static Logger logger = LoggerFactory.getLogger(SFtpClientUtils.class);
-	private static JSch jsch=new JSch();
-	
+	protected static final Logger logger = LoggerFactory.getLogger(SFtpClientUtils.class);
+	private static final JSch jsch = new JSch();
+
 	protected SFtpClientUtils() {
 		throw new IllegalStateException("Utils class: SFtpClientUtils");
 	}
-	
-	private static Session getSession(String user, String password, String addr, int port) throws JSchException {
-		Session session = jsch.getSession(user, addr, port);
-		session.setConfig("StrictHostKeyChecking", "no");
-		session.setPassword(password);
-		session.connect();
-		return session;
+
+	@FunctionalInterface
+	private interface SftpAction<T> {
+		T execute(ChannelSftp sftp) throws SftpException, IOException;
 	}
-	
+
+	private static <T> T execute(String user, String password, String addr, int port, SftpAction<T> action)
+			throws JSchException, SftpException, IOException {
+		Session session = null;
+		Channel channel = null;
+		ChannelSftp sftp = null;
+		try {
+			session = jsch.getSession(user, addr, port);
+			session.setConfig("StrictHostKeyChecking", "no");
+			session.setPassword(password.getBytes());
+			session.connect();
+
+			channel = session.openChannel("sftp");
+			channel.connect();
+			sftp = (ChannelSftp) channel;
+
+			return action.execute(sftp);
+		} catch (JSchException | SftpException | IOException e) {
+			logger.error("SFTP error: {}", e.getMessage(), e);
+			throw e;
+		} finally {
+			if (sftp != null) {
+				sftp.exit();
+			}
+			if (channel != null) {
+				channel.disconnect();
+			}
+			if (session != null) {
+				session.disconnect();
+			}
+		}
+	}
+
 	/**
 	 * 登入的目錄夾下的檔案清單
 	 * 
@@ -64,32 +93,22 @@ public class SFtpClientUtils {
 	 * @return
 	 * @throws JSchException
 	 * @throws SftpException
-	 * @throws Exception
 	 */
-	public static Vector<LsEntry> getRemoteFileList(String user, String password, String addr, int port) throws JSchException, SftpException {		
-		return getRemoteFileList(user, password, addr, port, ".");
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static Vector<LsEntry> getRemoteFileList(String user, String password, String addr, int port, String cwd) throws JSchException, SftpException {
-		Session session = getSession(user, password, addr, port);	
-		Vector<LsEntry> lsVec=null;
-		Channel channel = session.openChannel("sftp");
-		channel.connect();
-		ChannelSftp sftpChannel = (ChannelSftp) channel;
+	public static Vector<LsEntry> getRemoteFileList(String user, String password, String addr, int port)
+			throws JSchException, SftpException {
 		try {
-			lsVec = sftpChannel.ls(cwd); //sftpChannel.lpwd()
-		} catch (SftpException e) {
-			e.printStackTrace();
-			throw e;
-		} finally {
-			sftpChannel.exit();
-			channel.disconnect();
-			session.disconnect();			
-		}	
-		return lsVec;		
+			return getRemoteFileList(user, password, addr, port, ".");
+		} catch (IOException e) {
+			// This shouldn't happen for ls "."
+			return new Vector<>();
+		}
 	}
 	
+	public static Vector<LsEntry> getRemoteFileList(String user, String password, String addr, int port, String cwd)
+			throws JSchException, SftpException, IOException {
+		return execute(user, password, addr, port, sftp -> (Vector<LsEntry>) sftp.ls(cwd));
+	}
+
 	/**
 	 * 抓遠端檔案然後存到本機 , 單筆
 	 * 
@@ -101,36 +120,24 @@ public class SFtpClientUtils {
 	 * @param localFile
 	 * @throws JSchException
 	 * @throws SftpException
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public static void get(String user, String password, String addr, int port, 
-			String remoteFile, String localFile) throws JSchException, SftpException, IOException {
-				
-		Session session = getSession(user, password, addr, port);
-		Channel channel = session.openChannel("sftp");
-		channel.connect();
-		ChannelSftp sftpChannel = (ChannelSftp) channel;		
-		logger.info("get remote file: {} write to: {}", remoteFile , localFile );	
-		try {
-			sftpChannel.get(remoteFile, localFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		} finally {
-			sftpChannel.exit();
-			channel.disconnect();
-			session.disconnect();			
-		}
-		File f=new File(localFile);
-		if (!f.exists()) {
-			f=null;
-			logger.error("get remote file: {} fail!", remoteFile);
-			throw new IOException("no remote file:" + remoteFile);
-		}
-		f=null;
-		logger.info("success write: {}", localFile);
+	public static void get(String user, String password, String addr, int port, String remoteFile, String localFile)
+			throws JSchException, SftpException, IOException {
+
+		execute(user, password, addr, port, sftp -> {
+			logger.info("get remote file: {} write to: {}", remoteFile, localFile);
+			sftp.get(remoteFile, localFile);
+			File f = new File(localFile);
+			if (!f.exists()) {
+				logger.error("get remote file: {} fail!", remoteFile);
+				throw new IOException("Failed to download remote file: " + remoteFile);
+			}
+			logger.info("success write: {}", localFile);
+			return null;
+		});
 	}
-	
+
 	/**
 	 * 抓遠端檔案然後存到本機 , 多筆
 	 * 
@@ -142,43 +149,36 @@ public class SFtpClientUtils {
 	 * @param localFile
 	 * @throws JSchException
 	 * @throws SftpException
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public static void get(String user, String password, String addr, int port, 
-			List<String> remoteFile, List<String> localFile) throws JSchException, SftpException, IOException {
-				
-		Session session = getSession(user, password, addr, port);	
-		Channel channel = session.openChannel("sftp");
-		channel.connect();
-		ChannelSftp sftpChannel = (ChannelSftp) channel;		
-		try {
-			for (int i=0; i<remoteFile.size(); i++) {
-				String rf=remoteFile.get(i);
-				String lf=localFile.get(i);
-				logger.info("get remote file: {} write to: {}", rf, lf );
-				sftpChannel.get(rf, lf);
-				File f=new File(lf);
+	public static void get(String user, String password, String addr, int port, List<String> remoteFile,
+			List<String> localFile) throws JSchException, SftpException, IOException {
+
+		if (CollectionUtils.isEmpty(remoteFile) || CollectionUtils.isEmpty(localFile)
+				|| remoteFile.size() != localFile.size()) {
+			throw new IllegalArgumentException("Invalid file lists.");
+		}
+
+		execute(user, password, addr, port, sftp -> {
+			for (int i = 0; i < remoteFile.size(); i++) {
+				String rf = remoteFile.get(i);
+				String lf = localFile.get(i);
+				logger.info("get remote file: {} write to: {}", rf, lf);
+				sftp.get(rf, lf);
+				File f = new File(lf);
 				if (!f.exists()) {
-					f=null;
 					logger.error("get remote file: {} fail!", rf);
-					throw new IOException("no remote file:" + rf);
+					throw new IOException("Failed to download remote file: " + rf);
 				}
-				f=null;
 				logger.info("success write: {}", lf);
 			}
-		} catch (SftpException e) {
-			e.printStackTrace();
-			throw e;
-		} finally {
-			sftpChannel.exit();
-			channel.disconnect();
-			session.disconnect();				
-		}
+			return null;
+		});
 	}
-	
+
 	/**
 	 * 本地檔案放到遠端SFTP上
-	 * 	
+	 * 
 	 * @param user
 	 * @param password
 	 * @param addr
@@ -187,55 +187,51 @@ public class SFtpClientUtils {
 	 * @param remoteFile
 	 * @throws JSchException
 	 * @throws SftpException
-	 * @throws Exception
 	 */
-	public static void put(String user, String password, String addr, int port,
-			List<String> localFile, List<String> remoteFile) throws JSchException, SftpException {
-		
-		Session session = getSession(user, password, addr, port);	
-		Channel channel = session.openChannel("sftp");
-		channel.connect();
-		ChannelSftp sftpChannel = (ChannelSftp) channel;		
+	public static void put(String user, String password, String addr, int port, List<String> localFile,
+			List<String> remoteFile) throws JSchException, SftpException {
+
+		if (CollectionUtils.isEmpty(localFile) || CollectionUtils.isEmpty(remoteFile)
+				|| localFile.size() != remoteFile.size()) {
+			logger.warn("Invalid file lists for put operation.");
+			return;
+		}
 		try {
-			for (int i=0; i<localFile.size(); i++) {
-				String rf=remoteFile.get(i);
-				String lf=localFile.get(i);
-				logger.info("put local file: {} write to {} : {}", lf, addr, rf );
-				sftpChannel.put(lf, rf);
-				logger.info("success write to {} : {}", addr, rf);
-			}
-		} catch (SftpException e) {
-			e.printStackTrace();
-			throw e;
-		} finally {
-			sftpChannel.exit();
-			channel.disconnect();
-			session.disconnect();				
-		}		
+			execute(user, password, addr, port, sftp -> {
+				for (int i = 0; i < localFile.size(); i++) {
+					String rf = remoteFile.get(i);
+					String lf = localFile.get(i);
+					logger.info("put local file: {} write to {} : {}", lf, addr, rf);
+					sftp.put(lf, rf);
+					logger.info("success write to {} : {}", addr, rf);
+				}
+				return null;
+			});
+		} catch (IOException e) {
+			// put doesn't throw IOException in original but execute might, wrap it if
+			// needed
+			throw new SftpException(ChannelSftp.SSH_FX_FAILURE, e.getMessage(), e);
+		}
 	}
-	
-	public static void rm(String user, String password, String addr, int port, List<String> fileName) throws JSchException, SftpException {
-		
+
+	public static void rm(String user, String password, String addr, int port, List<String> fileName)
+			throws JSchException, SftpException {
+
 		if (CollectionUtils.isEmpty(fileName)) {
 			return;
 		}
-		Session session = getSession(user, password, addr, port);				
-		Channel channel = session.openChannel("sftp");
-		channel.connect();
-		ChannelSftp sftpChannel = (ChannelSftp) channel;		
+
 		try {
-			for (String f : fileName) {
-				sftpChannel.rm(f);				
-				logger.warn("success remove file from {} : {}", addr , fileName);				
-			}
-		} catch (SftpException e) {
-			e.printStackTrace();
-			throw e;
-		} finally {
-			sftpChannel.exit();
-			channel.disconnect();
-			session.disconnect();				
-		}		
+			execute(user, password, addr, port, sftp -> {
+				for (String f : fileName) {
+					sftp.rm(f);
+					logger.warn("success remove file from {} : {}", addr, f);
+				}
+				return null;
+			});
+		} catch (IOException e) {
+			throw new SftpException(ChannelSftp.SSH_FX_FAILURE, e.getMessage(), e);
+		}
 	}
-	
+
 }
