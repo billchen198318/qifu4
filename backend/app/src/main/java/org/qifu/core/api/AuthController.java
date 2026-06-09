@@ -31,6 +31,8 @@ import org.qifu.core.util.CookieUtils;
 import org.qifu.core.util.UserUtils;
 import org.qifu.core.vo.LoginRequest;
 import org.qifu.core.entity.TbSysLoginLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,6 +55,8 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+	private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+	
 	private final DataSource dataSource;
 	
 	private final ISysCodeService<TbSysCode, String> sysCodeService;
@@ -79,65 +83,58 @@ public class AuthController {
 	    		refreshToken = CookieUtils.getCookieValue(request, Constants.TOKEN_REFRESH_COOKIE_NAME);
 	    	}
 	    	
-	    	Map<String, Object> param = new HashMap<>();
 	    	TokenStoreValidate tsv = new TokenStoreValidateBuilder(this.dataSource);
 	    	if (TokenBuilderUtils.verifyRefresh(refreshToken, tsv)) {
-	    		Map<String,Claim> userMapClaim = null;
-	    		if ((userMapClaim = TokenBuilderUtils.verifyToken(accessToken, tsv)) != null) {
+	    		Map<String,Claim> userMapClaim = TokenBuilderUtils.verifyToken(accessToken, tsv);
+	    		if (userMapClaim != null) {
 	    			String userId = StringUtils.defaultString( userMapClaim.get(Constants.TOKEN_USER_PARAM_NAME).asString() );
-	    			List<String> roleIds = new ArrayList<>();
-	    			Map<String, List<RolePermissionAttr>> rolePermissionMap = new HashMap<>();
-					param.clear();
-					if (!StringUtils.isBlank(userId)) {
-						param.put("account", userId);
-						// Update loginRequest with real tokens for processOfValidCheck
+					if (StringUtils.isNotBlank(userId)) {
 						loginRequest.setAccessToken(accessToken);
 						loginRequest.setRefreshToken(refreshToken);
-						user = this.processOfValidCheck(param, roleIds, rolePermissionMap, userId, loginRequest);
+						user = this.processOfValidCheck(userId, loginRequest);
 					}	    			
 	    		}
 	    	}	    	
 	    } catch (AuthenticationException | ServiceException e) {
-	    	e.printStackTrace();
+	    	logger.error("Authentication/Service error in validCheck: {}", e.getMessage());
 	    	throw e;
 		}  catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unexpected error in validCheck: ", e);
 		}		
 	    if (null == user) {
-	    	user = new User("", "", YesNoKeyProvide.NO);
-	    	user.setAccessToken("");
-	    	user.setRefreshToken("");
+	    	user = new User(StringUtils.EMPTY, StringUtils.EMPTY, YesNoKeyProvide.NO);
+	    	user.setAccessToken(StringUtils.EMPTY);
+	    	user.setRefreshToken(StringUtils.EMPTY);
 	    } else {
-	    	// Return 'Y' flag to frontend instead of real token
-	    	user.setAccessToken("Y");
-	    	user.setRefreshToken("Y");
+	    	maskTokens(user);
 	    }
 	    return ResponseEntity.ok().body(user);
 	}
 	
-	private User processOfValidCheck(Map<String, Object> param, List<String> roleIds, 
-			Map<String, List<RolePermissionAttr>> rolePermissionMap, String userId,
-			LoginRequest loginRequest) throws ServiceException {
+	private User processOfValidCheck(String userId, LoginRequest loginRequest) throws ServiceException {
+		Map<String, Object> param = new HashMap<>();
+		param.put("account", userId);
+		List<String> roleIds = new ArrayList<>();
+		Map<String, List<RolePermissionAttr>> rolePermissionMap = new HashMap<>();
+		
 		List<TbUserRole> urList = this.authComponents.getUserRoleService().selectListByParams(param).getValue();
-		for (int j = 0; urList != null && j < urList.size(); j++) {
-			TbUserRole ur = urList.get(j);
+		for (TbUserRole ur : urList) {
 			roleIds.add(ur.getRole());
 			param.clear();
 			param.put("role", ur.getRole());
 			List<TbRolePermission> rpList = this.authComponents.getRolePermissionService().selectListByParams(param).getValue();
 			rolePermissionMap.put(ur.getRole(), new ArrayList<>());
 			List<RolePermissionAttr> permList = rolePermissionMap.get(ur.getRole());
-			for (int x = 0; rpList != null && x < rpList.size(); x++) {
-				TbRolePermission rp = rpList.get(x);
-				if (!PermissionType.VIEW.name().equals(rp.getPermType())) {
-					continue;
-				}								
-				RolePermissionAttr rpa = new RolePermissionAttr();
-				rpa.setPermission(rp.getPermission());
-				rpa.setType(rp.getPermType());
-				permList.add(rpa);
+			for (TbRolePermission rp : rpList) {
+				if (PermissionType.VIEW.name().equals(rp.getPermType())) {
+					RolePermissionAttr rpa = new RolePermissionAttr();
+					rpa.setPermission(rp.getPermission());
+					rpa.setType(rp.getPermType());
+					permList.add(rpa);
+				}
 			}
 		}
+		
 		User user = UserUtils.setUserInfoForUserLocalUtils( userId, roleIds, rolePermissionMap );
 		TbAccount acc = new TbAccount();
 		acc.setAccount(userId);
@@ -149,18 +146,8 @@ public class AuthController {
 	
 	@PostMapping("/signin")
 	public ResponseEntity<User> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
-		
 		// 1. Check if account is locked
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("user", loginRequest.getUsername());
-		paramMap.put("failFlag", "Y");
-		// Find logs within the last 5 minutes
-		paramMap.put("cdateStart", new Date(System.currentTimeMillis() - (5 * 60 * 1000)));
-		
-		Long failCount = this.authComponents.getSysLoginLogService().count(paramMap);
-		if (failCount != null && failCount >= 3) {
-			throw new AuthenticationException("Account is locked due to multiple failed login attempts. Please try again later.") {};
-		}
+		checkAccountLocked(loginRequest.getUsername());
 
 		TokenBuilderVariable tbv = null;
 		User user = null;
@@ -173,53 +160,68 @@ public class AuthController {
 		    
 		    TbSysCode sysCode = new TbSysCode();
 		    sysCode.setCode(Constants.SYSCODE_TOKEN_CODE);		    
-		    
 			sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
-			if (null != sysCode && Constants.SYSCODE_TOKEN_TYPE.equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {								
+			
+			if (null != sysCode && Constants.SYSCODE_TOKEN_TYPE.equals(sysCode.getType()) && StringUtils.isNotBlank(sysCode.getParam1())) {								
 			    tbv = TokenBuilderUtils.createToken(user.getUserId(), Constants.TOKEN_AUTH, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
-				user.setAccessToken("Y");
-				user.setRefreshToken("Y");
+				maskTokens(user);
 				CookieUtils.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
 				CookieUtils.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
 				user.blankPassword();
 				this.authComponents.getJwtAuthLoginedUserRoleService().onLoginedSuccess(authentication);
 			}
 	    } catch (AuthenticationException | ServiceException e) {
-	    	// 2. Log failed attempt
-	    	TbSysLoginLog log = new TbSysLoginLog();
-	    	log.setUser(loginRequest.getUsername());
-	    	log.setCdate(new Date());
-	    	this.authComponents.getSysLoginLogService().insertLoginFailLog(log);
-	    	
-	    	e.printStackTrace();
+	    	logLoginFail(loginRequest.getUsername());
+	    	logger.warn("Login failed for user {}: {}", loginRequest.getUsername(), e.getMessage());
 	    	throw e;
 		}  catch (Exception e) {
-	    	// Log failed attempt
-	    	TbSysLoginLog log = new TbSysLoginLog();
-	    	log.setUser(loginRequest.getUsername());
-	    	log.setCdate(new Date());
-	    	this.authComponents.getSysLoginLogService().insertLoginFailLog(log);
-	    	
-			e.printStackTrace();
+	    	logLoginFail(loginRequest.getUsername());
+	    	logger.error("Login unexpected error for user {}: ", loginRequest.getUsername(), e);
 		}		
-	    if (null == user) {
-	    	user = new User("", "", YesNoKeyProvide.NO);
-	    	user.setAccessToken("");
-	    	user.setRefreshToken("");	    	
-	    }
-	    if (null == tbv) {
+	    
+	    if (null == user || null == tbv) {
+	    	user = (user == null) ? new User(StringUtils.EMPTY, StringUtils.EMPTY, YesNoKeyProvide.NO) : user;
+	    	user.setAccessToken(StringUtils.EMPTY);
+	    	user.setRefreshToken(StringUtils.EMPTY);
 	    	user.blankPassword();
-	    	user.setUserId("");
+	    	user.setUserId(StringUtils.EMPTY);
 	    }
 	    return ResponseEntity.ok().body(user);
 	}
 	
+	private void checkAccountLocked(String username) {
+		if (StringUtils.isBlank(username)) {
+			logger.warn("Account {} is blank.", username);
+			throw new AuthenticationException("Account is blank.") {};
+		}
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("user", username);
+		paramMap.put("failFlag", YesNoKeyProvide.YES);
+		// Find logs within the last 5 minutes
+		paramMap.put("cdateStart", this.authComponents.getWithinTheLast5Minutes());
+		
+		Long failCount = this.authComponents.getSysLoginLogService().count(paramMap);
+		if (failCount != null && failCount >= AuthComponents.MAX_FAIL_COUNT) {
+			logger.warn("Account {} is locked due to multiple failed login attempts.", username);
+			throw new AuthenticationException("Account is locked due to multiple failed login attempts. Please try again later.") {};
+		}
+	}
+	
+	private void logLoginFail(String username) {
+    	TbSysLoginLog log = new TbSysLoginLog();
+    	log.setUser(username);
+    	log.setCdate(new Date());
+    	try {
+			this.authComponents.getSysLoginLogService().insertLoginFailLog(log);
+		} catch (Exception e) {
+			logger.error("Failed to insert login fail log for user {}: ", username, e);
+		}
+	}
+	
 	@PostMapping("/refreshNewToken")
 	public ResponseEntity<LoginRequest> refreshNewToken(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
-		TokenBuilderVariable tbv = null;
-		TokenStoreValidateBuilder tsv = null;
 		LoginRequest res = new LoginRequest();
-		boolean refreshNew = false;
+		boolean refreshSuccess = false;
 	    try {
 	    	String refreshToken = loginRequest.getRefreshToken();
 	    	if (StringUtils.isBlank(refreshToken) || YesNoKeyProvide.YES.equals(refreshToken)) {
@@ -229,35 +231,37 @@ public class AuthController {
 	    	if (StringUtils.isBlank(refreshToken)) {
 	    		throw new ControllerException( BaseSystemMessage.parameterBlank() );
 	    	}
-	    	tsv = TokenStoreValidateBuilder.build(this.dataSource);
+	    	
+	    	TokenStoreValidateBuilder tsv = TokenStoreValidateBuilder.build(this.dataSource);
 	    	if (tsv.refreshValidate(refreshToken)) {
-	    		String userId = loginRequest.getUsername();
-	    		if (StringUtils.isBlank(userId)) {
-	    			userId = tsv.getUserIdByRefreshToken(refreshToken);
-	    		}
+	    		String userId = StringUtils.defaultIfBlank(loginRequest.getUsername(), tsv.getUserIdByRefreshToken(refreshToken));
 	    		if (StringUtils.isBlank(userId)) {
 	    			throw new ControllerException( BaseSystemMessage.parameterBlank() );
 	    		}
+	    		
 			    TbSysCode sysCode = new TbSysCode();
 			    sysCode.setCode(Constants.SYSCODE_TOKEN_CODE);	
 			    sysCode = sysCodeService.selectByUniqueKey(sysCode).getValue();
-			    if (null != sysCode && Constants.SYSCODE_TOKEN_TYPE.equals(sysCode.getType()) && !StringUtils.isBlank(sysCode.getParam1())) {
-			    	tbv = TokenBuilderUtils.createToken(userId, Constants.TOKEN_AUTH, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
-			    	res.setAccessToken("Y");
-			    	res.setRefreshToken("Y");
+			    
+			    if (null != sysCode && Constants.SYSCODE_TOKEN_TYPE.equals(sysCode.getType()) && StringUtils.isNotBlank(sysCode.getParam1())) {
+			    	TokenBuilderVariable tbv = TokenBuilderUtils.createToken(userId, Constants.TOKEN_AUTH, sysCode.getParam1(), TokenStoreBuilder.build(this.dataSource));
+			    	res.setAccessToken(YesNoKeyProvide.YES);
+			    	res.setRefreshToken(YesNoKeyProvide.YES);
 			    	CookieUtils.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, tbv.getAccess(), Constants.TOKEN_ACCESS_EXPIRED_INTERVAL);
 			    	CookieUtils.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, tbv.getRefresh(), Constants.TOKEN_REFRESH_EXPIRED_INTERVAL);
 			    	res.setUsername(userId);
-			    	refreshNew = true;
+			    	refreshSuccess = true;
+			    	logger.info("Successfully refreshed token for user {}", userId);
 			    }
 	    	}
 	    } catch (AuthenticationException | ControllerException | ServiceException e) {
-	    	e.printStackTrace();
+	    	logger.warn("Token refresh failed: {}", e.getMessage());
 	    	throw e;
 		}  catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Token refresh unexpected error: ", e);
 		}
-	    if (refreshNew) {
+	    
+	    if (refreshSuccess) {
 	    	return ResponseEntity.ok().body(res);
 	    }
 	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
@@ -265,9 +269,17 @@ public class AuthController {
 	
 	@PostMapping("/logout")
 	public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-		CookieUtils.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, "", 0);
-		CookieUtils.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, "", 0);
+		CookieUtils.setTokenCookie(response, Constants.TOKEN_ACCESS_COOKIE_NAME, StringUtils.EMPTY, 0);
+		CookieUtils.setTokenCookie(response, Constants.TOKEN_REFRESH_COOKIE_NAME, StringUtils.EMPTY, 0);
+		logger.info("User logged out and cookies cleared.");
 		return ResponseEntity.ok().body("OK");
+	}
+	
+	private void maskTokens(User user) {
+		if (user != null) {
+			user.setAccessToken(YesNoKeyProvide.YES);
+			user.setRefreshToken(YesNoKeyProvide.YES);
+		}
 	}
 	
 }

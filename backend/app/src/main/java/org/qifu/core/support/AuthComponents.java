@@ -1,5 +1,7 @@
 package org.qifu.core.support;
 
+import java.util.Date;
+
 import org.qifu.core.entity.TbAccount;
 import org.qifu.core.entity.TbRolePermission;
 import org.qifu.core.entity.TbSysLoginLog;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthComponents {
+	public static final int MAX_FAIL_COUNT = 3; 
+	
 	private final AuthenticationManager authenticationManager;	
 	
 	private final JwtAuthLoginedUserRoleService jwtAuthLoginedUserRoleService;
@@ -62,6 +66,10 @@ public class AuthComponents {
 
 	public ISysLoginLogService<TbSysLoginLog, String> getSysLoginLogService() {
 		return sysLoginLogService;
+	}
+	
+	public Date getWithinTheLast5Minutes() {
+		return new Date(System.currentTimeMillis() - (5 * 60 * 1000));
 	}
 	
 }
