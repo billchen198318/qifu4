@@ -24,10 +24,13 @@ package org.qifu.core.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 import org.qifu.base.model.BaseUserInfo;
+import org.qifu.base.model.IUserInfoProvide;
 import org.qifu.base.model.RolePermissionAttr;
 import org.qifu.base.model.UserRoleAndPermission;
 import org.qifu.base.model.YesNoKeyProvide;
@@ -39,9 +42,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserUtils {
 	
-	private static List<UserRoleAndPermission> backgroundRoleList = new ArrayList<>(); 
-	
-	private static User backgroundUser = null;
+	private static final List<UserRoleAndPermission> backgroundRoleList = new ArrayList<>(); 
+	private static final User backgroundUser;
 	
 	protected UserUtils() {
 		throw new IllegalStateException("Utils class: UserUtils");
@@ -66,35 +68,38 @@ public class UserUtils {
 	}
 	
 	public static User setUserInfoForUserLocalUtils(String accountId) {
-		User userInfo = new User(accountId , "" , YesNoKeyProvide.YES);
+		User userInfo = new User(accountId, "", YesNoKeyProvide.YES);
 		userInfo.setUserId(accountId);
 		UserLocalUtils.setUserInfo(userInfo);
 		return userInfo;
 	}	
 	
 	public static User setUserInfoForUserLocalUtils(String accountId, List<String> roleIds) {
-		User userInfo = new User(accountId , "" , YesNoKeyProvide.YES);
+		User userInfo = new User(accountId, "", YesNoKeyProvide.YES);
 		userInfo.setUserId(accountId);
-		if (userInfo.getRoles() == null) {
+		
+		if (CollectionUtils.isNotEmpty(roleIds)) {
+			List<UserRoleAndPermission> roles = roleIds.stream()
+					.filter(StringUtils::isNotBlank)
+					.map(roleId -> {
+						UserRoleAndPermission ur = new UserRoleAndPermission();
+						ur.setRole(roleId);
+						return ur;
+					})
+					.collect(Collectors.toList());
+			userInfo.setRoles(roles);
+		} else {
 			userInfo.setRoles(new ArrayList<>());
 		}
-		for (int r = 0; roleIds != null && r < roleIds.size(); r++) {
-			if (StringUtils.isBlank(roleIds.get(r))) {
-				continue;
-			}
-			UserRoleAndPermission ur = new UserRoleAndPermission();
-			ur.setRole(roleIds.get(r));	
-			userInfo.getRoles().add(ur);
-		}
+		
 		UserLocalUtils.setUserInfo(userInfo);
 		return userInfo;
 	}		
 	
 	public static User setUserInfoForUserLocalUtils(String accountId, List<String> roleIds, Map<String, List<RolePermissionAttr>> rolePermissionMap) {
 		User u = setUserInfoForUserLocalUtils(accountId, roleIds);
-		if (u.getRoles() != null) {
-			for (int i = 0; i < u.getRoles().size(); i++) {
-				UserRoleAndPermission urap = u.getRoles().get(i);
+		if (u.getRoles() != null && rolePermissionMap != null) {
+			for (UserRoleAndPermission urap : u.getRoles()) {
 				List<RolePermissionAttr> permList = rolePermissionMap.get(urap.getRole());
 				if (permList != null) {
 					urap.setRolePermission(permList);
@@ -105,7 +110,7 @@ public class UserUtils {
 	}	
 	
 	public static User setUserInfoForUserLocalUtilsBackgroundMode() {
-		return setUserInfoForUserLocalUtils( Constants.SYSTEM_BACKGROUND_USER );
+		return setUserInfoForUserLocalUtils(Constants.SYSTEM_BACKGROUND_USER);
 	}		
 	
 	public static void removeForUserLocalUtils() {
@@ -113,26 +118,23 @@ public class UserUtils {
 	}
 	
 	public static User getCurrentUser() {
-		if ( UserLocalUtils.getUserInfo() != null && Constants.SYSTEM_BACKGROUND_USER.equals(UserLocalUtils.getUserInfo().getUserId()) ) {
-			if (backgroundUser != null) {
-				return backgroundUser;
-			}
-			return new User(Constants.SYSTEM_BACKGROUND_USER, "", YesNoKeyProvide.YES, backgroundRoleList);
+		IUserInfoProvide localUserInfo = UserLocalUtils.getUserInfo();
+		
+		if (localUserInfo != null && Constants.SYSTEM_BACKGROUND_USER.equals(localUserInfo.getUserId())) {
+			return backgroundUser;
 		}
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getPrincipal() != null && (auth.getPrincipal() instanceof @SuppressWarnings("unused") User ux)) {
-			return (User) auth.getPrincipal();
+		if (auth != null && auth.getPrincipal() instanceof User user) {
+			return user;
 		}		
-		if ( UserLocalUtils.getUserInfo() != null ) {
-			if ( UserLocalUtils.getUserInfo() instanceof @SuppressWarnings("unused") User ux) {
-				return (User) UserLocalUtils.getUserInfo();
-			}
-			if ( UserLocalUtils.getUserInfo() instanceof @SuppressWarnings("unused") BaseUserInfo bui) {
-				BaseUserInfo userInfo = (BaseUserInfo) UserLocalUtils.getUserInfo();
-				List<UserRoleAndPermission> currentRoleList = new ArrayList<>();
-				String isAdmin = YesNoKeyProvide.NO;
-				return new User(userInfo.getUserId(), "", isAdmin, currentRoleList);
-			}
+		
+		if (localUserInfo instanceof User user) {
+			return user;
+		}
+		
+		if (localUserInfo instanceof BaseUserInfo userInfo) {
+			return new User(userInfo.getUserId(), "", YesNoKeyProvide.NO, new ArrayList<>());
 		}
 		
 		return null;
@@ -140,15 +142,12 @@ public class UserUtils {
 	
 	public static boolean isAdmin() {
 		User user = getCurrentUser();
-		boolean isAdm = false;
-		if (user != null && user.getRoles() != null) {
-			for (int i = 0; i < user.getRoles().size() && !isAdm; i++) {
-				if (Constants.SUPER_ROLE_ADMIN.equals(user.getRoles().get(i).getRole()) || Constants.SUPER_ROLE_ALL.equals(user.getRoles().get(i).getRole())) {
-					isAdm = true;
-				}
-			}
+		if (user == null || CollectionUtils.isEmpty(user.getRoles())) {
+			return false;
 		}
-		return isAdm;
+		return user.getRoles().stream()
+				.anyMatch(ur -> Constants.SUPER_ROLE_ADMIN.equals(ur.getRole()) || 
+						        Constants.SUPER_ROLE_ALL.equals(ur.getRole()));
 	}
 	
 	public static boolean hasRole(String roleId) {
@@ -159,15 +158,11 @@ public class UserUtils {
 			return false;
 		}
 		User user = getCurrentUser();
-		boolean hasRole = false;
-		if (user != null && user.getRoles() != null) {
-			for (int i = 0; i < user.getRoles().size() && !hasRole; i++) {
-				if (roleId.equals(user.getRoles().get(i).getRole())) {
-					hasRole = true;
-				}
-			}
+		if (user == null || CollectionUtils.isEmpty(user.getRoles())) {
+			return false;
 		}
-		return hasRole;		
+		return user.getRoles().stream()
+				.anyMatch(ur -> roleId.equals(ur.getRole()));
 	}
 	
 	public static boolean isPermitted(String perm) {
@@ -184,25 +179,19 @@ public class UserUtils {
 			return false;
 		}
 		User user = getCurrentUser();
-		return (user != null && user.getRoles() != null) ? checkPermitted(user, perm, permissionType) : Boolean.FALSE;
+		if (user == null || CollectionUtils.isEmpty(user.getRoles())) {
+			return false;
+		}
+		return checkPermitted(user, perm, permissionType);
 	}
 	
 	private static boolean checkPermitted(User user, String perm, String permissionType) {
-		boolean isPrem = false;
-		for (int i = 0; i < user.getRoles().size() && !isPrem; i++) {
-			UserRoleAndPermission userRole = user.getRoles().get(i);
-			if (userRole.getRolePermission() != null) {
-				for (RolePermissionAttr rp : userRole.getRolePermission()) {
-					if (!rp.getType().equals(permissionType)) {
-						continue;
-					}
-					if (perm.equals(rp.getPermission())) {
-						isPrem = true;
-					}
-				}
-			}
-		}		
-		return isPrem;
+		return user.getRoles().stream()
+				.filter(ur -> ur != null && CollectionUtils.isNotEmpty(ur.getRolePermission()))
+				.flatMap(ur -> ur.getRolePermission().stream())
+				.anyMatch(rp -> rp != null && 
+						        permissionType.equals(rp.getType()) && 
+						        perm.equals(rp.getPermission()));
 	}
 	
 }
