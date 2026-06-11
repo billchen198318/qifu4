@@ -31,8 +31,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.qifu.base.Constants;
 
-import tools.jackson.databind.ObjectMapper;
-
 public class PleaseSelect {
 	private static String pleaseSelectDatas = " { } ";
 	private static Map<String, Object> pleaseSelectMap;
