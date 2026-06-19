@@ -27,6 +27,8 @@ import java.util.Arrays;
 
 import javax.sql.DataSource;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+
 import org.qifu.base.AppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,7 @@ import jakarta.annotation.Resource;
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @EnableCaching
 @EnableScheduling
+@EnableEncryptableProperties
 @PropertySource("classpath:appConfig.properties")
 public class Application {
 	protected static Logger logger = LoggerFactory.getLogger(Application.class);

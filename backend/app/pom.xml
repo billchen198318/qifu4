@@ -184,6 +184,12 @@
 		    <artifactId>commons-validator</artifactId>
 		    <version>1.10.1</version>
 		</dependency>		
+
+		<dependency>
+		    <groupId>com.github.ulisesbocchio</groupId>
+		    <artifactId>jasypt-spring-boot-starter</artifactId>
+		    <version>4.0.4</version>
+		</dependency>
 		
 		<dependency>
 		    <groupId>net.sf.jasperreports</groupId>
