@@ -21,7 +21,12 @@
  */
 package org.qifu.util;
 
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+
 import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -37,6 +42,12 @@ import org.qifu.base.Constants;
  *
  */
 public class EncryptorUtils {
+
+	private static final String GCM_TRANSFORMATION = "AES/GCM/NoPadding";
+	private static final String GCM_PAYLOAD_VERSION = "v1";
+	private static final int GCM_IV_LENGTH_BYTES = 12;
+	private static final int GCM_TAG_LENGTH_BITS = 128;
+	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 	
 	protected EncryptorUtils() {
 		throw new IllegalStateException("Utils class: EncryptorUtils");
@@ -69,5 +80,75 @@ public class EncryptorUtils {
         }
         return null;
     }
+
+	/**
+	 * Encrypts a value with AES-GCM. The key must be a Base64-encoded AES key
+	 * containing 16, 24, or 32 bytes.
+	 */
+	public static String encryptGcm(String base64Key, String value) {
+		if (value == null) {
+			throw new IllegalArgumentException("Value must not be null");
+		}
+
+		byte[] iv = new byte[GCM_IV_LENGTH_BYTES];
+		SECURE_RANDOM.nextBytes(iv);
+
+		try {
+			Cipher cipher = Cipher.getInstance(GCM_TRANSFORMATION);
+			cipher.init(Cipher.ENCRYPT_MODE, buildGcmKey(base64Key),
+					new GCMParameterSpec(GCM_TAG_LENGTH_BITS, iv));
+			byte[] encrypted = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
+			return String.join(":", GCM_PAYLOAD_VERSION,
+					java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(iv),
+					java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(encrypted));
+		} catch (GeneralSecurityException ex) {
+			throw new IllegalStateException("Unable to encrypt value with AES-GCM", ex);
+		}
+	}
+
+	/**
+	 * Decrypts a payload created by {@link #encryptGcm(String, String)}.
+	 */
+	public static String decryptGcm(String base64Key, String encryptedPayload) {
+		if (encryptedPayload == null) {
+			throw new IllegalArgumentException("Encrypted payload must not be null");
+		}
+
+		String[] parts = encryptedPayload.split(":", -1);
+		if (parts.length != 3 || !GCM_PAYLOAD_VERSION.equals(parts[0])) {
+			throw new IllegalArgumentException("Unsupported AES-GCM payload format");
+		}
+
+		try {
+			byte[] iv = java.util.Base64.getUrlDecoder().decode(parts[1]);
+			if (iv.length != GCM_IV_LENGTH_BYTES) {
+				throw new IllegalArgumentException("Invalid AES-GCM IV");
+			}
+			byte[] encrypted = java.util.Base64.getUrlDecoder().decode(parts[2]);
+			Cipher cipher = Cipher.getInstance(GCM_TRANSFORMATION);
+			cipher.init(Cipher.DECRYPT_MODE, buildGcmKey(base64Key),
+					new GCMParameterSpec(GCM_TAG_LENGTH_BITS, iv));
+			return new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
+		} catch (GeneralSecurityException | IllegalArgumentException ex) {
+			throw new IllegalArgumentException("Unable to decrypt or authenticate AES-GCM payload", ex);
+		}
+	}
+
+	private static SecretKeySpec buildGcmKey(String base64Key) {
+		if (base64Key == null || base64Key.isBlank()) {
+			throw new IllegalArgumentException("AES-GCM key must not be blank");
+		}
+
+		byte[] key;
+		try {
+			key = java.util.Base64.getDecoder().decode(base64Key);
+		} catch (IllegalArgumentException ex) {
+			throw new IllegalArgumentException("AES-GCM key must be Base64 encoded", ex);
+		}
+		if (key.length != 16 && key.length != 24 && key.length != 32) {
+			throw new IllegalArgumentException("AES-GCM key must contain 16, 24, or 32 bytes");
+		}
+		return new SecretKeySpec(key, "AES");
+	}
     
 }
