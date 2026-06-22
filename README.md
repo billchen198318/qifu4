@@ -36,6 +36,31 @@ db1.datasource.username=mariadb-account
 db1.datasource.password=mariadb-password
 ```
 
+The database password can also be stored as a Jasypt `ENC(...)` value. Use
+`backend/app/src/test/java/org/qifu/test/DatabasePasswordJasyptTest.java` to
+generate it:
+
+1. In `testEncryptAndDecryptDatabasePassword()`, change `rawPassword` to the
+   actual database password.
+2. Change `encryptorPassword` to the Jasypt key used by the application. For a
+   local environment using the default configuration, use
+   `qifu4-dev-jasypt-key`.
+3. Set a breakpoint after `encryptedPropertyValue` is assigned, then run the
+   method as a JUnit test in Debug mode.
+4. Copy `encryptedPropertyValue` from the Eclipse Variables view into
+   `backend/app/src/main/resources/db1-config.properties`:
+
+```text
+db1.datasource.password=ENC(...)
+```
+
+The `encryptorPassword` value must exactly match `JASYPT_ENCRYPTOR_PASSWORD`.
+If that environment variable is not set, the local default in
+`application.properties` is `qifu4-dev-jasypt-key`. Production should set its
+own `JASYPT_ENCRYPTOR_PASSWORD` and generate the `ENC(...)` value with the same
+key. Otherwise, application startup will fail while binding
+`db1.datasource.password`.
+
 ### 2. 後端開發環境
 請使用 Eclipse 或 IntelliJ IDEA 匯入 `backend/app`、`backend/base` 與 `backend/core` 模組。
 *   **JDK 版本**: 17+
