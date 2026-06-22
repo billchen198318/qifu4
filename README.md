@@ -54,6 +54,27 @@ generate it:
 db1.datasource.password=ENC(...)
 ```
 
+Alternatively, generate the encrypted password directly with the Jasypt 1.9.3
+CLI. Put `jasypt-1.9.3.jar` in the current directory, then run the following
+command in PowerShell and replace the database password and Jasypt key as needed:
+
+```powershell
+java -cp "jasypt-1.9.3.jar" `
+  org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI `
+  input="mariadb-password" `
+  password="qifu4-dev-jasypt-key" `
+  algorithm="PBEWithMD5AndDES" `
+  ivGeneratorClassName="org.jasypt.iv.NoIvGenerator" `
+  verbose=false
+```
+
+The CLI prints only the encrypted value. Wrap the output with `ENC(...)` before
+putting it in `db1-config.properties`:
+
+```text
+db1.datasource.password=ENC(the-encrypted-value-printed-by-the-cli)
+```
+
 The `encryptorPassword` value must exactly match `JASYPT_ENCRYPTOR_PASSWORD`.
 If that environment variable is not set, the local default in
 `application.properties` is `qifu4-dev-jasypt-key`. Production should set its
