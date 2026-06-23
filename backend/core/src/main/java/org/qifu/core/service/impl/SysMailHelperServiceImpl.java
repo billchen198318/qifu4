@@ -46,7 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation=Propagation.REQUIRED, timeout=300, readOnly=true)
 public class SysMailHelperServiceImpl extends BaseService<TbSysMailHelper, String> implements ISysMailHelperService<TbSysMailHelper, String> {
 	
-	private static final String MAILID_VAR = "mailid";
+	private static final String MAILID_VAR = "mailId";
 	
 	private final TbSysMailHelperMapper tbSysMailHelperMapper;
 	
