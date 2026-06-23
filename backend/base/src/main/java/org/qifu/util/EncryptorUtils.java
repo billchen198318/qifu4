@@ -134,6 +134,13 @@ public class EncryptorUtils {
 		}
 	}
 
+	/**
+	 * Validates that a Base64 value can be used as an AES-GCM key.
+	 */
+	public static void validateGcmKey(String base64Key) {
+		buildGcmKey(base64Key);
+	}
+
 	private static SecretKeySpec buildGcmKey(String base64Key) {
 		if (base64Key == null || base64Key.isBlank()) {
 			throw new IllegalArgumentException("AES-GCM key must not be blank");
